@@ -109,35 +109,17 @@ function ProposalDetailView() {
             </Stack>
             
             {budgetList ?
-                <ButtonAtom
-                    config={buttonConfig}
-                    //type={buttonConfig.type}
-                    // variant="contained"
-                    // type="submit"
-                    // onClick={buttonConfig.handleBudgetCreateOnClick}
-                    // margin="2rem"
-                    
-                /> 
-                // <TableDisplay
-                //     tableHeaderData={headers}
-                //     tableBodyData={data2}
-                //     dataToDisplay={budgetList}
-                // />
+                <Link to={`/proposals/${item.id}/budget`}>
+                    <ButtonAtom
+                        config={buttonConfig}
+                    /> 
+                </Link>
                 :
                 <TableDisplay
                     tableHeaderData={headers}
                     tableBodyData={data2}
                     dataToDisplay={budgetList}
                 />
-                //                 <ButtonAtom
-                //     config={buttonConfig}
-                // //     //type={buttonConfig.type}
-                // //     // variant="contained"
-                // //     // type="submit"
-                // //     // onClick={buttonConfig.handleBudgetCreateOnClick}
-                // //     // margin="2rem"
-
-                // /> 
             }
      
         </Box>
