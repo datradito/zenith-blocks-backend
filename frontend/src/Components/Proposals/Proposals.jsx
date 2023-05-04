@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
-import { GET_PROPOSAL, GET_All_PROPOSALS } from '../../SnapShot/Queries.js';
+import { GET_All_PROPOSALS } from '../../SnapShot/Queries.js';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
@@ -78,8 +78,7 @@ const Proposals = () => {
 
   const { loading, error, data } = useQuery(GET_All_PROPOSALS, {
     skip: skipQuery,
-    variables: { first: parseInt(stateQuery.first), skip: parseInt(stateQuery.skip) },
-    cacheTime: 100000,
+    variables: { first: parseInt(stateQuery.first), skip: parseInt(stateQuery.skip) }
   });
 
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {  useState } from 'react'
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import Paper from '@mui/material/Paper';
@@ -7,7 +7,9 @@ import { styled } from '@mui/material/styles';
 import { GET_PROPOSAL_BY_ID } from '../../SnapShot/Queries.js';
 import { Box } from '@mui/material';
 import TableDisplay from '../DisplayElements/TableDisplay.jsx';
-import ButtonAtom from "../atoms/Button/index"
+import ButtonAtom from "../atoms/Button/index";
+import { useDispatch } from 'react-redux';
+import { setProposal } from '../../actions/currentProposal/index.js';
 
 
 const data2 = [
@@ -58,24 +60,31 @@ const headers = ["Categories", "Allocated Budget", "Currency", "Breakdown", "Rem
 
 function ProposalDetailView() {
     const { proposalId } = useParams();
+    const dispatch = useDispatch();
     const [budgetList, setBudgetList] = useState([])
     const { loading, error, data } = useQuery(GET_PROPOSAL_BY_ID, {
         // skip: skipQuery,
         variables: { id: proposalId },
     });
 
+    // useEffect(() => {
+    //     if (data) {
+    //         setProposal(data)
+    //     };
+    // }, [data]);
+
+
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error : {error.message}</p>;
 
 
     const handleBudgetCreateOnClick = () => {
-        console.log("create budget clicked!")
+        dispatch(setProposal(data.proposal));
     }
 
     const buttonConfig = {
         label: "Create budget",
         variant: "contained",
-        //type: "submit",
         onClick: handleBudgetCreateOnClick,
         innerText: "Create Budget"
     };

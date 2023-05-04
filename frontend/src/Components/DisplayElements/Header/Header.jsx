@@ -1,7 +1,7 @@
 import * as React from 'react';
 import AdbIcon from '@mui/icons-material/Adb';
 import MenuIcon from '@mui/icons-material/Menu';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import WalletConnect from './WalletConnect';
 
 import {
@@ -12,9 +12,7 @@ import {
     Typography,
     Menu,
     Container,
-    Avatar,
     Button,
-    Tooltip,
     MenuItem,
 } from '@mui/material';
 

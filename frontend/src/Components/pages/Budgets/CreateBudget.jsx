@@ -1,8 +1,10 @@
 import React from 'react'
+import { useSelector } from 'react-redux';
 
 function CreateBudget() {
+    const proposal = useSelector(state => state);
   return (
-    <div>CreateBudget</div>
+      <div>{JSON.stringify(proposal)}</div>
   )
 }
 

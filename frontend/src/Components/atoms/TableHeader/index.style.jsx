@@ -1,7 +1,6 @@
 import { makeStyles } from '@mui/styles';
-import { theme } from "../../../styles/theme.js";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     tableHeaderCell: {
         padding: "0 rem",
         border: ".05rem #272A30 solid",// Set default font size for table header cells

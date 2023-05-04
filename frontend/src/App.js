@@ -1,9 +1,8 @@
 import './App.css';
 import React from 'react';
-import { useState, useEffect } from "react";
 // import SimpleStorage from "./contracts/SimpleStorage.json";
 // import Web3 from "web3";
-import { Mainnet, DAppProvider, ChainId, useEtherBalance, useEthers, Config, Goerli } from '@usedapp/core'
+import {  DAppProvider, ChainId} from '@usedapp/core'
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import {
   createBrowserRouter,
@@ -11,7 +10,8 @@ import {
 } from "react-router-dom";
 
 import Root from "./Routes/Root";
-
+import { Provider } from 'react-redux'
+import storeConfig  from './store/storeConfigure'
 
 import ErrorPage from "./Routes/ErrorPage";
 import Proposals from "./Components/Proposals/Proposals";
@@ -63,7 +63,8 @@ function App() {
     cache: new InMemoryCache(),
   });
 
-
+  const store = storeConfig();
+  
   const router = createBrowserRouter([
     {
       path: "/",
@@ -100,7 +101,9 @@ function App() {
   return (
     <DAppProvider config={{ supportedChains: [ChainId.Kovan] }}>
       <ApolloProvider client={client}>
-        <RouterProvider router={router} />
+        <Provider store={store}>
+          <RouterProvider router={router} />
+        </Provider>
       </ApolloProvider>
     </DAppProvider>
   );
