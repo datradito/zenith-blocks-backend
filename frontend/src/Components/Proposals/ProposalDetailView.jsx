@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import Paper from '@mui/material/Paper';
@@ -61,7 +61,7 @@ function ProposalDetailView() {
     const [budgetList, setBudgetList] = useState([])
     const { loading, error, data } = useQuery(GET_PROPOSAL_BY_ID, {
         // skip: skipQuery,
-        variables: { id: proposalId},
+        variables: { id: proposalId },
     });
 
     if (loading) return <p>Loading...</p>;
@@ -73,11 +73,11 @@ function ProposalDetailView() {
     }
 
     const buttonConfig = {
-            label: "Create budget",
-            variant: "contained",
-            //type: "submit",
-            onClick: handleBudgetCreateOnClick,
-            innerText: "Create Budget"
+        label: "Create budget",
+        variant: "contained",
+        //type: "submit",
+        onClick: handleBudgetCreateOnClick,
+        innerText: "Create Budget"
     };
 
     return (
@@ -90,29 +90,29 @@ function ProposalDetailView() {
                 padding={1}
                 direction="row"
                 justifyContent='flex-start'
-                borderBottom= ".05rem #272A30 solid"
+                borderBottom=".05rem #272A30 solid"
             >
                 <SubItem sx={subItemStyle}>
-                        <ColumnItem sx={label}>Goverance</ColumnItem>
-                        <ColumnItem>{data.proposal.space.name}</ColumnItem>
+                    <ColumnItem sx={label}>Goverance</ColumnItem>
+                    <ColumnItem>{data.proposal.space.name}</ColumnItem>
                 </SubItem>
                 <SubItem sx={subItemStyle}>
-                        <ColumnItem sx={label}>Total Budget</ColumnItem>
-                        <ColumnItem>$5,980,000</ColumnItem>
+                    <ColumnItem sx={label}>Total Budget</ColumnItem>
+                    <ColumnItem>$5,980,000</ColumnItem>
                 </SubItem>
                 <SubItem >
                     <Stack>
-                            <ColumnItem sx={label}>Proposal</ColumnItem>
-                            <ColumnItem>{data.proposal.title}</ColumnItem>
+                        <ColumnItem sx={label}>Proposal</ColumnItem>
+                        <ColumnItem>{data.proposal.title}</ColumnItem>
                     </Stack>
                 </SubItem>
             </Stack>
-            
+
             {budgetList ?
-                <Link to={`/proposals/${item.id}/budget`}>
+                <Link to={`/proposal/budgets/${proposalId}`}>
                     <ButtonAtom
                         config={buttonConfig}
-                    /> 
+                    />
                 </Link>
                 :
                 <TableDisplay
@@ -121,7 +121,7 @@ function ProposalDetailView() {
                     dataToDisplay={budgetList}
                 />
             }
-     
+
         </Box>
     )
 }

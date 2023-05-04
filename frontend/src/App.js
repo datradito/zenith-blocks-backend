@@ -16,6 +16,7 @@ import Root from "./Routes/Root";
 import ErrorPage from "./Routes/ErrorPage";
 import Proposals from "./Components/Proposals/Proposals";
 import ProposalDetailView from "./Components/Proposals/ProposalDetailView";
+import CreateBudget from './Components/pages/Budgets/CreateBudget';
 
 function App() {
 
@@ -51,7 +52,7 @@ function App() {
   // async function writeData() {
   //   const { contract } = state;
   //   const data = document.querySelector("#value").value;
-//   await contract.methods
+  //   await contract.methods
   //     .setter(data)
   //     .send({ from: "0x1f4F90f9aA5779f2C1E190133C2c872944bDED1c" });  
   //   window.location.reload();
@@ -90,6 +91,10 @@ function App() {
     {
       path: "/proposals",
       element: <Proposals />
+    },
+    {
+      path: "/proposal/budgets/:proposalId",
+      element: <CreateBudget />
     }
   ]);
   return (
