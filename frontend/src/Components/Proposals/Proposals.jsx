@@ -50,9 +50,11 @@ const ColumnItem = styled(Paper)(({ theme }) => ({
   fontSize: '.85rem'
 }));
 
+
 const subItemStyle = {
   minWidth: 200,
 }
+
 
 const Proposals = () => {
   const [stateQuery, setStateQuery] = useState({ first: 10, skip: 0 });
@@ -105,17 +107,15 @@ const Proposals = () => {
                   justifyContent='flex-start'
                 >
                   <SubItem sx={subItemStyle}>
-          
                       <ColumnItem sx={label}>Goverance</ColumnItem>
                       <ColumnItem>{item.space.name}</ColumnItem>
-                    
                   </SubItem>
                   <SubItem sx={subItemStyle}>
                       <ColumnItem sx={label}>Total Budget</ColumnItem>
                       <ColumnItem>$5,980,000</ColumnItem>
                   </SubItem>
                   <SubItem >
-                      <Link to={`/proposals/${item.id}`}>
+                      <Link to={`/proposals/${item.id}`} style={{ textDecoration: 'none' }}>
                         <ColumnItem sx={label}>Proposal</ColumnItem>
                         <ColumnItem>{item.title}</ColumnItem>
                       </Link>

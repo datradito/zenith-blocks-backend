@@ -1,16 +1,14 @@
 import React, {  useState } from 'react'
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
-import Paper from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
-import { styled } from '@mui/material/styles';
 import { GET_PROPOSAL_BY_ID } from '../../SnapShot/Queries.js';
 import { Box } from '@mui/material';
 import TableDisplay from '../DisplayElements/TableDisplay.jsx';
 import ButtonAtom from "../atoms/Button/index";
 import { useDispatch } from 'react-redux';
 import { setProposal } from '../../actions/currentProposal/index.js';
-
+import ItemCard from '../atoms/ItemCard/ItemCard.jsx';
+import Stack from '@mui/material/Stack';
 
 const data2 = [
     { id: 1, value1: 'Value 1-1', value2: 'Value 1-2', value3: 'Value 1-3', value4: 'Value 1-4', value5: 'Value 1-5' },
@@ -29,32 +27,6 @@ const BoxStyle = {
     border: ".05rem #272A30 solid",
     marginTop: "1rem"
 };
-
-const label = {
-    color: 'Gray',
-    fontSize: '.65rem'
-}
-
-const SubItem = styled(Paper)(({ theme }) => ({
-    backgroundColor: '#1A1C1E',
-    padding: theme.spacing(1),
-    margin: theme.spacing(.5),
-    textAlign: 'left',
-    color: theme.palette.text.secondary,
-    boxShadow: 'none',
-}));
-
-const ColumnItem = styled(Paper)(({ theme }) => ({
-    backgroundColor: '#1A1C1E',
-    textAlign: 'left',
-    color: 'white',
-    boxShadow: 'none',
-    fontSize: '.85rem'
-}));
-
-const subItemStyle = {
-    minWidth: 200,
-}
 
 const headers = ["Categories", "Allocated Budget", "Currency", "Breakdown", "Remaining", "View"]
 
@@ -82,6 +54,8 @@ function ProposalDetailView() {
         dispatch(setProposal(data.proposal));
     }
 
+    const dataForItemCard = { "Goverance": data.proposal.space.name, "Total Budget": "$5,980,000", "Proposal": data.proposal.title };
+
     const buttonConfig = {
         label: "Create budget",
         variant: "contained",
@@ -99,24 +73,18 @@ function ProposalDetailView() {
                 padding={1}
                 direction="row"
                 justifyContent='flex-start'
-                borderBottom=".05rem #272A30 solid"
-            >
-                <SubItem sx={subItemStyle}>
-                    <ColumnItem sx={label}>Goverance</ColumnItem>
-                    <ColumnItem>{data.proposal.space.name}</ColumnItem>
-                </SubItem>
-                <SubItem sx={subItemStyle}>
-                    <ColumnItem sx={label}>Total Budget</ColumnItem>
-                    <ColumnItem>$5,980,000</ColumnItem>
-                </SubItem>
-                <SubItem >
-                    <Stack>
-                        <ColumnItem sx={label}>Proposal</ColumnItem>
-                        <ColumnItem>{data.proposal.title}</ColumnItem>
-                    </Stack>
-                </SubItem>
-            </Stack>
-
+                borderBottom=".05rem #272A30 solid">
+            {
+                Object.entries(dataForItemCard).map(([key, value]) => {
+                    return <ItemCard
+                        label={key}
+                        value={value}
+                    />
+                })
+            }
+            </Stack
+                
+                >
             {budgetList ?
                 <Link to={`/proposal/budgets/${proposalId}`}>
                     <ButtonAtom
