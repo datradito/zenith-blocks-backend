@@ -12,6 +12,7 @@ function FormItem({ initialValues }) {
             paddin: '0',
             border: '2px solid #2C2C2C',
             borderRadius: '5px',
+            
             '& .MuiInputBase-input': {
                 padding: '0.5rem',
                 color: 'white',
@@ -52,12 +53,6 @@ function FormItem({ initialValues }) {
                                         fullWidth
                                         // disabled
                                         sx = {componentStyles.formInputFieldStyles}
-                                        InputProps={{
-                                            style: {
-                                                
-                                                
-                                            },   
-                                        }}
                                     />
                                 </Grid>
                             })

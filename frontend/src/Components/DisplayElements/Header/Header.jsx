@@ -77,10 +77,10 @@ const ResponsiveHeaderBar = () => {
                             textDecoration: 'none',
                         }}
                     >
-                        <img style={{ maxWidth: "2rem" }} src={logo} alt="Logo" />
+                        <img style={{ maxWidth: "8rem" }} src={logo} alt="Logo" />
+                        
                         
                     </Typography>
-
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
                             size="large"

@@ -15,6 +15,7 @@ import {
 import TableHeader from '../../atoms/TableHeader/index';
 import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
 import { useDispatch, useSelector } from 'react-redux';
+import ButtonAtom from '../../atoms/Button';
 
 function FormRow() {
     const dispatch = useDispatch();
@@ -74,6 +75,13 @@ function FormRow() {
             padding: '0',  
         },
 
+    };
+
+    const buttonConfig = {
+        label: "Add Row",
+        variant: "contained",
+        onClick: handleAddRow,
+        innerText: "Add New"
     };
 
     return (
@@ -160,16 +168,12 @@ function FormRow() {
                                     />
                                 </TableCell>
                             </TableRow>
-
                         ))}
                     </TableBody>
-                    {/* <TableBody tableBodyData={items} /> */}
                 </Table>
             </TableContainer>
-            <Box mt={2}>
-                <Button variant="contained" onClick={handleAddRow}>
-                    Add Row
-                </Button>
+            <Box>
+                <ButtonAtom config={buttonConfig} />
             </Box>
         </Box>
     );
