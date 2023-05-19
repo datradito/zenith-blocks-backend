@@ -1,14 +1,13 @@
-import React, {  useState } from 'react'
+import React, {  useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { GET_PROPOSAL_BY_ID } from '../../SnapShot/Queries.js';
-import { Box } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import TableDisplay from '../DisplayElements/TableDisplay.jsx';
 import ButtonAtom from "../atoms/Button/index";
 import { useDispatch } from 'react-redux';
 import { setProposal } from '../../actions/currentProposal/index.js';
 import ItemCard from '../atoms/ItemCard/ItemCard.jsx';
-import Stack from '@mui/material/Stack';
 
 const data2 = [
     { id: 1, value1: 'Value 1-1', value2: 'Value 1-2', value3: 'Value 1-3', value4: 'Value 1-4', value5: 'Value 1-5' },
@@ -24,9 +23,11 @@ const BoxStyle = {
     margin: '0rem auto',
     textAlign: "center",
     color: 'white',
-    border: ".05rem #272A30 solid",
-    marginTop: "1rem"
+    border: ".05rem #BDBDBB solid",
+    marginTop: "1rem",
+    borderRadius: 3
 };
+
 
 const headers = ["Categories", "Allocated Budget", "Currency", "Breakdown", "Remaining", "View"]
 
@@ -40,10 +41,16 @@ function ProposalDetailView() {
     });
 
     // useEffect(() => {
-    //     if (data) {
-    //         setProposal(data)
+    //     if (currentProposal) {
+    //         setProposal(currentProposal)
     //     };
-    // }, [data]);
+    // }, [currentProposal]);
+
+    // useEffect(() => {
+    //     if (data) {
+    //         setCurrentProposal(data)
+    //     } 
+    // }, [data])
 
 
     if (loading) return <p>Loading...</p>;
@@ -64,27 +71,24 @@ function ProposalDetailView() {
     };
 
     return (
-        <Box
-            sx={BoxStyle}
-            borderRadius={3}
-        >
+        <Box sx={BoxStyle}>
             <Stack
                 margin={1}
                 padding={1}
-                direction="row"
-                justifyContent='flex-start'
-                borderBottom=".05rem #272A30 solid">
+                direction={"row"}
+                justifyContent={'flex-start'}
+                borderBottom={".05rem #BDBDBB solid"}
+            >
             {
                 Object.entries(dataForItemCard).map(([key, value]) => {
                     return <ItemCard
+                        key={key}
                         label={key}
                         value={value}
                     />
                 })
             }
-            </Stack
-                
-                >
+            </Stack>
             {budgetList ?
                 <Link to={`/proposal/budgets/${proposalId}`}>
                     <ButtonAtom

@@ -1,49 +1,34 @@
-import React from 'react'
-import { useSelector } from 'react-redux';
+import React, {useEffect, useState} from 'react'
+import { useSelector, useDispatch } from 'react-redux';
+import { Stack } from '@mui/material';
+import useStyles from "./CreateBudget.style";
 import { makeStyles } from '@mui/styles';
-import { Grid, Typography} from '@mui/material';
+import * as yup from 'yup';
+import FormItem from "../../atoms/FormItem/FormItem";
+import FormRow from "../../molecules/Form/index";
+import { Formik, Form } from 'formik';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
- 
-  },
-  governance: {
-    fontWeight: 'bold',
-  },
-  totalBudget: {
-    fontWeight: 'bold',
-  },
-  proposal: {
-  },
-}));
 
 function CreateBudget() {
-  const proposal = useSelector(state => state);
+  let { proposal } = useSelector(state => state.currentProposal);
   const classes = useStyles();
 
+  const [formData, setFormData] = React.useState({});
+
+  let dataForItemCard = {};
+  
+
+  if (proposal) {
+    dataForItemCard = { "Goverance": `${proposal.space.name}`, "Total Budget": "5,980,000", "Proposal": `${proposal.title}`, "Ipfs Link" : `${proposal.ipfs}`}
+  }
+
+  
+
   return (
-    <Grid container spacing={2} className={classes.root}>
-      <Grid item xs={12} sm={6}>
-        <Typography variant="h6" className={classes.governance}>
-          Governance
-        </Typography>
-        <Typography>Example governance text</Typography>
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <Typography variant="h6" className={classes.totalBudget}>
-          Total Budget
-        </Typography>
-        <Typography>$100,000</Typography>
-      </Grid>
-      <Grid item xs={12} sm={6} className={classes.proposal}>
-        <Typography variant="h6">Proposal</Typography>
-        <Typography>Example proposal text</Typography>
-      </Grid>
-      <Grid item xs={12} sm={6} className={classes.proposal}>
-        <Typography variant="h6">Link</Typography>
-        <Typography>http://example.com</Typography>
-      </Grid>
-    </Grid>
+    <div className={classes.BoxStyle}>
+      <FormItem initialValues={dataForItemCard} />
+      <FormRow />
+    </div>
   )
 }
 

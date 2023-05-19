@@ -1,5 +1,4 @@
 import { makeStyles } from '@mui/styles';
-import { theme } from "../../../styles/theme.js";
 
 const useStyles = makeStyles((theme) => ({
     buttonStyle: {
@@ -7,14 +6,18 @@ const useStyles = makeStyles((theme) => ({
         margin: "2rem",
     },
     label:{
-        color: 'Gray',
+        color: 'Grey',
         fontSize: '.65rem'
     },
     subItemStyle: {
         minWidth: 200,
     },
-    stack: {
-
+    minWidth: {
+        minWidth: '200px',
+        maxWidth: '200px',
+    },
+    defaultWidth: {
+        minWidth: '700px'
     }
 }));
 

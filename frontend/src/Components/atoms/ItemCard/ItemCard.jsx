@@ -6,12 +6,21 @@ import useStyles from './ItemCard.style';
 function ItemCard({ label,value }) {
     const classes = useStyles();
     
-    const ColumnItem = styled(Paper)(({ theme }) => ({
+    const ColumnItemLabel = styled(Paper)(({ theme }) => ({
+        backgroundColor: '#1A1C1E',
+        textAlign: 'left',
+        color: 'grey',
+        padding: '.5rem 0',
+        boxShadow: 'none',
+        fontSize: '.75rem'
+    }));
+
+    const ColumnItemValue = styled(Paper)(({ theme }) => ({
         backgroundColor: '#1A1C1E',
         textAlign: 'left',
         color: 'white',
         boxShadow: 'none',
-        fontSize: '.85rem'
+        fontSize: '.95rem'
     }));
 
     const SubItem = styled(Paper)(({ theme }) => ({
@@ -23,9 +32,9 @@ function ItemCard({ label,value }) {
         boxShadow: 'none',
     }));
     return (
-        <SubItem key={label} className={`${classes.subItemStyle}`}>
-                <ColumnItem className={`${classes.label}`}>{label}</ColumnItem>
-                <ColumnItem>{value}</ColumnItem>
+        <SubItem key={label} className={classes.subItemStyle}>
+                <ColumnItemLabel className={`${ label !== "Title" ? classes.minWidth: classes.defaultWidth}`}>{label}</ColumnItemLabel>
+                <ColumnItemValue>{value}</ColumnItemValue>
         </SubItem>
   )
 }

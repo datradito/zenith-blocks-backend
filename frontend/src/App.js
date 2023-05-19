@@ -4,15 +4,12 @@ import React from 'react';
 // import Web3 from "web3";
 import {  DAppProvider, ChainId} from '@usedapp/core'
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { storeConfig, persistor } from './store/storeConfigure';
+import { PersistGate } from 'redux-persist/integration/react';
 import Root from "./Routes/Root";
-import { Provider } from 'react-redux'
-import storeConfig  from './store/storeConfigure'
-
+import ResponsiveHeaderBar from "./Components/DisplayElements/Header/Header.jsx";
 import ErrorPage from "./Routes/ErrorPage";
 import Proposals from "./Components/Proposals/Proposals";
 import ProposalDetailView from "./Components/Proposals/ProposalDetailView";
@@ -63,49 +60,26 @@ function App() {
     cache: new InMemoryCache(),
   });
 
-  const store = storeConfig();
-  
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <Root />,
-      errorElement: <ErrorPage />,
-      children: [
-        {
-          path: "/",
-          element: <Proposals />
-        },
-        {
-          path: "/proposals",
-          element: <Proposals />
-        },
-        {
-          path: "/proposals/:proposalId",
-          element: <ProposalDetailView />
-        }
-      ]
-    },
-    {
-      path: "/proposals/:proposalId",
-      element: <ProposalDetailView />,
-    },
-    {
-      path: "/proposals",
-      element: <Proposals />
-    },
-    {
-      path: "/proposal/budgets/:proposalId",
-      element: <CreateBudget />
-    }
-  ]);
+
   return (
+  
     <DAppProvider config={{ supportedChains: [ChainId.Kovan] }}>
-      <ApolloProvider client={client}>
-        <Provider store={store}>
-          <RouterProvider router={router} />
-        </Provider>
-      </ApolloProvider>
-    </DAppProvider>
+        <ApolloProvider client={client}>
+          <Provider store={ storeConfig }>
+            <PersistGate loading={null} persistor={persistor}>
+              <BrowserRouter>
+                <ResponsiveHeaderBar />
+                <Routes>
+                  <Route exact path="/proposals" element={<Proposals />} />
+                  <Route exact path="/proposals/:proposalId" element={<ProposalDetailView />} />
+                  <Route exact path="/proposal/budgets/:proposalId" element={<CreateBudget />} />
+                  <Route element={<ErrorPage />} />
+                </Routes>
+              </BrowserRouter>
+            </PersistGate>
+          </Provider>
+        </ApolloProvider>
+      </DAppProvider>
   );
 }
 

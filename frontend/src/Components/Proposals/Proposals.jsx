@@ -22,7 +22,8 @@ const label = {
 const pagination = {
   width: '90%',
   margin:'1rem',
-  alignItems: 'flex-end'
+  alignItems: 'flex-end',
+  color: "white"
 }
 
 const Item = styled(Paper)(({ theme }) => ({

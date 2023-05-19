@@ -2,7 +2,7 @@ import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles(() => ({
     tableDataCell: {
-         // Set default font size for table header cells
+        // Set default font size for table header cells
     },
     tableDataCellItem: {
         color: "white",
