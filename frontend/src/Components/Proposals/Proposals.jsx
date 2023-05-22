@@ -122,7 +122,7 @@ const Proposals = () => {
 
   return (
     <>
-      <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath=" Last Sync: 08:25:53 on May, 2023" />
+      <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath="Last Sync: 08:25:53 on May, 2023" />
       <Box sx={ProposalListCardStyle}>
         <Stack
           padding={0}

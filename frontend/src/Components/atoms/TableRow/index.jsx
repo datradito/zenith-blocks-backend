@@ -26,7 +26,7 @@ const TableRow = ({ tableBodyData }) => {
         "Remaining": {
             color: "white",
             borderBottom: ".05rem #272A30 solid",
-            
+
         },
         "View": {
             borderBottom: ".05rem #272A30 solid",
@@ -38,9 +38,16 @@ const TableRow = ({ tableBodyData }) => {
         <TableRowMUI className={classes.tableRow}>
             {
                 Object.keys(tableBodyData).map((key) => {
-                    return (
-                        key == "Remaining" ? <TableCell sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomizedProgressBars value={tableBodyData[key]} /></TableCell> : key == 'View' ? <TableCell sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomInvoiceViewIcon /></TableCell> : <TableCell sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}>{tableBodyData[key]}</TableCell>
-                    )
+                    if (key !== "id") {
+                        return (
+                            key == "Remaining" ?
+                                <TableCell sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomizedProgressBars value={tableBodyData[key]} /></TableCell> :
+                            key == 'View' ?
+                                    <TableCell sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomInvoiceViewIcon budgetId={tableBodyData["id"]} /></TableCell> :
+                                <TableCell sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}>{tableBodyData[key]}</TableCell>
+                        )
+                    }
+                    return null;
                 })}
         </TableRowMUI>
     )
