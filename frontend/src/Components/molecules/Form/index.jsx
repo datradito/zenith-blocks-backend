@@ -16,6 +16,7 @@ import TableHeader from '../../atoms/TableHeader/index';
 import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
 import { useDispatch, useSelector } from 'react-redux';
 import ButtonAtom from '../../atoms/Button';
+import { Formik, Form } from 'formik';
 
 function FormRow() {
     const dispatch = useDispatch();
@@ -40,10 +41,16 @@ function FormRow() {
 
     const formStyleCustom = {
         currencyDropdown: {
-            color: 'white',
             '& .MuiTableCell-root': {
                 color: 'white',
                 backgroundColor: '#2C2C2C',
+                fontSize: '0.85rem',
+            },
+            '& .MuiInputBase-root': {
+                fontSize: '.85rem',
+            },
+            '& .MuiSelect-root': {
+                fontSize: '.85rem',
             },
             '& .MuiSvgIcon-root': {
                 color: 'white',
@@ -54,12 +61,13 @@ function FormRow() {
                 color: 'white',
                 border: '2px solid #2C2C2C',
                 backgroundColor: '#1A1C1E',
-                margin: '0'
+                margin: '0',
+                fontSize: '.85rem',
             }
         },
         default: {
             color: 'white',
-            paddin: '0',
+            padding: '0',
             border: '2px solid #2C2C2C',
             '& .MuiInputBase-input': {
                 padding: '0.5rem',
@@ -67,14 +75,13 @@ function FormRow() {
             },
             '& .MuiButtonBase-root': {
                 minWidth: 'initial',
-            } 
-            
+                
+            }         
         },
         buttonStyles: {
             color: 'white',
             padding: '0',  
         },
-
     };
 
     const buttonConfig = {
@@ -86,8 +93,8 @@ function FormRow() {
 
     return (
         <Box className={classes.boxStyle}>
-            <TableContainer>
-                <Table>
+            <Formik>
+                <Form>
                     <TableHeader
                         tableHeaderData={["", "Category", "Currency", "Percentage", "Breakdown"]}
                     />
@@ -98,7 +105,8 @@ function FormRow() {
                             >
                                 <TableCell
                                     style={{ border: 'none', width: '25', padding: '0.5rem' }}
-                                    sx={formStyleCustom.default}>
+                                    sx={formStyleCustom.default}
+                                    required>
                                     <Button
                                         startIcon={<RemoveCircleOutlineSharpIcon />}
                                         onClick={() => handleDeleteRow(index)}
@@ -126,7 +134,8 @@ function FormRow() {
                                     <Select
                                         value={item.currency}
                                         onChange={(e) => handleChange(index, 'currency', e.target.value)}
-                                        sx = {[formStyleCustom.currencyDropdown, formStyleCustom.default]}
+                                        sx={[formStyleCustom.currencyDropdown, formStyleCustom.default]}
+                                        style={{fontSize: '.85rem'}}
                                     >
                                         {/* <MenuItem value={item.currency}>{item.currency}</MenuItem> */}
                                         <MenuItem value="USD"
@@ -170,8 +179,8 @@ function FormRow() {
                             </TableRow>
                         ))}
                     </TableBody>
-                </Table>
-            </TableContainer>
+                </Form>
+            </Formik>
             <Box>
                 <ButtonAtom config={buttonConfig} />
             </Box>

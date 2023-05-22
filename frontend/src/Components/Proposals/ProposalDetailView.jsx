@@ -1,21 +1,20 @@
 import React, {  useState, useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { GET_PROPOSAL_BY_ID } from '../../SnapShot/Queries.js';
-import { Box, Stack } from '@mui/material';
+import { Box, Stack,Grid, Typography } from '@mui/material';
 import TableDisplay from '../DisplayElements/TableDisplay.jsx';
 import ButtonAtom from "../atoms/Button/index";
 import { useDispatch } from 'react-redux';
-import { setProposal } from '../../actions/currentProposal/index.js';
+import { setProposal, getProposal } from '../../actions/currentProposal/index.js';
 import ItemCard from '../atoms/ItemCard/ItemCard.jsx';
+import SubHeader from "../molecules/SubHeader/SubHeader.jsx"
 
 const data2 = [
-    { id: 1, value1: 'Value 1-1', value2: 'Value 1-2', value3: 'Value 1-3', value4: 'Value 1-4', value5: 'Value 1-5' },
-    { id: 2, value1: 'Value 2-1', value2: 'Value 2-2', value3: 'Value 2-3', value4: 'Value 2-4', value5: 'Value 2-5' },
-    { id: 3, value1: 'Value 3-1', value2: 'Value 3-2', value3: 'Value 3-3', value4: 'Value 3-4', value5: 'Value 3-5' },
-    { id: 4, value1: 'Value 4-1', value2: 'Value 4-2', value3: 'Value 4-3', value4: 'Value 4-4', value5: 'Value 4-5' },
-    { id: 5, value1: 'Value 5-1', value2: 'Value 5-2', value3: 'Value 5-3', value4: 'Value 5-4', value5: 'Value 5-5' },
-];
+    { Categories: "Base Czy podczas KZB powinien zostać poruszony temat zdecentralizowanego rozstrzygania sporów z wykorzystaniem blockchain?", "Allocated Budget": '$3,360,000', Currency: 'ETH', Breakdown: '56.93389%', Remaining: '$100000', View: 'INVOICE' },
+    { Categories: "Base Compensation", "Allocated Budget": '$3,360,000', Currency: 'ETH', Breakdown: '76.87658%', Remaining: '$100000', View: 'INVOICE' },
+    { Categories: "Base Czy podczas KZB powinien zostać poruszony temat zdecentralizowanego rozstrzygania sporów z wykorzystaniem blockchain?", "Allocated Budget": '$3,360,000', Currency: 'ETH', Breakdown: '56.93389%', Remaining: '$100000', View: 'INVOICE' },
+];  
 
 
 const BoxStyle = {
@@ -35,10 +34,27 @@ function ProposalDetailView() {
     const { proposalId } = useParams();
     const dispatch = useDispatch();
     const [budgetList, setBudgetList] = useState([])
-    const { loading, error, data } = useQuery(GET_PROPOSAL_BY_ID, {
+
+    let { loading, error, data } = useQuery(GET_PROPOSAL_BY_ID, {
         // skip: skipQuery,
         variables: { id: proposalId },
     });
+    const navigate = useNavigate();
+
+    // useEffect(() => {
+    //     if (budgetList === []) {
+    //         navigate(`/proposal/budgets/${proposalId}`,  { replace: true });
+    //     }
+    // }, [budgetList, navigate, proposalId]);
+
+    // useEffect(() => {
+    //     if (budgetList === []) {
+    //         navigate(`/proposal/budgets/${proposalId}`, { replace: true });
+    //         console.log("inisde useEffect ran")
+    //     }
+    //     console.log("this ran")
+    //     console.log(budgetList == [])
+    // }, []);
 
     // useEffect(() => {
     //     if (currentProposal) {
@@ -46,11 +62,13 @@ function ProposalDetailView() {
     //     };
     // }, [currentProposal]);
 
-    // useEffect(() => {
-    //     if (data) {
-    //         setCurrentProposal(data)
-    //     } 
-    // }, [data])
+    useEffect(() => {
+        if (!data) {
+            let storedState = localStorage.getItem('persist:root');
+            data = storedState.currentProposal;
+            console.log(data)
+        } 
+    }, [])
 
 
     if (loading) return <p>Loading...</p>;
@@ -61,6 +79,8 @@ function ProposalDetailView() {
         dispatch(setProposal(data.proposal));
     }
 
+    console.log(data)
+
     const dataForItemCard = { "Goverance": data.proposal.space.name, "Total Budget": "$5,980,000", "Proposal": data.proposal.title };
 
     const buttonConfig = {
@@ -70,10 +90,46 @@ function ProposalDetailView() {
         innerText: "Create Budget"
     };
 
+    const handleExportCSV = () => {
+        console.log("Export CSV");
+    };
+
+    const handleUpdateProposal = () => {
+        dispatch(setProposal(data.proposal));
+    };
+
+    const componentButtonConfig =
+        [
+            {
+                label: "Export CSV",
+                variant: "contained",
+                onClick: handleExportCSV,
+                innerText: "Export CSV",
+                backgroundColor: "#282A2E",
+                type: "link",
+                to: '/proposal/budgets/export-csv'
+            }, {
+                label: "Update Proposal",
+                variant: "contained",
+                onClick: handleUpdateProposal,
+                innerText: "Update Proposal",
+                ml: "0.5rem",
+                type: "link",
+                to: `/proposal/update/${proposalId}`
+            }
+        ];
+    
+    const currentPathConfig = {
+        path: "Proposals",
+        to: `/proposals`
+    }
+
+
     return (
-        <Box sx={BoxStyle}>
+        <div>
+            <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath='Proposals' />
+            <Box sx={BoxStyle}>
             <Stack
-                margin={1}
                 padding={1}
                 direction={"row"}
                 justifyContent={'flex-start'}
@@ -90,20 +146,22 @@ function ProposalDetailView() {
             }
             </Stack>
             {budgetList ?
-                <Link to={`/proposal/budgets/${proposalId}`}>
-                    <ButtonAtom
-                        config={buttonConfig}
+                    <TableDisplay
+                        
+                        tableHeaderData={headers}
+                        tableBodyData={data2}
+                        dataToDisplay={budgetList}
                     />
-                </Link>
                 :
-                <TableDisplay
-                    tableHeaderData={headers}
-                    tableBodyData={data2}
-                    dataToDisplay={budgetList}
-                />
+                    <Link to={`/proposal/budgets/${proposalId}`}>
+                        <ButtonAtom
+                            config={buttonConfig}
+                        />
+                    </Link>
             }
 
-        </Box>
+            </Box>
+        </div>
     )
 }
 

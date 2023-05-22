@@ -7,6 +7,7 @@ import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import PaginationControlled from '../DisplayElements/Pagination.jsx';
 import { Link } from "react-router-dom";
+import SubHeader from "../molecules/SubHeader/SubHeader.jsx"
 
 const ProposalListCardStyle = {
   width: '90%',
@@ -88,8 +89,40 @@ const Proposals = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.graphQLErrors}</p>;
 
+  const handleExportCSV = () => {
+    console.log("Export CSV");
+  }
+
+  const handleSyncProposals = () => {
+    console.log("Sync Proposals");
+  }
+
+
+  const componentButtonConfig =
+    [
+      {
+        label: "Export CSV",
+        variant: "contained",
+        onClick: handleExportCSV,
+        innerText: "Export CSV",
+        backgroundColor: "#282A2E",
+      }, {
+        label: "Sync Proposals",
+        variant: "contained",
+        onClick: handleSyncProposals,
+        innerText: "Sync Proposals",
+        ml: "0.5rem"
+      }
+    ];
+
+  const currentPathConfig = {
+    path: "Proposals",
+    // to: `/proposals/${proposal.id}`
+  }
+
   return (
     <>
+      <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath=" Last Sync: 08:25:53 on May, 2023" />
       <Box sx={ProposalListCardStyle}>
         <Stack
           padding={0}

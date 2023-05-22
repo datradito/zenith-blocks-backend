@@ -73,6 +73,7 @@ function App() {
                   <Route exact path="/proposals" element={<Proposals />} />
                   <Route exact path="/proposals/:proposalId" element={<ProposalDetailView />} />
                   <Route exact path="/proposal/budgets/:proposalId" element={<CreateBudget />} />
+                  <Route exact path="/proposal/update/:proposalId" element={<CreateBudget />} />
                   <Route element={<ErrorPage />} />
                 </Routes>
               </BrowserRouter>

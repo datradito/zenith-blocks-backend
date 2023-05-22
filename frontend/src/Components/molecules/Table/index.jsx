@@ -3,8 +3,8 @@ import TableBody from "../TableBody/index"
 import TableHeader from "../../atoms/TableHeader/index"
 
 import {
-    TableBody as TableBodyMUI,
     Table as TableMUI,
+    Box
 } from '@mui/material';
 
 import useStyle from "./index.style"
@@ -31,9 +31,9 @@ function Table({ tableHeaderData, tableBodyData }) {
         )
     }
     return (
-        <div>
+        <Box sx={{ margin: '0 1rem' }}>
             {tableBodyData && tableBodyData.length > 0 ? renderTable() : renderEmptyTable()}
-        </div>
+        </Box>
     )
 }
 

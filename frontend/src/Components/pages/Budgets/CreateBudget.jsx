@@ -7,6 +7,7 @@ import FormItem from "../../atoms/FormItem/FormItem";
 import FormRow from "../../molecules/Form/index";
 import ButtonAtom from '../../atoms/Button';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import SubHeader from '../../molecules/SubHeader/SubHeader';
 
 function CreateBudget() {
   let { proposal } = useSelector(state => state.currentProposal);
@@ -45,52 +46,16 @@ function CreateBudget() {
         ml: "0.5rem"
       }
     ];
-
-  const componentStyles = {
-    backArrowSvgStyle: {
-      color: 'white', 
-      fontSize: "large",
-      '& .MuiSvgIcon-root': {
-        mr: '0.5rem',
-      }
-    }
+  
+  const currentPathConfig = {
+    path: "Create Budget",
+    to: `/proposals/${proposal.id}`
   }
 
 
   return (
     <div>
-      <Box style={{
-        width: '90%',
-        margin: '1rem auto',
-      }}>
-        <Typography variant='caption' style={{ color: 'white' }}>
-          Budget
-        </Typography>
-        <Grid
-          container
-          style={{ justifyContent: 'space-between', alignItems: 'center', width: "100%" }}
-        >
-          <Grid>
-            <Typography variant="h5" style={{ color: 'white' }}>
-              <ArrowBackIcon sx={componentStyles.backArrowSvgStyle} />
-              Back To Proposal
-            </Typography>
-          </Grid>
-          <Grid
-            item
-            spacing='10'
-          >
-          {
-            Object.keys(componentButtonConfig).map((key,index) => {
-              return <ButtonAtom
-                    key={key}
-                    config={componentButtonConfig[key]}
-                  />
-            })
-            }
-            </Grid>
-        </Grid>
-      </Box>
+      <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath="Proposals  Proposal  Budget" />
       <div className={classes.BoxStyle}>
         <FormItem initialValues={dataForItemCard} />
         <FormRow />
