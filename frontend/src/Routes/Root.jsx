@@ -1,8 +1,6 @@
 import ResponsiveHeaderBar from "../Components/DisplayElements/Header/Header.jsx";
 import { Outlet } from "react-router-dom";
-import React from 'react'
-import Proposals from "../Components/Proposals/Proposals";
-import ProposalDetailView from "../Components/Proposals/ProposalDetailView.jsx";
+import React from 'react';
 
 export default function Root() {
     return (

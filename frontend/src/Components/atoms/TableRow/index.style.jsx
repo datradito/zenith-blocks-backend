@@ -1,13 +1,15 @@
 import { makeStyles } from '@mui/styles';
-import { theme } from "../../../styles/theme.js";
 
 const useStyles = makeStyles(() => ({
-    tableDataCell: {
-         // Set default font size for table header cells
+    tableRow: {
+        // Set default font size for table header cells
+        borderTop: ".05rem #272A30 solid",
+        borderBottom: ".05rem #272A30 solid",
     },
     tableDataCellItem: {
         color: "white",
-        borderBottom: ".05rem #272A30 solid",
+        padding: '0.5rem',
+        border: 'inherit',
     }
 }));
 

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import AdbIcon from '@mui/icons-material/Adb';
 import MenuIcon from '@mui/icons-material/Menu';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import WalletConnect from './WalletConnect';
 
 import {
@@ -12,9 +12,7 @@ import {
     Typography,
     Menu,
     Container,
-    Avatar,
     Button,
-    Tooltip,
     MenuItem,
 } from '@mui/material';
 
@@ -79,10 +77,10 @@ const ResponsiveHeaderBar = () => {
                             textDecoration: 'none',
                         }}
                     >
-                        <img style={{ maxWidth: "2rem" }} src={logo} alt="Logo" />
+                        <img style={{ maxWidth: "8rem" }} src={logo} alt="Logo" />
+                        
                         
                     </Typography>
-
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
                             size="large"

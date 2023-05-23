@@ -7,19 +7,32 @@ import {
     Paper
 } from '@mui/material';
 
-import useStyles from './index.style';
-
 
 const TableHeader = ({ tableHeaderData }) => {
-    
-    const classes = useStyles();
+
+    const tableHeaderStyles = {
+        tableHeaderCell: {
+            padding: "0 rem",
+            border: ".05rem #272A30 solid",// Set default font size for table header cells
+        },
+        tableDataCell: {
+            borderBottom: ".05rem #272A30 solid",
+        },
+        tableDataCellItem: {
+            color: "white",
+            fontSize: '0.75rem',
+            color: "gray",
+            border: 'none',
+            padding: '0.5rem'
+        }
+    }
 
     return (
-        <TableHead className={classes.tableHeaderCell}>
-            <TableRow className={classes.tableHeaderCell}>
+        <TableHead >
+            <TableRow>
                 {
                     tableHeaderData.map((item) => {
-                        return <TableCell className={classes.tableDataCell}>{item}</TableCell>
+                        return <TableCell sx={tableHeaderStyles.tableDataCellItem}>{item}</TableCell>
                     })
                 }
             </TableRow>

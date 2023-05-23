@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
-import { GET_PROPOSAL, GET_All_PROPOSALS } from '../../SnapShot/Queries.js';
+import { GET_All_PROPOSALS } from '../../SnapShot/Queries.js';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import PaginationControlled from '../DisplayElements/Pagination.jsx';
 import { Link } from "react-router-dom";
+import SubHeader from "../molecules/SubHeader/SubHeader.jsx"
 
 const ProposalListCardStyle = {
   width: '90%',
@@ -22,7 +23,8 @@ const label = {
 const pagination = {
   width: '90%',
   margin:'1rem',
-  alignItems: 'flex-end'
+  alignItems: 'flex-end',
+  color: "white"
 }
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -50,9 +52,11 @@ const ColumnItem = styled(Paper)(({ theme }) => ({
   fontSize: '.85rem'
 }));
 
+
 const subItemStyle = {
   minWidth: 200,
 }
+
 
 const Proposals = () => {
   const [stateQuery, setStateQuery] = useState({ first: 10, skip: 0 });
@@ -78,16 +82,47 @@ const Proposals = () => {
 
   const { loading, error, data } = useQuery(GET_All_PROPOSALS, {
     skip: skipQuery,
-    variables: { first: parseInt(stateQuery.first), skip: parseInt(stateQuery.skip) },
-    cacheTime: 100000,
+    variables: { first: parseInt(stateQuery.first), skip: parseInt(stateQuery.skip) }
   });
 
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error : {error.message}</p>;
+  if (error) return <p>Error : {error.graphQLErrors}</p>;
+
+  const handleExportCSV = () => {
+    console.log("Export CSV");
+  }
+
+  const handleSyncProposals = () => {
+    console.log("Sync Proposals");
+  }
+
+
+  const componentButtonConfig =
+    [
+      {
+        label: "Export CSV",
+        variant: "contained",
+        onClick: handleExportCSV,
+        innerText: "Export CSV",
+        backgroundColor: "#282A2E",
+      }, {
+        label: "Sync Proposals",
+        variant: "contained",
+        onClick: handleSyncProposals,
+        innerText: "Sync Proposals",
+        ml: "0.5rem"
+      }
+    ];
+
+  const currentPathConfig = {
+    path: "Proposals",
+    // to: `/proposals/${proposal.id}`
+  }
 
   return (
     <>
+      <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath="Last Sync: 08:25:53 on May, 2023" />
       <Box sx={ProposalListCardStyle}>
         <Stack
           padding={0}
@@ -106,17 +141,15 @@ const Proposals = () => {
                   justifyContent='flex-start'
                 >
                   <SubItem sx={subItemStyle}>
-          
                       <ColumnItem sx={label}>Goverance</ColumnItem>
                       <ColumnItem>{item.space.name}</ColumnItem>
-                    
                   </SubItem>
                   <SubItem sx={subItemStyle}>
                       <ColumnItem sx={label}>Total Budget</ColumnItem>
                       <ColumnItem>$5,980,000</ColumnItem>
                   </SubItem>
                   <SubItem >
-                      <Link to={`/proposals/${item.id}`}>
+                      <Link to={`/proposals/${item.id}`} style={{ textDecoration: 'none' }}>
                         <ColumnItem sx={label}>Proposal</ColumnItem>
                         <ColumnItem>{item.title}</ColumnItem>
                       </Link>

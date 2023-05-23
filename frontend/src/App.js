@@ -1,21 +1,19 @@
 import './App.css';
 import React from 'react';
-import { useState, useEffect } from "react";
 // import SimpleStorage from "./contracts/SimpleStorage.json";
 // import Web3 from "web3";
-import { Mainnet, DAppProvider, ChainId, useEtherBalance, useEthers, Config, Goerli } from '@usedapp/core'
+import {  DAppProvider, ChainId} from '@usedapp/core'
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { storeConfig, persistor } from './store/storeConfigure';
+import { PersistGate } from 'redux-persist/integration/react';
 import Root from "./Routes/Root";
-
-
+import ResponsiveHeaderBar from "./Components/DisplayElements/Header/Header.jsx";
 import ErrorPage from "./Routes/ErrorPage";
 import Proposals from "./Components/Proposals/Proposals";
 import ProposalDetailView from "./Components/Proposals/ProposalDetailView";
+import CreateBudget from './Components/pages/Budgets/CreateBudget';
 
 function App() {
 
@@ -51,7 +49,7 @@ function App() {
   // async function writeData() {
   //   const { contract } = state;
   //   const data = document.querySelector("#value").value;
-//   await contract.methods
+  //   await contract.methods
   //     .setter(data)
   //     .send({ from: "0x1f4F90f9aA5779f2C1E190133C2c872944bDED1c" });  
   //   window.location.reload();
@@ -63,41 +61,26 @@ function App() {
   });
 
 
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <Root />,
-      errorElement: <ErrorPage />,
-      children: [
-        {
-          path: "/",
-          element: <Proposals />
-        },
-        {
-          path: "/proposals",
-          element: <Proposals />
-        },
-        {
-          path: "/proposals/:proposalId",
-          element: <ProposalDetailView />
-        }
-      ]
-    },
-    {
-      path: "/proposals/:proposalId",
-      element: <ProposalDetailView />,
-    },
-    {
-      path: "/proposals",
-      element: <Proposals />
-    }
-  ]);
   return (
+  
     <DAppProvider config={{ supportedChains: [ChainId.Kovan] }}>
-      <ApolloProvider client={client}>
-        <RouterProvider router={router} />
-      </ApolloProvider>
-    </DAppProvider>
+        <ApolloProvider client={client}>
+          <Provider store={ storeConfig }>
+            <PersistGate loading={null} persistor={persistor}>
+              <BrowserRouter>
+                <ResponsiveHeaderBar />
+                <Routes>
+                  <Route exact path="/proposals" element={<Proposals />} />
+                  <Route exact path="/proposals/:proposalId" element={<ProposalDetailView />} />
+                  <Route exact path="/proposal/budgets/:proposalId" element={<CreateBudget />} />
+                  <Route exact path="/proposal/update/:proposalId" element={<CreateBudget />} />
+                  <Route element={<ErrorPage />} />
+                </Routes>
+              </BrowserRouter>
+            </PersistGate>
+          </Provider>
+        </ApolloProvider>
+      </DAppProvider>
   );
 }
 
