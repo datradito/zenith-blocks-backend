@@ -3,6 +3,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ButtonAtom from '../../atoms/Button';
 import { Box, Stack, Grid, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
+import ModalDialog from '../DialogBox/dialogBox';
 
 function SubHeader({ buttonConfig, currentPath, previousPath }) {
     
@@ -42,15 +43,17 @@ function SubHeader({ buttonConfig, currentPath, previousPath }) {
                       Object.keys(buttonConfig).map((key, index) => {
                           return buttonConfig[key].type && buttonConfig[key].type === 'link' && buttonConfig[key].to !== "" ? 
                                 <Link to={buttonConfig[key].to} key={index}>
-                                  <ButtonAtom
+                                  {/* <ButtonAtom
                                       config={buttonConfig[key]}
-                                  />
+                                  /> */}
+                                  <ModalDialog buttonConfig={buttonConfig[key]}/>
                                 </Link>
-                                :
-                              <ButtonAtom
-                                    key={index}
-                                    config={buttonConfig[key]}
-                              />
+                              : buttonConfig[key].subButton ?
+                                <ModalDialog buttonConfig={buttonConfig[key]} /> :
+                                <ButtonAtom
+                                        key={index}
+                                        config={buttonConfig[key]}
+                                />
                       })
                   }
               </Grid>

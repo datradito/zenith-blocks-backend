@@ -93,7 +93,10 @@ function ProposalDetailView() {
     };
 
     const handleUpdateProposal = () => {
+
+        //ToDo: take data from the form and save it to corresponding ipfs file and then move to do the following. add boundaries to throw error in case proposal is not updated
         dispatch(setProposal(data.proposal));
+        console.log("button update proposal clicked")
     };
 
     const componentButtonConfig =
@@ -105,7 +108,14 @@ function ProposalDetailView() {
                 innerText: "Export CSV",
                 backgroundColor: "#282A2E",
                 type: "link",
-                to: '/proposal/budgets/export-csv'
+                to: '/proposal/budgets/export-csv',
+                // subButton: {
+                //     label: "Back to Proposals",
+                //     backgroundColor: "#282A2E",
+                //     type: "link",
+                //     to: '/proposal/budgets/export-csv',
+                //     message: "CSV Exported Successfully",  
+                // }
             }, {
                 label: "Update Proposal",
                 variant: "contained",
@@ -113,7 +123,14 @@ function ProposalDetailView() {
                 innerText: "Update Proposal",
                 ml: "0.5rem",
                 type: "link",
-                to: `/proposal/update/${proposalId}`
+                to: `/proposal/update/${proposalId}`,
+                // subButton: {
+                //     label: "View Proposal",
+                //     innerText: "View Proposal",
+                //     type: "link",
+                //     to: `/proposal/budgets/${proposalId}`,
+                //     message: "Proposal Updated Successfully",   
+                // }
             }
         ];
     

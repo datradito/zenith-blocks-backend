@@ -43,7 +43,14 @@ function CreateBudget() {
         variant: "contained",
         onClick: handleSaveProposal,
         innerText: "Save Proposal",
-        ml: "0.5rem"
+        ml: "0.5rem",
+        subButton: {
+          label: "View Proposal",
+          innerText: "View Proposal",
+          type: "link",
+          to: `/proposals/${proposal.id}`,
+          message: "Proposal Saved Successfully",
+        }
       }
     ];
   
