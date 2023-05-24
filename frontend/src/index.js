@@ -9,10 +9,10 @@ import CssBaseline from '@mui/material/CssBaseline';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
-    <ThemeProvider theme={theme}>
-        {/* <CssBaseline /> */}
+    
+
         <App />
-    </ThemeProvider>
+
     
 
 );

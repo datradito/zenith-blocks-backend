@@ -14,6 +14,8 @@ import ErrorPage from "./Routes/ErrorPage";
 import Proposals from "./Components/Proposals/Proposals";
 import ProposalDetailView from "./Components/Proposals/ProposalDetailView";
 import CreateBudget from './Components/pages/Budgets/CreateBudget';
+import { ThemeProvider } from '@material-ui/core/styles';
+import theme from "./styles/theme";
 
 function App() {
 
@@ -68,7 +70,8 @@ function App() {
           <Provider store={ storeConfig }>
             <PersistGate loading={null} persistor={persistor}>
               <BrowserRouter>
-                <ResponsiveHeaderBar />
+              <ResponsiveHeaderBar />
+              <ThemeProvider theme={theme}>
                 <Routes>
                   <Route exact path="/proposals" element={<Proposals />} />
                   <Route exact path="/proposals/:proposalId" element={<ProposalDetailView />} />
@@ -76,6 +79,7 @@ function App() {
                   <Route exact path="/proposal/update/:proposalId" element={<CreateBudget />} />
                   <Route element={<ErrorPage />} />
                 </Routes>
+              </ThemeProvider>
               </BrowserRouter>
             </PersistGate>
           </Provider>
