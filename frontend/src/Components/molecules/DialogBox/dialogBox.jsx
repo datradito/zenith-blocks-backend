@@ -78,7 +78,10 @@ export default function ModalDialog({buttonConfig}) {
                 <DialogActions sx = {modalStyles}>
                     {/* <Button onClick={handleClose} autoFocus>
                         {buttonConfig.buttonText}
-                    </Button> */}
+                    </Button> 
+                    in case of multiple buttons apply object.keys in below code - which will iterate over subConfig sat up in component itself
+                    */}
+                    
                     {
                         subConfig.type && subConfig.type === 'link' && subConfig.to !== "" ?
                             <Link to={subConfig.to}>
