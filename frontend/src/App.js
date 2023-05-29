@@ -8,12 +8,13 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { storeConfig, persistor } from './store/storeConfigure';
 import { PersistGate } from 'redux-persist/integration/react';
-import Root from "./Routes/Root";
 import ResponsiveHeaderBar from "./Components/DisplayElements/Header/Header.jsx";
 import ErrorPage from "./Routes/ErrorPage";
 import Proposals from "./Components/Proposals/Proposals";
 import ProposalDetailView from "./Components/Proposals/ProposalDetailView";
 import CreateBudget from './Components/pages/Budgets/CreateBudget';
+import InvoiceListView from './Components/pages/Invoices/InvoiceListView';
+import InvoiceCreation from './Components/pages/Invoices/InvoiceCreation';
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from "./styles/theme";
 
@@ -76,7 +77,9 @@ function App() {
                   <Route exact path="/proposals" element={<Proposals />} />
                   <Route exact path="/proposals/:proposalId" element={<ProposalDetailView />} />
                   <Route exact path="/proposal/budgets/:proposalId" element={<CreateBudget />} />
+                  <Route exact path="/proposal/budgets/createInvoice" element={<InvoiceCreation />} />
                   <Route exact path="/proposal/update/:proposalId" element={<CreateBudget />} />
+                  <Route exact path="/proposals/:proposalId/invoices" element={<InvoiceListView />} />
                   <Route element={<ErrorPage />} />
                 </Routes>
               </ThemeProvider>

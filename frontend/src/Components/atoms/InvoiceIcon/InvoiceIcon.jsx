@@ -4,10 +4,6 @@ import Stack from '@mui/material/Stack';
 import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
 
 
-// import * as React from 'react';
-// import Chip from '@mui/material/Chip';
-// import Stack from '@mui/material/Stack';
-
 export default function CustomInvoiceViewIcon() {
 
     const invoiceIconStyles = {
@@ -26,9 +22,6 @@ export default function CustomInvoiceViewIcon() {
         console.info('You clicked the Chip.');
     };
 
-    const handleDelete = () => {
-        console.info('You clicked the delete icon.');
-    };
     return (
         <Stack direction="row" spacing={1}>
             {/* <Chip icon={<DescriptionRoundedIcon />} label="With Icon" /> */}
@@ -40,17 +33,3 @@ export default function CustomInvoiceViewIcon() {
         </Stack>
     );
 }
-// export default function CustomInvoiceViewIcon() {
-
-//     return (
-//         <Stack direction="row" spacing={1}>
-//             <Chip
-//                 deleteIcon={<DescriptionRoundedIcon />}
-//                 label="Invoice"
-//                 onClick={handleClick}
-//                 onDelete={handleDelete}
-//                 variant="outlined"
-//             />
-//         </Stack>
-//     );
-// }

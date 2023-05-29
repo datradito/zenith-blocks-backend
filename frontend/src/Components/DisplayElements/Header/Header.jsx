@@ -1,25 +1,27 @@
 import * as React from 'react';
 import AdbIcon from '@mui/icons-material/Adb';
-import MenuIcon from '@mui/icons-material/Menu';
 import { NavLink } from 'react-router-dom';
 import WalletConnect from './WalletConnect';
+import { useSelector } from 'react-redux';
 
 import {
     Box,
     AppBar,
     Toolbar,
-    IconButton,
     Typography,
-    Menu,
     Container,
     Button,
-    MenuItem,
 } from '@mui/material';
 
 import logo from "../../../Images/logo.png"
 
 
-const pages = ['proposals', 'invoices', 'accounts'];
+// const pages = [
+//     { name: 'Proposals', url: '/proposals' },
+//     { name: 'Invoices', url: `/proposals/proposalId/invoices` },
+//     { name: 'Accounts', url: '/accounts' },
+    // Add more pages with their corresponding URLs and information
+// ];
 //const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const navLinkStyle = {
@@ -29,8 +31,19 @@ const navLinkStyle = {
 
 
 const ResponsiveHeaderBar = () => {
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
-    const [anchorElUser, setAnchorElUser] = React.useState(null);
+    // const [anchorElNav, setAnchorElNav] = React.useState(null);
+    // const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+    let { proposal } = useSelector(state => state.currentProposal);
+    let pages = [];
+
+    proposal ? pages.push(
+        { name: 'Proposals', url: '/proposals' },
+        { name: 'Invoices', url: `/proposals/${proposal.id}/invoices` },
+        { name: 'Accounts', url: '/accounts' }) : pages.push({ name: 'Proposals', url: '/proposals' },
+            { name: 'Accounts', url: '/accounts' });
+
+
 
     // const handlePageClick = (page) => {
     //     const navigate = useNavigate();
@@ -38,20 +51,20 @@ const ResponsiveHeaderBar = () => {
     //     handleCloseNavMenu();
     // };
 
-    const handleOpenNavMenu = (event) => {
-        setAnchorElNav(event.currentTarget);
-    };
-    const handleConnectToWallet = (event) => {
-        setAnchorElUser(event.currentTarget);
-    };
+    // const handleOpenNavMenu = (event) => {
+    //     setAnchorElNav(event.currentTarget);
+    // };
+    // const handleConnectToWallet = (event) => {
+    //     setAnchorElUser(event.currentTarget);
+    // };
 
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
-    };
+    // const handleCloseNavMenu = () => {
+    //     setAnchorElNav(null);
+    // };
 
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
-    };
+    // const handleCloseUserMenu = () => {
+    //     setAnchorElUser(null);
+    // };
 
     return (
         <AppBar
@@ -64,7 +77,6 @@ const ResponsiveHeaderBar = () => {
         >
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
                     <Typography
                         variant="h6"
                         noWrap
@@ -78,69 +90,19 @@ const ResponsiveHeaderBar = () => {
                         }}
                     >
                         <img style={{ maxWidth: "8rem" }} src={logo} alt="Logo" />
-                        
-                        
                     </Typography>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton
-                            size="large"
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleOpenNavMenu}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={anchorElNav}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'left',
-                            }}
-                            open={Boolean(anchorElNav)}
-                            onClose={handleCloseNavMenu}
-                            sx={{
-                                display: { xs: 'block', md: 'none' },
-                            }}
-                        >
-                            {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <Typography textAlign="center" textDecoration="none">{page}</Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu>
-                    </Box>
                     <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component="a"
-                        href=""
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'flex', md: 'none' },
-                            flexGrow: 1,
-                            textDecoration: 'none',
-                        }}
-                    >
-                    </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {pages.map((page) => (
-                            <Button>
+                        {pages.map((page, index) => (
+                            <Button key={index}>
                                 <NavLink
                                     style={navLinkStyle}
-                                    to={page}
-                                    key={page}
+                                    to={page.url}
+                                    key={page.name}
                                     // onClick={handlePageClick}
                                     sx={{  color: 'white', textTransform: 'capitalize', display: 'block' }}
                                     >
-                                    {page}
+                                    {page.name}
                                 </NavLink>
                             </Button>
                         ))}

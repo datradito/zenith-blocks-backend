@@ -11,6 +11,12 @@ import {
 const TableRow = ({ tableBodyData }) => {
 
     const custopmTableCellsStyle = {
+        "default": {
+            '& .MuiTableCell-root': {
+                color: "white",
+                borderBottom: ".05rem #272A30 solid",
+            }
+        },
         "Allocated Budget": {
             width: '150px'
         },
@@ -35,16 +41,16 @@ const TableRow = ({ tableBodyData }) => {
     };
     const classes = useStyles();
     return (
-        <TableRowMUI className={classes.tableRow}>
+        <TableRowMUI className={classes.tableRow} sx={custopmTableCellsStyle.default}>
             {
                 Object.keys(tableBodyData).map((key) => {
                     if (key !== "id") {
                         return (
-                            key == "Remaining" ?
+                            key === "Remaining" ?
                                 <TableCell sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomizedProgressBars value={tableBodyData[key]} /></TableCell> :
-                            key == 'View' ?
+                            key === 'View' ?
                                     <TableCell sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomInvoiceViewIcon budgetId={tableBodyData["id"]} /></TableCell> :
-                                <TableCell sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}>{tableBodyData[key]}</TableCell>
+                                <TableCell sx={[custopmTableCellsStyle[key], custopmTableCellsStyle.default]} className={classes.tableDataCellItem}>{tableBodyData[key]}</TableCell>
                         )
                     }
                     return null;
