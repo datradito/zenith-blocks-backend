@@ -9,8 +9,8 @@ import {
     Button,
 } from '@mui/material';
 import MyContract from "../../../contracts/MyContract.json";
-import { Mainnet,useEtherBalance, useEthers } from '@usedapp/core'
-import { formatEther } from '@ethersproject/units';
+// import { Mainnet,useEtherBalance, useEthers } from '@usedapp/core'
+// import { formatEther } from '@ethersproject/units';
 
 
 
@@ -68,17 +68,14 @@ export default function WalletConnect() {
     }
 
     const allowUser = async() => {
-        if (userAddress) {
-            
+        if (userAddress) { 
             const { contract } = state;
             await contract.methods.setAddress().send({ from: "0x3213a735762A5ba3764838339628340AaA6172c8" });
             const addresses = contract.methods.getAddresses().call();
             addresses.then((result) => {
                 console.log(result);
-            })
-            
+            })  
         }
-
     }
     return (
         <>
@@ -92,12 +89,13 @@ export default function WalletConnect() {
                     <>
 
                 <Tooltip title="Connect Wallet">
-                    <IconButton sx={{ p: 0 }}>
+                        <IconButton sx={{ p: 0 }}
+                            onClick={connectWallet}
+                        >
                         <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
                         <Typography
                             variant="button"
                             noWrap
-                            onClick={connectWallet}
                             sx={{
                                 mr: 2,
                                 paddingLeft: '.5rem',
@@ -106,11 +104,11 @@ export default function WalletConnect() {
                                 textDecoration: 'none',
                             }}
                         >
-                                    Connect Wallet
+                                Connect Wallet
                         </Typography>
                     </IconButton>
                 </Tooltip>
-            <Menu
+            {/* <Menu
                 sx={{ mt: '45px' }}
                 id="menu-appbar"
                 // anchorEl={anchorElUser}
@@ -123,15 +121,8 @@ export default function WalletConnect() {
                     vertical: 'top',
                     horizontal: 'right',
                 }}
-                // open={Boolean(anchorElUser)}
-                // onClose={handleCloseUserMenu}
             >
-                {/* {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center">{setting}</Typography>
-                                </MenuItem>
-                            ))} */}
-            </Menu>
+            </Menu> */}
             </>
             }
         </>

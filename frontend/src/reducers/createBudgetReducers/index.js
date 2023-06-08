@@ -1,18 +1,33 @@
-import { UPDATE_FIELD, ADD_ROW, DELETE_ROW, GET_ALL_ROWS } from "../../actions/createBudgetAction/types";
+import { UPDATE_FIELD, ADD_ROW, DELETE_ROW, GET_ALL_ROWS, SET_INTIAL_STATE } from "../../actions/createBudgetAction/types";
 
 const initialState = {
     items: [
-    {
-        action: '-',
-        category: '',
-        currency: '',
-        percentage: '',
-        breakdown: ''
-    }
-]};
+        {
+            action: '-',
+            category: '',
+            currency: '',
+            percentage: '',
+            breakdown: '',
+        }
+    ],
+    proposal: {}
+};
 
-const createBudgetReducer =(state = initialState, action) => {
+const createBudgetReducer = (state = initialState, action) => {
+    
     switch (action.type) {
+        case SET_INTIAL_STATE: {
+            return {
+                ...state,
+                proposal: 
+                    {
+                        "Goverance": action.payload.governance,
+                        "Total Budget": "18234",
+                        "Proposal": action.payload.proposal,
+                        "Ipfs Link": action.payload.ipfsLink,
+                    },
+            };
+        };
         case ADD_ROW:{
                 state.items.push(action.payload)
             };

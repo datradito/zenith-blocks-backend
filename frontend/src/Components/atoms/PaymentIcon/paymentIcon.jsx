@@ -1,12 +1,10 @@
-import * as React from 'react';
+import React from 'react'
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
-import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
-
-export default function CustomInvoiceViewIcon() {
-
-    const invoiceIconStyles = {
+function CustomPaymentViewIcon() {
+    const paymentIconStyles = {
         chipStyle: {
             padding: '0 .25rem',
             color: 'white',
@@ -25,11 +23,13 @@ export default function CustomInvoiceViewIcon() {
     return (
         <Stack direction="row" spacing={1}>
             {/* <Chip icon={<DescriptionRoundedIcon />} label="With Icon" /> */}
-            <Chip icon={<DescriptionRoundedIcon />}
-                label="INVOICE"
+            <Chip icon={<AccountBalanceWalletIcon />}
+                label="PAY"
                 onClick={handleClick}
-                sx = {invoiceIconStyles.chipStyle}
+                sx={paymentIconStyles.chipStyle}
             />
         </Stack>
     );
 }
+
+export default CustomPaymentViewIcon

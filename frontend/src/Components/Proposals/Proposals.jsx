@@ -74,6 +74,7 @@ const Proposals = () => {
   const handleSkipValueChange = () => {
 
     let currentPage = localStorage.getItem("currentPage");
+    // add if statement to check if current page is not set in local storage
     if (currentPage === 1) {
       setStateQuery({ ...stateQuery, skip: 0 });
     }

@@ -1,12 +1,12 @@
 import * as React from 'react';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
-import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 
-export default function CustomInvoiceViewIcon() {
+export default function CustomPDFViewIcon() {
 
-    const invoiceIconStyles = {
+    const pdfIconStyles = {
         chipStyle: {
             padding: '0 .25rem',
             color: 'white',
@@ -25,10 +25,10 @@ export default function CustomInvoiceViewIcon() {
     return (
         <Stack direction="row" spacing={1}>
             {/* <Chip icon={<DescriptionRoundedIcon />} label="With Icon" /> */}
-            <Chip icon={<DescriptionRoundedIcon />}
-                label="INVOICE"
+            <Chip icon={<PictureAsPdfIcon />}
+                label="PDF"
                 onClick={handleClick}
-                sx = {invoiceIconStyles.chipStyle}
+                sx={pdfIconStyles.chipStyle}
             />
         </Stack>
     );

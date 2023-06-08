@@ -1,14 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect }  from 'react';
 import useStyles from './index.style';
 import {
     Box,
     Button,
     MenuItem,
     Select,
-    Table,
     TableBody,
     TableCell,
-    TableContainer,
     TableRow,
     TextField,
 } from '@mui/material';
@@ -17,14 +15,29 @@ import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlin
 import { useDispatch, useSelector } from 'react-redux';
 import ButtonAtom from '../../atoms/Button';
 import { Formik, Form } from 'formik';
+import * as yup from 'yup';
+import FormItem from '../../atoms/FormItem/FormItem';
 
-function FormRow() {
+function FormRow( {tableHeaderData}) {
     const dispatch = useDispatch();
-    let { items } = useSelector(state => state.createBudget);
-    const classes = useStyles();
-
+    let currentProposal = useSelector(state => state.currentProposal);
+    let classes = useStyles();
+    // const [proposalIsSet, setProposalIsSet] = React.useState(false);
+    let { items, proposal } = useSelector(state => state.createBudget);
     // const getStateOnLoad = () => {
     //     items = dispatch({ type: 'GET_ALL_ROWS' });
+    // };
+    // useEffect(() => {
+    //     let proposalData = currentProposal.proposal;
+    //     addCurrentProposalData(proposalData);
+    // }, [proposalIsSet]);
+
+
+    // //let dataForItemCard = { "Goverance": proposal.space.name, "Total Budget": "$5,980,000", "Proposal": proposal.title, "Ipfs Link": proposal.ipfs };
+    // console.log(proposal)
+
+    // const addCurrentProposalData = (proposal) => {
+    //     dispatch({ type: 'SET_INITIAL_STATE', payload: proposal });
     // };
 
     const handleAddRow = () => {
@@ -91,12 +104,14 @@ function FormRow() {
         innerText: "Add New"
     };
 
+
     return (
         <Box className={classes.boxStyle}>
             <Formik>
                 <Form>
+                    {/* <FormItem initialValues={dataForItemCard} /> */}
                     <TableHeader
-                        tableHeaderData={["", "Category", "Currency", "Percentage", "Breakdown"]}
+                        tableHeaderData={tableHeaderData}
                     />
                     <TableBody >
                         {items && items.map((item, index) => (
