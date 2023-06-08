@@ -57,6 +57,9 @@ function FormItem({ initialValues, type }) {
                                         name={key}
                                         defaultValue={value}
                                         //type={key === 'Upload Invoice' ? 'file' : key === 'Due Date' ? 'date' : key === 'Invoice Number' ? 'number' : 'text'}
+                                        InputProps={{
+                                            readOnly: key === 'Proposal' || key === 'Goverance' || key === 'Ipfs Link' ? true : false
+                                        }}
                                         multiline
                                         rows={key === 'Description' || key === 'Upload Invoice' ? 4 : 1}
                                         fullWidth

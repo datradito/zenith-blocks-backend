@@ -9,11 +9,12 @@ import { useDispatch } from 'react-redux';
 import { setProposal } from '../../actions/currentProposal/index.js';
 import ItemCard from '../atoms/ItemCard/ItemCard.jsx';
 import SubHeader from "../molecules/SubHeader/SubHeader.jsx"
+import { useSelector } from 'react-redux';
 
 const data2 = [
-    { id: 1,Categories: "Base Czy podczas KZB powinien zostać poruszony temat zdecentralizowanego rozstrzygania sporów z wykorzystaniem blockchain?", "Allocated Budget": '$3,360,000', Currency: 'ETH', Breakdown: '56.93389%', Remaining: '$100000', View: 'INVOICE' },
-    { id:2,Categories: "Base Compensation", "Allocated Budget": '$3,360,000', Currency: 'ETH', Breakdown: '76.87658%', Remaining: '$100000', View: 'INVOICE' },
-    { id:3,Categories: "Base Czy podczas KZB powinien zostać poruszony temat zdecentralizowanego rozstrzygania sporów z wykorzystaniem blockchain?", "Allocated Budget": '$3,360,000', Currency: 'ETH', Breakdown: '56.93389%', Remaining: '$100000', View: 'INVOICE' },
+    { id: 1,Categories: "Base Czy podczas KZB powinien zostać poruszony temat zdecentralizowanego rozstrzygania sporów z wykorzystaniem blockchain?", "Allocated Budget": '$3,360,000', Currency: 'ETH', Breakdown: '56.93389%', Remaining: '$100000', Invoices: 'INVOICE' },
+    { id:2,Categories: "Base Compensation", "Allocated Budget": '$3,360,000', Currency: 'ETH', Breakdown: '76.87658%', Remaining: '$100000', Invoices: 'INVOICE' },
+    { id:3,Categories: "Base Czy podczas KZB powinien zostać poruszony temat zdecentralizowanego rozstrzygania sporów z wykorzystaniem blockchain?", "Allocated Budget": '$3,360,000', Currency: 'ETH', Breakdown: '56.93389%', Remaining: '$100000', Invoices: 'INVOICE' },
 ];  
 
 
@@ -28,17 +29,18 @@ const BoxStyle = {
 };
 
 
-const headers = ["Categories", "Allocated Budget", "Currency", "Breakdown", "Remaining", "View"]
+const headers = ["Categories", "Allocated Budget", "Currency", "Breakdown", "Remaining", "Invoices"]
 
 function ProposalDetailView() {
     const { proposalId } = useParams();
     const dispatch = useDispatch();
     const [budgetList, setBudgetList] = useState([])
+    //let storedCurrentProposal = useSelector(state => state.currentProposal);
 
     let { loading, error, data } = useQuery(GET_PROPOSAL_BY_ID, {
-        // skip: skipQuery,
         variables: { id: proposalId },
     });
+
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error : {error.message}</p>;
@@ -57,6 +59,13 @@ function ProposalDetailView() {
         innerText: "Create Budget"
     };
 
+    const csvData = [
+        ["firstname", "lastname", "email"],
+        ["Ahmed", "Tomi", "ah@smthing.co.com"],
+        ["Raed", "Labes", "rl@smthing.co.com"],
+        ["Yezzi", "Min l3b", "ymin@cocococo.com"]
+    ];
+
     const handleExportCSV = () => {
         console.log("Export CSV");
     };
@@ -70,13 +79,14 @@ function ProposalDetailView() {
     const componentButtonConfig =
         [
             {
-                label: "Export CSV",
+                label: "Export CSVP",
                 variant: "contained",
                 onClick: handleExportCSV,
                 innerText: "Export CSV",
                 backgroundColor: "#282A2E",
-                type: "link",
-                to: '/proposal/budgets/export-csv',
+                // type: "link",
+                // to: '/proposal/budgets/export-csv',
+                data: csvData,
             }, {
                 label: "Update Proposal",
                 variant: "contained",
@@ -88,11 +98,12 @@ function ProposalDetailView() {
             }
         ];
     
+    console.log(componentButtonConfig[0].data)
+    
     const currentPathConfig = {
         path: "Proposals",
         to: `/proposals`
     }
-
 
     return (
         <div>
@@ -104,29 +115,29 @@ function ProposalDetailView() {
                     justifyContent={'flex-start'}
                     borderBottom={".05rem #2c2c2c solid"}
                 >
-                {
-                    Object.entries(dataForItemCard).map(([key, value]) => {
-                        return <ItemCard
-                            key={key}
-                            label={key}
-                            value={value}
-                        />
-                    })
-                }
+                    {
+                        Object.entries(dataForItemCard).map(([key, value]) => {
+                            return <ItemCard
+                                key={key}
+                                label={key}
+                                value={value}
+                            />
+                        })
+                    }
                 </Stack>
-            { budgetList ?
+                {budgetList ?
                     <TableDisplay
                         tableHeaderData={headers}
                         tableBodyData={data2}
                         dataToDisplay={budgetList}
                     />
-                :
+                    :
                     <Link to={`/proposal/budgets/${proposalId}`}>
                         <ButtonAtom
                             config={buttonConfig}
                         />
                     </Link>
-            }
+                }
             </Box>
         </div>
     )

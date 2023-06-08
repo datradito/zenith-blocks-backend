@@ -7,10 +7,10 @@ import { useSelector } from 'react-redux';
 
 const tableHeaderData = ["Invoice", "Receipient", "Amount", "Currency", "Status", "Date", "Due","View", "Payment", "Action"]
 const tableBodyData = [
-    { id: 1, Invoice: 1234, Receipient: "John Doe", Amount: 50000, Currenyc: 'ETH', Status: 'Done', Date: '03/01/2023', Due: '03/01/2023', View: 'INVOICE', Payment: 'PAID', Action: 'ACTION' },
-    { id: 1, Invoice: 1234, Receipient: "John Doe", Amount: 50000, Currenyc: 'ETH', Status: 'Done', Date: '03/01/2023', Due: '03/01/2023', View: 'INVOICE', Payment: 'PAID', Action: 'ACTION' },
-    { id: 1, Invoice: 1234, Receipient: "John Doe", Amount: 50000, Currenyc: 'ETH', Status: 'Done', Date: '03/01/2023', Due: '03/01/2023', View: 'INVOICE', Payment: 'PAID', Action: 'ACTION' },
-    { id: 1, Invoice: 1234, Receipient: "John Doe", Amount: 50000, Currenyc: 'ETH', Status: 'Done', Date: '03/01/2023', Due: '03/01/2023', View: 'INVOICE', Payment: 'PAID', Action: 'ACTION' }
+    { id: 1, Invoice: 1234, Receipient: "John Doe", Amount: 50000, Currenyc: 'ETH', Status: 'PAID', Date: '03/01/2023', Due: '03/01/2023', View: 'INVOICE', Payment: 'PAID', Action: 'ACTION' },
+    { id: 1, Invoice: 1234, Receipient: "John Doe", Amount: 50000, Currenyc: 'ETH', Status: 'PAID', Date: '03/01/2023', Due: '03/01/2023', View: 'INVOICE', Payment: 'PAID', Action: 'ACTION' },
+    { id: 1, Invoice: 1234, Receipient: "John Doe", Amount: 50000, Currenyc: 'ETH', Status: 'UNPAID', Date: '03/01/2023', Due: '03/01/2023', View: 'INVOICE', Payment: 'PAID', Action: 'ACTION' },
+    { id: 1, Invoice: 1234, Receipient: "John Doe", Amount: 50000, Currenyc: 'ETH', Status: 'PAID', Date: '03/01/2023', Due: '03/01/2023', View: 'INVOICE', Payment: 'PAID', Action: 'ACTION' }
 ]; 
 
 function InvoiceListView() {
@@ -26,7 +26,7 @@ function InvoiceListView() {
 
     const currentPathConfig = {
         path: "Budgets",
-        to: `/proposals/${proposal.id}}`
+        to: `/proposals/${proposal.id}`
     }
 
     const componentButtonConfig =
@@ -57,7 +57,7 @@ function InvoiceListView() {
             }
         ];
     
-    const dataForItemCard = { "Goverance": "data.proposal.space.name", "Total Budget": "$5,980,000", "Proposal": "data.proposal.title" };
+    const dataForItemCard = { "Goverance": proposal.space.name, "Total Budget": "$5,980,000", "Proposal": proposal.title };
 
     const BoxStyle = {
         width: '90%',

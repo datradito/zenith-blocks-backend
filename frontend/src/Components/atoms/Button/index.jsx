@@ -1,6 +1,8 @@
 import React from 'react'
 import { Button } from '@mui/material';
 
+import { CSVLink, CSVDownload } from "react-csv";
+
 const ButtonAtom = ({ config }) => {
 
     const buttonComponentStyles = {
@@ -17,14 +19,29 @@ const ButtonAtom = ({ config }) => {
 
     }
     return (
-        <Button
-            sx = {buttonComponentStyles.buttonStyle}
-            variant="contained"
-            type={config.type ? config.type: "submit"}
-            onClick={config.onClick}
-        >
-            {config.innerText}
-        </Button>
+        <>
+            {
+                config.label === 'Export CSVP' ? (
+                    <CSVLink data={config.data} style={{ textDecoration: "none" }}>
+                        <Button
+                            sx={buttonComponentStyles.buttonStyle}
+                            variant="contained"
+                            // type={config.type ? config.type : "submit"}
+                            // onClick={config.onClick}
+                        >
+                            {config.innerText}
+                        </Button>
+                    </CSVLink>
+                ) : <Button
+                    sx={buttonComponentStyles.buttonStyle}
+                    variant="contained"
+                    type={config.type ? config.type : "submit"}
+                    onClick={config.onClick}
+                >
+                    {config.innerText}
+                </Button>
+            }
+        </>
     )
 }
 
