@@ -32,8 +32,8 @@ const TableHeader = ({ tableHeaderData }) => {
         <TableHead >
             <TableRow>
                 {
-                    tableHeaderData.map((item) => {
-                        return <TableCell sx={tableHeaderStyles.tableDataCellItem}>{item}</TableCell>
+                    tableHeaderData.map((item, index) => {
+                        return <TableCell key={index} sx={tableHeaderStyles.tableDataCellItem}>{item}</TableCell>
                     })
                 }
             </TableRow>
