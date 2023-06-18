@@ -29,10 +29,39 @@ function CreateBudget() {
   //   dataForItemCard = { "Goverance": JSON.parse(data).proposal.space.name, "Total Budget": "$5,980,000", "Proposal": JSON.parse(data).proposal.title, "Ipfs Link": `${JSON.parse(data).proposal.ipfs}` };
   // }
 
+
+  //Todo: Get CID from smartContract using proposalId, Upon submission of budget, Get Data from IPFS for that CID and append new data to it, add new file to Ipfs and update cid in smartContract.
+
+    // useEffect(() => {
+    //     const fetchBudgetCID = async () => {
+    //         try {
+    //             const budgetCID = await contract.getBudgetCID(budgetId);
+    //             setCID(budgetCID);
+    //         } catch (error) {
+    //             console.error('Failed to fetch budget CID:', error);
+    //         }
+    //     };
+
+    //     fetchBudgetCID();
+    // }, [proposalId]);
+
+    // useEffect(() => {
+    //     const fetchBudgetData = async () => {
+    //         try {
+    //             setIsLoading(true);
+    //             const budgetFile = await getFileFromIPFS(cid);
+    //             setBudgetData(budgetFile);
+    //             setIsLoading(false);
+    //         } catch (error) {
+    //             console.error('Failed to fetch budget data:', error);
+    //             setIsLoading(false);
+    //         }
+    //     };
+
   
 
   const handleSaveProposal = () => {
-    
+
     console.log(budget);
   };
 
