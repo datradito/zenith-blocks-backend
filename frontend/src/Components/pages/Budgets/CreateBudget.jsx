@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux';
 import useStyles from "./CreateBudget.style";
 // import * as yup from 'yup';
@@ -9,11 +9,14 @@ import SubHeader from '../../molecules/SubHeader/SubHeader';
 function CreateBudget() {
   let { proposal } = useSelector(state => state.currentProposal);
   const classes = useStyles();
-
-  const [formData, setFormData] = React.useState({});
+  let budget = useSelector(state => state.createBudget);
+  
 
   let dataForItemCard = {};
   
+  useEffect(() => {
+    //console.log(budget);
+  }, [budget])
 
   if (proposal) {
     dataForItemCard = { "Goverance": `${proposal.space.name}`, "Total Budget": "5,980,000", "Proposal": `${proposal.title}`, "Ipfs Link" : `${proposal.ipfs}`}
@@ -26,8 +29,11 @@ function CreateBudget() {
   //   dataForItemCard = { "Goverance": JSON.parse(data).proposal.space.name, "Total Budget": "$5,980,000", "Proposal": JSON.parse(data).proposal.title, "Ipfs Link": `${JSON.parse(data).proposal.ipfs}` };
   // }
 
+  
+
   const handleSaveProposal = () => {
-    console.log("Save Proposal");
+    
+    console.log(budget);
   };
 
   const handleDeleteProposal = () => {
