@@ -1,4 +1,4 @@
-import React, { useEffect }  from 'react';
+import React, { useEffect } from 'react';
 import useStyles from './index.style';
 import {
     Box,
@@ -18,30 +18,29 @@ import { Formik, Form } from 'formik';
 import * as yup from 'yup';
 import FormItem from '../../atoms/FormItem/FormItem';
 
-function FormRow( {tableHeaderData}) {
+function FormRow({ tableHeaderData }) {
     const dispatch = useDispatch();
     let currentProposal = useSelector(state => state.currentProposal);
     let classes = useStyles();
-    // const [proposalIsSet, setProposalIsSet] = React.useState(false);
     let { items, proposal } = useSelector(state => state.createBudget);
-    // const getStateOnLoad = () => {
-    //     items = dispatch({ type: 'GET_ALL_ROWS' });
-    // };
-    // useEffect(() => {
-    //     let proposalData = currentProposal.proposal;
-    //     addCurrentProposalData(proposalData);
-    // }, [proposalIsSet]);
 
+    //Todo: Implement Proposal amount - allocated budget validation so that total budget amount does not exceed the total proposal amount
+    //Todo: Fix setting proposal correctly in initial state, implement hash funciton in store to generate unique id for each budget
 
-    // //let dataForItemCard = { "Goverance": proposal.space.name, "Total Budget": "$5,980,000", "Proposal": proposal.title, "Ipfs Link": proposal.ipfs };
-    // console.log(proposal)
+    useEffect(() => {
+        const setProposalData = async () => {
+            await dispatch({ type: 'SET_INITIAL_STATE', payload: currentProposal.proposal });
+        }
+        setProposalData();
+        const storedState = JSON.parse(localStorage.getItem('persist:root'));
+        
+        
+        console.log(storedState.currentProposal);
+    }, []);
 
-    // const addCurrentProposalData = (proposal) => {
-    //     dispatch({ type: 'SET_INITIAL_STATE', payload: proposal });
-    // };
 
     const handleAddRow = () => {
-        dispatch({ type: 'ADD_ROW', payload: { action: '-', category: '', currency: '', percentage: '', breakdown: '' } });
+        dispatch({ type: 'ADD_ROW', payload: { action: '-', Categories: '', "Allocated Budget": '', Currency: '', Breakdown: '' } });
     };
 
     const handleDeleteRow = (index) => {
@@ -88,12 +87,12 @@ function FormRow( {tableHeaderData}) {
             },
             '& .MuiButtonBase-root': {
                 minWidth: 'initial',
-                
-            }         
+
+            }
         },
         buttonStyles: {
             color: 'white',
-            padding: '0',  
+            padding: '0',
         },
     };
 
@@ -133,13 +132,34 @@ function FormRow( {tableHeaderData}) {
                                 <TableCell
                                     style={{ width: '100%', border: 'none', padding: '0.5rem' }}
                                     sx={formStyleCustom.default}>
-                                    
+
                                     <TextField
-                                        value={item.category}
-                                        onChange={(e) => handleChange(index, 'category', e.target.value)}
+                                        value={item.Categories}
+                                        onChange={(e) => handleChange(index, 'Categories', e.target.value)}
                                         fullWidth
                                         sx={formStyleCustom.textFieldStyle}
-                                        
+
+                                    />
+                                </TableCell>
+                                <TableCell
+                                    style={{ border: 'none', padding: '0.5rem' }}
+                                    sx={formStyleCustom.default}>
+                                    <TextField
+                                        value={item["Allocated Budget"]}
+                                        type="number"
+                                        onChange={(e) => handleChange(index, 'Allocated Budget', e.target.value)}
+                                        InputProps={{
+                                            style: {
+                                                color: 'white',
+                                                border: '2px solid #2C2C2C',
+                                                backgroundColor: '#1A1C1E',
+                                                minWidth: '200px',
+                                            },
+                                            inputProps: {
+                                                pattern: '[0-9]*', // Regex pattern to allow only numbers
+                                                title: 'Please enter numbers only', // Error message for invalid input
+                                            },
+                                        }}
                                     />
                                 </TableCell>
                                 <TableCell
@@ -147,10 +167,10 @@ function FormRow( {tableHeaderData}) {
                                     sx={formStyleCustom.default}
                                 >
                                     <Select
-                                        value={item.currency}
-                                        onChange={(e) => handleChange(index, 'currency', e.target.value)}
+                                        value={item.Currency}
+                                        onChange={(e) => handleChange(index, 'Currency', e.target.value)}
                                         sx={[formStyleCustom.currencyDropdown, formStyleCustom.default]}
-                                        style={{fontSize: '.85rem'}}
+                                        style={{ fontSize: '.85rem' }}
                                     >
                                         {/* <MenuItem value={item.currency}>{item.currency}</MenuItem> */}
                                         <MenuItem value="USD"
@@ -163,8 +183,9 @@ function FormRow( {tableHeaderData}) {
                                     style={{ border: 'none', padding: '0.5rem' }}
                                     sx={formStyleCustom.default}>
                                     <TextField
-                                        value={item.percentage}
-                                        onChange={(e) => handleChange(index, 'percentage', e.target.value)}
+                                        
+                                        value={`${500 / item["Allocated Budget"]}%`}
+                                        onChange={(e) => handleChange(index, 'Breakdown', e.target.value)}
                                         InputProps={{
                                             style: {
                                                 color: 'white',
@@ -172,22 +193,7 @@ function FormRow( {tableHeaderData}) {
                                                 backgroundColor: '#1A1C1E',
                                                 minWidth: '200px',
                                             },
-                                        }}
-                                    />
-                                </TableCell>
-                                <TableCell
-                                    style={{ border: 'none' , padding: '0.5rem'}}
-                                    sx={formStyleCustom.default}>
-                                    <TextField
-                                        value={item.breakdown}
-                                        onChange={(e) => handleChange(index, 'breakdown', e.target.value)}
-                                        InputProps={{
-                                            style: {
-                                                color: 'white',
-                                                border: '2px solid #2C2C2C',
-                                                backgroundColor: '#1A1C1E',
-                                                minWidth: '200px',
-                                            },
+                                            readOnly: true,
                                         }}
                                     />
                                 </TableCell>
@@ -204,3 +210,7 @@ function FormRow( {tableHeaderData}) {
 }
 
 export default FormRow;
+
+
+// { \"action\":\"-\",\"Category\":\"\",\"Amount\":\"\",\"Currency\":\"\",\"Breakdown\":\"\",\"Categories\":\"hgdh\",\"Allocated Budget\":\"sfe\"},
+// { \"action\":\"-\",\"Category\":\"\",\"Amount\":\"\",\"Currency\":\"EUR\",\"Breakdown\":\"\",\"Categories\":\"xbfdffdvddfv\",\"Allocated Budget\":\"fdbdd\"}],\"proposal\":{}}"

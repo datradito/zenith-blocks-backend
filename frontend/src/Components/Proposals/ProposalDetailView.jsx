@@ -14,8 +14,10 @@ import { useSelector } from 'react-redux';
 const data2 = [
     { id: 1,Categories: "Base Czy podczas KZB powinien zostać poruszony temat zdecentralizowanego rozstrzygania sporów z wykorzystaniem blockchain?", "Allocated Budget": '$3,360,000', Currency: 'ETH', Breakdown: '56.93389%', Remaining: '$100000', Invoices: 'INVOICE' },
     { id:2,Categories: "Base Compensation", "Allocated Budget": '$3,360,000', Currency: 'ETH', Breakdown: '76.87658%', Remaining: '$100000', Invoices: 'INVOICE' },
-    { id:3,Categories: "Base Czy podczas KZB powinien zostać poruszony temat zdecentralizowanego rozstrzygania sporów z wykorzystaniem blockchain?", "Allocated Budget": '$3,360,000', Currency: 'ETH', Breakdown: '56.93389%', Remaining: '$100000', Invoices: 'INVOICE' },
-];  
+    {
+        id: 3, Categories: "Base Czy podczas KZB powinien zostać poruszony temat zdecentralizowanego rozstrzygania sporów z wykorzystaniem blockchain?", "Allocated Budget": '$3,360,000', Currency: 'ETH', Breakdown: '56.93389%', Remaining: '$100000', Invoices: 'INVOICE',
+    },
+    { category: "sdfhg", "Allocated Budget": "5,980,000", currency: "EUR", Breakdown: "100%", "Allocated Budget": "5,980,000", Invoices: 'INVOICE' }];  
 
 
 const BoxStyle = {
@@ -98,7 +100,7 @@ function ProposalDetailView() {
             }
         ];
     
-    console.log(componentButtonConfig[0].data)
+    // console.log(componentButtonConfig[0].data)
     
     const currentPathConfig = {
         path: "Proposals",

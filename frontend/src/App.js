@@ -12,7 +12,7 @@ import ResponsiveHeaderBar from "./Components/DisplayElements/Header/Header.jsx"
 import ErrorPage from "./Routes/ErrorPage";
 import Proposals from "./Components/Proposals/Proposals";
 import ProposalDetailView from "./Components/Proposals/ProposalDetailView";
-import CreateBudget from './Components/pages/Budgets/CreateBudget';
+import CreateBudget from './Components/pages/Budgets/CreateBudget.jsx';
 import InvoiceListView from './Components/pages/Invoices/InvoiceListView';
 import InvoiceCreation from './Components/pages/Invoices/InvoiceCreation';
 import theme from "./styles/theme";

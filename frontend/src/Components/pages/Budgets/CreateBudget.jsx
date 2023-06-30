@@ -5,64 +5,50 @@ import useStyles from "./CreateBudget.style";
 import FormItem from "../../atoms/FormItem/FormItem";
 import FormRow from "../../molecules/FormBudgetCreation/index";
 import SubHeader from '../../molecules/SubHeader/SubHeader';
+import axios from 'axios';
 
 function CreateBudget() {
+  // const { uploadToIPFS, getDataFromIPFSByCid, uploadInProgress, uploadResult, uploadError } = useIPFSUpload();
   let { proposal } = useSelector(state => state.currentProposal);
   const classes = useStyles();
   let budget = useSelector(state => state.createBudget);
-  
+
 
   let dataForItemCard = {};
-  
-  useEffect(() => {
-    //console.log(budget);
-  }, [budget])
+
+  // useEffect(() => {
+  //   //console.log(budget);
+  // }, [budget])
 
   if (proposal) {
-    dataForItemCard = { "Goverance": `${proposal.space.name}`, "Total Budget": "5,980,000", "Proposal": `${proposal.title}`, "Ipfs Link" : `${proposal.ipfs}`}
+    dataForItemCard = { "Goverance": `${proposal.space.name}`, "Total Budget": "5,980,000", "Proposal": `${proposal.title}`, "Ipfs Link": `${proposal.ipfs}` }
   }
-  // else {
-  //   let storedState = localStorage.getItem('persist:root');
-  //   let data = JSON.parse(storedState).currentProposal;
-  //   let proposal = JSON.parse(data).proposal;
-  //   console.log(proposal)
-  //   dataForItemCard = { "Goverance": JSON.parse(data).proposal.space.name, "Total Budget": "$5,980,000", "Proposal": JSON.parse(data).proposal.title, "Ipfs Link": `${JSON.parse(data).proposal.ipfs}` };
-  // }
+
 
 
   //Todo: Get CID from smartContract using proposalId, Upon submission of budget, Get Data from IPFS for that CID and append new data to it, add new file to Ipfs and update cid in smartContract.
 
-    // useEffect(() => {
-    //     const fetchBudgetCID = async () => {
-    //         try {
-    //             const budgetCID = await contract.getBudgetCID(budgetId);
-    //             setCID(budgetCID);
-    //         } catch (error) {
-    //             console.error('Failed to fetch budget CID:', error);
-    //         }
-    //     };
+  // { uploadInProgress && <p>Uploading...</p> }
+  // { uploadResult && <p>Upload successful! CID: {uploadResult}</p> }
+  // { uploadError && <p>Error during upload: {uploadError}</p> }
 
-    //     fetchBudgetCID();
-    // }, [proposalId]);
+  const handleSaveProposal = async () => {
+    //call post method from backend with data and path = 'daoname/proposalId/budgetId
+    // console.log(budget);
+    // console.log(proposal.id);
+    try {
+      const data = {
+        jsonData: budget,
+        ipfsFilePath: `${proposal.id}-budgets`,
+      };
 
-    // useEffect(() => {
-    //     const fetchBudgetData = async () => {
-    //         try {
-    //             setIsLoading(true);
-    //             const budgetFile = await getFileFromIPFS(cid);
-    //             setBudgetData(budgetFile);
-    //             setIsLoading(false);
-    //         } catch (error) {
-    //             console.error('Failed to fetch budget data:', error);
-    //             setIsLoading(false);
-    //         }
-    //     };
-
-  
-
-  const handleSaveProposal = () => {
-
-    console.log(budget);
+      const response = await axios.post('http://localhost:8000/ipfs/uploadBudget', data);
+      console.log(response);
+      //   // Handle the response
+    } catch (error) {
+      console.error(error);
+      //   // Handle the error
+    }
   };
 
   const handleDeleteProposal = () => {
@@ -92,7 +78,7 @@ function CreateBudget() {
         }
       }
     ];
-  
+
   const currentPathConfig = {
     path: "Create Budget",
     to: `/proposals/${proposal.id}`
@@ -104,7 +90,7 @@ function CreateBudget() {
       <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath="Proposals  Proposal  Budget" />
       <div className={classes.BoxStyle}>
         <FormItem initialValues={dataForItemCard} type="budget" />
-        <FormRow tableHeaderData={["", "Category", "Currency", "Percentage", "Breakdown"]}/>
+        <FormRow tableHeaderData={["", "Category", "Amount","Currency", "Breakdown"]} />
       </div>
     </div>
   )

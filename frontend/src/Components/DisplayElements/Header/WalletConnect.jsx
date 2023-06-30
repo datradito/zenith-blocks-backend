@@ -121,7 +121,11 @@ export default function WalletConnect() {
             }}
         >
             {
-                isConnected && <ConnectButton />
+                 <ConnectButton
+                    accountStatus={{
+                        smallScreen: 'avatar',
+                        largeScreen: 'full',
+                    }} />
             }
         </div>
     );

@@ -1,4 +1,4 @@
-import { ADD_ROW, DELETE_ROW, UPDATE_FIELD, SET_INTIAL_STATE } from "./types";
+import { ADD_ROW, DELETE_ROW, UPDATE_FIELD, SET_INITIAL_STATE } from "./types";
 
 export const setInitialState = (proposal) => ({
     type: SET_INTIAL_STATE,
