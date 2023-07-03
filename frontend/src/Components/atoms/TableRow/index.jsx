@@ -65,7 +65,7 @@ const TableRow = ({ tableBodyData }) => {
         <TableRowMUI className={classes.tableRow} sx={custopmTableCellsStyle.default}>
             {
                 Object.keys(tableBodyData).map((key) => {
-                    
+                    //update budgetId to id
                     if (key !== "budgetId")  {
                         return (
                             key === "Remaining" ?

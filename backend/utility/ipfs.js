@@ -27,14 +27,4 @@ const UploadBudgetToIpfs = async (ipfsFilePath, jsonData) => { // Wait for the M
     }
 };
 
-const getBudgetFromIpfs = async (ipfsFilePath) => {
-    try {
-        const response = await Moralis.EvmApi.ipfs.getFolder({ path: ipfsFilePath });
-        return response; // Return the response if needed
-    } catch (error) {
-        console.error("Error uploading to IPFS:", error);
-        throw error; // Throw the error to propagate to the caller
-    }
-};
-
-module.exports = { UploadBudgetToIpfs, getBudgetFromIpfs };
+module.exports = UploadBudgetToIpfs ;

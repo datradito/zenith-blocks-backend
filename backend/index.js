@@ -3,8 +3,7 @@ const app = express();
 require("dotenv").config();
 const cors = require('cors')
 
-const Moralis = require("moralis").default;
-const { UploadBudgetToIpfs, getBudgetFromIpfs } = require('./utility/ipfs');
+const UploadBudgetToIpfs = require('./utility/ipfs');
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -19,12 +18,14 @@ app.post('/ipfs/uploadBudget', async (req, res) => {
     const { rootPath, jsonData } = req.body;
     const ipfsResponses = [];
     for (let data of jsonData) {
-        let ipfsFilePath = rootPath + data.budgetId;
+        let ipfsFilePath = rootPath + 'budgetId' + data.budgetId;
+        console.log(ipfsFilePath);
         try {
 
             //Todo: Need to implement rate limit in case some items fail to upload
-            const ipfsResponse = await UploadBudgetToIpfs(ipfsFilePath, data);
-            ipfsResponses.push(ipfsResponse);
+            const { path } = await UploadBudgetToIpfs(ipfsFilePath, data);
+            console.log(path)
+            ipfsResponses.push(path);
         } catch (error) {
             console.error("Error uploading to IPFS:", error);
         }
@@ -32,18 +33,6 @@ app.post('/ipfs/uploadBudget', async (req, res) => {
     res.json({ message: 'Proposal saved successfully', ipfsResponses });
 });
 
-
-app.get('/ipfs/getBudgets', (req, res) => {
-    const ipfsFilePath = req.query.Path;
-    getBudgetFromIpfs(ipfsFilePath)
-        .then((budgets) => {
-            res.json(budgets);
-        })
-        .catch((error) => {
-            console.error("Error retrieving budgets from IPFS:", error);
-            res.status(500).json({ error: "Internal Server Error" });
-        });
-});
 
 app.get('/', (req, res) => {
     // Extract the content from the request body

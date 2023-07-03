@@ -6,19 +6,18 @@ import FormItem from "../../atoms/FormItem/FormItem";
 import FormRow from "../../molecules/FormBudgetCreation/index";
 import SubHeader from '../../molecules/SubHeader/SubHeader';
 import axios from 'axios';
+import useWeb3IpfsContract from '../../hooks/web3IPFS';
+import getPathAfterBudgetId from '../../../Utility/getBudgetId';
 
 function CreateBudget() {
-  // const { uploadToIPFS, getDataFromIPFSByCid, uploadInProgress, uploadResult, uploadError } = useIPFSUpload();
+  const { web3, contract } = useWeb3IpfsContract();
   let { proposal } = useSelector(state => state.currentProposal);
+
   const classes = useStyles();
   let budget = useSelector(state => state.createBudget);
 
 
   let dataForItemCard = {};
-
-  // useEffect(() => {
-  //   //console.log(budget);
-  // }, [budget])
 
   if (proposal) {
     dataForItemCard = { "Goverance": `${proposal.space.name}`, "Total Budget": "5,980,000", "Proposal": `${proposal.title}`, "Ipfs Link": `${proposal.ipfs}` }
@@ -33,17 +32,27 @@ function CreateBudget() {
   // { uploadError && <p>Error during upload: {uploadError}</p> }
 
   const handleSaveProposal = async () => {
+    let proposalId = proposal.id;
     try {
       const dataToBeUploaded = {
         jsonData: budget.items,
-        rootPath: proposal.id,
+        rootPath: proposalId,
       };
 
       const { data } = await axios.post('http://localhost:8000/ipfs/uploadBudget', dataToBeUploaded);
-      console.log(data.ipfsResponses);
 
-      //save this array of hashaddresses for budgets in smart contract 
-      //{proposalId => [{budgetId: ipfsResponse[budget]}, {}]}
+      data.ipfsResponses.forEach(async (budgetCID) => {
+        let budgetId = getPathAfterBudgetId(budgetCID[0].path);
+        try {
+          console.log(contract);
+          const accounts = await web3.eth.getAccounts();
+          // const addresses = contract.methods.getProposalBudgets(proposalId).call();
+          await contract.methods.setBudgetsHash(proposalId, budgetId, budgetCID[0].path).send({ from: accounts[0] });
+          console.log("Method call successful");
+        } catch (error) {
+          console.error("An error occurred while executing the method:", error);
+        }
+      })
     } catch (error) {
       console.error(error);
     }
@@ -88,7 +97,7 @@ function CreateBudget() {
       <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath="Proposals  Proposal  Budget" />
       <div className={classes.BoxStyle}>
         <FormItem initialValues={dataForItemCard} type="budget" />
-        <FormRow tableHeaderData={["", "Category", "Amount","Currency", "Breakdown"]} />
+        <FormRow tableHeaderData={["", "Category", "Amount", "Currency", "Breakdown"]} />
       </div>
     </div>
   )

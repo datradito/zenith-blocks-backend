@@ -38,7 +38,7 @@ function FormRow({ tableHeaderData }) {
 
     const handleAddRow = () => {
         const generatedBudgetId = generateUUID();
-        dispatch({ type: 'ADD_ROW', payload: { action: '-', Categories: '', "Allocated Budget": '', Currency: '', Breakdown: '', budgetId: generatedBudgetId } });
+        dispatch({ type: 'ADD_ROW', payload: { action: '-', Categories: '', "Allocated Budget": '', Currency: '', Breakdown: '', id: generatedBudgetId } });
     };
 
     const handleDeleteRow = (index) => {
