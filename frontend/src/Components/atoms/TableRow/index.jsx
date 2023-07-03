@@ -65,7 +65,8 @@ const TableRow = ({ tableBodyData }) => {
         <TableRowMUI className={classes.tableRow} sx={custopmTableCellsStyle.default}>
             {
                 Object.keys(tableBodyData).map((key) => {
-                    if (key !== "id") {
+                    
+                    if (key !== "budgetId")  {
                         return (
                             key === "Remaining" ?
                                 <TableCell sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomizedProgressBars value={tableBodyData[key]} /></TableCell> :
@@ -78,6 +79,7 @@ const TableRow = ({ tableBodyData }) => {
                             key === 'Action' ?
                                                 <TableCell sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomActionIcon budgetId={tableBodyData["id"]} /></TableCell> :
                                                 key === 'Status' ? <TableCell sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><StatusChip status={tableBodyData[key]} /></TableCell> :
+                                                    
                                              
                                                 
                                 <TableCell sx={[custopmTableCellsStyle[key], custopmTableCellsStyle.default]} className={classes.tableDataCellItem}>{tableBodyData[key]}</TableCell>

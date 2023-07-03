@@ -46,12 +46,15 @@ const createBudgetReducer = (state = initialState, action) => {
             return {
                 ...state,
                 items: state.items.map((item, idx) =>
-                    idx === index ? { ...item, [field]: value } : item
-                                    // idx === index ? { ...item, [field]: field === "Allocated Budget" ? (50000 - value) : value } : item
+                    idx === index ? {
+                        ...item,
+                        [field]: value,
+                        Breakdown: field === 'Allocated Budget' ? `${(parseInt(value) / 500) * 100}%` : item.Breakdown,
+                    } : item
                 )
             };
         case GET_ALL_ROWS:
-            return state; // No changes needed here, just return the current state
+            return state; 
         default:
             return state;
     }

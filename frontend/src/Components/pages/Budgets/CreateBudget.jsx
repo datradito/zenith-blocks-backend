@@ -33,21 +33,19 @@ function CreateBudget() {
   // { uploadError && <p>Error during upload: {uploadError}</p> }
 
   const handleSaveProposal = async () => {
-    //call post method from backend with data and path = 'daoname/proposalId/budgetId
-    // console.log(budget);
-    // console.log(proposal.id);
     try {
-      const data = {
-        jsonData: budget,
-        ipfsFilePath: `${proposal.id}-budgets`,
+      const dataToBeUploaded = {
+        jsonData: budget.items,
+        rootPath: proposal.id,
       };
 
-      const response = await axios.post('http://localhost:8000/ipfs/uploadBudget', data);
-      console.log(response);
-      //   // Handle the response
+      const { data } = await axios.post('http://localhost:8000/ipfs/uploadBudget', dataToBeUploaded);
+      console.log(data.ipfsResponses);
+
+      //save this array of hashaddresses for budgets in smart contract 
+      //{proposalId => [{budgetId: ipfsResponse[budget]}, {}]}
     } catch (error) {
       console.error(error);
-      //   // Handle the error
     }
   };
 

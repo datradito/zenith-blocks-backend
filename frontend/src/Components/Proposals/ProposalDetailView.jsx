@@ -1,4 +1,4 @@
-import React, {  useState } from 'react'
+import React, {  useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { GET_PROPOSAL_BY_ID } from '../../SnapShot/Queries.js';
@@ -9,7 +9,8 @@ import { useDispatch } from 'react-redux';
 import { setProposal } from '../../actions/currentProposal/index.js';
 import ItemCard from '../atoms/ItemCard/ItemCard.jsx';
 import SubHeader from "../molecules/SubHeader/SubHeader.jsx"
-import { useSelector } from 'react-redux';
+import CircularIndeterminate from '../atoms/Loader/loader.jsx';
+import axios from 'axios';
 
 const data2 = [
     { id: 1,Categories: "Base Czy podczas KZB powinien zostać poruszony temat zdecentralizowanego rozstrzygania sporów z wykorzystaniem blockchain?", "Allocated Budget": '$3,360,000', Currency: 'ETH', Breakdown: '56.93389%', Remaining: '$100000', Invoices: 'INVOICE' },
@@ -30,14 +31,46 @@ const BoxStyle = {
     borderRadius: 3
 };
 
+function transformItems(item, totalBudget) {
+    const { action, ...rest } = item; // Destructure the 'action' property and store the remaining properties in 'rest'
+    return { ...rest, Remaining: parseInt(totalBudget - parseInt(item["Allocated Budget"])), Invoices: 'INVOICE' };
+}
+
 
 const headers = ["Categories", "Allocated Budget", "Currency", "Breakdown", "Remaining", "Invoices"]
 
 function ProposalDetailView() {
     const { proposalId } = useParams();
     const dispatch = useDispatch();
-    const [budgetList, setBudgetList] = useState([])
+    const [budgetList, setBudgetList] = useState()
     //let storedCurrentProposal = useSelector(state => state.currentProposal);
+    
+    useEffect(() => {
+        const hashesForBudgets = ['https://ipfs.moralis.io:2053/ipfs/QmVJZQE9Pr1cncADELH2kqkCshxhxBELACCDxDqX83Qu2D/0xce9b0991276c79cccc773a327814fa07942a3287e022fc9e75378bdcd491b337fa559ab2-6252-4d21-b0ee-d89616aa21df'];
+        const listOfBudgets = [];
+
+        fetchBudgetDataForCurrentProposal(hashesForBudgets[0])
+            .then(data => {
+                listOfBudgets.push(transformItems(data, 500));
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        console.log(listOfBudgets);
+        setBudgetList(listOfBudgets);
+    }, [proposalId]);
+    
+
+    const fetchBudgetDataForCurrentProposal = async (url) => {
+        //call post method from backend with data and path = 'proposalId-budgets
+        try {
+            const response = await axios.get(url)
+            return response.data;
+        } catch (error) {
+            console.error(error);
+            throw new Error('Failed to fetch budget data');
+        }
+    };
 
     let { loading, error, data } = useQuery(GET_PROPOSAL_BY_ID, {
         variables: { id: proposalId },
@@ -47,7 +80,7 @@ function ProposalDetailView() {
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error : {error.message}</p>;
 
-    let dataForItemCard = { "Goverance": data.proposal.space.name, "Total Budget": "$5,980,000", "Proposal": data.proposal.title };
+    let dataForItemCard = { "Goverance": data.proposal.space.name, "Total Budget": 800, "Proposal": data.proposal.title };
 
     const handleBudgetCreateOnClick = () => {
         dispatch(setProposal(data.proposal));
@@ -130,15 +163,10 @@ function ProposalDetailView() {
                 {budgetList ?
                     <TableDisplay
                         tableHeaderData={headers}
-                        tableBodyData={data2}
-                        dataToDisplay={budgetList}
+                        tableBodyData={budgetList}
                     />
                     :
-                    <Link to={`/proposal/budgets/${proposalId}`}>
-                        <ButtonAtom
-                            config={buttonConfig}
-                        />
-                    </Link>
+                    <CircularIndeterminate />
                 }
             </Box>
         </div>

@@ -10,6 +10,7 @@ import {
     TableRow,
     TextField,
 } from '@mui/material';
+import generateUUID from '../../../Utility/uniqueId';
 import TableHeader from '../../atoms/TableHeader/index';
 import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
 import { useDispatch, useSelector } from 'react-redux';
@@ -32,15 +33,12 @@ function FormRow({ tableHeaderData }) {
             await dispatch({ type: 'SET_INITIAL_STATE', payload: currentProposal.proposal });
         }
         setProposalData();
-        const storedState = JSON.parse(localStorage.getItem('persist:root'));
-        
-        
-        console.log(storedState.currentProposal);
     }, []);
 
 
     const handleAddRow = () => {
-        dispatch({ type: 'ADD_ROW', payload: { action: '-', Categories: '', "Allocated Budget": '', Currency: '', Breakdown: '' } });
+        const generatedBudgetId = generateUUID();
+        dispatch({ type: 'ADD_ROW', payload: { action: '-', Categories: '', "Allocated Budget": '', Currency: '', Breakdown: '', budgetId: generatedBudgetId } });
     };
 
     const handleDeleteRow = (index) => {
@@ -48,7 +46,14 @@ function FormRow({ tableHeaderData }) {
     };
 
     const handleChange = (index, field, value) => {
-        dispatch({ type: 'UPDATE_FIELD', payload: { index, field, value } });
+        dispatch({
+            type: 'UPDATE_FIELD',
+            payload: {
+                index,
+                field,
+                value,
+            },
+        });
     };
 
     const formStyleCustom = {
@@ -155,10 +160,6 @@ function FormRow({ tableHeaderData }) {
                                                 backgroundColor: '#1A1C1E',
                                                 minWidth: '200px',
                                             },
-                                            inputProps: {
-                                                pattern: '[0-9]*', // Regex pattern to allow only numbers
-                                                title: 'Please enter numbers only', // Error message for invalid input
-                                            },
                                         }}
                                     />
                                 </TableCell>
@@ -184,8 +185,8 @@ function FormRow({ tableHeaderData }) {
                                     sx={formStyleCustom.default}>
                                     <TextField
                                         
-                                        value={`${500 / item["Allocated Budget"]}%`}
-                                        onChange={(e) => handleChange(index, 'Breakdown', e.target.value)}
+                                        value={`${(item["Allocated Budget"]/ 500) *100}%`}
+                                       //onChange={(e) => handleChange(index, 'Breakdown', (item["Allocated Budget"]/ 500))}
                                         InputProps={{
                                             style: {
                                                 color: 'white',
