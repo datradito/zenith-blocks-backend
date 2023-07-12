@@ -2,7 +2,6 @@ import './App.css';
 import React from 'react';
 // import SimpleStorage from "./contracts/SimpleStorage.json";
 // import Web3 from "web3";
-import {  DAppProvider, ChainId} from '@usedapp/core'
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -65,7 +64,6 @@ function App() {
 
   return (
   
-    <DAppProvider config={{ supportedChains: [ChainId.Kovan] }}>
         <ApolloProvider client={client}>
           <Provider store={ storeConfig }>
             <PersistGate loading={null} persistor={persistor}>
@@ -84,7 +82,6 @@ function App() {
             </PersistGate>
           </Provider>
         </ApolloProvider>
-      </DAppProvider>
   );
 }
 

@@ -18,18 +18,17 @@ app.post('/ipfs/uploadBudget', async (req, res) => {
     const { rootPath, jsonData } = req.body;
     const ipfsResponses = [];
     for (let data of jsonData) {
-        let ipfsFilePath = rootPath + 'budgetId' + data.budgetId;
-        console.log(ipfsFilePath);
+        let ipfsFilePath = rootPath + 'budgetId' + data.id;
         try {
 
             //Todo: Need to implement rate limit in case some items fail to upload
-            const { path } = await UploadBudgetToIpfs(ipfsFilePath, data);
-            console.log(path)
-            ipfsResponses.push(path);
+            const response= await UploadBudgetToIpfs(ipfsFilePath, data);
+            ipfsResponses.push(response.jsonResponse[0].path);
         } catch (error) {
             console.error("Error uploading to IPFS:", error);
         }
     }
+    
     res.json({ message: 'Proposal saved successfully', ipfsResponses });
 });
 

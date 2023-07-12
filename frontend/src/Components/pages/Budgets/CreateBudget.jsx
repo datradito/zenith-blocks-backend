@@ -8,6 +8,7 @@ import SubHeader from '../../molecules/SubHeader/SubHeader';
 import axios from 'axios';
 import useWeb3IpfsContract from '../../hooks/web3IPFS';
 import getPathAfterBudgetId from '../../../Utility/getBudgetId';
+import { encryptToBytes32 } from '../../../Utility/Logical/hashTheHeck';
 
 function CreateBudget() {
   const { web3, contract } = useWeb3IpfsContract();
@@ -40,15 +41,19 @@ function CreateBudget() {
       };
 
       const { data } = await axios.post('http://localhost:8000/ipfs/uploadBudget', dataToBeUploaded);
-
+      let proposalIdForContract = web3.utils.keccak256(web3.utils.fromAscii(proposalId));
       data.ipfsResponses.forEach(async (budgetCID) => {
-        let budgetId = getPathAfterBudgetId(budgetCID[0].path);
+        let budgetId = getPathAfterBudgetId(budgetCID);
         try {
-          console.log(contract);
           const accounts = await web3.eth.getAccounts();
-          // const addresses = contract.methods.getProposalBudgets(proposalId).call();
-          await contract.methods.setBudgetsHash(proposalId, budgetId, budgetCID[0].path).send({ from: accounts[0] });
-          console.log("Method call successful");
+          budgetId = web3.utils.keccak256(web3.utils.fromAscii(budgetId));
+          // budgetCID = web3.utils.keccak256(web3.utils.fromAscii(budgetCID));;
+          budgetCID = encryptToBytes32(budgetCID);
+          console.log("BudgetCid",budgetCID)
+
+          console.log("proposalId", proposalId, "proposalContractId" , proposalIdForContract);
+          
+          await contract.methods.createBudget(proposalIdForContract, budgetId, budgetCID).send({ from: accounts[0], gas: "10000000" });
         } catch (error) {
           console.error("An error occurred while executing the method:", error);
         }
@@ -59,7 +64,7 @@ function CreateBudget() {
   };
 
   const handleDeleteProposal = () => {
-    console.log("Delete Proposal");
+    console.log(contract);
   };
 
   const componentButtonConfig =

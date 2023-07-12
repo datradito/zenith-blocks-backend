@@ -66,23 +66,23 @@ const TableRow = ({ tableBodyData }) => {
             {
                 Object.keys(tableBodyData).map((key) => {
                     //update budgetId to id
-                    if (key !== "budgetId")  {
+                    if (key !== "id")  {
                         return (
                             key === "Remaining" ?
-                                <TableCell sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomizedProgressBars value={tableBodyData[key]} /></TableCell> :
+                                <TableCell key={ key} sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomizedProgressBars value={tableBodyData[key]} /></TableCell> :
                             key === 'Invoices' ?
-                                <TableCell sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomInvoiceViewIcon budgetId={tableBodyData["id"]} /></TableCell> :
+                                    <TableCell key={key} sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomInvoiceViewIcon budgetId={tableBodyData["id"]} /></TableCell> :
                             key === 'View' ?
-                                <TableCell sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomPDFViewIcon budgetId={tableBodyData["id"]} /></TableCell> :
+                                        <TableCell key={key}  sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomPDFViewIcon budgetId={tableBodyData["id"]} /></TableCell> :
                             key === 'Payment' ?
-                                <TableCell sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomPaymentViewIcon budgetId={tableBodyData["id"]} /></TableCell> :
+                                            <TableCell key={key}  sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomPaymentViewIcon budgetId={tableBodyData["id"]} /></TableCell> :
                             key === 'Action' ?
-                                                <TableCell sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomActionIcon budgetId={tableBodyData["id"]} /></TableCell> :
-                                                key === 'Status' ? <TableCell sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><StatusChip status={tableBodyData[key]} /></TableCell> :
+                                                <TableCell key={key}  sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomActionIcon budgetId={tableBodyData["id"]} /></TableCell> :
+                                                key === 'Status' ? <TableCell key={key} sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><StatusChip status={tableBodyData[key]} /></TableCell> :
                                                     
                                              
                                                 
-                                <TableCell sx={[custopmTableCellsStyle[key], custopmTableCellsStyle.default]} className={classes.tableDataCellItem}>{tableBodyData[key]}</TableCell>
+                                                    <TableCell key={key} sx={[custopmTableCellsStyle[key], custopmTableCellsStyle.default]} className={classes.tableDataCellItem}>{tableBodyData[key]}</TableCell>
                         )
                     }
                     return null;
