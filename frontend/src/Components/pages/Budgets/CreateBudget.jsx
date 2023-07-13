@@ -8,7 +8,8 @@ import SubHeader from '../../molecules/SubHeader/SubHeader';
 import axios from 'axios';
 import useWeb3IpfsContract from '../../hooks/web3IPFS';
 import getPathAfterBudgetId from '../../../Utility/getBudgetId';
-import { encryptToBytes32 } from '../../../Utility/Logical/hashTheHeck';
+
+const url = process.env.BACKEND_URL;
 
 function CreateBudget() {
   const { web3, contract } = useWeb3IpfsContract();
@@ -40,18 +41,16 @@ function CreateBudget() {
         rootPath: proposalId,
       };
 
-      const { data } = await axios.post('http://localhost:8000/ipfs/uploadBudget', dataToBeUploaded);
+      const { data } = await axios.post(`http://localhost:8000/ipfs/uploadBudget`, dataToBeUploaded);
       let proposalIdForContract = web3.utils.keccak256(web3.utils.fromAscii(proposalId));
       data.ipfsResponses.forEach(async (budgetCID) => {
         let budgetId = getPathAfterBudgetId(budgetCID);
         try {
           const accounts = await web3.eth.getAccounts();
           budgetId = web3.utils.keccak256(web3.utils.fromAscii(budgetId));
-          // budgetCID = web3.utils.keccak256(web3.utils.fromAscii(budgetCID));;
-          budgetCID = encryptToBytes32(budgetCID);
-          console.log("BudgetCid",budgetCID)
+          //budgetCID = web3.utils.keccak256(web3.utils.fromAscii('QmVJZQE9Pr1cncADELH2kqkCshxhxBELACCDxDqX83Qu2D/0xce9b0991276c79cccc773a327814fa07942a3287e022fc9e75378bdcd491b337fa559ab2-6252-4d21-b0ee-d89616aa21df'));
 
-          console.log("proposalId", proposalId, "proposalContractId" , proposalIdForContract);
+          //encrypt budgetCID to bytes32 so that smartcontract can understand it. but also have ability to convert it back to ipfs cid so that axios can understand it.
           
           await contract.methods.createBudget(proposalIdForContract, budgetId, budgetCID).send({ from: accounts[0], gas: "10000000" });
         } catch (error) {

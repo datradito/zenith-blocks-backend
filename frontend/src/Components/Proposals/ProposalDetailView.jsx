@@ -12,7 +12,7 @@ import SubHeader from "../molecules/SubHeader/SubHeader.jsx"
 import CircularIndeterminate from '../atoms/Loader/loader.jsx';
 import axios from 'axios';
 import useWeb3IpfsContract from '../hooks/web3IPFS';
-import { encryptToBytes32, decryptFromBytes32 } from '../../Utility/Logical/hashTheHeck.js';
+import { aesEncryptToBytes32, aesDecryptFromBytes32, encryptionKey, iv } from '../../Utility/Logical/stringToBytes.js';
 
 
 const BoxStyle = {
@@ -35,13 +35,11 @@ const headers = ["Categories", "Allocated Budget", "Currency", "Breakdown", "Rem
 function ProposalDetailView() {
     const { proposalId } = useParams();
     const dispatch = useDispatch();
-    const [budgetList, setBudgetList] = useState(null)
+    const [budgetList, setBudgetList] = useState(null);
     const { web3, contract } = useWeb3IpfsContract();
-    const [budgetHashes, setBudgetHashes] = useState(['https://ipfs.moralis.io:2053/ipfs/QmVJZQE9Pr1cncADELH2kqkCshxhxBELACCDxDqX83Qu2D/0xce9b0991276c79cccc773a327814fa07942a3287e022fc9e75378bdcd491b337fa559ab2-6252-4d21-b0ee-d89616aa21df']);
-    // const [loadingContract, setLoadingContract] = useState(true);
+    const [budgetHashes, setBudgetHashes] = useState([]);
+    const [budgetsLoading, setbudgetsLoading] = useState(true);
 
-
-    //fetch data thats all you do
     const fetchBudgetDataForCurrentProposal = async (url) => {
         try {
             const response = await axios.get(url);
@@ -51,7 +49,6 @@ function ProposalDetailView() {
         }
     };
 
-    //data is fetched, now you transform it and give me list of IPFS hashes
     const fetchAndTransformBudgets = async (budgetHashes) => {
         const transformedItems = [];
 
@@ -68,47 +65,45 @@ function ProposalDetailView() {
         return transformedItems;
     };
 
-    //right here you take that returned list of IPFS hashes and set it to state
-    const initialize = async () => {
-        try {
-            if (contract) {
-                refreshBudgetList(contract);
-            }
-            // const data = await fetchAndTransformBudgets(budgetHashes);
-            // setBudgetList(data);
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
-
-    //you refreshes the list of IPFS hashes based on proposalId
-    const refreshBudgetList = async (contract) => {
-        try {
-            let decryptedProposalId = web3.utils.keccak256(web3.utils.fromAscii(proposalId));
-            console.log(decryptedProposalId);
-            const result = await contract.methods.getCidsFromProposal(decryptedProposalId).call();
-            setBudgetHashes(result);
-            const originalValue = decryptFromBytes32(result[0]);
-            console.log(originalValue);
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
-
     useEffect(() => {
+        const initialize = async () => {
+            if (budgetHashes.length === 0 && contract) {
+                try {
+                    setbudgetsLoading(true);
+                    await refreshBudgetList(contract);
+                } catch (error) {
+                    console.error('Error:', error);
+                } finally {
+                    setbudgetsLoading(false);
+                }
+            }
+        };
+
         initialize();
     }, [contract]);
 
+    const refreshBudgetList = async (contract) => {
+        try {
+            const decryptedProposalId = web3.utils.keccak256(web3.utils.fromAscii(proposalId));
+            const result = await contract.methods.getCidsFromProposal(decryptedProposalId).call();
+            setBudgetHashes(result);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
     useEffect(() => {
         const fetchData = async () => {
-            if (contract) {
-                await refreshBudgetList(contract);
+            if (budgetHashes.length > 0) {
+                setbudgetsLoading(true);
+                const data = await fetchAndTransformBudgets(budgetHashes);
+                setBudgetList(data);
+                setbudgetsLoading(false);
             }
         };
 
         fetchData();
-    }, []);
-
+    }, [budgetHashes]);
 
     // useEffect(() => {
     //     const handleBudgetCreatedOrUpdated = async (event) => {
@@ -133,7 +128,7 @@ function ProposalDetailView() {
 
     //         console.log(contract)
 
-    //         setLoadingContract(false);
+    //         setbudgetsLoadingContract(false);
     //         return () => {
     //             contract.events.BudgetCreatedOrUpdated().off("data", handleBudgetCreatedOrUpdated);
     //         };
@@ -148,7 +143,7 @@ function ProposalDetailView() {
     });
 
     // if(loadingContract) return <CircularIndeterminate />;
-    if (loading) return <CircularIndeterminate />;
+    if (loading || budgetsLoading) return <CircularIndeterminate />;
     if (error) return <p>Error : {error.message}</p>;
 
     let dataForItemCard = { "Goverance": data.proposal.space.name, "Total Budget": 800, "Proposal": data.proposal.title };
