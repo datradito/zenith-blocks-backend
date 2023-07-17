@@ -9,12 +9,12 @@ const initializeIpfsNode = async () => {
 
 initializeIpfsNode();
 
-const UploadBudgetToIpfs = async (ipfsFilePath, jsonData) => { // Wait for the Moralis node initialization
+const UploadDataToIpfs = async (ipfsFilePath, jsonData) => { // Wait for the Moralis node initialization
 
     const abi = [
         {
             path: ipfsFilePath,
-            content: jsonData, // Use the actual budgetJson data here
+            content: jsonData, // Use the actual Json data here
         },
     ];
 
@@ -27,4 +27,4 @@ const UploadBudgetToIpfs = async (ipfsFilePath, jsonData) => { // Wait for the M
     }
 };
 
-module.exports = UploadBudgetToIpfs ;
+module.exports = UploadDataToIpfs ;

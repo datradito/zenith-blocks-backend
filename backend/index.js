@@ -3,7 +3,7 @@ const app = express();
 require("dotenv").config();
 const cors = require('cors')
 
-const UploadBudgetToIpfs = require('./utility/ipfs');
+const UploadDataToIpfs = require('./utility/ipfs');
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -22,13 +22,32 @@ app.post('/ipfs/uploadBudget', async (req, res) => {
         try {
 
             //Todo: Need to implement rate limit in case some items fail to upload
-            const response= await UploadBudgetToIpfs(ipfsFilePath, data);
+            const response= await UploadDataToIpfs(ipfsFilePath, data);
             ipfsResponses.push(response.jsonResponse[0].path);
         } catch (error) {
             console.error("Error uploading to IPFS:", error);
         }
     }
     
+    res.json({ message: 'Proposal saved successfully', ipfsResponses });
+});
+
+app.post('/ipfs/uploadInvoice', async (req, res) => {
+    // Extract the content from the request body
+    const { rootPath, jsonData } = req.body;
+    const ipfsResponses = [];
+    for (let data of jsonData) {
+        let ipfsFilePath = rootPath + 'InvoiceId' + data.id;
+        try {
+
+            //Todo: Need to implement rate limit in case some items fail to upload
+            const response = await UploadDataToIpfs(ipfsFilePath, data);
+            ipfsResponses.push(response.jsonResponse[0].path);
+        } catch (error) {
+            console.error("Error uploading to IPFS:", error);
+        }
+    }
+
     res.json({ message: 'Proposal saved successfully', ipfsResponses });
 });
 

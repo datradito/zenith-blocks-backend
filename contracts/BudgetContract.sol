@@ -14,7 +14,8 @@ contract BudgetContract{
     mapping(bytes32 => Budget) public budgetsMap;
     mapping(bytes32 => Budget[]) public proposalToBudget;
     mapping(bytes32 => bytes32) public budgetToCid;
-    
+    mapping(bytes32 => string[]) public budgetToInvoices;
+
 
     function createBudget(bytes32 _proposalId, bytes32 _budgetId, string memory _cid) public {
         // budgets.push(Budget(_proposalId, _budgetId, _cid));
@@ -23,6 +24,13 @@ contract BudgetContract{
         emit BudgetCreatedOrUpdated(_proposalId, _budgetId, _cid);
     }
 
+    function addInvoiceToBudget(bytes32 _budgetId, string memory _cid) public {
+        budgetToInvoices[_budgetId].push(_cid);
+    }
+
+    function getInvoicesByBudget(bytes32 _budgetId) public view returns(string[] memory) {
+        return budgetToInvoices[_budgetId];
+    }
 
     function getBudget(bytes32 _budgetId) public view returns(string memory) {
         return budgetsMap[_budgetId].cid;

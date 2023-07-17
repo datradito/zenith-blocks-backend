@@ -104,41 +104,6 @@ function FormRowInvoice({ tableHeaderData }) {
                     />
                     <TableBody >
                         {lines && lines.map((item, index) => {
-
-                            // Object.keys(item).map((key) => {
-                            //     console.log(key, item[key])
-                            //     return <TableRow
-                            //         key={index}
-                            //     >
-                            //         {
-                            //             key === 'action' ? <TableCell
-                            //                 style={{ border: 'none', width: '25', padding: '0.5rem' }}
-                            //                 sx={formStyleCustom.key}
-                            //                 required>
-                            //                 <Button
-                            //                     startIcon={<RemoveCircleOutlineSharpIcon />}
-                            //                     onClick={() => handleDeleteRow(index)}
-                            //                     sx={formStyleCustom.buttonStyles}
-                            //                 >
-                            //                     {/* {item.action} */}
-                            //                 </Button>
-                            //             </TableCell> :
-                            //             <TableCell
-                            //                     style={{ width: '100%', border: 'none', padding: '0.5rem' }}
-                            //                     sx={formStyleCustom.default}>
-
-                            //                     <TextField
-                            //                         value={item[key]}
-                            //                         onChange={(e) => handleChange(index, item[key], e.target.value)}
-                            //                         fullWidth
-                            //                         sx={formStyleCustom.textFieldStyle}
-
-                            //                     />
-                            //             </TableCell>
-                            //         }
-                            //     </TableRow>
-                            // }))
-
                             return <TableRow
                                 key={index}
                             >

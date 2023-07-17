@@ -38,7 +38,9 @@
     "wagmi": "^1.1.1",
     "web-vitals": "^2.1.4",
     "web3": "^1.7.1",
-    "yup": "^1.1.1"
+    "yup": "^1.1.1",
+        "@mui/x-date-pickers": "latest",
+        "dayjs": "latest"
   },
   "scripts": {
     "start": "react-scripts start",

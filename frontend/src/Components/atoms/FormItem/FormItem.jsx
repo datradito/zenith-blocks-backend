@@ -2,15 +2,18 @@ import React from 'react';
 import useStyles from './index.style';
 import { Box, Grid, TextField, Typography } from '@mui/material';
 import { Formik, Form } from 'formik';
+import { useDispatch } from 'react-redux';
+import { updateHeader } from './../../../actions/createInvoiceAction/index.js';
+import BasicDate from "../BasicDate/BasicDate"
 
 function FormItem({ initialValues, type }) {
     const classes = useStyles();
-
+    const dispatch = useDispatch();
     const componentStyles = {
         formInputFieldStyles: {
             color: 'white',
             padding: '0',
-            border: '2px solid #2C2C2C',
+            border: ".05rem #2c2c2c solid",
             borderRadius: '5px',
             
             '& .MuiInputBase-input': {
@@ -29,6 +32,11 @@ function FormItem({ initialValues, type }) {
             color: 'gray',
             fontSize: ".70rem"
         },
+    }
+    const handleChange = (key, value) => {
+        initialValues[key] = value;
+        dispatch(updateHeader(key,value));
+        console.log(initialValues);
     }
 
 
@@ -53,19 +61,21 @@ function FormItem({ initialValues, type }) {
                                     >
                                         {key}
                                     </Typography>
-                                    <TextField
-                                        name={key}
-                                        defaultValue={value}
-                                        //type={key === 'Upload Invoice' ? 'file' : key === 'Due Date' ? 'date' : key === 'Invoice Number' ? 'number' : 'text'}
-                                        InputProps={{
-                                            readOnly: key === 'Proposal' || key === 'Goverance' || key === 'Ipfs Link' ? true : false
-                                        }}
-                                        multiline
-                                        rows={key === 'Description' || key === 'Upload Invoice' ? 4 : 1}
-                                        fullWidth
-                                        // disabled
-                                        sx = {componentStyles.formInputFieldStyles}
-                                    />
+                                    {key === "Due Date" || key === "Invoice Date" ? <BasicDate label = {""} /> : 
+                                        <TextField
+                                            name={key}
+                                            defaultValue={value}
+                                            onChange={(e) => handleChange(key, e.target.value)}
+                                            //type={key === 'Upload Invoice' ? 'file' : key === 'Due Date' ? 'date' : key === 'Invoice Number' ? 'number' : 'text'}
+                                            InputProps={{
+                                                readOnly: key === 'Proposal' || key === 'Goverance' || key === 'Ipfs Link' ? true : false
+                                            }}
+                                            multiline
+                                            rows={key === 'Description' || key === 'Upload Invoice' ? 4 : 1}
+                                            fullWidth
+                                            // disabled
+                                            sx={componentStyles.formInputFieldStyles}
+                                        />}
                                 </Grid>
                             })
                         }
