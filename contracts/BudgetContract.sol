@@ -14,6 +14,7 @@ contract BudgetContract{
     mapping(bytes32 => Budget) public budgetsMap;
     mapping(bytes32 => Budget[]) public proposalToBudget;
     mapping(bytes32 => bytes32) public budgetToCid;
+    
 
     function createBudget(bytes32 _proposalId, bytes32 _budgetId, string memory _cid) public {
         // budgets.push(Budget(_proposalId, _budgetId, _cid));

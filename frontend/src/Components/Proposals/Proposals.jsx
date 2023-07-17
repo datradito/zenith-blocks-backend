@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
-import { GET_All_PROPOSALS } from '../../SnapShot/Queries.js';
+import { GET_All_PROPOSALS, GET_PROPOSAL_BY_SPACE } from '../../SnapShot/Queries.js';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
@@ -8,6 +8,7 @@ import { styled } from '@mui/material/styles';
 import PaginationControlled from '../DisplayElements/Pagination.jsx';
 import { Link } from "react-router-dom";
 import SubHeader from "../molecules/SubHeader/SubHeader.jsx"
+import CircularIndeterminate from '../atoms/Loader/loader.jsx';
 
 const ProposalListCardStyle = {
   width: '90%',
@@ -74,20 +75,21 @@ const Proposals = () => {
   const handleSkipValueChange = () => {
 
     let currentPage = localStorage.getItem("currentPage");
-    // add if statement to check if current page is not set in local storage
     if (currentPage === 1) {
       setStateQuery({ ...stateQuery, skip: 0 });
     }
     setStateQuery({ ...stateQuery, skip: (parseInt(currentPage) - 1) * 10 });
   };
 
-  const { loading, error, data } = useQuery(GET_All_PROPOSALS, {
+  let { loading, error, data } = useQuery(GET_PROPOSAL_BY_SPACE, {
     skip: skipQuery,
-    variables: { first: parseInt(stateQuery.first), skip: parseInt(stateQuery.skip) }
+    variables: {
+      first: parseInt(stateQuery.first), skip: parseInt(stateQuery.skip), name: "balancer.eth"
+    }
   });
 
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <CircularIndeterminate /> ;
   if (error) return <p>Error : {error.graphQLErrors}</p>;
 
   const handleExportCSV = () => {
@@ -142,7 +144,7 @@ const Proposals = () => {
                   justifyContent='flex-start'
                 >
                   <SubItem sx={subItemStyle}>
-                      <ColumnItem sx={label}>Goverance</ColumnItem>
+                      <ColumnItem sx={label}>Governance</ColumnItem>
                       <ColumnItem>{item.space.name}</ColumnItem>
                   </SubItem>
                   <SubItem sx={subItemStyle}>

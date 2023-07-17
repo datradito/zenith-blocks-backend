@@ -43,5 +43,33 @@ export const GET_PROPOSAL_BY_ID = gql`
     }
 `;
 
+export const GET_PROPOSAL_BY_SPACE = gql`
+    query GetProposals($name: String, $first: Int, $skip: Int) {
+        proposals(where: { space: $name }, first: $first, skip: $skip) 
+          # first: 20,
+          # skip: 0,
+          # where: {
+          #   space_in: ["balancer.eth"],
+          # },
+            # orderBy: "created",
+            # orderDirection: desc
+         {
+          id
+          title
+          body
+          choices
+          start
+          end
+          snapshot
+          state
+          author
+          space {
+            id
+            name
+          }
+        }
+      }
+`;
+
 
 

@@ -6,13 +6,13 @@ import { Box, Stack } from '@mui/material';
 import TableDisplay from '../DisplayElements/TableDisplay.jsx';
 import ButtonAtom from "../atoms/Button/index";
 import { useDispatch } from 'react-redux';
-import { setProposal } from '../../actions/currentProposal/index.js';
+import { setProposal, setProposalBudgetList } from '../../actions/currentProposal/index.js';
+import { refreshState } from '../../actions/createBudgetAction/index.js';
 import ItemCard from '../atoms/ItemCard/ItemCard.jsx';
 import SubHeader from "../molecules/SubHeader/SubHeader.jsx"
 import CircularIndeterminate from '../atoms/Loader/loader.jsx';
 import axios from 'axios';
 import useWeb3IpfsContract from '../hooks/web3IPFS';
-import { aesEncryptToBytes32, aesDecryptFromBytes32, encryptionKey, iv } from '../../Utility/Logical/stringToBytes.js';
 
 
 const BoxStyle = {
@@ -39,6 +39,10 @@ function ProposalDetailView() {
     const { web3, contract } = useWeb3IpfsContract();
     const [budgetHashes, setBudgetHashes] = useState([]);
     const [budgetsLoading, setbudgetsLoading] = useState(true);
+
+    useEffect(() => {
+        dispatch(refreshState());
+    }, []);
 
     const fetchBudgetDataForCurrentProposal = async (url) => {
         try {
@@ -86,6 +90,7 @@ function ProposalDetailView() {
         try {
             const decryptedProposalId = web3.utils.keccak256(web3.utils.fromAscii(proposalId));
             const result = await contract.methods.getCidsFromProposal(decryptedProposalId).call();
+            console.log(result);
             setBudgetHashes(result);
         } catch (error) {
             console.error('Error:', error);
@@ -97,7 +102,9 @@ function ProposalDetailView() {
             if (budgetHashes.length > 0) {
                 setbudgetsLoading(true);
                 const data = await fetchAndTransformBudgets(budgetHashes);
+                console.log(data);
                 setBudgetList(data);
+                dispatch(setProposalBudgetList(data));
                 setbudgetsLoading(false);
             }
         };
@@ -153,8 +160,11 @@ function ProposalDetailView() {
     };
 
     const handleUpdateProposal = async () => {
-        dispatch(setProposal(data.proposal));
+        dispatch(setProposal(data.proposal, budgetList));
     };
+    const handleBudgetCreateOnClick = () => {
+        dispatch(setProposal(data.proposal, budgetList));
+    }
 
     const csvData = [
         ["firstname", "lastname", "email"],
@@ -182,6 +192,13 @@ function ProposalDetailView() {
             to: `/proposal/update/${proposalId}`,
         }
     ];
+
+    const buttonConfig = {
+        label: "Create budget",
+        variant: "contained",
+        onClick: handleBudgetCreateOnClick,
+        innerText: "Create Budget"
+    };
 
     const currentPathConfig = {
         path: "Proposals",
@@ -211,7 +228,15 @@ function ProposalDetailView() {
                         tableHeaderData={headers}
                         tableBodyData={budgetList}
                     />
-                )}
+                ) || <>
+                        {/* <p>You Currently have no Budgets created for this proposal. Create below </p> */}
+                            <Link to={`/proposal/budgets/${proposalId}`}>
+                                <ButtonAtom
+                                    config={buttonConfig}
+                                />
+                            </Link>
+                    </>
+                }
             </Box>
         </div>
     );

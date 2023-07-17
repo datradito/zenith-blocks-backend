@@ -76,6 +76,7 @@ function App() {
                   <Route exact path="/proposal/budgets/createInvoice" element={<InvoiceCreation />} />
                   <Route exact path="/proposal/update/:proposalId" element={<CreateBudget />} />
                   <Route exact path="/proposals/:proposalId/invoices" element={<InvoiceListView />} />
+                  <Route exact path="/budgets/:budgetId/invoices" element={<InvoiceListView />} />
                   <Route element={<ErrorPage />} />
                 </Routes>
               </BrowserRouter>

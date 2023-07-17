@@ -3,7 +3,6 @@ import useStyles from "./index.style"
 import CustomizedProgressBars from '../ProgressBar/ProgressBar';
 import CustomInvoiceViewIcon from '../InvoiceIcon/InvoiceIcon';
 import StatusChip from "../StatusChip/StatusChip"
-
 import {
     TableRow as TableRowMUI,
     TableCell,
@@ -13,8 +12,12 @@ import CustomPaymentViewIcon from '../PaymentIcon/paymentIcon';
 import CustomActionIcon from '../ActionIcon/CustomActionIcon';
 
 const TableRow = ({ tableBodyData }) => {
+    //this is where you can introduce filtering for the table data
 
-    const custopmTableCellsStyle = {
+    //Todo: check if user came from proposal detail page, if yes then filter the tableBodyData based on budgetId
+    //Todo: if there is not any data for budgetId then render createInvoice button and inform user that no invoices have been coded to this budget yet
+
+    const customTableCellStyles = {
         "default": {
             padding: '0.5rem',
             '& .MuiTableCell-root': {
@@ -62,27 +65,25 @@ const TableRow = ({ tableBodyData }) => {
     };
     const classes = useStyles();
     return (
-        <TableRowMUI className={classes.tableRow} sx={custopmTableCellsStyle.default}>
+        <TableRowMUI className={classes.tableRow} sx={customTableCellStyles.default}>
             {
                 Object.keys(tableBodyData).map((key) => {
                     //update budgetId to id
-                    if (key !== "id")  {
+                    if (key !== "id" && key !== "budgetId")  {
                         return (
                             key === "Remaining" ?
-                                <TableCell key={ key} sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomizedProgressBars value={tableBodyData[key]} /></TableCell> :
+                                <TableCell key={ key} sx={customTableCellStyles[key]} className={classes.tableDataCellItem}><CustomizedProgressBars value={tableBodyData[key]} /></TableCell> :
                             key === 'Invoices' ?
-                                    <TableCell key={key} sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomInvoiceViewIcon budgetId={tableBodyData["id"]} /></TableCell> :
+                                <TableCell key={key} sx={customTableCellStyles[key]} className={classes.tableDataCellItem}><CustomInvoiceViewIcon budgetId={tableBodyData["id"]} /></TableCell> :
                             key === 'View' ?
-                                        <TableCell key={key}  sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomPDFViewIcon budgetId={tableBodyData["id"]} /></TableCell> :
+                                <TableCell key={key}  sx={customTableCellStyles[key]} className={classes.tableDataCellItem}><CustomPDFViewIcon budgetId={tableBodyData["id"]} /></TableCell> :
                             key === 'Payment' ?
-                                            <TableCell key={key}  sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomPaymentViewIcon budgetId={tableBodyData["id"]} /></TableCell> :
+                                <TableCell key={key}  sx={customTableCellStyles[key]} className={classes.tableDataCellItem}><CustomPaymentViewIcon budgetId={tableBodyData["id"]} /></TableCell> :
                             key === 'Action' ?
-                                                <TableCell key={key}  sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><CustomActionIcon budgetId={tableBodyData["id"]} /></TableCell> :
-                                                key === 'Status' ? <TableCell key={key} sx={custopmTableCellsStyle[key]} className={classes.tableDataCellItem}><StatusChip status={tableBodyData[key]} /></TableCell> :
-                                                    
-                                             
-                                                
-                                                    <TableCell key={key} sx={[custopmTableCellsStyle[key], custopmTableCellsStyle.default]} className={classes.tableDataCellItem}>{tableBodyData[key]}</TableCell>
+                                <TableCell key={key}  sx={customTableCellStyles[key]} className={classes.tableDataCellItem}><CustomActionIcon budgetId={tableBodyData["id"]} /></TableCell> :
+                            key === 'Status' ?
+                                <TableCell key={key} sx={customTableCellStyles[key]} className={classes.tableDataCellItem}><StatusChip status={tableBodyData[key]} /></TableCell> :
+                                <TableCell key={key} sx={[customTableCellStyles[key], customTableCellStyles.default]} className={classes.tableDataCellItem}>{tableBodyData[key]}</TableCell>
                         )
                     }
                     return null;

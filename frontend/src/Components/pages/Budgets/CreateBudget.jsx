@@ -22,7 +22,7 @@ function CreateBudget() {
   let dataForItemCard = {};
 
   if (proposal) {
-    dataForItemCard = { "Goverance": `${proposal.space.name}`, "Total Budget": "5,980,000", "Proposal": `${proposal.title}`, "Ipfs Link": `${proposal.ipfs}` }
+    dataForItemCard = { "Goverance": `${proposal.space}`, "Total Budget": "5,980,000", "Proposal": `${proposal.title}`, "Ipfs Link": `${proposal.ipfs}` }
   }
 
 

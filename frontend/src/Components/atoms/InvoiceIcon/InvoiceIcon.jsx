@@ -1,11 +1,14 @@
 import * as React from 'react';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
+import { useDispatch } from 'react-redux';
 import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
+import { useParams, Link } from 'react-router-dom';
+import { setBudget, getBudget } from '../../../actions/currentBudgetAction';
 
-
-export default function CustomInvoiceViewIcon() {
-
+export default function CustomInvoiceViewIcon({budgetId}) {
+    const dispatch = useDispatch();
+    const { proposalId } = useParams();
     const invoiceIconStyles = {
         chipStyle: {
             padding: '0 .25rem',
@@ -19,17 +22,19 @@ export default function CustomInvoiceViewIcon() {
         }
     }
     const handleClick = () => {
-        console.info('You clicked the Chip.');
+        dispatch(setBudget(budgetId));
     };
 
     return (
         <Stack direction="row" spacing={1}>
+            <Link to={`/budgets/${budgetId}/invoices`}>
             {/* <Chip icon={<DescriptionRoundedIcon />} label="With Icon" /> */}
-            <Chip icon={<DescriptionRoundedIcon />}
-                label="INVOICE"
-                onClick={handleClick}
-                sx = {invoiceIconStyles.chipStyle}
-            />
+                <Chip icon={<DescriptionRoundedIcon />}
+                    label="INVOICE"
+                    onClick={handleClick}
+                    sx = {invoiceIconStyles.chipStyle}
+                    />
+            </Link>
         </Stack>
     );
 }

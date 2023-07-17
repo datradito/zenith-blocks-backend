@@ -16,8 +16,6 @@ function SubHeader({ buttonConfig, currentPath, previousPath }) {
             }
         }
     }
-
-
   return (
       <Box style={{
           width: '90%',

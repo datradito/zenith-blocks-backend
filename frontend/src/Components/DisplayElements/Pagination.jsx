@@ -1,14 +1,21 @@
-import React, {useEffect}  from 'react';
+import React, {useEffect, useState}  from 'react';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 const paginationElement = {
     color: 'white',
+    '& .MuiPaginationItem-root': {
+        color: 'white',
+        '&.Mui-selected': {
+            backgroundColor: '#1A65C0',
+            color: 'white',
+        },
+    }
 }
 
 export default function PaginationControlled({ handleSkip }) {
-    const [page, setPage] = React.useState(1);
+    const [page, setPage] = useState(1);
 
     useEffect(() => {
         const currentPage = localStorage.getItem('currentPage');

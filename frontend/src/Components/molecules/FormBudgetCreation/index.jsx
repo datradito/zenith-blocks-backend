@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import useStyles from './index.style';
+import { setInitialState, addRow, deleteRow, updateField } from '../../../actions/createBudgetAction';
 import {
     Box,
     Button,
@@ -17,7 +18,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import ButtonAtom from '../../atoms/Button';
 import { Formik, Form } from 'formik';
 import * as yup from 'yup';
-import FormItem from '../../atoms/FormItem/FormItem';
 
 function FormRow({ tableHeaderData }) {
     const dispatch = useDispatch();
@@ -30,30 +30,29 @@ function FormRow({ tableHeaderData }) {
 
     useEffect(() => {
         const setProposalData = async () => {
-            await dispatch({ type: 'SET_INITIAL_STATE', payload: currentProposal.proposal });
+            const generatedBudgetId = generateUUID();
+            const data = { proposal: currentProposal.proposal, id: generatedBudgetId };
+            dispatch(setInitialState(data));
         }
         setProposalData();
     }, []);
 
 
-    const handleAddRow = () => {
+    const handleAddRow = async () => {
         const generatedBudgetId = generateUUID();
-        dispatch({ type: 'ADD_ROW', payload: { action: '-', Categories: '', "Allocated Budget": '', Currency: '', Breakdown: '', id: generatedBudgetId } });
+        dispatch(addRow({ action: '-', Categories: '', "Allocated Budget": '', Currency: '', Breakdown: '', id: generatedBudgetId }));
     };
 
     const handleDeleteRow = (index) => {
-        dispatch({ type: 'DELETE_ROW', payload: index });
+        dispatch(deleteRow(index));
     };
 
     const handleChange = (index, field, value) => {
-        dispatch({
-            type: 'UPDATE_FIELD',
-            payload: {
+        dispatch(updateField(
                 index,
                 field,
                 value,
-            },
-        });
+            ));
     };
 
     const formStyleCustom = {
