@@ -16,7 +16,7 @@ import FormRowInvoice from '../../molecules/FormInvoiceCreation';
 function InvoiceCreation() {
     const { proposal } = useSelector(state => state.currentProposal);
 
-    
+    console.log(proposal)
     const handleDraft = () => {
         //do validation and save file locally
         console.log("Save Draft");
@@ -91,7 +91,7 @@ function InvoiceCreation() {
     });
 
     const initialValues = {
-        Proposal: "asdfkubnsk asdifusoi sdvbsakb",
+        Proposal: proposal.title,
         Category: "",
         Recipient: "",
         'Invoice Number': '',
@@ -114,6 +114,8 @@ const onSubmit = (values) => {
         ml: "0.5rem",
         onClick: () => { },
     }
+
+    
     
 
   return (

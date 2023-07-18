@@ -16,8 +16,6 @@ function SubHeader({ buttonConfig, currentPath, previousPath }) {
             }
         }
     }
-
-
   return (
       <Box style={{
           width: '90%',
@@ -49,7 +47,7 @@ function SubHeader({ buttonConfig, currentPath, previousPath }) {
                                   <ModalDialog buttonConfig={buttonConfig[key]}/>
                                 </Link>
                               : buttonConfig[key].subButton ?
-                                <ModalDialog buttonConfig={buttonConfig[key]} /> :
+                                <ModalDialog key={index} buttonConfig={buttonConfig[key]} /> :
                                 <ButtonAtom
                                         key={index}
                                         config={buttonConfig[key]}

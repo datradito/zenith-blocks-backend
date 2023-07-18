@@ -1,0 +1,106 @@
+{
+    "proposals": {
+        "1": {
+            "id": 1,
+            "budgets": {
+                "1": {
+                    "id": 1,
+                    "amount": 1000,
+                    "description": "test",
+                    "createdAt": "2019-01-01 00:00:00",
+                    "updatedAt": "2019-01-01 00:00:00",
+                    "invoices": {
+                        "1": {
+                            "id": 1,
+                            "amount": 1000,
+                            "description": "test",
+                            "createdAt": "2019-01-01 00:00:00",
+                            "updatedAt": "2019-01-01 00:00:00",
+                            "vendor": "test",
+                            "currency": "USD",
+                            "invoiceDate": "2019-01-01 00:00:00",
+                            "invoiceNumber": "test",
+                            "invoiceFile": "test",
+                            "invoiceStatus": 1
+                        },
+                        "2": {
+                            "id": 2,
+                            "amount": 1000,
+                            "description": "test",
+                            "createdAt": "2019-01-01 00:00:00",
+                            "updatedAt": "2019-01-01 00:00:00",
+                            "vendor": "test",
+                            "currency": "USD",
+                            "invoiceDate": "2019-01-01 00:00:00",
+                            "invoiceNumber": "test",
+                            "invoiceFile": "test",
+                            "invoiceStatus": 1
+                        }
+                    }
+                },
+                "2": {
+                    "id": 2,
+                    "amount": 2000,
+                    "description": "test",
+                    "createdAt": "2019-01-01 00:00:00",
+                    "updatedAt": "2019-01-01 00:00:00",
+                    "invoices": {
+                        "3": {
+                            "id": 3,
+                            "amount": 1500,
+                            "description": "test",
+                            "createdAt": "2019-01-01 00:00:00",
+                            "updatedAt": "2019-01-01 00:00:00",
+                            "vendor": "test",
+                            "currency": "USD",
+                            "invoiceDate": "2019-01-01 00:00:00",
+                            "invoiceNumber": "test",
+                            "invoiceFile": "test",
+                            "invoiceStatus": 1
+                        }
+                    }
+                }
+            }
+        },
+        "2": {
+            "id": 2,
+            "budgets": {
+                "3": {
+                    "id": 3,
+                    "amount": 3000,
+                    "description": "test",
+                    "createdAt": "2019-01-01 00:00:00",
+                    "updatedAt": "2019-01-01 00:00:00",
+                    "invoices": {
+                        "4": {
+                            "id": 4,
+                            "amount": 2000,
+                            "description": "test",
+                            "createdAt": "2019-01-01 00:00:00",
+                            "updatedAt": "2019-01-01 00:00:00",
+                            "vendor": "test",
+                            "currency": "USD",
+                            "invoiceDate": "2019-01-01 00:00:00",
+                            "invoiceNumber": "test",
+                            "invoiceFile": "test",
+                            "invoiceStatus": 1
+                        },
+                        "5": {
+                            "id": 5,
+                            "amount": 1000,
+                            "description": "test",
+                            "createdAt": "2019-01-01 00:00:00",
+                            "updatedAt": "2019-01-01 00:00:00",
+                            "vendor": "test",
+                            "currency": "USD",
+                            "invoiceDate": "2019-01-01 00:00:00",
+                            "invoiceNumber": "test",
+                            "invoiceFile": "test",
+                            "invoiceStatus": 1
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

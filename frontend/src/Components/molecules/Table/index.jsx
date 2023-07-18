@@ -1,6 +1,7 @@
 import React from 'react'
 import TableBody from "../TableBody/index"
 import TableHeader from "../../atoms/TableHeader/index"
+import CircularIndeterminate from '../../atoms/Loader/loader';
 
 import {
     Table as TableMUI,
@@ -24,10 +25,7 @@ function Table({ tableHeaderData, tableBodyData }) {
 
     const renderEmptyTable = () => {
         return (
-            <div>
-                <TableHeader tableHeaderData={tableHeaderData} />
-                <p>No data</p>
-            </div>
+            <CircularIndeterminate />
         )
     }
     return (

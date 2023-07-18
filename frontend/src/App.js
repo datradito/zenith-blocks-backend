@@ -2,7 +2,6 @@ import './App.css';
 import React from 'react';
 // import SimpleStorage from "./contracts/SimpleStorage.json";
 // import Web3 from "web3";
-import {  DAppProvider, ChainId} from '@usedapp/core'
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -12,7 +11,7 @@ import ResponsiveHeaderBar from "./Components/DisplayElements/Header/Header.jsx"
 import ErrorPage from "./Routes/ErrorPage";
 import Proposals from "./Components/Proposals/Proposals";
 import ProposalDetailView from "./Components/Proposals/ProposalDetailView";
-import CreateBudget from './Components/pages/Budgets/CreateBudget';
+import CreateBudget from './Components/pages/Budgets/CreateBudget.jsx';
 import InvoiceListView from './Components/pages/Invoices/InvoiceListView';
 import InvoiceCreation from './Components/pages/Invoices/InvoiceCreation';
 import theme from "./styles/theme";
@@ -65,7 +64,6 @@ function App() {
 
   return (
   
-    <DAppProvider config={{ supportedChains: [ChainId.Kovan] }}>
         <ApolloProvider client={client}>
           <Provider store={ storeConfig }>
             <PersistGate loading={null} persistor={persistor}>
@@ -75,16 +73,17 @@ function App() {
                   <Route exact path="/proposals" element={<Proposals />} />
                   <Route exact path="/proposals/:proposalId" element={<ProposalDetailView />} />
                   <Route exact path="/proposal/budgets/:proposalId" element={<CreateBudget />} />
-                  <Route exact path="/proposal/budgets/createInvoice" element={<InvoiceCreation />} />
+              <Route exact path="/proposal/budgets/createInvoice" element={<InvoiceCreation />} />
+              <Route exact path="/budgets/:budgetId/createInvoice" element={<InvoiceCreation />} />
                   <Route exact path="/proposal/update/:proposalId" element={<CreateBudget />} />
                   <Route exact path="/proposals/:proposalId/invoices" element={<InvoiceListView />} />
+                  <Route exact path="/budgets/:budgetId/invoices" element={<InvoiceListView />} />
                   <Route element={<ErrorPage />} />
                 </Routes>
               </BrowserRouter>
             </PersistGate>
           </Provider>
         </ApolloProvider>
-      </DAppProvider>
   );
 }
 

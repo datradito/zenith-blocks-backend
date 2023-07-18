@@ -17,6 +17,9 @@ import ButtonAtom from '../../atoms/Button';
 import { Formik, Form } from 'formik';
 import * as yup from 'yup';
 import FormItem from '../../atoms/FormItem/FormItem';
+import UnstyledSelectBasic from '../../atoms/SelectDropdown/SelectDropdown';
+import { categories } from '../../pages/Category/Category';
+
 
 function FormRowInvoice({ tableHeaderData }) {
     const dispatch = useDispatch();
@@ -38,26 +41,10 @@ function FormRowInvoice({ tableHeaderData }) {
     };
 
     const formStyleCustom = {
-        // currencyDropdown: {
-        //     '& .MuiTableCell-root': {
-        //         color: 'white',
-        //         backgroundColor: '#2C2C2C',
-        //         fontSize: '0.85rem',
-        //     },
-        //     '& .MuiInputBase-root': {
-        //         fontSize: '.85rem',
-        //     },
-        //     '& .MuiSelect-root': {
-        //         fontSize: '.85rem',
-        //     },
-        //     '& .MuiSvgIcon-root': {
-        //         color: 'white',
-        //     },
-        // },
         textFieldStyle: {
             '& .MuiInputBase-root': {
                 color: 'white',
-                border: '2px solid #2C2C2C',
+                border: '2px solid #2c2c2c',
                 backgroundColor: '#1A1C1E',
                 margin: '0',
                 fontSize: '.85rem',
@@ -102,50 +89,16 @@ function FormRowInvoice({ tableHeaderData }) {
                     <TableHeader
                         tableHeaderData={tableHeaderData}
                     />
-                    <TableBody >
+                    <TableBody>
                         {lines && lines.map((item, index) => {
-
-                            // Object.keys(item).map((key) => {
-                            //     console.log(key, item[key])
-                            //     return <TableRow
-                            //         key={index}
-                            //     >
-                            //         {
-                            //             key === 'action' ? <TableCell
-                            //                 style={{ border: 'none', width: '25', padding: '0.5rem' }}
-                            //                 sx={formStyleCustom.key}
-                            //                 required>
-                            //                 <Button
-                            //                     startIcon={<RemoveCircleOutlineSharpIcon />}
-                            //                     onClick={() => handleDeleteRow(index)}
-                            //                     sx={formStyleCustom.buttonStyles}
-                            //                 >
-                            //                     {/* {item.action} */}
-                            //                 </Button>
-                            //             </TableCell> :
-                            //             <TableCell
-                            //                     style={{ width: '100%', border: 'none', padding: '0.5rem' }}
-                            //                     sx={formStyleCustom.default}>
-
-                            //                     <TextField
-                            //                         value={item[key]}
-                            //                         onChange={(e) => handleChange(index, item[key], e.target.value)}
-                            //                         fullWidth
-                            //                         sx={formStyleCustom.textFieldStyle}
-
-                            //                     />
-                            //             </TableCell>
-                            //         }
-                            //     </TableRow>
-                            // }))
-
                             return <TableRow
                                 key={index}
                             >
                                 <TableCell
                                     style={{ border: 'none', width: '25', padding: '0.5rem' }}
                                     sx={formStyleCustom.default}
-                                    required>
+                                    required
+                                >
                                     <Button
                                         startIcon={<RemoveCircleOutlineSharpIcon />}
                                         onClick={() => handleDeleteRow(index)}
@@ -157,7 +110,7 @@ function FormRowInvoice({ tableHeaderData }) {
                                 <TableCell
                                     style={{ width: '20rem', border: 'none', padding: '0.5rem' }}
                                     sx={formStyleCustom.default}>
-
+{/* 
                                     <TextField
                                         required
                                         value={item.Category}
@@ -165,8 +118,13 @@ function FormRowInvoice({ tableHeaderData }) {
                                         fullWidth
                                         sx={formStyleCustom.textFieldStyle}
 
+                                    /> */}
+                                    <UnstyledSelectBasic
+                                        values={categories}
+                                        onChange={(value) => handleChange(index, 'Category', value)}
                                     />
-                                </TableCell>
+                                </TableCell> 
+                                
                                 <TableCell
                                     style={{ width: '30rem', border: 'none', padding: '0.5rem' }}
                                     sx={formStyleCustom.default}

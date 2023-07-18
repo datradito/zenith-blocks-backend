@@ -12,8 +12,9 @@ const TableBody = ({ tableBodyData }) => {
     return (
         <TableBodyMUI className={classes.tableBody}>
                 {
-                    tableBodyData.map(item => {
+                    tableBodyData.map((item, index )=> {
                         return <TableRow
+                            key={index}
                             tableBodyData={item} />
                     })
                 }

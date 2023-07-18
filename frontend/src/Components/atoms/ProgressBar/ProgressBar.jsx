@@ -23,7 +23,7 @@ export default function CustomizedProgressBars({value}) {
     return (
         <Box sx={{
             flexGrow: 1,
-            textAlign: 'left',
+            textAlign: 'center',
         }}>
             <Typography variant="caption"> {value}  </Typography>
             <BorderLinearProgress variant="determinate" value={56} />

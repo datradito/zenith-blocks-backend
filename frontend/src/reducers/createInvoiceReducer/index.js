@@ -1,4 +1,4 @@
-import { UPDATE_FIELD_INVOICE, ADD_ROW_INVOICE, DELETE_ROW_INVOICE, GET_ALL_ROWS_INVOICE } from "../../actions/createInvoiceAction/types";
+import { UPDATE_FIELD_INVOICE, ADD_ROW_INVOICE, DELETE_ROW_INVOICE, GET_ALL_ROWS_INVOICE, UPDATE_INVOICE_HEADER } from "../../actions/createInvoiceAction/types";
 
 const initialState = {
         header:
@@ -22,6 +22,14 @@ const createBudgetReducer = (state = initialState, action) => {
         case ADD_ROW_INVOICE: {
                 state.lines.push(action.payload)
         }
+        case UPDATE_INVOICE_HEADER:
+            return {
+                ...state,
+                header: {
+                    ...state.header,
+                    [action.payload.field]: action.payload.value
+                }
+            };
         case DELETE_ROW_INVOICE:
             return {
                 ...state,

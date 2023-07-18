@@ -1,4 +1,4 @@
-import React, {  useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { GET_PROPOSAL_BY_ID } from '../../SnapShot/Queries.js';
@@ -6,16 +6,13 @@ import { Box, Stack } from '@mui/material';
 import TableDisplay from '../DisplayElements/TableDisplay.jsx';
 import ButtonAtom from "../atoms/Button/index";
 import { useDispatch } from 'react-redux';
-import { setProposal } from '../../actions/currentProposal/index.js';
+import { setProposal, setProposalBudgetList } from '../../actions/currentProposal/index.js';
+import { refreshState } from '../../actions/createBudgetAction/index.js';
 import ItemCard from '../atoms/ItemCard/ItemCard.jsx';
 import SubHeader from "../molecules/SubHeader/SubHeader.jsx"
-import { useSelector } from 'react-redux';
-
-const data2 = [
-    { id: 1,Categories: "Base Czy podczas KZB powinien zostać poruszony temat zdecentralizowanego rozstrzygania sporów z wykorzystaniem blockchain?", "Allocated Budget": '$3,360,000', Currency: 'ETH', Breakdown: '56.93389%', Remaining: '$100000', Invoices: 'INVOICE' },
-    { id:2,Categories: "Base Compensation", "Allocated Budget": '$3,360,000', Currency: 'ETH', Breakdown: '76.87658%', Remaining: '$100000', Invoices: 'INVOICE' },
-    { id:3,Categories: "Base Czy podczas KZB powinien zostać poruszony temat zdecentralizowanego rozstrzygania sporów z wykorzystaniem blockchain?", "Allocated Budget": '$3,360,000', Currency: 'ETH', Breakdown: '56.93389%', Remaining: '$100000', Invoices: 'INVOICE' },
-];  
+import CircularIndeterminate from '../atoms/Loader/loader.jsx';
+import axios from 'axios';
+import useWeb3IpfsContract from '../hooks/web3IPFS';
 
 
 const BoxStyle = {
@@ -28,36 +25,146 @@ const BoxStyle = {
     borderRadius: 3
 };
 
+function transformItems(item, totalBudget) {
+    const { action, ...rest } = item;
+    return { ...rest, Remaining: parseInt(totalBudget - parseInt(item["Allocated Budget"])), Invoices: 'INVOICE' };
+}
 
 const headers = ["Categories", "Allocated Budget", "Currency", "Breakdown", "Remaining", "Invoices"]
 
 function ProposalDetailView() {
     const { proposalId } = useParams();
     const dispatch = useDispatch();
-    const [budgetList, setBudgetList] = useState([])
-    //let storedCurrentProposal = useSelector(state => state.currentProposal);
+    const [budgetList, setBudgetList] = useState(null);
+    const { web3, contract } = useWeb3IpfsContract();
+    const [budgetHashes, setBudgetHashes] = useState([]);
+    const [budgetsLoading, setbudgetsLoading] = useState(true);
+
+    useEffect(() => {
+        dispatch(refreshState());
+    }, []);
+
+    const fetchBudgetDataForCurrentProposal = async (url) => {
+        try {
+            const response = await axios.get(url);
+            return response.data;
+        } catch (error) {
+            throw new Error('Failed to fetch budget data');
+        }
+    };
+
+    const fetchAndTransformBudgets = async (budgetHashes) => {
+        const transformedItems = [];
+
+        for (const budgetHash of budgetHashes) {
+            try {
+                const data = await fetchBudgetDataForCurrentProposal(budgetHash);
+                const transformedItem = transformItems(data, 500);
+                transformedItems.push(transformedItem);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        return transformedItems;
+    };
+
+    useEffect(() => {
+        const initialize = async () => {
+            if (budgetHashes.length === 0 && contract) {
+                try {
+                    setbudgetsLoading(true);
+                    await refreshBudgetList(contract);
+                } catch (error) {
+                    console.error('Error:', error);
+                } finally {
+                    setbudgetsLoading(false);
+                }
+            }
+        };
+
+        initialize();
+    }, [contract]);
+
+    const refreshBudgetList = async (contract) => {
+        try {
+            const decryptedProposalId = web3.utils.keccak256(web3.utils.fromAscii(proposalId));
+            const result = await contract.methods.getCidsFromProposal(decryptedProposalId).call();
+            console.log(result);
+            setBudgetHashes(result);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (budgetHashes.length > 0) {
+                setbudgetsLoading(true);
+                const data = await fetchAndTransformBudgets(budgetHashes);
+                console.log(data);
+                setBudgetList(data);
+                dispatch(setProposalBudgetList(data));
+                setbudgetsLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [budgetHashes]);
+
+    // useEffect(() => {
+    //     const handleBudgetCreatedOrUpdated = async (event) => {
+    //         const { _proposalId, _budgetId, _cid } = event.returnValues;
+    //         if (_proposalId === proposalId) {
+    //             try {
+    //                 const response = await axios.get(_cid);
+    //                 const transformedItem = transformItems(response.data, 500);
+    //                 setBudgetList((prevBudgetList) => [...prevBudgetList, transformedItem]);
+    //             } catch (error) {
+    //                 console.error('Error:', error);
+    //             }
+    //         }
+    //     };
+
+    //     if (contract) {
+    //         contract.events.BudgetCreatedOrUpdated()
+    //             .on("data", handleBudgetCreatedOrUpdated)
+    //             .on("error", (error) => {
+    //                 console.error("Error listening to BudgetCreatedOrUpdated event:", error);
+    //             });
+
+    //         console.log(contract)
+
+    //         setbudgetsLoadingContract(false);
+    //         return () => {
+    //             contract.events.BudgetCreatedOrUpdated().off("data", handleBudgetCreatedOrUpdated);
+    //         };
+    //     }
+
+    // }, [contract]);
+
+    //add loader to ensure contract is not null, and show loader until contract getting set up.
 
     let { loading, error, data } = useQuery(GET_PROPOSAL_BY_ID, {
         variables: { id: proposalId },
     });
 
-
-    if (loading) return <p>Loading...</p>;
+    // if(loadingContract) return <CircularIndeterminate />;
+    if (loading || budgetsLoading) return <CircularIndeterminate />;
     if (error) return <p>Error : {error.message}</p>;
 
-    let dataForItemCard = { "Goverance": data.proposal.space.name, "Total Budget": "$5,980,000", "Proposal": data.proposal.title };
+    let dataForItemCard = { "Goverance": data.proposal.space.name, "Total Budget": 800, "Proposal": data.proposal.title };
 
-    const handleBudgetCreateOnClick = () => {
-        dispatch(setProposal(data.proposal));
-    }
-
-
-    const buttonConfig = {
-        label: "Create budget",
-        variant: "contained",
-        onClick: handleBudgetCreateOnClick,
-        innerText: "Create Budget"
+    const handleExportCSV = () => {
+        console.log("Export CSV");
     };
+
+    const handleUpdateProposal = async () => {
+        dispatch(setProposal(data.proposal, budgetList));
+    };
+    const handleBudgetCreateOnClick = () => {
+        dispatch(setProposal(data.proposal, budgetList));
+    }
 
     const csvData = [
         ["firstname", "lastname", "email"],
@@ -66,44 +173,37 @@ function ProposalDetailView() {
         ["Yezzi", "Min l3b", "ymin@cocococo.com"]
     ];
 
-    const handleExportCSV = () => {
-        console.log("Export CSV");
+    const componentButtonConfig = [
+        {
+            label: "Export CSVP",
+            variant: "contained",
+            onClick: handleExportCSV,
+            innerText: "Export CSV",
+            backgroundColor: "#282A2E",
+            data: csvData,
+        },
+        {
+            label: "Update Proposal",
+            variant: "contained",
+            onClick: handleUpdateProposal,
+            innerText: "Update Proposal",
+            ml: "0.5rem",
+            type: "link",
+            to: `/proposal/update/${proposalId}`,
+        }
+    ];
+
+    const buttonConfig = {
+        label: "Create budget",
+        variant: "contained",
+        onClick: handleBudgetCreateOnClick,
+        innerText: "Create Budget"
     };
 
-    const handleUpdateProposal = async () => {
-
-        //ToDo: take data from the form and save it to corresponding ipfs file and then move to do the following. add boundaries to throw error in case proposal is not updated
-        dispatch(setProposal(data.proposal));
-    };
-
-    const componentButtonConfig =
-        [
-            {
-                label: "Export CSVP",
-                variant: "contained",
-                onClick: handleExportCSV,
-                innerText: "Export CSV",
-                backgroundColor: "#282A2E",
-                // type: "link",
-                // to: '/proposal/budgets/export-csv',
-                data: csvData,
-            }, {
-                label: "Update Proposal",
-                variant: "contained",
-                onClick: handleUpdateProposal,
-                innerText: "Update Proposal",
-                ml: "0.5rem",
-                type: "link",
-                to: `/proposal/update/${proposalId}`,
-            }
-        ];
-    
-    console.log(componentButtonConfig[0].data)
-    
     const currentPathConfig = {
         path: "Proposals",
         to: `/proposals`
-    }
+    };
 
     return (
         <div>
@@ -115,32 +215,31 @@ function ProposalDetailView() {
                     justifyContent={'flex-start'}
                     borderBottom={".05rem #2c2c2c solid"}
                 >
-                    {
-                        Object.entries(dataForItemCard).map(([key, value]) => {
-                            return <ItemCard
-                                key={key}
-                                label={key}
-                                value={value}
-                            />
-                        })
-                    }
+                    {Object.entries(dataForItemCard).map(([key, value]) => (
+                        <ItemCard
+                            key={key}
+                            label={key}
+                            value={value}
+                        />
+                    ))}
                 </Stack>
-                {budgetList ?
+                {budgetList && (
                     <TableDisplay
                         tableHeaderData={headers}
-                        tableBodyData={data2}
-                        dataToDisplay={budgetList}
+                        tableBodyData={budgetList}
                     />
-                    :
-                    <Link to={`/proposal/budgets/${proposalId}`}>
-                        <ButtonAtom
-                            config={buttonConfig}
-                        />
-                    </Link>
+                ) || <>
+                        {/* <p>You Currently have no Budgets created for this proposal. Create below </p> */}
+                            <Link to={`/proposal/budgets/${proposalId}`}>
+                                <ButtonAtom
+                                    config={buttonConfig}
+                                />
+                            </Link>
+                    </>
                 }
             </Box>
         </div>
-    )
+    );
 }
 
-export default ProposalDetailView
+export default ProposalDetailView;

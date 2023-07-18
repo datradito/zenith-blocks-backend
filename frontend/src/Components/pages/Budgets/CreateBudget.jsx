@@ -5,39 +5,65 @@ import useStyles from "./CreateBudget.style";
 import FormItem from "../../atoms/FormItem/FormItem";
 import FormRow from "../../molecules/FormBudgetCreation/index";
 import SubHeader from '../../molecules/SubHeader/SubHeader';
+import axios from 'axios';
+import useWeb3IpfsContract from '../../hooks/web3IPFS';
+import getPathAfterBudgetId from '../../../Utility/getBudgetId';
+
+const url = process.env.BACKEND_URL;
 
 function CreateBudget() {
+  const { web3, contract } = useWeb3IpfsContract();
   let { proposal } = useSelector(state => state.currentProposal);
+
   const classes = useStyles();
   let budget = useSelector(state => state.createBudget);
-  
+
 
   let dataForItemCard = {};
-  
-  useEffect(() => {
-    //console.log(budget);
-  }, [budget])
 
   if (proposal) {
-    dataForItemCard = { "Goverance": `${proposal.space.name}`, "Total Budget": "5,980,000", "Proposal": `${proposal.title}`, "Ipfs Link" : `${proposal.ipfs}`}
+    dataForItemCard = { "Goverance": `${proposal.space}`, "Total Budget": "5,980,000", "Proposal": `${proposal.title}`, "Ipfs Link": `${proposal.ipfs}` }
   }
-  // else {
-  //   let storedState = localStorage.getItem('persist:root');
-  //   let data = JSON.parse(storedState).currentProposal;
-  //   let proposal = JSON.parse(data).proposal;
-  //   console.log(proposal)
-  //   dataForItemCard = { "Goverance": JSON.parse(data).proposal.space.name, "Total Budget": "$5,980,000", "Proposal": JSON.parse(data).proposal.title, "Ipfs Link": `${JSON.parse(data).proposal.ipfs}` };
-  // }
 
-  
 
-  const handleSaveProposal = () => {
-    
-    console.log(budget);
+
+  //Todo: Get CID from smartContract using proposalId, Upon submission of budget, Get Data from IPFS for that CID and append new data to it, add new file to Ipfs and update cid in smartContract.
+
+  // { uploadInProgress && <p>Uploading...</p> }
+  // { uploadResult && <p>Upload successful! CID: {uploadResult}</p> }
+  // { uploadError && <p>Error during upload: {uploadError}</p> }
+
+  const handleSaveProposal = async () => {
+    let proposalId = proposal.id;
+    try {
+      const dataToBeUploaded = {
+        jsonData: budget.items,
+        rootPath: proposalId,
+      };
+
+      const { data } = await axios.post(`http://localhost:8000/ipfs/uploadBudget`, dataToBeUploaded);
+      let proposalIdForContract = web3.utils.keccak256(web3.utils.fromAscii(proposalId));
+      data.ipfsResponses.forEach(async (budgetCID) => {
+        let budgetId = getPathAfterBudgetId(budgetCID);
+        try {
+          const accounts = await web3.eth.getAccounts();
+          budgetId = web3.utils.keccak256(web3.utils.fromAscii(budgetId));
+          //budgetCID = web3.utils.keccak256(web3.utils.fromAscii('QmVJZQE9Pr1cncADELH2kqkCshxhxBELACCDxDqX83Qu2D/0xce9b0991276c79cccc773a327814fa07942a3287e022fc9e75378bdcd491b337fa559ab2-6252-4d21-b0ee-d89616aa21df'));
+
+          //encrypt budgetCID to bytes32 so that smartcontract can understand it. but also have ability to convert it back to ipfs cid so that axios can understand it.
+          
+          await contract.methods.createBudget(proposalIdForContract, budgetId, budgetCID).send({ from: accounts[0], gas: "10000000" });
+        } catch (error) {
+          console.error("An error occurred while executing the method:", error);
+        }
+      })
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleDeleteProposal = () => {
-    console.log("Delete Proposal");
+    console.log(contract);
   };
 
   const componentButtonConfig =
@@ -63,7 +89,7 @@ function CreateBudget() {
         }
       }
     ];
-  
+
   const currentPathConfig = {
     path: "Create Budget",
     to: `/proposals/${proposal.id}`
@@ -75,7 +101,7 @@ function CreateBudget() {
       <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath="Proposals  Proposal  Budget" />
       <div className={classes.BoxStyle}>
         <FormItem initialValues={dataForItemCard} type="budget" />
-        <FormRow tableHeaderData={["", "Category", "Currency", "Percentage", "Breakdown"]}/>
+        <FormRow tableHeaderData={["", "Category", "Amount", "Currency", "Breakdown"]} />
       </div>
     </div>
   )

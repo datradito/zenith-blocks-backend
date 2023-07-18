@@ -1,5 +1,6 @@
-import React, { useEffect }  from 'react';
+import React, { useEffect } from 'react';
 import useStyles from './index.style';
+import { setInitialState, addRow, deleteRow, updateField } from '../../../actions/createBudgetAction';
 import {
     Box,
     Button,
@@ -10,46 +11,50 @@ import {
     TableRow,
     TextField,
 } from '@mui/material';
+import generateUUID from '../../../Utility/uniqueId';
 import TableHeader from '../../atoms/TableHeader/index';
 import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
 import { useDispatch, useSelector } from 'react-redux';
 import ButtonAtom from '../../atoms/Button';
 import { Formik, Form } from 'formik';
 import * as yup from 'yup';
-import FormItem from '../../atoms/FormItem/FormItem';
+import UnstyledSelectBasic from '../../atoms/SelectDropdown/SelectDropdown';
+import { categories } from '../../pages/Category/Category';
 
-function FormRow( {tableHeaderData}) {
+function FormRow({ tableHeaderData }) {
     const dispatch = useDispatch();
     let currentProposal = useSelector(state => state.currentProposal);
     let classes = useStyles();
-    // const [proposalIsSet, setProposalIsSet] = React.useState(false);
     let { items, proposal } = useSelector(state => state.createBudget);
-    // const getStateOnLoad = () => {
-    //     items = dispatch({ type: 'GET_ALL_ROWS' });
-    // };
-    // useEffect(() => {
-    //     let proposalData = currentProposal.proposal;
-    //     addCurrentProposalData(proposalData);
-    // }, [proposalIsSet]);
+
+    //Todo: Implement Proposal amount - allocated budget validation so that total budget amount does not exceed the total proposal amount
+    //Todo: Fix setting proposal correctly in initial state, implement hash funciton in store to generate unique id for each budget
+
+    useEffect(() => {
+        const setProposalData = async () => {
+            const generatedBudgetId = generateUUID();
+            const data = { proposal: currentProposal.proposal, id: generatedBudgetId };
+            dispatch(setInitialState(data));
+        }
+        setProposalData();
+    }, []);
 
 
-    // //let dataForItemCard = { "Goverance": proposal.space.name, "Total Budget": "$5,980,000", "Proposal": proposal.title, "Ipfs Link": proposal.ipfs };
-    // console.log(proposal)
-
-    // const addCurrentProposalData = (proposal) => {
-    //     dispatch({ type: 'SET_INITIAL_STATE', payload: proposal });
-    // };
-
-    const handleAddRow = () => {
-        dispatch({ type: 'ADD_ROW', payload: { action: '-', category: '', currency: '', percentage: '', breakdown: '' } });
+    const handleAddRow = async () => {
+        const generatedBudgetId = generateUUID();
+        dispatch(addRow({ action: '-', Categories: '', "Allocated Budget": '', Currency: '', Breakdown: '', id: generatedBudgetId }));
     };
 
     const handleDeleteRow = (index) => {
-        dispatch({ type: 'DELETE_ROW', payload: index });
+        dispatch(deleteRow(index));
     };
 
     const handleChange = (index, field, value) => {
-        dispatch({ type: 'UPDATE_FIELD', payload: { index, field, value } });
+        dispatch(updateField(
+                index,
+                field,
+                value,
+            ));
     };
 
     const formStyleCustom = {
@@ -88,12 +93,12 @@ function FormRow( {tableHeaderData}) {
             },
             '& .MuiButtonBase-root': {
                 minWidth: 'initial',
-                
-            }         
+
+            }
         },
         buttonStyles: {
             color: 'white',
-            padding: '0',  
+            padding: '0',
         },
     };
 
@@ -134,12 +139,34 @@ function FormRow( {tableHeaderData}) {
                                     style={{ width: '100%', border: 'none', padding: '0.5rem' }}
                                     sx={formStyleCustom.default}>
                                     
-                                    <TextField
-                                        value={item.category}
-                                        onChange={(e) => handleChange(index, 'category', e.target.value)}
+                                    <UnstyledSelectBasic values={categories}
+                                        onChange={(value) => handleChange(index, 'Categories', value)}
+                                    />
+
+                                    {/* <TextField
+                                        value={item.Categories}
+                                        onChange={(e) => handleChange(index, 'Categories', e.target.value)}
                                         fullWidth
                                         sx={formStyleCustom.textFieldStyle}
-                                        
+                                        required
+                                    /> */}
+                                </TableCell>
+                                <TableCell
+                                    style={{ border: 'none', padding: '0.5rem' }}
+                                    sx={formStyleCustom.default}>
+                                    <TextField
+                                        value={item["Allocated Budget"]}
+                                        type="number"
+                                        onChange={(e) => handleChange(index, 'Allocated Budget', e.target.value)}
+                                        InputProps={{
+                                            style: {
+                                                color: 'white',
+                                                border: '2px solid #2C2C2C',
+                                                backgroundColor: '#1A1C1E',
+                                                minWidth: '200px',
+                                            },
+                                        }}
+                                        required
                                     />
                                 </TableCell>
                                 <TableCell
@@ -147,10 +174,10 @@ function FormRow( {tableHeaderData}) {
                                     sx={formStyleCustom.default}
                                 >
                                     <Select
-                                        value={item.currency}
-                                        onChange={(e) => handleChange(index, 'currency', e.target.value)}
+                                        value={item.Currency}
+                                        onChange={(e) => handleChange(index, 'Currency', e.target.value)}
                                         sx={[formStyleCustom.currencyDropdown, formStyleCustom.default]}
-                                        style={{fontSize: '.85rem'}}
+                                        style={{ fontSize: '.85rem' }}
                                     >
                                         {/* <MenuItem value={item.currency}>{item.currency}</MenuItem> */}
                                         <MenuItem value="USD"
@@ -163,8 +190,9 @@ function FormRow( {tableHeaderData}) {
                                     style={{ border: 'none', padding: '0.5rem' }}
                                     sx={formStyleCustom.default}>
                                     <TextField
-                                        value={item.percentage}
-                                        onChange={(e) => handleChange(index, 'percentage', e.target.value)}
+                                        
+                                        value={`${(item["Allocated Budget"]/ 500) *100}%`}
+                                       //onChange={(e) => handleChange(index, 'Breakdown', (item["Allocated Budget"]/ 500))}
                                         InputProps={{
                                             style: {
                                                 color: 'white',
@@ -172,22 +200,7 @@ function FormRow( {tableHeaderData}) {
                                                 backgroundColor: '#1A1C1E',
                                                 minWidth: '200px',
                                             },
-                                        }}
-                                    />
-                                </TableCell>
-                                <TableCell
-                                    style={{ border: 'none' , padding: '0.5rem'}}
-                                    sx={formStyleCustom.default}>
-                                    <TextField
-                                        value={item.breakdown}
-                                        onChange={(e) => handleChange(index, 'breakdown', e.target.value)}
-                                        InputProps={{
-                                            style: {
-                                                color: 'white',
-                                                border: '2px solid #2C2C2C',
-                                                backgroundColor: '#1A1C1E',
-                                                minWidth: '200px',
-                                            },
+                                            readOnly: true,
                                         }}
                                     />
                                 </TableCell>
@@ -204,3 +217,7 @@ function FormRow( {tableHeaderData}) {
 }
 
 export default FormRow;
+
+
+// { \"action\":\"-\",\"Category\":\"\",\"Amount\":\"\",\"Currency\":\"\",\"Breakdown\":\"\",\"Categories\":\"hgdh\",\"Allocated Budget\":\"sfe\"},
+// { \"action\":\"-\",\"Category\":\"\",\"Amount\":\"\",\"Currency\":\"EUR\",\"Breakdown\":\"\",\"Categories\":\"xbfdffdvddfv\",\"Allocated Budget\":\"fdbdd\"}],\"proposal\":{}}"
