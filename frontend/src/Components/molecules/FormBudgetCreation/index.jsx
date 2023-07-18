@@ -18,6 +18,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import ButtonAtom from '../../atoms/Button';
 import { Formik, Form } from 'formik';
 import * as yup from 'yup';
+import UnstyledSelectBasic from '../../atoms/SelectDropdown/SelectDropdown';
+import { categories } from '../../pages/Category/Category';
 
 function FormRow({ tableHeaderData }) {
     const dispatch = useDispatch();
@@ -136,14 +138,18 @@ function FormRow({ tableHeaderData }) {
                                 <TableCell
                                     style={{ width: '100%', border: 'none', padding: '0.5rem' }}
                                     sx={formStyleCustom.default}>
+                                    
+                                    <UnstyledSelectBasic values={categories}
+                                        onChange={(value) => handleChange(index, 'Categories', value)}
+                                    />
 
-                                    <TextField
+                                    {/* <TextField
                                         value={item.Categories}
                                         onChange={(e) => handleChange(index, 'Categories', e.target.value)}
                                         fullWidth
                                         sx={formStyleCustom.textFieldStyle}
-
-                                    />
+                                        required
+                                    /> */}
                                 </TableCell>
                                 <TableCell
                                     style={{ border: 'none', padding: '0.5rem' }}
@@ -160,6 +166,7 @@ function FormRow({ tableHeaderData }) {
                                                 minWidth: '200px',
                                             },
                                         }}
+                                        required
                                     />
                                 </TableCell>
                                 <TableCell

@@ -5,6 +5,8 @@ import { Formik, Form } from 'formik';
 import { useDispatch } from 'react-redux';
 import { updateHeader } from './../../../actions/createInvoiceAction/index.js';
 import BasicDate from "../BasicDate/BasicDate"
+import { categories } from '../../pages/Category/Category';
+import UnstyledSelectBasic from '../SelectDropdown/SelectDropdown';
 
 function FormItem({ initialValues, type }) {
     const classes = useStyles();
@@ -13,7 +15,7 @@ function FormItem({ initialValues, type }) {
         formInputFieldStyles: {
             color: 'white',
             padding: '0',
-            border: ".05rem #2c2c2c solid",
+            border: ".08rem #2c2c2c solid",
             borderRadius: '5px',
             
             '& .MuiInputBase-input': {
@@ -61,7 +63,10 @@ function FormItem({ initialValues, type }) {
                                     >
                                         {key}
                                     </Typography>
-                                    {key === "Due Date" || key === "Invoice Date" ? <BasicDate label = {""} /> : 
+                                    {key === "Due Date" || key === "Invoice Date" ? <BasicDate label={""} /> : 
+                                        key === "Category" ?
+                                            <UnstyledSelectBasic values={categories} onChange={(value) => handleChange(key, value)} />
+                                            :
                                         <TextField
                                             name={key}
                                             defaultValue={value}
