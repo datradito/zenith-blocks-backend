@@ -1,9 +1,10 @@
 import React from 'react'
 import { Button } from '@mui/material';
-
+import { useNavigate } from 'react-router-dom';
 import { CSVLink, CSVDownload } from "react-csv";
 
 const ButtonAtom = ({ config }) => {
+    const navigate = useNavigate();
 
     const buttonComponentStyles = {
         buttonStyle: {
@@ -18,6 +19,17 @@ const ButtonAtom = ({ config }) => {
         }
 
     }
+
+
+    const handleClick = () => {
+        if (config.onClick) {
+            config.onClick();
+        }
+
+        if (config.redirectTo) {
+            navigate(config.redirectTo);
+        }
+    };
     return (
         <>
             {
@@ -26,7 +38,7 @@ const ButtonAtom = ({ config }) => {
                         <Button
                             sx={buttonComponentStyles.buttonStyle}
                             variant="contained"
-                            // type={config.type ? config.type : "submit"}
+                            type={config.type ? config.type : "submit"}
                             // onClick={config.onClick}
                         >
                             {config.innerText}
@@ -36,7 +48,7 @@ const ButtonAtom = ({ config }) => {
                     sx={buttonComponentStyles.buttonStyle}
                     variant="contained"
                     type={config.type ? config.type : "submit"}
-                    onClick={config.onClick}
+                    onClick={handleClick}
                 >
                     {config.innerText}
                 </Button>
