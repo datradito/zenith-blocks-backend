@@ -1,4 +1,4 @@
-import { UPDATE_FIELD_INVOICE, ADD_ROW_INVOICE, DELETE_ROW_INVOICE, GET_ALL_ROWS_INVOICE, UPDATE_INVOICE_HEADER } from "../../actions/createInvoiceAction/types";
+import { UPDATE_FIELD_INVOICE, ADD_ROW_INVOICE, DELETE_ROW_INVOICE, GET_ALL_ROWS_INVOICE, UPDATE_INVOICE_HEADER, RESET_INVOICE } from "../../actions/createInvoiceAction/types";
 
 const initialState = {
         header:
@@ -45,6 +45,8 @@ const createBudgetReducer = (state = initialState, action) => {
             };
         case GET_ALL_ROWS_INVOICE:
             return state; // No changes needed here, just return the current state
+        case 'RESET_INVOICE':
+            return initialState;
         default:
             return state;
     }

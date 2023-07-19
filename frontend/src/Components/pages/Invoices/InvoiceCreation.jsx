@@ -1,18 +1,26 @@
 import React from 'react'
 import SubHeader from '../../molecules/SubHeader/SubHeader';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Box, Stack, Grid, Typography } from '@mui/material';
 import * as yup from 'yup';
 import { Formik, Field, Form, ErrorMessage, useFormik } from 'formik';
 import FormItem from '../../atoms/FormItem/FormItem';
 import FormRowInvoice from '../../molecules/FormInvoiceCreation';
+import { SUBMIT_INVOICE_MUTATION } from '../../../ServerQueries/InvoiceQueries';
+import { useQuery, useMutation } from "@apollo/client";
+import { useNavigate } from 'react-router-dom';
+import CircularIndeterminate from '../../atoms/Loader/loader';
+import { resetInvoice } from '../../../actions/createInvoiceAction';
+import CustomizedSnackbars from '../../atoms/SnackBar/SnackBar';
 // import { PDFViewer } from 'react-pdf';
 
 
 function InvoiceCreation() {
+    const dispatch = useDispatch();
     const { proposal } = useSelector(state => state.currentProposal);
-    
-
+    const { header } = useSelector(state => state.createInvoice);
+    const navigate = useNavigate();
+    const [submitInvoice, { loading, error }] = useMutation(SUBMIT_INVOICE_MUTATION , { errorPolicy: "all" }); 
     const handleDraft = () => {
         //do validation and save file locally
         console.log("Save Draft");
@@ -87,25 +95,28 @@ function InvoiceCreation() {
             alert(JSON.stringify(values, null, 2));
         },
     });
-    
-    // const formik = useFormik({
-    //     initialValues: {
-    //         initialValuesHeader,
-    //         initialValuesLines, 
-    //     },
-    //     validationSchema: yup.object().shape({
-    //         ...validationSchemaHeader,
-    //         ...validationSchemaLines,
-    //     }),
-    //     onSubmit: (values) => {
-    //         alert(JSON.stringify(values, null, 2));
-    //     },
-    // });
 
-
-    const handleSaveInvoice = () => {
+    const handleSaveInvoice = async () => {
         //here add logic to check all invoice field are valid and then save file locally - sync it ipfs
         formik.handleSubmit();
+        await submitInvoice({
+            variables: {
+                Category: header.Category,
+                Recipient: header.Recipient,
+                InvoiceNumber: header['Invoice Number'],
+                Currency: parseInt(header.Currency),
+                InvoiceDate: header['Invoice Date'],
+                DueDate: header['Due Date'],
+                UploadInvoice: header['Upload Invoice'],
+                Description: header.Description,
+            },
+        }).then((res) => {
+            dispatch(resetInvoice());
+            navigate(`/proposals/${proposal.id}/invoices`);
+        }).catch((err) => {
+            console.log("Error in creating invoice");
+            console.log(err);
+        });
     };
 
     
@@ -126,9 +137,11 @@ function InvoiceCreation() {
                 innerText: "Save Invoice",
                 ml: "0.5rem",
                 type: "Submit",
-                redirectTo: `/proposals/${proposal.id}/invoices`,
+                // redirectTo: `/proposals/${proposal.id}/invoices`,
             }
         ];
+    
+    if (loading) return <CircularIndeterminate />;
 
   return (
       <form onSubmit={formik.handleSubmit}>
@@ -137,6 +150,9 @@ function InvoiceCreation() {
               <FormItem initialValues={initialValuesHeader} type="invoice" formik={formik}/>
               <FormRowInvoice tableHeaderData={["", "Category", "Notes", "Price", "Quantity", "Total"]} formik={formik} />
           </Box>
+          {error && (
+              <CustomizedSnackbars message="Error in creating invoice" severity="error" autoOpen={true} />
+          )}
     </form>
   )
 }

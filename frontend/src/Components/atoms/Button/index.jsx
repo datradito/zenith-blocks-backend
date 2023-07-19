@@ -25,10 +25,6 @@ const ButtonAtom = ({ config }) => {
         if (config.onClick) {
             config.onClick();
         }
-
-        if (config.redirectTo) {
-            navigate(config.redirectTo);
-        }
     };
     return (
         <>

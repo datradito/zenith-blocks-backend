@@ -6,20 +6,8 @@ import { updateHeader } from './../../../actions/createInvoiceAction/index.js';
 import BasicDate from "../BasicDate/BasicDate";
 import { categories } from '../../pages/Category/Category';
 import UnstyledSelectBasic from '../SelectDropdown/SelectDropdown';
-import * as yup from 'yup';
 import useStyles from './index.style';
 
-
-    // const validationSchema = yup.object({
-    //     category: yup.string().required('Category is required'),
-    //     Recipient: yup.string().required('Recipient is required'),
-    //     'Invoice Number': yup.string().required('Invoice Number is required'),
-    //     Currency: yup.string().required('Currency is required'),
-    //     'Invoice Date': yup.date().required('Invoice Date is required'),
-    //     'Due Date': yup.date().required('Due Date is required'),
-    //     // 'Upload Invoice': yup.string().required('Upload Invoice is required'),
-    //     // Description: yup.string().required('Description is required'),
-    // });
 
 function FormItem({ initialValues, type, formik }) {
     const classes = useStyles();
@@ -55,7 +43,7 @@ function FormItem({ initialValues, type, formik }) {
         initialValues[key] = value;
         formik.handleChange(key, value);
         let error = formik.touched[key] && Boolean(formik.errors[key]) 
-        console.log(error);
+        console.log(formik.errors[key]);
     };
 
 
@@ -89,7 +77,7 @@ function FormItem({ initialValues, type, formik }) {
                                         }}
                                         sx={componentStyles.formInputFieldStyles}
                                         
-                                        helperText={formik.touched[key] && formik.errors[key]}
+                                        //helperText={formik.touched[key] && formik.errors[key]}
                                     />
                                 )}
                             </Grid>

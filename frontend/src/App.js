@@ -52,15 +52,24 @@ function App() {
   //   const data = document.querySelector("#value").value;
   //   await contract.methods
   //     .setter(data)
-  //     .send({ from: "0x1f4F90f9aA5779f2C1E190133C2c872944bDED1c" });  
+  //     .send({ from: "0x1f4F90f9aA5779f2C1E190133C2c872944bDED1c" });
   //   window.location.reload();
   // }
 
   const client = new ApolloClient({
+    uri: 'http://localhost:8000/graphql',
+    cache: new InMemoryCache()
+  });
+
+  const snapshotClient = new ApolloClient({
     uri: 'https://hub.snapshot.org/graphql',
     cache: new InMemoryCache(),
   });
 
+  // const client = new ApolloClient({
+  //   uri: concat(client.uri, snapshotClient.uri),
+  //   cache: new InMemoryCache().restore(),
+  // });
 
   return (
   
