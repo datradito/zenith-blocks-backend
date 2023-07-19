@@ -21,7 +21,7 @@ import UnstyledSelectBasic from '../../atoms/SelectDropdown/SelectDropdown';
 import { categories } from '../../pages/Category/Category';
 
 
-function FormRowInvoice({ tableHeaderData }) {
+function FormRowInvoice({ tableHeaderData, formik }) {
     const dispatch = useDispatch();
     let currentProposal = useSelector(state => state.currentProposal);
     let classes = useStyles();
@@ -83,8 +83,8 @@ function FormRowInvoice({ tableHeaderData }) {
 
     return (
         <Box className={classes.boxStyle}>
-            <Formik>
-                <Form>
+            {/* <Formik>
+                <Form> */}
                     {/* <FormItem initialValues={dataForItemCard} /> */}
                     <TableHeader
                         tableHeaderData={tableHeaderData}
@@ -154,6 +154,8 @@ function FormRowInvoice({ tableHeaderData }) {
                                                 minWidth: '200px',
                                             },
                                         }}
+                                        // error={formik.touched.number && Boolean(formik.errors.number)}
+                                        // helperText={formik.touched.number && formik.errors.number}
                                     />
                                 </TableCell>
                                 <TableCell
@@ -195,8 +197,8 @@ function FormRowInvoice({ tableHeaderData }) {
                             </TableRow>
                         })}
                     </TableBody>
-                </Form>
-            </Formik>
+                {/* </Form>
+            </Formik> */}
             <Box>
                 <ButtonAtom config={buttonConfig} />
             </Box>
