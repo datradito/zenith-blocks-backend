@@ -21,7 +21,9 @@ const ButtonAtom = ({ config }) => {
     }
 
 
-    const handleClick = () => {
+    const handleClick = (e) => {
+
+        e.preventDefault();
         if (config.onClick) {
             config.onClick();
         }

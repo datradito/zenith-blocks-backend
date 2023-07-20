@@ -10,7 +10,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 export default function CustomizedSnackbars({ message, severity, autoOpen }) {
     const [open, setOpen] = React.useState(false);
-
+    
     const handleClick = () => {
         setOpen(true);
     };

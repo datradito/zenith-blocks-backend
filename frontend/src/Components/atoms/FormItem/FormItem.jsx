@@ -9,7 +9,7 @@ import UnstyledSelectBasic from '../SelectDropdown/SelectDropdown';
 import useStyles from './index.style';
 
 
-function FormItem({ initialValues, type, formik }) {
+function FormItem({ initialValues, type}) {
     const classes = useStyles();
     const dispatch = useDispatch();
 
@@ -40,16 +40,15 @@ function FormItem({ initialValues, type, formik }) {
 
     const handleChange = (key, value) => {
         dispatch(updateHeader(key, value));
-        initialValues[key] = value;
-        formik.handleChange(key, value);
-        let error = formik.touched[key] && Boolean(formik.errors[key]) 
-        console.log(formik.errors[key]);
     };
 
 
     return (
         <>
-                <Box className={classes.boxStyle}>
+            <Box
+                // component="form"
+                className={classes.boxStyle}
+            >
                     <Grid container className={classes.containerStyles} spacing={3}>
                         {Object.entries(initialValues).map(([key, value], index) => (
                             <Grid item xs={type === 'budget' ? (index < 2 ? 6 : index === 2 ? 8 : 4) : (index < 2 ? 6 : index === 2 ? 7 : index === 3 ? 3 : index === 4 ? 2 : index > 4 && index < 7 ? 6 : index === 7 ? 4 : 8)} key={index}>
@@ -57,18 +56,24 @@ function FormItem({ initialValues, type, formik }) {
                                     sx={componentStyles.typographyLabel}
                                 >{key}</Typography>
                                 {
-                                //     key === 'Due Date' || key === 'Invoice Date' ? (
-                                //     <BasicDate label={''} />
-                                // ) :
+                                    key === 'Due Date' || key === 'Invoice Date' ? (
+                                        <TextField
+                                            required
+                                            type='date'
+                                            value={initialValues[key]}
+                                            sx={componentStyles.formInputFieldStyles}
+                                            onChange={(e) => handleChange(key, e.target.value)}
+                                        />
+                                ) :
                                     key === 'Category' ? (
-                                    <UnstyledSelectBasic values={categories} onChange={(value) => handleChange(key, value)} />
+                                        <UnstyledSelectBasic defaultValue={initialValues.Category} values={categories} onChange={(value) => handleChange(key, value)} />
                                 ) : (
                                     <TextField
-                                        name={key}
+                                                name={key}
+                                                required
                                                 // value={formik.values[key]}
-                                        defaultValue={value}
+                                        value={value}
                                         onChange={(e) => handleChange(key, e.target.value)}
-                                        onBlur={formik.handleBlur}
                                         fullWidth
                                         multiline={key === 'Description' || key === 'Upload Invoice'}
                                         rows={key === 'Description' || key === 'Upload Invoice' ? 4 : 1}

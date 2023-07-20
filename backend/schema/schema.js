@@ -5,7 +5,7 @@ const graphql = require('graphql');
 // const bcrypt = require("bcrypt")
 // const jwt = require("jsonwebtoken")
 const { UserInputError } = require('apollo-server');
-const validateInvoice  = require("../validators/validate.js");
+const validateInvoice  = require("../validators/validateInvoice.js");
 // const { checkAuth } = require("../utils/chekAuth.js")
 // const SECRET = process.env.SECRET_KEY
 
@@ -68,6 +68,20 @@ const InvoiceType = new GraphQLObjectType({
     }),
 });
 
+const BudgetType = new GraphQLObjectType({
+    name: 'Budget',
+    fields: () => ({
+        Id: { type: GraphQLString },    
+        Category: { type: GraphQLString },
+        Amount: { type: GraphQLFloat },
+        Currency: { type: GraphQLFloat },
+        Breakdown: { type: GraphQLString },
+        Proposal: { type: GraphQLString },
+        rootPath: { type: GraphQLString },
+
+    }),
+});
+
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: () => ({
@@ -88,22 +102,31 @@ const Mutation = new GraphQLObjectType({
         submitInvoice: {
             type: InvoiceType,
             args: {
-                Category: { type: new GraphQLNonNull(GraphQLString) },
-                Recipient: { type: new GraphQLNonNull(GraphQLString) },
-                InvoiceNumber: { type: new GraphQLNonNull(GraphQLString) },
-                Currency: { type: new GraphQLNonNull(GraphQLFloat) },
-                InvoiceDate: { type: new GraphQLNonNull(GraphQLString) },
-                DueDate: { type: new GraphQLNonNull(GraphQLString)},
-                UploadInvoice: { type: new GraphQLNonNull(GraphQLString) },
-                Description: { type: new GraphQLNonNull(GraphQLString) },
+                Category: { type: GraphQLString },
+                Recipient: { type: GraphQLString },
+                InvoiceNumber: { type: GraphQLString },
+                Currency: { type: GraphQLFloat},
+                InvoiceDate: { type: GraphQLString },
+                DueDate: { type: GraphQLString},
+                UploadInvoice: { type: GraphQLString },
+                Description: { type: GraphQLString },
             },
             async resolve(parent, args) {
-
-                console.log(args)
-                const {valid, errors} = await validateInvoice(args.Category, args.Recipient, args.InvoiceNumber, args.Currency, args.InvoiceDate, args.DueDate, args.UploadInvoice, args.Description)
+                const { valid, errors } = await validateInvoice(
+                    args.Category,
+                    args.Recipient,
+                    args.InvoiceNumber,
+                    args.Currency,
+                    args.InvoiceDate,
+                    args.DueDate,
+                    args.UploadInvoice,
+                    args.Description)
                 if (!valid) {
-                    throw new UserInputError("Erros", { errors })
+                    throw new UserInputError("InvoiceErrors", { errors })
                 } else {
+                    //TODO: step 1: save invoice to ipfs 
+                    //Todo: step 2: save ipfs hash + invoice data to mongo db
+                    //Todo: step 3: return ok response with no errors
                     //send ok response with no errors
                     return ({ message: "Invoice submitted successfully" });
                 }
@@ -132,7 +155,66 @@ const Mutation = new GraphQLObjectType({
                 // }
             }
         },
-    }
+        submitBudget: {
+            type: BudgetType,
+            args: {
+                Id: { type: new GraphQLNonNull(GraphQLString) },
+                Category: { type: new GraphQLNonNull(GraphQLString) },
+                Amount: { type: new GraphQLNonNull(GraphQLFloat) },
+                Currency: { type: new GraphQLNonNull(GraphQLFloat) },
+                Breakdown: { type: new GraphQLNonNull(GraphQLString) },
+                Proposal: { type: new GraphQLNonNull(GraphQLString) },
+                rootPath: { type: new GraphQLNonNull(GraphQLString) },
+            },
+            async resolve(parent, args) {
+                //Todo: get remaining budget amount from mongo db based on proposalId (proposal) and budgetId
+                const { valid, errors } = await validateBudget(
+                    args.Id,
+                    args.Category,
+                    args.Amount,
+                    args.Currency,
+                    args.Breakdown,
+                    args.Proposal,
+                    remainingBudgetAmount
+                )
+                if (!valid) {
+                    throw new UserInputError("BudgetErrors", { errors })
+                } else {
+                    //TODO: step 1: save invoice to ipfs 
+                    const jsonData = {
+                        "id": args.Id,
+                        "category": args.Category,
+                        "amount": args.Amount,
+                        "currency": args.Currency,
+                        "breakdown": args.Breakdown,
+                        "proposal": args.Proposal,
+                        "remainingBudgetAmount": remainingBudgetAmount
+                    };
+                    const rootPath = args.rootPath;
+
+                    const ipfsResponses = [];
+                    for (let data of jsonData) {
+                        let ipfsFilePath = rootPath + 'budgetId' + data.id;
+                        try {
+
+                            //Todo: Need to implement rate limit in case some items fail to upload
+                            const response= await UploadDataToIpfs(ipfsFilePath, data);
+                            ipfsResponses.push(response.jsonResponse[0].path);
+                        } catch (error) {
+                            console.error("Error uploading to IPFS:", error);
+                        }
+                    }
+    
+                    //Todo: step 2: save ipfs hash + invoice data to mongo db
+                    //send ipfs hash to mongo db
+
+                    //Todo: step 3: return ok response with no errors
+                    //send ok response with no errors
+                    return ({ message: "budget saved successfully" });
+                }
+            },
+        },
+    },
 })
 
 module.exports = new graphql.GraphQLSchema({

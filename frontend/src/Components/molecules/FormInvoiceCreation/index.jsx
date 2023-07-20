@@ -14,14 +14,11 @@ import TableHeader from '../../atoms/TableHeader/index';
 import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
 import { useDispatch, useSelector } from 'react-redux';
 import ButtonAtom from '../../atoms/Button';
-import { Formik, Form } from 'formik';
-import * as yup from 'yup';
-import FormItem from '../../atoms/FormItem/FormItem';
 import UnstyledSelectBasic from '../../atoms/SelectDropdown/SelectDropdown';
 import { categories } from '../../pages/Category/Category';
 
 
-function FormRowInvoice({ tableHeaderData, formik }) {
+function FormRowInvoice({ tableHeaderData }) {
     const dispatch = useDispatch();
     let currentProposal = useSelector(state => state.currentProposal);
     let classes = useStyles();
@@ -109,7 +106,9 @@ function FormRowInvoice({ tableHeaderData, formik }) {
                                 </TableCell>
                                 <TableCell
                                     style={{ width: '20rem', border: 'none', padding: '0.5rem' }}
-                                    sx={formStyleCustom.default}>
+                                    sx={formStyleCustom.default}
+
+                                >
 {/* 
                                     <TextField
                                         required
@@ -120,6 +119,7 @@ function FormRowInvoice({ tableHeaderData, formik }) {
 
                                     /> */}
                                     <UnstyledSelectBasic
+                                        defaultValue={item.Category}
                                         values={categories}
                                         onChange={(value) => handleChange(index, 'Category', value)}
                                     />
@@ -131,7 +131,8 @@ function FormRowInvoice({ tableHeaderData, formik }) {
                                 >
                                     <TextField
                                         required
-                                        value={item.Notes}
+                                        defaultValue={item.Notes}
+                                        // value={item.Notes}
                                         onChange={(e) => handleChange(index, 'Notes', e.target.value)}
                                         sx={formStyleCustom.textFieldStyle}
                                         style={{ fontSize: '.85rem', width: '100%' }}
@@ -144,6 +145,7 @@ function FormRowInvoice({ tableHeaderData, formik }) {
                                     <TextField
                                         required
                                         value={item.Price}
+                                        // defaultValue={item.Price}
                                         type="number"
                                         onChange={(e) => handleChange(index, 'Price', e.target.value)}
                                         InputProps={{
@@ -164,7 +166,8 @@ function FormRowInvoice({ tableHeaderData, formik }) {
                                     <TextField
                                         required
                                         type='number'
-                                        value={item.Quantity}
+                                        defaultValue={item.Quantity}
+                                        // value={item.Quantity}
                                         onChange={(e) => handleChange(index, 'Quantity', e.target.value)}
                                         InputProps={{
                                             style: {
@@ -182,7 +185,8 @@ function FormRowInvoice({ tableHeaderData, formik }) {
                                     <TextField
                                         required
                                         type='number'
-                                        value={item.Total}
+                                        defaultValue={item.Total}
+                                        // value={item.Total}
                                         onChange={(e) => handleChange(index, 'Total', e.target.value)}
                                         InputProps={{
                                             style: {
