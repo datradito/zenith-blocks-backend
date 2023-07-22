@@ -3,12 +3,10 @@ import useStyles from './index.style';
 import {
     Box,
     Button,
-    MenuItem,
-    Select,
-    TableBody,
     TableCell,
     TableRow,
     TextField,
+    FormControl
 } from '@mui/material';
 import TableHeader from '../../atoms/TableHeader/index';
 import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
@@ -63,10 +61,10 @@ function FormRowInvoice({ tableHeaderData }) {
         buttonStyles: {
             color: 'white',
             padding: '0',
+            mt: '0.5rem',
         },
         action: {
             color: 'white',
-            width: '25px',
         }
     };
 
@@ -80,129 +78,128 @@ function FormRowInvoice({ tableHeaderData }) {
 
     return (
         <Box className={classes.boxStyle}>
-            {/* <Formik>
-                <Form> */}
-                    {/* <FormItem initialValues={dataForItemCard} /> */}
-                    <TableHeader
-                        tableHeaderData={tableHeaderData}
-                    />
-                    <TableBody>
-                        {lines && lines.map((item, index) => {
-                            return <TableRow
-                                key={index}
-                            >
-                                <TableCell
-                                    style={{ border: 'none', width: '25', padding: '0.5rem' }}
-                                    sx={formStyleCustom.default}
-                                    required
-                                >
-                                    <Button
-                                        startIcon={<RemoveCircleOutlineSharpIcon />}
-                                        onClick={() => handleDeleteRow(index)}
-                                        sx={formStyleCustom.buttonStyles}
-                                    >
-                                        {/* {item.action} */}
-                                    </Button>
-                                </TableCell>
-                                <TableCell
-                                    style={{ width: '20rem', border: 'none', padding: '0.5rem' }}
-                                    sx={formStyleCustom.default}
-
-                                >
-{/* 
-                                    <TextField
-                                        required
-                                        value={item.Category}
-                                        onChange={(e) => handleChange(index, 'Category', e.target.value)}
-                                        fullWidth
-                                        sx={formStyleCustom.textFieldStyle}
-
-                                    /> */}
-                                    <UnstyledSelectBasic
-                                        defaultValue={item.Category}
-                                        values={categories}
-                                        onChange={(value) => handleChange(index, 'Category', value)}
-                                    />
-                                </TableCell> 
-                                
-                                <TableCell
-                                    style={{ width: '30rem', border: 'none', padding: '0.5rem' }}
-                                    sx={formStyleCustom.default}
-                                >
-                                    <TextField
-                                        required
-                                        defaultValue={item.Notes}
-                                        // value={item.Notes}
-                                        onChange={(e) => handleChange(index, 'Notes', e.target.value)}
-                                        sx={formStyleCustom.textFieldStyle}
-                                        style={{ fontSize: '.85rem', width: '100%' }}
-
-                                    />
-                                </TableCell>
-                                <TableCell
-                                    style={{ border: 'none', padding: '0.5rem' }}
-                                    sx={formStyleCustom.default}>
-                                    <TextField
-                                        required
-                                        value={item.Price}
-                                        // defaultValue={item.Price}
-                                        type="number"
-                                        onChange={(e) => handleChange(index, 'Price', e.target.value)}
-                                        InputProps={{
-                                            style: {
-                                                color: 'white',
-                                                border: '2px solid #2C2C2C',
-                                                backgroundColor: '#1A1C1E',
-                                                minWidth: '200px',
-                                            },
-                                        }}
-                                        // error={formik.touched.number && Boolean(formik.errors.number)}
-                                        // helperText={formik.touched.number && formik.errors.number}
-                                    />
-                                </TableCell>
-                                <TableCell
-                                    style={{ border: 'none', padding: '0.5rem' }}
-                                    sx={formStyleCustom.default}>
-                                    <TextField
-                                        required
-                                        type='number'
-                                        defaultValue={item.Quantity}
-                                        // value={item.Quantity}
-                                        onChange={(e) => handleChange(index, 'Quantity', e.target.value)}
-                                        InputProps={{
-                                            style: {
-                                                color: 'white',
-                                                border: '2px solid #2C2C2C',
-                                                backgroundColor: '#1A1C1E',
-                                                minWidth: '200px',
-                                            },
-                                        }}
-                                    />
-                                </TableCell>
-                                <TableCell
-                                    style={{ border: 'none', padding: '0.5rem' }}
-                                    sx={formStyleCustom.default}>
-                                    <TextField
-                                        required
-                                        type='number'
-                                        defaultValue={item.Total}
-                                        // value={item.Total}
-                                        onChange={(e) => handleChange(index, 'Total', e.target.value)}
-                                        InputProps={{
-                                            style: {
-                                                color: 'white',
-                                                border: '2px solid #2C2C2C',
-                                                backgroundColor: '#1A1C1E',
-                                                minWidth: '200px',
-                                            },
-                                        }}
-                                    />
-                                </TableCell>
-                            </TableRow>
-                        })}
-                    </TableBody>
-                {/* </Form>
-            </Formik> */}
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'flex-start',
+                border: 'none',
+                padding: '0.1rem',
+                color: 'white',
+                backgroundColor: 'rgba(40, 42, 46, 0.5)',
+                fontSize: '0.75rem',
+                color: "gray",
+            }}>
+                {/* Render the header data */}
+                {tableHeaderData.map((item, index) => (
+                    <FormControl key={index} sx={{
+                        width: index === 0 ? '25px' : index === 1 ? '20%' : index === 2 ? '40%' : index === 3 ? '10%' : index === 4 ? '10%' : '10%',
+                        padding: '0.5rem'
+                    }}>
+                        {item}
+                    </FormControl>
+                ))}
+            </Box>
+                
+            {lines && lines.map((item, index) => {
+                return <Box
+                    key={index}
+                >
+                    <FormControl
+                        style={{ border: 'none', width: '25', padding: '0.5rem' }}
+                        sx={formStyleCustom.default}
+                        
+                        required
+                    >
+                        <Button
+                            startIcon={<RemoveCircleOutlineSharpIcon />}
+                            onClick={() => handleDeleteRow(index)}
+                            sx={formStyleCustom.buttonStyles}
+                        >
+                            {/* {item.action} */}
+                        </Button>
+                    </FormControl>
+                    <FormControl
+                        style={{ width: '20%', border: 'none', padding: '0.5rem' }}
+                        sx={formStyleCustom.default}
+                    >
+                        <UnstyledSelectBasic
+                            defaultValue={item.Category}
+                            values={categories}
+                            onChange={(value) => handleChange(index, 'Category', value)}
+                        />
+                    </FormControl> 
+                    
+                    <FormControl
+                        style={{ width: '40%', border: 'none', padding: '0.5rem' }}
+                        sx={formStyleCustom.default}
+                    >
+                        <TextField
+                            required
+                            defaultValue={item.Notes}
+                            // value={item.Notes}
+                            onChange={(e) => handleChange(index, 'Notes', e.target.value)}
+                            sx={formStyleCustom.textFieldStyle}
+                            style={{ fontSize: '.85rem', width: '100%' }}
+                            // helperText="Incorrect entry."
+                        />
+                    </FormControl>
+                    <FormControl
+                        style={{ border: 'none', padding: '0.5rem', width: '10%' }}
+                        sx={formStyleCustom.default}>
+                        <TextField
+                            required
+                            value={item.Price}
+                            // defaultValue={item.Price}
+                            type="number"
+                            onChange={(e) => handleChange(index, 'Price', e.target.value)}
+                            InputProps={{
+                                style: {
+                                    color: 'white',
+                                    border: '2px solid #2C2C2C',
+                                    backgroundColor: '#1A1C1E',
+                                },
+                            }}
+                            // error={formik.touched.number && Boolean(formik.errors.number)}
+                            // helperText={formik.touched.number && formik.errors.number}
+                        />
+                    </FormControl>
+                    <FormControl
+                        style={{ border: 'none', padding: '0.5rem', width: '10%' }}
+                        sx={formStyleCustom.default}>
+                        <TextField
+                            required
+                            type='number'
+                            defaultValue={item.Quantity}
+                            // value={item.Quantity}
+                            onChange={(e) => handleChange(index, 'Quantity', e.target.value)}
+                            InputProps={{
+                                style: {
+                                    color: 'white',
+                                    border: '2px solid #2C2C2C',
+                                    backgroundColor: '#1A1C1E',
+                                },
+                            }}
+                        />
+                    </FormControl>
+                    <FormControl
+                        style={{ border: 'none', padding: '0.5rem', width: '10%' }}
+                        sx={formStyleCustom.default}>
+                        <TextField
+                            required
+                            type='number'
+                            defaultValue={item.Total}
+                            // value={item.Total}
+                            onChange={(e) => handleChange(index, 'Total', e.target.value)}
+                            InputProps={{
+                                style: {
+                                    color: 'white',
+                                    border: '2px solid #2C2C2C',
+                                    backgroundColor: '#1A1C1E',
+                                },
+                            }}
+                        />
+                    </FormControl>
+                </Box>
+            })}
             <Box>
                 <ButtonAtom config={buttonConfig} />
             </Box>

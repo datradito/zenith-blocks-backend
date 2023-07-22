@@ -46,7 +46,7 @@ function FormItem({ initialValues, type}) {
     return (
         <>
             <Box
-                // component="form"
+                component="form"
                 className={classes.boxStyle}
             >
                     <Grid container className={classes.containerStyles} spacing={3}>
@@ -55,7 +55,17 @@ function FormItem({ initialValues, type}) {
                                 <Typography variant="h6"
                                     sx={componentStyles.typographyLabel}
                                 >{key}</Typography>
-                                {
+                                {key === 'Currency' ? (
+                                    <TextField
+                                        id="outlined-number"
+                                        type="number"
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        value={initialValues[key]}
+                                        sx={componentStyles.formInputFieldStyles}
+                                        onChange={(e) => handleChange(key, e.target.value)}
+                                    />):
                                     key === 'Due Date' || key === 'Invoice Date' ? (
                                         <TextField
                                             required
@@ -67,7 +77,17 @@ function FormItem({ initialValues, type}) {
                                 ) :
                                     key === 'Category' ? (
                                         <UnstyledSelectBasic defaultValue={initialValues.Category} values={categories} onChange={(value) => handleChange(key, value)} />
-                                ) : (
+                                        ) :
+                                            
+                                            key === 'Invoice Number' ? (
+                                                <TextField
+                                                    required
+                                                    value={initialValues[key]}
+                                                    sx={componentStyles.formInputFieldStyles}
+                                                    onChange={(e) => handleChange(key, e.target.value)}
+                                                />
+                                            ):
+                                                (
                                     <TextField
                                                 name={key}
                                                 required

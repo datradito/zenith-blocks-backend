@@ -36,7 +36,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
 const projectId = '5777';
 
 const { wallets } = getDefaultWallets({
-        appName: 'My RainbowKit App',
+        appName: 'ZenithBlocks',
         projectId,
         chains,
 });

@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react'
+import React, { useState } from 'react'
 import SubHeader from '../../molecules/SubHeader/SubHeader';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box, Stack, Grid, Typography } from '@mui/material';
@@ -20,37 +20,24 @@ function InvoiceCreation() {
     const { header } = useSelector(state => state.createInvoice);
     const navigate = useNavigate();
     const [submitInvoice, { loading, error }] = useMutation(SUBMIT_INVOICE_MUTATION, { errorPolicy: "all" });
-    const [invoiceError, setInvoiceError] = React.useState(null);
+    const [invoiceError, setInvoiceError] = useState(null);
 
     const handleDraft = () => {
         //do validation and save file locally
         console.log("Save Draft");
     };
 
-    // const initialValuesHeader = useMemo(() => ({
-    //     Proposal: proposal.title,
-    //     Category: "",
-    //     Recipient: "",
-    //     'Invoice Number': "",
-    //     Currency: "",
-    //     'Invoice Date': "",
-    //     'Due Date': "",
-    //     'Upload Invoice': "",
-    //     'Description': "",
-    // }), [proposal.title]);
     const initialValuesHeader = {
         Proposal: proposal.title,
         Category: header.Category,
         Recipient: header.Recipient,
-        'Invoice Number': header['InvoiceNumber'],
+        'Invoice Number': header['Invoice Number'],
         Currency: header.Currency,
         'Invoice Date': header['Invoice Date'],
         'Due Date': header['Due Date'],
         'Upload Invoice': header['Upload Invoice'],
         'Description': header.Description,
     }
-
-
 
     const currentPathConfig = {
         path: "Invoices",
@@ -69,10 +56,7 @@ function InvoiceCreation() {
 
 
     const handleSaveInvoice = async () => {
-        // ... (your existing code for handleSaveInvoice)
-
         let errors = {};
-        console.log("header", typeof(header['Invoice Date']));
 
         if (!header.Category || !header.Recipient || !header['Invoice Number'] || !header.Currency || !header['Invoice Date'] || !header['Due Date'] || !header['Upload Invoice'] || !header.Description) {
             errors['allFields'] = "Please fill all the fields";
@@ -81,9 +65,7 @@ function InvoiceCreation() {
         if (!(convertedInvoiceDate instanceof Date)) {
             errors['Invoice Date'] = "Invalid date format for 'Invoice Date'";
         } else {
-            // Remove invoice date error if it's in the errors object
                 const { ['Invoice Date']: _, ...rest } = errors;
-                // const { ['Invoice Date']: _, ...rest } = invoiceError;
                 errors = rest;
         }
 
@@ -92,48 +74,54 @@ function InvoiceCreation() {
             errors['Due Date'] = "Invalid date format for 'Due Date'";
         } else {
                 const { ['Invoice Date']: _, ...rest } = errors;
-                // const { ['Invoice Date']: _, ...rest } = invoiceError;
                 errors = rest;
         }
 
         if (header['Invoice Date'] > header['Due Date']) {
             errors['Invoice Date'] = "Invoice Date cannot be greater than Due Date";
         }
+
+        if (!header.Currency) {
+            errors['Currency'] = "Currency field cannot be empty";
+        } else {
+            // Check if Currency is a valid number (Float)
+            const parsedCurrency = parseFloat(header.Currency);
+            if (isNaN(parsedCurrency)) {
+                errors['Currency'] = "Invalid value for Currency";
+            }
+        }
         setInvoiceError(Object.keys(errors).length > 0 ? errors : null);
 
-        console.log(invoiceError)
+        if (Object.keys(errors).length === 0) {
+            await submitInvoice({
+                variables: {
+                    Category: header.Category,
+                    Recipient: header.Recipient,
+                    InvoiceNumber: header['Invoice Number'],
+                    Currency: parseInt(header.Currency),
+                    InvoiceDate: header['Invoice Date'],
+                    DueDate: header['Due Date'],
+                    UploadInvoice: header['Upload Invoice'],
+                    Description: header.Description,
+                },
+            }).then((res) => {
+                <CustomizedSnackbars message="Invoice saved successfully!" severity="success" autoOpen={true} />
+                setTimeout(() => {
+                    dispatch(resetInvoice());
+                    navigate(`/proposals/${proposal.id}/invoices`);
+                }, 2000)
+            }).catch((error) => {
 
-        // if (Object.keys(errors).length === 0) {
-
-        //     console.log({ "errors": errors })
-        //     console.log({"invoiceError": invoiceError})
-
-        //     await submitInvoice({
-        //         variables: {
-        //             Category: header.Category,
-        //             Recipient: header.Recipient,
-        //             InvoiceNumber: header['Invoice Number'],
-        //             Currency: parseInt(header.Currency),
-        //             InvoiceDate: header['Invoice Date'],
-        //             DueDate: header['Due Date'],
-        //             UploadInvoice: header['Upload Invoice'],
-        //             Description: header.Description,
-        //         },
-        //     }).then((res) => {
-        //         // dispatch(resetInvoice());
-        //         console.log(res)
-        //         res.errors?.forEach(({ extensions }) => {
-        //             Object.entries(extensions.errors).forEach(([key, value]) => {
-        //                 setInvoiceError(value)
-        //                 }
-        //             );
-        //         });
-        //         // navigate(`/proposals/${proposal.id}/invoices`);
-        //     }).catch((error) => {
-        //         console.log("Error in creating invoice");
-        //         console.log(error);
-        //     });
-        // }
+                if (error.graphQLErrors) {
+                    error.graphQLErrors.forEach(({ message }) => {
+                        console.log(message);
+                    });
+                }
+                if (error.networkError) {
+                    console.log(`Network Error: ${error.networkError}`);
+                }
+            });
+        }
     }; 
 
 
@@ -154,6 +142,7 @@ function InvoiceCreation() {
                 onClick: handleSaveInvoice,
                 innerText: "Save Invoice",
                 ml: "0.5rem",
+                prevenetDefault: true,
                 // type: "Submit",
                 // redirectTo: `/proposals/${proposal.id}/invoices`,
             }

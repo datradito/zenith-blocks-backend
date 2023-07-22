@@ -71,26 +71,69 @@ const InvoiceType = new GraphQLObjectType({
 const BudgetType = new GraphQLObjectType({
     name: 'Budget',
     fields: () => ({
-        Id: { type: GraphQLString },    
+        Id: { type: GraphQLString },
         Category: { type: GraphQLString },
         Amount: { type: GraphQLFloat },
         Currency: { type: GraphQLFloat },
         Breakdown: { type: GraphQLString },
         Proposal: { type: GraphQLString },
         rootPath: { type: GraphQLString },
+        Invoices: {
+            type: new GraphQLList(InvoiceType),
+            resolve(parent, args) {
+                return Invoice.find({ budgetId: parent.id })
+            }
+        },
+    })
+});
 
+const ProposalType = new GraphQLObjectType({
+    name: 'Proposal',
+    fields: () => ({
+        Id: { type: GraphQLString },
+        Title: { type: GraphQLString },
+        Body: { type: GraphQLString },
+        Amount: { type: GraphQLFloat },
+        Currency: { type: GraphQLFloat },
+        Modified: { type: GraphQLString },
+        Status: { type: GraphQLString },
+        ProposalInvoice: { type: GraphQLString },
+        Modifier: { type: GraphQLString },
+        RootPath: { type: GraphQLString },
+        Budgets: {
+            type: new GraphQLList(BudgetType),
+            resolve(parent, args) {
+                return Budget.find({ proposalId: parent.id })
+            }
+        },
     }),
 });
+
 
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: () => ({
-        invoice: {
-            type: GraphQLString,
-            resolve() {
-                return "Invoice Query";
+        getInvoicesByBudget: {
+            type: InvoiceType,
+            args: { id: { type: GraphQLID } },
+            resolve(parent, args) {
+                return Invoice.findById(args.id);
             }
-        }
+        },
+        getBudgetsByProposal: {
+            type: BudgetType,
+            args: { proposalId: { type: GraphQLID } },
+            resolve(parent, args) {
+                return Budget.findById(args.id);
+            }
+        },
+        getProposalById: {
+            type: ProposalType,
+            args: { id: { type: GraphQLID } },
+            resolve(parent, args) {
+                return Proposal.findById(args.id);
+            }
+        },
     })
 });
 
@@ -213,6 +256,43 @@ const Mutation = new GraphQLObjectType({
                     return ({ message: "budget saved successfully" });
                 }
             },
+        },
+        submitProposal: {
+            type: ProposalType,
+            args: {
+                Id: { type: new GraphQLNonNull(GraphQLString) },
+                Title: { type: new GraphQLNonNull(GraphQLString) },
+                Body: { type: new GraphQLNonNull(GraphQLString) },
+                Amount: { type: new GraphQLNonNull(GraphQLFloat) },
+                Currency: { type: new GraphQLNonNull(GraphQLFloat) },
+                Modified: { type: new GraphQLNonNull(GraphQLString) },
+                Status: { type: new GraphQLNonNull(GraphQLString) },
+                ProposalInvoice: { type: new GraphQLNonNull(GraphQLString) },
+                Modifier: { type: new GraphQLNonNull(GraphQLString) },
+                RootPath: { type: new GraphQLNonNull(GraphQLString) },
+            },
+            async resolve(parent, args) {
+                const { valid, errors } = await validateProposal(
+                    args.Id,
+                    args.Title,
+                    args.Body,
+                    args.Amount,
+                    args.Currency,
+                    args.Modified,
+                    args.Status,
+                    args.ProposalInvoice,
+                    args.Modifier
+                )
+                if (!valid) {
+                    throw new UserInputError("ProposalErrors", { errors })
+                } else {
+                    //TODO: step 1: save invoice to ipfs 
+                    //Todo: step 2: save ipfs hash + invoice data to mongo db
+                    //Todo: step 3: return ok response with no errors
+                    //send ok response with no errors
+                    return ({ message: "Invoice submitted successfully" });
+                }
+            }
         },
     },
 })

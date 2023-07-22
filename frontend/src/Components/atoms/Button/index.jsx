@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { CSVLink, CSVDownload } from "react-csv";
 
 const ButtonAtom = ({ config }) => {
-    const navigate = useNavigate();
 
     const buttonComponentStyles = {
         buttonStyle: {
@@ -22,8 +21,9 @@ const ButtonAtom = ({ config }) => {
 
 
     const handleClick = (e) => {
-
-        e.preventDefault();
+        if (config.preventDefault) {
+            e.preventDefault();
+        }
         if (config.onClick) {
             config.onClick();
         }
