@@ -14,7 +14,6 @@ const currentProposalReducer = (state = initialState, action) => {
                 ...state,
                 proposal: {
                     space: action.payload.space.name,
-                    "Total Budget": "182345",
                     id: action.payload.id,
                     ipfs: action.payload.ipfs,
                     title: action.payload.title,

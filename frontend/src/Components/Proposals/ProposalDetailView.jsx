@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Box, Stack } from '@mui/material';
 import TableDisplay from '../DisplayElements/TableDisplay.jsx';
 import ButtonAtom from "../atoms/Button/index";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setProposal, setProposalBudgetList } from '../../actions/currentProposal/index.js';
 import { refreshState } from '../../actions/createBudgetAction/index.js';
 import ItemCard from '../atoms/ItemCard/ItemCard.jsx';
@@ -33,16 +33,22 @@ function ProposalDetailView() {
     const dispatch = useDispatch();
     const { web3, contract } = useWeb3IpfsContract();
     const { loading, error, data } = useProposalDetails(proposalId);
-    const { budgetList, budgetsLoading } = useBudgets(contract, proposalId);
+    const { proposals } = useSelector(state => state.currentProposalAmounts);
+    const [ amount, setProposalAmount] = useState(0);
+    const { budgetList, budgetsLoading } = useBudgets(web3, contract, proposalId);
+
+
 
     useEffect(() => {
+        const filteredProposal = proposals.filter(proposal => proposal.id === proposalId ? proposal.amount: null);
         dispatch(refreshState());
+        filteredProposal[0].amount ? setProposalAmount(filteredProposal[0].amount) : setProposalAmount(0);
     }, []);
 
     if (loading || budgetsLoading) return <CircularIndeterminate />;
     if (error) return <p>Error : {error.message}</p>;
 
-    let dataForItemCard = { "Goverance": data.proposal.space.name, "Total Budget": 800, "Proposal": data.proposal.title };
+    let dataForItemCard = { "Goverance": data.proposal.space.name, "Total Budget": amount, "Proposal": data.proposal.title };
 
     const handleExportCSV = () => {
         console.log("Export CSV");

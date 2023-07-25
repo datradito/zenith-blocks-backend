@@ -2,12 +2,13 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import transformItems from '../../Utility/transformItems';
-import web3 from './web3IPFS';
+// import web3 from './web3IPFS';
 
-export default function useBudgets(contract, proposalId) {
+export default function useBudgets(web3, contract, proposalId) {
     const [budgetList, setBudgetList] = useState(null);
     const [budgetHashes, setBudgetHashes] = useState([]);
     const [budgetsLoading, setBudgetsLoading] = useState(true);
+    // const { web3, contract } = useWeb3IpfsContract();   
 
     const fetchBudgetDataForCurrentProposal = async (url) => {
         try {

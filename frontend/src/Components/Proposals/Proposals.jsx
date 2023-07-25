@@ -1,7 +1,6 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { NetworkStatus } from '@apollo/client';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
@@ -13,7 +12,8 @@ import useProposals from '../hooks/useProposals.jsx';
 import CustomActionIcon from '../atoms/ActionIcon/CustomActionIcon.jsx';
 import FormDetailPanel from '../atoms/EditDetails/EditDetailsProposal.jsx';
 import useGetProposalDetails from '../hooks/useGetProposalAmount.jsx';
-
+import { addAmount } from '../../actions/currentProposal/amount.js';
+import { useDispatch } from 'react-redux';
 const ProposalListCardStyle = {
   width: '90%',
   margin: '1rem auto',
@@ -62,11 +62,22 @@ const subItemStyle = {
   minWidth: 200,
 }
 
-const Amount = (proposalId) => {
+const Amount = ({proposalId}) => {
+  const dispatch = useDispatch();
   const { amount, proposalLoading, proposalError } = useGetProposalDetails(proposalId);
 
+  dispatch(addAmount({ amount: amount, proposalId: proposalId }));
 
-  if (proposalLoading) return <CircularIndeterminate />
+  // useEffect(() => {
+  //   if (amount) {
+  //     console.log("this running");
+  //     dispatch(addAmount({ amount: amount, proposalId: proposalId }));
+  //   }
+  // }, []);
+
+
+  if (proposalLoading) return (<Box sx = {{maxWidth: '50px', textAlign: 'left', maxHeight: '40px', marginTop: -2}}><CircularIndeterminate /></Box>);
+    
   return (
     <div>
       {amount !== null ? amount : <CustomActionIcon />}
@@ -156,7 +167,7 @@ const Proposals = () => {
                     >
                       <ColumnItem sx={label}>Total Budget</ColumnItem>
                       <ColumnItem>
-                        { selectedItemId !== item.id ?
+                        { !selectedItemId || selectedItemId !== item.id ?
                             <Amount proposalId={item.id} /> :
                             <FormDetailPanel row={data.proposals.find((row) => row.id === selectedItemId)} onClose={onClose} />
                         }

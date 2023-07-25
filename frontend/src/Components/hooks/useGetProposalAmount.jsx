@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { GET_PROPOSAL_DETAILS } from '../../ServerQueries/proposalQuery'; // Import the GET_PROPOSAL_Details query
 
-const useGetProposalDetails =  ({ proposalId }) => {
+const useGetProposalDetails = (proposalId ) => {
     const { loading: proposalLoading, error: proposalError, data } = useQuery(GET_PROPOSAL_DETAILS, {
         variables: { proposalId },
     });
@@ -13,6 +13,7 @@ const useGetProposalDetails =  ({ proposalId }) => {
         amount,
         proposalLoading,
         proposalError,
+        proposalId,
     };
 };
 
