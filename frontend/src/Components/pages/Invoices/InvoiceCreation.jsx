@@ -1,17 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import SubHeader from '../../molecules/SubHeader/SubHeader';
-import { useSelector } from 'react-redux';
-import { Box, Stack, Grid, Typography } from '@mui/material';
-import * as yup from 'yup';
-import { Formik, Field, Form, ErrorMessage, useFormik } from 'formik';
+import { useSelector, useDispatch } from 'react-redux';
+import { Box } from '@mui/material';
 import FormItem from '../../atoms/FormItem/FormItem';
 import FormRowInvoice from '../../molecules/FormInvoiceCreation';
-// import { PDFViewer } from 'react-pdf';
-
+import { SUBMIT_INVOICE_MUTATION } from '../../../ServerQueries/InvoiceQueries';
+import { useMutation } from "@apollo/client";
+import { useNavigate } from 'react-router-dom';
+import CircularIndeterminate from '../../atoms/Loader/loader';
+import { resetInvoice } from '../../../actions/createInvoiceAction';
+import CustomizedSnackbars from '../../atoms/SnackBar/SnackBar';
 
 function InvoiceCreation() {
+    const dispatch = useDispatch();
     const { proposal } = useSelector(state => state.currentProposal);
-    
+    const { header } = useSelector(state => state.createInvoice);
+    const navigate = useNavigate();
+    const [submitInvoice, { loading, error }] = useMutation(SUBMIT_INVOICE_MUTATION, { errorPolicy: "all" });
+    const [invoiceError, setInvoiceError] = useState(null);
 
     const handleDraft = () => {
         //do validation and save file locally
@@ -20,47 +26,21 @@ function InvoiceCreation() {
 
     const initialValuesHeader = {
         Proposal: proposal.title,
-        Category: "",
-        Recipient: "",
-        'Invoice Number': '',
-        Currency: '',
-        'Invoice Date': '',
-        'Due Date': '',
-        'Upload Invoice': '',
-        'Description': '',
-    };
-
-    const initialValuesLines = {
-        Price: '',
-        Quantity: '',
-        Total: '',
+        Category: header.Category,
+        Recipient: header.Recipient,
+        'Invoice Number': header['Invoice Number'],
+        Currency: header.Currency,
+        'Invoice Date': header['Invoice Date'],
+        'Due Date': header['Due Date'],
+        'Upload Invoice': header['Upload Invoice'],
+        'Description': header.Description,
     }
-
-    const validationSchemaHeader = yup.object({
-        Category: yup.string().required('Category is required'),
-        Recipient: yup.string().required('Recipient is required'),
-        'Invoice Number': yup.string().required('Invoice Number is required'),
-        Currency: yup.string().required('Currency is required'),
-        'Invoice Date': yup.date().required('Invoice Date is required'),
-        'Due Date': yup.date().required('Due Date is required'),
-        'Upload Invoice': yup.string().required('Upload Invoice is required'),
-        Description: yup.string().required('Description is required'),
-    });
-
-
-    const validationSchemaLines = yup.object({
-        Price: yup.number().required('Price is required'),
-        Quantity: yup.number().required('Quantity is required'),
-        // 'Total Price': yup.number().required('Total Price is required'),
-        // 'Description': yup.string().required('Description is required'),
-    });
-
 
     const currentPathConfig = {
         path: "Invoices",
         to: `/proposals/${proposal.id}/invoices`
     }
-    
+
     const BoxStyle = {
         width: '90%',
         margin: '0rem auto',
@@ -71,44 +51,83 @@ function InvoiceCreation() {
         borderRadius: 3
     };
 
-    //invoice form
-    const formik = useFormik({
-        initialValues: initialValuesHeader,
-        validationSchema: validationSchemaHeader,
-        onSubmit: (values) => {
-            alert(JSON.stringify(values, null, 2));
-        },
-    });
 
-    const formikLines = useFormik({
-        initialValues: initialValuesLines,
-        validationSchema: validationSchemaLines,
-        onSubmit: (values) => {
-            alert(JSON.stringify(values, null, 2));
-        },
-    });
-    
-    // const formik = useFormik({
-    //     initialValues: {
-    //         initialValuesHeader,
-    //         initialValuesLines, 
-    //     },
-    //     validationSchema: yup.object().shape({
-    //         ...validationSchemaHeader,
-    //         ...validationSchemaLines,
-    //     }),
-    //     onSubmit: (values) => {
-    //         alert(JSON.stringify(values, null, 2));
-    //     },
-    // });
+    const handleSaveInvoice = async (event) => {
+
+        let errors = {};
+
+        if (!header.Category || !header.Recipient || !header['Invoice Number'] || !header.Currency || !header['Invoice Date'] || !header['Due Date'] || !header['Upload Invoice'] || !header.Description) {
+            errors['allFields'] = "Please fill all the fields";
+        }
+
+        console.log(errors);
+        let convertedInvoiceDate= new Date(header['Invoice Date']);
+        if (!(convertedInvoiceDate instanceof Date)) {
+            errors['Invoice Date'] = "Invalid date format for 'Invoice Date'";
+        } else {
+                const { ['Invoice Date']: _, ...rest } = errors;
+                errors = rest;
+        }
+
+        let convertedDate = new Date(header['Due Date']);
+
+        if (!(convertedDate instanceof Date)) {
+            errors['Due Date'] = "Invalid date format for 'Due Date'";
+        } else {
+                const { ['Invoice Date']: _, ...rest } = errors;
+                errors = rest;
+        }
+
+        if (header['Invoice Date'] > header['Due Date']) {
+            errors['Invoice Date'] = "Invoice Date cannot be greater than Due Date";
+        }
+
+        if (!header.Currency) {
+            errors['Currency'] = "Currency field cannot be empty";
+        } else {
+            // Check if Currency is a valid number (Float)
+            const parsedCurrency = parseFloat(header.Currency);
+            if (isNaN(parsedCurrency)) {
+                errors['Currency'] = "Invalid value for Currency";
+            }
+        }
+        setInvoiceError(Object.keys(errors).length > 0 ? errors : null);
+
+        console.log(invoiceError);
+        if (Object.keys(errors).length === 0) {
+            await submitInvoice({
+                variables: {
+                    Category: header.Category,
+                    Recipient: header.Recipient,
+                    InvoiceNumber: header['Invoice Number'],
+                    Currency: parseInt(header.Currency),
+                    InvoiceDate: header['Invoice Date'],
+                    DueDate: header['Due Date'],
+                    UploadInvoice: header['Upload Invoice'],
+                    Description: header.Description,
+                },
+            }).then((res) => {
+                <CustomizedSnackbars message="Invoice saved successfully!" severity="success" autoOpen={true} />
+                setTimeout(() => {
+                    dispatch(resetInvoice());
+                    navigate(`/proposals/${proposal.id}/invoices`);
+                }, 2000)
+            }).catch((error) => {
+
+                if (error.graphQLErrors) {
+                    error.graphQLErrors.forEach(({ message }) => {
+                        console.log(message);
+                    });
+                }
+                if (error.networkError) {
+                    console.log(`Network Error: ${error.networkError}`);
+                }
+            });
+        }
+    }; 
 
 
-    const handleSaveInvoice = () => {
-        //here add logic to check all invoice field are valid and then save file locally - sync it ipfs
-        formik.handleSubmit();
-    };
 
-    
     const componentButtonConfig =
         [
             {
@@ -125,21 +144,34 @@ function InvoiceCreation() {
                 onClick: handleSaveInvoice,
                 innerText: "Save Invoice",
                 ml: "0.5rem",
+                preventDefault: true,
                 type: "Submit",
-                redirectTo: `/proposals/${proposal.id}/invoices`,
+                // redirectTo: `/proposals/${proposal.id}/invoices`,
             }
         ];
 
-  return (
-      <form onSubmit={formik.handleSubmit}>
-          <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath="Proposals  Proposal  Budget" />
-          <Box sx={BoxStyle}>
-              <FormItem initialValues={initialValuesHeader} type="invoice" formik={formik}/>
-              <FormRowInvoice tableHeaderData={["", "Category", "Notes", "Price", "Quantity", "Total"]} formik={formik} />
-          </Box>
-    </form>
-  )
+    if (loading) return <CircularIndeterminate />;
+
+    return (
+        <form onSubmit={handleSaveInvoice}>
+            <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath="Proposals  Proposal  Budget" />
+            <Box sx={BoxStyle}>
+                <FormItem initialValues={initialValuesHeader} type="invoice" />
+                <FormRowInvoice tableHeaderData={["", "Category", "Notes", "Price", "Quantity", "Total"]} />
+            </Box>
+            {invoiceError && (
+                <>
+                    {Object.entries(invoiceError).map(([key, message]) => (
+                        <CustomizedSnackbars key={key} message={message} severity="error" autoOpen={true} />
+                    ))}
+                </>
+            )}
+        </form>
+    )
 }
 
 export default InvoiceCreation
+
+
+
 

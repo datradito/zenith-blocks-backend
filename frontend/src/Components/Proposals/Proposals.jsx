@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useQuery } from '@apollo/client';
-import { GET_All_PROPOSALS, GET_PROPOSAL_BY_SPACE } from '../../SnapShot/Queries.js';
+import React, {useEffect, useState} from 'react';
+import { NetworkStatus } from '@apollo/client';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
@@ -9,7 +8,12 @@ import PaginationControlled from '../DisplayElements/Pagination.jsx';
 import { Link } from "react-router-dom";
 import SubHeader from "../molecules/SubHeader/SubHeader.jsx"
 import CircularIndeterminate from '../atoms/Loader/loader.jsx';
-
+import useProposals from '../hooks/useProposals.jsx';
+import CustomActionIcon from '../atoms/ActionIcon/CustomActionIcon.jsx';
+import FormDetailPanel from '../atoms/EditDetails/EditDetailsProposal.jsx';
+import useGetProposalDetails from '../hooks/useGetProposalAmount.jsx';
+import { addAmount } from '../../actions/currentProposal/amount.js';
+import { useDispatch } from 'react-redux';
 const ProposalListCardStyle = {
   width: '90%',
   margin: '1rem auto',
@@ -58,47 +62,54 @@ const subItemStyle = {
   minWidth: 200,
 }
 
+const Amount = ({proposalId}) => {
+  const dispatch = useDispatch();
+  const { amount, proposalLoading, proposalError } = useGetProposalDetails(proposalId);
+
+  dispatch(addAmount({ amount: amount, proposalId: proposalId }));
+
+  // useEffect(() => {
+  //   if (amount) {
+  //     console.log("this running");
+  //     dispatch(addAmount({ amount: amount, proposalId: proposalId }));
+  //   }
+  // }, []);
+
+
+  if (proposalLoading) return (<Box sx = {{maxWidth: '50px', textAlign: 'left', maxHeight: '40px', marginTop: -2}}><CircularIndeterminate /></Box>);
+    
+  return (
+    <div>
+      {amount !== null ? amount : <CustomActionIcon />}
+    </div>
+  )
+}
+
 
 const Proposals = () => {
-  const [stateQuery, setStateQuery] = useState({ first: 10, skip: 0 });
-  const [skipQuery, setSkipQuery] = useState(false);
-
-  useEffect(() => {
-    if (localStorage.getItem('currentPage') !== stateQuery.skip) {
-      setStateQuery({ ...stateQuery, skip: (parseInt(localStorage.getItem('currentPage'))) * 10 });
-      setSkipQuery(false);
-    } else {
-      setSkipQuery(true);
-    }
-  }, [skipQuery]);
-
-  const handleSkipValueChange = () => {
-
-    let currentPage = localStorage.getItem("currentPage");
-    if (currentPage === 1) {
-      setStateQuery({ ...stateQuery, skip: 0 });
-    }
-    setStateQuery({ ...stateQuery, skip: (parseInt(currentPage) - 1) * 10 });
-  };
-
-  let { loading, error, data } = useQuery(GET_PROPOSAL_BY_SPACE, {
-    skip: skipQuery,
-    variables: {
-      first: parseInt(stateQuery.first), skip: parseInt(stateQuery.skip), name: "balancer.eth"
-    }
-  });
+  const [selectedItemId, setSelectedItemId] = useState(null);
+  
+  const {
+    loading,
+    error,
+    data,
+    syncedAt,
+    handleExportCSV,
+    handleSyncProposals,
+    handleSkipValueChange,
+    networkStatus,
+  } = useProposals();
 
 
+  if (networkStatus === NetworkStatus.refetch) return <CircularIndeterminate />;
   if (loading) return <CircularIndeterminate /> ;
   if (error) return <p>Error : {error.graphQLErrors}</p>;
 
-  const handleExportCSV = () => {
-    console.log("Export CSV");
-  }
-
-  const handleSyncProposals = () => {
-    console.log("Sync Proposals");
-  }
+  const handleTotalBudgetClick = (itemId, e) => {
+    setSelectedItemId(itemId);
+    console.log("Clicked element:", selectedItemId);
+    // onClose();
+  };
 
 
   const componentButtonConfig =
@@ -123,9 +134,13 @@ const Proposals = () => {
     // to: `/proposals/${proposal.id}`
   }
 
+  const onClose = () => {
+    setSelectedItemId(null);
+  };
+
   return (
     <>
-      <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath="Last Sync: 08:25:53 on May, 2023" />
+      <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath={syncedAt} />
       <Box sx={ProposalListCardStyle}>
         <Stack
           padding={0}
@@ -147,10 +162,17 @@ const Proposals = () => {
                       <ColumnItem sx={label}>Governance</ColumnItem>
                       <ColumnItem>{item.space.name}</ColumnItem>
                   </SubItem>
-                  <SubItem sx={subItemStyle}>
+                    <SubItem sx={subItemStyle}
+                      onClick={() => handleTotalBudgetClick(item.id)}
+                    >
                       <ColumnItem sx={label}>Total Budget</ColumnItem>
-                      <ColumnItem>$5,980,000</ColumnItem>
-                  </SubItem>
+                      <ColumnItem>
+                        { !selectedItemId || selectedItemId !== item.id ?
+                            <Amount proposalId={item.id} /> :
+                            <FormDetailPanel row={data.proposals.find((row) => row.id === selectedItemId)} onClose={onClose} />
+                        }
+                      </ColumnItem>
+                    </SubItem>
                   <SubItem >
                       <Link to={`/proposals/${item.id}`} style={{ textDecoration: 'none' }}>
                         <ColumnItem sx={label}>Proposal</ColumnItem>

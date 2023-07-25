@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { CSVLink, CSVDownload } from "react-csv";
 
 const ButtonAtom = ({ config }) => {
-    const navigate = useNavigate();
 
     const buttonComponentStyles = {
         buttonStyle: {
@@ -21,14 +20,14 @@ const ButtonAtom = ({ config }) => {
     }
 
 
-    const handleClick = () => {
+    const handleClick = (e) => {
+        if (config.preventDefault) {
+            console.log("preventDefault")
+            e.preventDefault();
+        }
         if (config.onClick) {
             config.onClick();
-        }
-
-        if (config.redirectTo) {
-            navigate(config.redirectTo);
-        }
+        }  
     };
     return (
         <>
@@ -48,7 +47,8 @@ const ButtonAtom = ({ config }) => {
                     sx={buttonComponentStyles.buttonStyle}
                     variant="contained"
                     type={config.type ? config.type : "submit"}
-                    onClick={handleClick}
+                        onClick={handleClick}
+                        // onSubmit={config.onSubmit}
                 >
                     {config.innerText}
                 </Button>

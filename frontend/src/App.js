@@ -2,7 +2,8 @@ import './App.css';
 import React from 'react';
 // import SimpleStorage from "./contracts/SimpleStorage.json";
 // import Web3 from "web3";
-import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client';
+import { onError } from '@apollo/client/link/error';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { storeConfig, persistor } from './store/storeConfigure';
@@ -52,15 +53,43 @@ function App() {
   //   const data = document.querySelector("#value").value;
   //   await contract.methods
   //     .setter(data)
-  //     .send({ from: "0x1f4F90f9aA5779f2C1E190133C2c872944bDED1c" });  
+  //     .send({ from: "0x1f4F90f9aA5779f2C1E190133C2c872944bDED1c" });
   //   window.location.reload();
   // }
 
-  const client = new ApolloClient({
-    uri: 'https://hub.snapshot.org/graphql',
-    cache: new InMemoryCache(),
+  // const snapShotClient = new ApolloClient({
+  //   uri: 'http://localhost:8000/graphql',
+  //   cache: new InMemoryCache()
+  // });
+
+  // const client = new ApolloClient({
+  //   uri: 'https://hub.snapshot.org/graphql',
+  //   cache: new InMemoryCache(),
+  // });
+
+  // const client = new ApolloClient({
+  //   uri: concat(client.uri, snapshotClient.uri),
+  //   cache: new InMemoryCache().restore(),
+  // });
+  const httpLink = createHttpLink({
+    uri: 'http://localhost:8000/graphql',
   });
 
+  const errorLink = onError(({ graphQLErrors, networkError }) => {
+    if (graphQLErrors) {
+      graphQLErrors.forEach(({ message }) => {
+        console.log(message);
+      });
+    }
+    if (networkError) {
+      console.log(`Network Error: ${networkError}`);
+    }
+  });
+
+  const client = new ApolloClient({
+    link: errorLink.concat(httpLink),
+    cache: new InMemoryCache(),
+  });
 
   return (
   

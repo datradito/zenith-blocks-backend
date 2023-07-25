@@ -16,13 +16,13 @@ const CustomSelect = React.forwardRef(function CustomSelect(props, ref) {
 });
 
 
-export default function UnstyledSelectBasic({ values, onChange }) {
+export default function UnstyledSelectBasic({ values, onChange, defaultValue }) {
     const triggerOnChange = (event) => {
         const { outerText } = event.target;
         onChange(outerText);
     };
     return (
-        <CustomSelect defaultValue='Category'>
+        <CustomSelect defaultValue={defaultValue}>
             {values.map((value) => (
                 <StyledOption
                     key={value}

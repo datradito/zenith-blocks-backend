@@ -1,4 +1,4 @@
-import { ADD_ROW_INVOICE, DELETE_ROW_INVOICE, UPDATE_FIELD_INVOICE, GET_ALL_ROWS_INVOICE, UPDATE_INVOICE_HEADER} from "./types";
+import { ADD_ROW_INVOICE,RESET_INVOICE, DELETE_ROW_INVOICE, UPDATE_FIELD_INVOICE, GET_ALL_ROWS_INVOICE, UPDATE_INVOICE_HEADER} from "./types";
 
 
 export const updateHeader = (field, value) => ({
@@ -23,4 +23,8 @@ export const updateField = (index, field, value) => ({
 
 export const getAllRows = () => ({
     type: GET_ALL_ROWS_INVOICE,
+});
+
+export const resetInvoice = () => ({
+    type: RESET_INVOICE,
 });
