@@ -4,7 +4,7 @@ dotenv.config();
 
 
 const createConnection = async () => {
-    const connection = await mysql.createConnection('mysql://gv7tit0e18h0fhsb0mdz:pscale_pw_dko6FN2S12I88WYqX358r5azKxxgmHJE8NYb6Mbk4lo@aws.connect.psdb.cloud/zenithblocksdev?ssl={"rejectUnauthorized":true}');
+    const connection = await mysql.createConnection(process.env.DATABASE_URL_DEV);
     return connection;
 };
 

@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 console.log(process.env.DATABASE_URL)
 const mysql = require('mysql2')
-const connection = mysql.createConnection(process.env.DATABASE_URL)
+const connection = mysql.createConnection(process.env.DATABASE_URL_DEV)
 console.log('Connected to PlanetScale!')
 connection.end()
 

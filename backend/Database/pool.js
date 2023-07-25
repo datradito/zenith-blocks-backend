@@ -2,10 +2,6 @@
 import mysql from 'mysql2';
 
 const pool = mysql.createPool({
-    host: 'aws.connect.psdb.cloud',
-    user: 'zc5mbckciparu52v7wng',
-    password: 'W5EJkdReoZEh1Bz79gEp7tfSOvRUTbJUNCQtQFVYlJN',
-    database: 'zenithblocksdev',
     connectionLimit: 10,
     ssl: '{"rejectUnauthorized":false}',
     waitForConnections: true,
