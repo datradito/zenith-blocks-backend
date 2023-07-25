@@ -158,8 +158,6 @@ function FormRowInvoice({ tableHeaderData }) {
                                     backgroundColor: '#1A1C1E',
                                 },
                             }}
-                            // error={formik.touched.number && Boolean(formik.errors.number)}
-                            // helperText={formik.touched.number && formik.errors.number}
                         />
                     </FormControl>
                     <FormControl

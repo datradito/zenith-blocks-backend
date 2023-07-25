@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, NetworkStatus } from '@apollo/client';
-import { GET_All_PROPOSALS, GET_PROPOSAL_BY_SPACE } from '../../SnapShot/Queries.js';
+import { GET_PROPOSAL_BY_SPACE } from '../../SnapShot/Queries.js';
 import { snapShotClient } from '../../SnapShot/client.js';
 
 const useProposals = () => {

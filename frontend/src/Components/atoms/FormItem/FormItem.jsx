@@ -1,9 +1,7 @@
 import React from 'react';
-import { Box, Grid, TextField, Typography, Button } from '@mui/material';
-import { Formik, Form, useFormik } from 'formik';
+import { Box, Grid, TextField, Typography, FormControl } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { updateHeader } from './../../../actions/createInvoiceAction/index.js';
-import BasicDate from "../BasicDate/BasicDate";
 import { categories } from '../../pages/Category/Category';
 import UnstyledSelectBasic from '../SelectDropdown/SelectDropdown';
 import useStyles from './index.style';
@@ -70,6 +68,7 @@ function FormItem({ initialValues, type}) {
                                         <TextField
                                             required
                                             type='date'
+                                            fullWidth
                                             value={initialValues[key]}
                                             sx={componentStyles.formInputFieldStyles}
                                             onChange={(e) => handleChange(key, e.target.value)}
@@ -82,28 +81,28 @@ function FormItem({ initialValues, type}) {
                                             key === 'Invoice Number' ? (
                                                 <TextField
                                                     required
+                                                    fullWidth
                                                     value={initialValues[key]}
                                                     sx={componentStyles.formInputFieldStyles}
                                                     onChange={(e) => handleChange(key, e.target.value)}
                                                 />
                                             ):
                                                 (
-                                    <TextField
-                                                name={key}
-                                                required
-                                                // value={formik.values[key]}
-                                        value={value}
-                                        onChange={(e) => handleChange(key, e.target.value)}
-                                        fullWidth
-                                        multiline={key === 'Description' || key === 'Upload Invoice'}
-                                        rows={key === 'Description' || key === 'Upload Invoice' ? 4 : 1}
-                                        InputProps={{
-                                            readOnly: key === 'Proposal' || key === 'Goverance' || key === 'Ipfs Link',
-                                        }}
-                                        sx={componentStyles.formInputFieldStyles}
-                                        
-                                        //helperText={formik.touched[key] && formik.errors[key]}
-                                    />
+
+                                        <TextField
+                                            name={key}
+                                            required
+                                            value={initialValues[key]}
+                                            onChange={(e) => handleChange(key, e.target.value)}
+                                            fullWidth
+                                            multiline={key === 'Description' || key === 'Upload Invoice'}
+                                            rows={key === 'Description' || key === 'Upload Invoice' ? 4 : 1}
+                                            InputProps={{
+                                                readOnly: key === 'Proposal' || key === 'Goverance' || key === 'Ipfs Link',
+                                            }}
+                                            sx={componentStyles.formInputFieldStyles}
+                                            />
+
                                 )}
                             </Grid>
                         ))}

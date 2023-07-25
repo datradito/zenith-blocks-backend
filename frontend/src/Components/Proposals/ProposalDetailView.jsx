@@ -24,10 +24,6 @@ const BoxStyle = {
     borderRadius: 3
 };
 
-function transformItems(item, totalBudget) {
-    const { action, ...rest } = item;
-    return { ...rest, Remaining: parseInt(totalBudget - parseInt(item["Allocated Budget"])), Invoices: 'INVOICE' };
-}
 
 const headers = ["Categories", "Allocated Budget", "Currency", "Breakdown", "Remaining", "Invoices"]
 

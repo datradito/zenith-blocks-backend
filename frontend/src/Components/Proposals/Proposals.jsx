@@ -11,9 +11,8 @@ import SubHeader from "../molecules/SubHeader/SubHeader.jsx"
 import CircularIndeterminate from '../atoms/Loader/loader.jsx';
 import useProposals from '../hooks/useProposals.jsx';
 import CustomActionIcon from '../atoms/ActionIcon/CustomActionIcon.jsx';
-import { Typography } from '@mui/material';
 import FormDetailPanel from '../atoms/EditDetails/EditDetailsProposal.jsx';
-import { on } from 'events';
+import useGetProposalDetails from '../hooks/useGetProposalAmount.jsx';
 
 const ProposalListCardStyle = {
   width: '90%',
@@ -63,6 +62,18 @@ const subItemStyle = {
   minWidth: 200,
 }
 
+const Amount = (proposalId) => {
+  const { amount, proposalLoading, proposalError } = useGetProposalDetails(proposalId);
+
+
+  if (proposalLoading) return <CircularIndeterminate />
+  return (
+    <div>
+      {amount !== null ? amount : <CustomActionIcon />}
+    </div>
+  )
+}
+
 
 const Proposals = () => {
   const [selectedItemId, setSelectedItemId] = useState(null);
@@ -86,7 +97,7 @@ const Proposals = () => {
   const handleTotalBudgetClick = (itemId, e) => {
     setSelectedItemId(itemId);
     console.log("Clicked element:", selectedItemId);
-    onClose();
+    // onClose();
   };
 
 
@@ -145,15 +156,10 @@ const Proposals = () => {
                     >
                       <ColumnItem sx={label}>Total Budget</ColumnItem>
                       <ColumnItem>
-                        {item.totalBudget ? item.totalBudget :
-                          selectedItemId !== item.id ?
-                            <CustomActionIcon /> :
+                        { selectedItemId !== item.id ?
+                            <Amount proposalId={item.id} /> :
                             <FormDetailPanel row={data.proposals.find((row) => row.id === selectedItemId)} onClose={onClose} />
-                              // selectedItemId != item.id ?
-                              //   <CustomActionIcon /> :
-                              //   <FormDetailPanel row={data.proposals.find((row) => row.id === selectedItemId)} onClose={onClose} /> 
                         }
-
                       </ColumnItem>
                     </SubItem>
                   <SubItem >

@@ -10,6 +10,12 @@ var { graphqlHTTP } = require('express-graphql');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+console.log(process.env.DATABASE_URL)
+const mysql = require('mysql2')
+const connection = mysql.createConnection(process.env.DATABASE_URL)
+console.log('Connected to PlanetScale!')
+connection.end()
+
 
 // app.post('/ipfs/uploadBudget', async (req, res) => {
 //     // Extract the content from the request body
@@ -26,7 +32,7 @@ app.use(cors());
 //             console.error("Error uploading to IPFS:", error);
 //         }
 //     }
-    
+
 //     res.json({ message: 'Proposal saved successfully', ipfsResponses });
 // });
 
@@ -54,6 +60,7 @@ app.use(cors());
 //     // Extract the content from the request body
 //     console.log("content");
 // })
+
 
 app.use('/graphql', graphqlHTTP({
     schema,

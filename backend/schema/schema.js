@@ -1,13 +1,9 @@
 const graphql = require('graphql');
-// const Book = require("../models/bookModel")
-// const Author = require("../models/authorModel")
-// const User = require("../models/userModel")
-// const bcrypt = require("bcrypt")
-// const jwt = require("jsonwebtoken")
-const { UserInputError } = require('apollo-server');
-const validateInvoice  = require("../validators/validateInvoice.js");
-// const { checkAuth } = require("../utils/chekAuth.js")
-// const SECRET = process.env.SECRET_KEY
+const UserInputError = require('apollo-server');
+const { validateInvoice } = require('../validators/validateInvoice.js');
+const { insertProposalData } = require('../Database/proposalQuery.js');
+const { createGetDataQuery } = require('../Database/getData.js');
+
 
 
 const {
@@ -91,19 +87,15 @@ const ProposalType = new GraphQLObjectType({
     name: 'Proposal',
     fields: () => ({
         Id: { type: GraphQLString },
-        Title: { type: GraphQLString },
-        Body: { type: GraphQLString },
         Amount: { type: GraphQLFloat },
-        Currency: { type: GraphQLFloat },
         Modified: { type: GraphQLString },
-        Status: { type: GraphQLString },
-        ProposalInvoice: { type: GraphQLString },
         Modifier: { type: GraphQLString },
         RootPath: { type: GraphQLString },
+        DaoId: { type: GraphQLString },
         Budgets: {
             type: new GraphQLList(BudgetType),
             resolve(parent, args) {
-                return Budget.find({ proposalId: parent.id })
+                // return Budget.find({ proposalId: parent.id })
             }
         },
     }),
@@ -117,21 +109,43 @@ const RootQuery = new GraphQLObjectType({
             type: InvoiceType,
             args: { id: { type: GraphQLID } },
             resolve(parent, args) {
-                return Invoice.findById(args.id);
+                // return Invoice.findById(args.id);
             }
         },
         getBudgetsByProposal: {
             type: BudgetType,
-            args: { proposalId: { type: GraphQLID } },
+            args: { proposalId: { type: GraphQLString } },
             resolve(parent, args) {
-                return Budget.findById(args.id);
+                // return Budget.findById(args.id);
             }
         },
-        getProposalById: {
+        getProposalAmountById: {
             type: ProposalType,
-            args: { id: { type: GraphQLID } },
-            resolve(parent, args) {
-                return Proposal.findById(args.id);
+            args: { Id: { type: GraphQLString } },
+            async resolve(parent, args) {
+                // return Proposal.findById(args.id);
+
+                // console.log(args.Id);
+                let res = await createGetDataQuery('proposal', 'Id', args.Id);
+
+                const proposals = res[0];
+
+                // Formatting the data to extract the required properties
+                // const formattedProposals = res[0]
+                //     .filter((proposals) => proposals.length > 0) // Filter out empty arrays
+                //     .map((proposals) => {
+                //         // Assuming each array contains only one proposal, get the first item
+                //         const proposal = proposals[0];
+                //         return {
+                //             id: proposal.id,
+                //             totalamount: parseFloat(proposal.totalamount),
+                //         };
+                //     });
+
+                // console.log({ Id: res[0].id, Amount: res[0].totalamount });
+                console.log({ Id: res[0].id, Amount: res[0].totalamount });
+                return {Id: res[0].id, Amount: res[0].totalamount};
+
             }
         },
     })
@@ -257,40 +271,61 @@ const Mutation = new GraphQLObjectType({
                 }
             },
         },
-        submitProposal: {
+        addOrUpdateProposal: {
             type: ProposalType,
             args: {
                 Id: { type: new GraphQLNonNull(GraphQLString) },
-                Title: { type: new GraphQLNonNull(GraphQLString) },
-                Body: { type: new GraphQLNonNull(GraphQLString) },
                 Amount: { type: new GraphQLNonNull(GraphQLFloat) },
-                Currency: { type: new GraphQLNonNull(GraphQLFloat) },
-                Modified: { type: new GraphQLNonNull(GraphQLString) },
-                Status: { type: new GraphQLNonNull(GraphQLString) },
-                ProposalInvoice: { type: new GraphQLNonNull(GraphQLString) },
                 Modifier: { type: new GraphQLNonNull(GraphQLString) },
                 RootPath: { type: new GraphQLNonNull(GraphQLString) },
+                DaoId: { type: new GraphQLNonNull(GraphQLString) },
             },
             async resolve(parent, args) {
-                const { valid, errors } = await validateProposal(
-                    args.Id,
-                    args.Title,
-                    args.Body,
-                    args.Amount,
-                    args.Currency,
-                    args.Modified,
-                    args.Status,
-                    args.ProposalInvoice,
-                    args.Modifier
-                )
-                if (!valid) {
+                // const { valid, errors } = await validateProposal(
+                //     args.Id,
+                //     args.Title,
+                //     args.Body,
+                //     args.Amount,
+                //     args.Currency,
+                //     args.Modified,
+                //     args.Status,
+                //     args.Modifier
+                // )
+
+                let data = {
+                    Id: args.Id,
+                    Amount: args.Amount,
+                    Modified: new Date(),
+                    Modifier: args.Modifier,
+                    IpfsHash: args.RootPath + 'ProposalId' + args.id,
+                    RootPath: args.RootPath,
+                    DaoId: args.DaoId
+                }
+
+                if (false) {
                     throw new UserInputError("ProposalErrors", { errors })
                 } else {
-                    //TODO: step 1: save invoice to ipfs 
-                    //Todo: step 2: save ipfs hash + invoice data to mongo db
-                    //Todo: step 3: return ok response with no errors
-                    //send ok response with no errors
-                    return ({ message: "Invoice submitted successfully" });
+
+                    //let updatedProposal = await Proposal.findOne({ Id: args.Id });
+
+                    //TODO: step 1: save proposal to ipfs 
+                    let ipfsResponse;
+                    let savedToIpfs = false;
+                    // let ipfsFilePath = rootPath + 'ProposalId' + args.id;
+                    // try {
+                    //     //Todo: Need to implement rate limit in case some items fail to upload
+                    //     const response = await UploadDataToIpfs(ipfsFilePath, data);
+                    //     ipfsResponse = response.jsonResponse[0].path;
+                    //     savedToIpfs = true;
+
+                    // } catch (error) {
+                    //     console.error("Error uploading to IPFS:", error);
+                    // }
+                    let res = await insertProposalData(data);
+
+                    console.log(res);
+
+                    return { ...data }
                 }
             }
         },

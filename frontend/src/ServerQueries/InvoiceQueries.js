@@ -1,13 +1,5 @@
 import { gql } from "@apollo/client";
 
-// export const addAuthorMutation = gql`
-//     mutation($name: String!, $age: Int!){
-//         submitInvoice(name: $name, age: $age){
-//             name
-//             age
-//         }
-//     }  
-// `
 
 export const SUBMIT_INVOICE_MUTATION = gql`
   mutation (

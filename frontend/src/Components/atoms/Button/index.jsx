@@ -22,11 +22,12 @@ const ButtonAtom = ({ config }) => {
 
     const handleClick = (e) => {
         if (config.preventDefault) {
+            console.log("preventDefault")
             e.preventDefault();
         }
         if (config.onClick) {
             config.onClick();
-        }
+        }  
     };
     return (
         <>
@@ -46,7 +47,8 @@ const ButtonAtom = ({ config }) => {
                     sx={buttonComponentStyles.buttonStyle}
                     variant="contained"
                     type={config.type ? config.type : "submit"}
-                    onClick={handleClick}
+                        onClick={handleClick}
+                        // onSubmit={config.onSubmit}
                 >
                     {config.innerText}
                 </Button>

@@ -5,7 +5,12 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import { useForm, Controller } from 'react-hook-form';
+import { useMutation } from '@apollo/client';
 import ButtonAtom from '../Button';
+import { ADD_OR_UPDATE_PROPOSAL } from "../../../ServerQueries/proposalMutation";
+import CircularIndeterminate from '../Loader/loader';
+import useSaveProposalDetails from '../../hooks/useSetAmountProposal';
+import useGetProposalDetails from '../../hooks/useGetProposalAmount';
 
 let dialogContainerStyle = {
     position: 'fixed',
@@ -38,8 +43,13 @@ let dialogContentStyle = {
     },
 };
 
-export default function DetailPanelContent({ row, onClose }) {
-    console.log(row);
+export default function DetailPanelContent({ row }) {
+    const {
+        loading,
+        error,
+        saveProposalDetails,
+    } = useSaveProposalDetails();
+
     const {
         control,
         handleSubmit,
@@ -53,8 +63,8 @@ export default function DetailPanelContent({ row, onClose }) {
     const [dialogOpen, setDialogOpen] = React.useState(true);
 
     const onSubmit = (data) => {
-        //graphQl query to backend to apend amount into proposal - this endpoint should also handle saving the same data into ipfs.
-        console.log(data);
+        // Call the custom hook function to save the proposal details
+        saveProposalDetails(data);
         setDialogOpen(false); // Close the dialog after submitting the form
     };
 
@@ -66,7 +76,12 @@ export default function DetailPanelContent({ row, onClose }) {
         onClick: onSubmit,
     };
 
+    if (loading ) return <CircularIndeterminate />;
+    if (error ) return <p>Error : {error.message}</p>;
+
+
     return (
+
         <Box style={{ ...dialogContainerStyle, display: dialogOpen ? 'flex' : 'none' }}>
             <div style={dialogContentStyle}>
                 <Stack component="form" justifyContent="space-between" onSubmit={handleSubmit(onSubmit)}>
@@ -86,13 +101,10 @@ export default function DetailPanelContent({ row, onClose }) {
                         render={({ field }) => (
                             <TextField
                                 label="Amount"
-                                // size="small"
-                                // m='1rem'
                                 InputProps={{
                                     style: {
                                         color: 'white',
                                         border: '2px solid #2C2C2C',
-                                        // backgroundColor: '#1A1C1E',
                                     },
                                 }}
                                 required

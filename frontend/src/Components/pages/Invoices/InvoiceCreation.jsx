@@ -1,18 +1,15 @@
 import React, { useState } from 'react'
 import SubHeader from '../../molecules/SubHeader/SubHeader';
 import { useSelector, useDispatch } from 'react-redux';
-import { Box, Stack, Grid, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import FormItem from '../../atoms/FormItem/FormItem';
 import FormRowInvoice from '../../molecules/FormInvoiceCreation';
 import { SUBMIT_INVOICE_MUTATION } from '../../../ServerQueries/InvoiceQueries';
-import { useQuery, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { useNavigate } from 'react-router-dom';
 import CircularIndeterminate from '../../atoms/Loader/loader';
 import { resetInvoice } from '../../../actions/createInvoiceAction';
 import CustomizedSnackbars from '../../atoms/SnackBar/SnackBar';
-// import { PDFViewer } from 'react-pdf';
-
-
 
 function InvoiceCreation() {
     const dispatch = useDispatch();
@@ -55,12 +52,15 @@ function InvoiceCreation() {
     };
 
 
-    const handleSaveInvoice = async () => {
+    const handleSaveInvoice = async (event) => {
+
         let errors = {};
 
         if (!header.Category || !header.Recipient || !header['Invoice Number'] || !header.Currency || !header['Invoice Date'] || !header['Due Date'] || !header['Upload Invoice'] || !header.Description) {
             errors['allFields'] = "Please fill all the fields";
         }
+
+        console.log(errors);
         let convertedInvoiceDate= new Date(header['Invoice Date']);
         if (!(convertedInvoiceDate instanceof Date)) {
             errors['Invoice Date'] = "Invalid date format for 'Invoice Date'";
@@ -70,6 +70,7 @@ function InvoiceCreation() {
         }
 
         let convertedDate = new Date(header['Due Date']);
+
         if (!(convertedDate instanceof Date)) {
             errors['Due Date'] = "Invalid date format for 'Due Date'";
         } else {
@@ -92,6 +93,7 @@ function InvoiceCreation() {
         }
         setInvoiceError(Object.keys(errors).length > 0 ? errors : null);
 
+        console.log(invoiceError);
         if (Object.keys(errors).length === 0) {
             await submitInvoice({
                 variables: {
@@ -142,8 +144,8 @@ function InvoiceCreation() {
                 onClick: handleSaveInvoice,
                 innerText: "Save Invoice",
                 ml: "0.5rem",
-                prevenetDefault: true,
-                // type: "Submit",
+                preventDefault: true,
+                type: "Submit",
                 // redirectTo: `/proposals/${proposal.id}/invoices`,
             }
         ];
