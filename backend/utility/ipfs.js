@@ -9,12 +9,12 @@ const initializeIpfsNode = async () => {
 
 initializeIpfsNode();
 
-const UploadDataToIpfs = async (ipfsFilePath, jsonData) => { // Wait for the Moralis node initialization
+const UploadDataToIpfs = async (ipfsFilePath, jsonData) => {
 
     const abi = [
         {
             path: ipfsFilePath,
-            content: jsonData, // Use the actual Json data here
+            content: jsonData, 
         },
     ];
 

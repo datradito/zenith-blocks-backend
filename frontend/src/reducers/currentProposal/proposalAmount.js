@@ -3,8 +3,6 @@ import { ADD_AMOUNT } from "../../actions/currentProposal/amountTypes";
 const initialState = {
     proposals: [
         {
-        id: null,
-        amount: null,
         }
     ]
 };

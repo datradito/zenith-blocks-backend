@@ -10,9 +10,9 @@ import {
         injectedWallet,
         rainbowWallet,
         walletConnectWallet,
-        metaMaskWallet
+        metaMaskWallet,
+        safeWallet
 } from '@rainbow-me/rainbowkit/wallets';
-import { safeWallet } from '@rainbow-me/rainbowkit/wallets';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import { mainnet, polygon, optimism, arbitrum, goerli } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
@@ -23,6 +23,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
                 mainnet,
                 polygon,
                 arbitrum,
+                goerli,
                 ...(process.env.REACT_APP_ENABLE_TESTNETS === 'true' ? [goerli] : []),
         ],
         [publicProvider()]
@@ -50,7 +51,7 @@ const connectors = connectorsForWallets([
                         injectedWallet({ chains }),
                         rainbowWallet({ projectId, chains }),
                         walletConnectWallet({ projectId, chains }),
-                        safeWallet({ projectId, chains }),
+                        safeWallet({ chains }),
                         metaMaskWallet({ chains }),
                 ],
         },
@@ -69,7 +70,13 @@ const root = ReactDOM.createRoot(
 root.render(
         <React.StrictMode>
                 <WagmiConfig config={wagmiConfig}>
-                        <RainbowKitProvider chains={chains}>
+                        <RainbowKitProvider
+                                appInfo={{
+                                        appName: 'ZenithBlocks',
+                                }}
+                                chains={chains}
+                                showRecentTransactions={true}
+                        >
                                 <App />   
                         </RainbowKitProvider>
                 </WagmiConfig>

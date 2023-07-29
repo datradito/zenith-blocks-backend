@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo} from 'react'
 import { useParams, Link } from 'react-router-dom';
 import { Box, Stack } from '@mui/material';
 import TableDisplay from '../DisplayElements/TableDisplay.jsx';
 import ButtonAtom from "../atoms/Button/index";
 import { useDispatch, useSelector } from 'react-redux';
-import { setProposal, setProposalBudgetList } from '../../actions/currentProposal/index.js';
+import { setProposal } from '../../actions/currentProposal/index.js';
 import { refreshState } from '../../actions/createBudgetAction/index.js';
 import ItemCard from '../atoms/ItemCard/ItemCard.jsx';
 import SubHeader from "../molecules/SubHeader/SubHeader.jsx"
 import CircularIndeterminate from '../atoms/Loader/loader.jsx';
 import useProposalDetails from '../hooks/useProposalDetails.jsx';
-import useBudgets from '../hooks/useBudget.jsx';
 import useWeb3IpfsContract from '../hooks/web3IPFS';
-
+import { useAllBudgetsForProposal } from '../hooks/Budgets/useBudgetsForProposal.jsx';
+import CustomizedSnackbars from '../atoms/SnackBar/SnackBar.jsx';
+import transformItems from '../../Utility/transformItems.js';
 
 const BoxStyle = {
     width: '90%',
@@ -31,24 +32,31 @@ function ProposalDetailView() {
 
     const { proposalId } = useParams();
     const dispatch = useDispatch();
+    console.log(proposalId);
     const { web3, contract } = useWeb3IpfsContract();
     const { loading, error, data } = useProposalDetails(proposalId);
     const { proposals } = useSelector(state => state.currentProposalAmounts);
     const [ amount, setProposalAmount] = useState(0);
-    const { budgetList, budgetsLoading } = useBudgets(web3, contract, proposalId);
+    let { budgetList, budgetsLoading, budgetsError  } = useAllBudgetsForProposal(proposalId);
 
+    dispatch(refreshState());
 
+    const filteredProposal = useMemo(() => {
+        return proposals.filter((proposal) => proposal.id === proposalId ? proposal.amount : null);
+    }, [proposalId]);
 
     useEffect(() => {
-        const filteredProposal = proposals.filter(proposal => proposal.id === proposalId ? proposal.amount: null);
-        dispatch(refreshState());
-        filteredProposal[0].amount ? setProposalAmount(filteredProposal[0].amount) : setProposalAmount(0);
-    }, []);
-
+        setProposalAmount(filteredProposal[0]?.amount);
+    }, [filteredProposal]);
+    
+    //TOdo: move budget loading to tableDisplay to localize the loading
     if (loading || budgetsLoading) return <CircularIndeterminate />;
-    if (error) return <p>Error : {error.message}</p>;
-
+    if (error) return <CustomizedSnackbars severity="error" message={error.message} />;
+    
     let dataForItemCard = { "Goverance": data.proposal.space.name, "Total Budget": amount, "Proposal": data.proposal.title };
+
+    //TODO: memoize this
+    budgetList = transformItems(budgetList.getBudgetsForProposal, amount);
 
     const handleExportCSV = () => {
         console.log("Export CSV");

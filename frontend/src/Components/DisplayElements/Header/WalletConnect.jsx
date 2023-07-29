@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-
+import RecentTransactions from '../../molecules/Wallet/RecentTransactions';
 import {
     useAccount,
     useConnect,
@@ -111,6 +111,8 @@ export default function WalletConnect() {
     //  localStorage.setItem({`User: ${userAddress, "isAllowed: ${isAllowed}"}`})
     //address && isUserAllowed();
 
+    console.log(address, isConnected, connector, ensAvatar, ensName)
+
 
     return (
         <div
@@ -124,9 +126,21 @@ export default function WalletConnect() {
                  <ConnectButton
                     accountStatus={{
                         smallScreen: 'avatar',
-                        largeScreen: 'full',
-                    }} />
+                        largeScreen: 'avatar',
+                    }}
+                    showBalance={{
+                        smallScreen: false,
+                        largeScreen: true,
+                    }}
+                    chainStatus={{
+                        smallScreen: "icon",
+                        largeScreen: "full",
+                    }}
+                    />
             }
+            {/* {isConnected && (
+                <RecentTransactions hashProp={} />
+            )} */}
         </div>
     );
 }

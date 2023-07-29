@@ -98,7 +98,7 @@ function FormItem({ initialValues, type}) {
                                             multiline={key === 'Description' || key === 'Upload Invoice'}
                                             rows={key === 'Description' || key === 'Upload Invoice' ? 4 : 1}
                                             InputProps={{
-                                                readOnly: key === 'Proposal' || key === 'Goverance' || key === 'Ipfs Link',
+                                                readOnly: key === 'Proposal' || key === 'Goverance' || key === 'Ipfs Link' || key === 'Total Budget',
                                             }}
                                             sx={componentStyles.formInputFieldStyles}
                                             />

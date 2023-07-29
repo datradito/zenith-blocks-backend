@@ -11,6 +11,7 @@ import { ADD_OR_UPDATE_PROPOSAL } from "../../../ServerQueries/proposalMutation"
 import CircularIndeterminate from '../Loader/loader';
 import useSaveProposalDetails from '../../hooks/useSetAmountProposal';
 import useGetProposalDetails from '../../hooks/useGetProposalAmount';
+import CustomizedSnackBar from '../SnackBar/SnackBar.jsx';
 
 let dialogContainerStyle = {
     position: 'fixed',
@@ -63,6 +64,7 @@ export default function DetailPanelContent({ row }) {
     const [dialogOpen, setDialogOpen] = React.useState(true);
 
     const onSubmit = (data) => {
+        console.log(data);
         // Call the custom hook function to save the proposal details
         saveProposalDetails(data);
         setDialogOpen(false); // Close the dialog after submitting the form
@@ -77,7 +79,7 @@ export default function DetailPanelContent({ row }) {
     };
 
     if (loading ) return <CircularIndeterminate />;
-    if (error ) return <p>Error : {error.message}</p>;
+    if (error) return <CustomizedSnackBar message={error.message} severity="error" autoOpen={true} />;
 
 
     return (

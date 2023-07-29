@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import transformItems from '../../Utility/transformItems';
-// import web3 from './web3IPFS';
+
 
 export default function useBudgets(web3, contract, proposalId) {
     const [budgetList, setBudgetList] = useState(null);
@@ -40,7 +40,7 @@ export default function useBudgets(web3, contract, proposalId) {
             if (budgetHashes.length === 0 && contract) {
                 try {
                     setBudgetsLoading(true);
-                    await refreshBudgetList(contract);
+                    // await refreshBudgetList(contract);
                 } catch (error) {
                     console.error('Error:', error);
                 } finally {
@@ -77,3 +77,5 @@ export default function useBudgets(web3, contract, proposalId) {
 
     return { budgetList, budgetsLoading };
 }
+
+

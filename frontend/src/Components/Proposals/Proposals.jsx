@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import { NetworkStatus } from '@apollo/client';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -9,11 +9,8 @@ import { Link } from "react-router-dom";
 import SubHeader from "../molecules/SubHeader/SubHeader.jsx"
 import CircularIndeterminate from '../atoms/Loader/loader.jsx';
 import useProposals from '../hooks/useProposals.jsx';
-import CustomActionIcon from '../atoms/ActionIcon/CustomActionIcon.jsx';
 import FormDetailPanel from '../atoms/EditDetails/EditDetailsProposal.jsx';
-import useGetProposalDetails from '../hooks/useGetProposalAmount.jsx';
-import { addAmount } from '../../actions/currentProposal/amount.js';
-import { useDispatch } from 'react-redux';
+import Amount from '../molecules/ProposalAmount/Amount.jsx';
 const ProposalListCardStyle = {
   width: '90%',
   margin: '1rem auto',
@@ -62,33 +59,10 @@ const subItemStyle = {
   minWidth: 200,
 }
 
-const Amount = ({proposalId}) => {
-  const dispatch = useDispatch();
-  const { amount, proposalLoading, proposalError } = useGetProposalDetails(proposalId);
-
-  dispatch(addAmount({ amount: amount, proposalId: proposalId }));
-
-  // useEffect(() => {
-  //   if (amount) {
-  //     console.log("this running");
-  //     dispatch(addAmount({ amount: amount, proposalId: proposalId }));
-  //   }
-  // }, []);
-
-
-  if (proposalLoading) return (<Box sx = {{maxWidth: '50px', textAlign: 'left', maxHeight: '40px', marginTop: -2}}><CircularIndeterminate /></Box>);
-    
-  return (
-    <div>
-      {amount !== null ? amount : <CustomActionIcon />}
-    </div>
-  )
-}
-
 
 const Proposals = () => {
   const [selectedItemId, setSelectedItemId] = useState(null);
-  
+
   const {
     loading,
     error,
@@ -105,12 +79,10 @@ const Proposals = () => {
   if (loading) return <CircularIndeterminate /> ;
   if (error) return <p>Error : {error.graphQLErrors}</p>;
 
+
   const handleTotalBudgetClick = (itemId, e) => {
     setSelectedItemId(itemId);
-    console.log("Clicked element:", selectedItemId);
-    // onClose();
   };
-
 
   const componentButtonConfig =
     [
@@ -167,10 +139,16 @@ const Proposals = () => {
                     >
                       <ColumnItem sx={label}>Total Budget</ColumnItem>
                       <ColumnItem>
-                        { !selectedItemId || selectedItemId !== item.id ?
-                            <Amount proposalId={item.id} /> :
+                        {/* { !selectedItemId || selectedItemId !== item.id ?
+                            <Amount proposalid={item.id} /> :
                             <FormDetailPanel row={data.proposals.find((row) => row.id === selectedItemId)} onClose={onClose} />
-                        }
+                        } */}
+
+                        {selectedItemId === item.id ? (
+                          <FormDetailPanel row={item} onClose={onClose} />
+                        ) : (
+                          <Amount proposalid={item.id} />
+                        )}
                       </ColumnItem>
                     </SubItem>
                   <SubItem >

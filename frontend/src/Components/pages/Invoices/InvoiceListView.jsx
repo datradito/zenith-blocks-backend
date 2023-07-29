@@ -9,6 +9,8 @@ import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import useWeb3IpfsContract from '../../hooks/web3IPFS';
 import ButtonAtom from '../../atoms/Button';
+import TableRow from '../../atoms/TableRow';
+import { useGetAllInvoicesByBudget } from '../../hooks/Invoices/useGetAllInvoices';
 const tableHeaderData = ["Invoice", "Receipient", "Amount", "Currency", "Status", "Date", "Due","View", "Payment", "Action"]
 const tableBodyData = [
     { id: 1, Invoice: 1234, Receipient: "John Doe", Amount: 50000, Currenyc: 'ETH', Status: 'PAID', Date: '03/01/2023', Due: '03/01/2023', View: 'INVOICE', Payment: 'PAID', Action: 'ACTION', budgetId: "123" },
@@ -37,6 +39,7 @@ function InvoiceListView() {
         }
     };
 
+
     //step 1 - For Budget Id -> check in smartContract if it exists , if it does not render create invoices page
     useEffect(() => {
         if (parseInvoiceUrl(location.pathname) !== null) {
@@ -49,6 +52,8 @@ function InvoiceListView() {
             }
         }
     }, []);
+
+    // const { loading, error, data } = useGetAllInvoicesByBudget(Budget.id);
 
 
     const handleExportCSV = () => {
@@ -117,6 +122,7 @@ function InvoiceListView() {
     if (invoices === [] || invoices === null || invoices === undefined || invoices.length === 0 && parseInvoiceUrl(location.pathname) !== null) {
         return (
             <Box sx={BoxStyle}>
+                
                 <p>Create invoices for budget below. No invoices has been coded for this budget so far.</p>
                 <Link to={`/budgets/${Budget.id}/createInvoice`}>
                     <ButtonAtom config={buttonConfig} />

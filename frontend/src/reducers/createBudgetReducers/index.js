@@ -1,5 +1,5 @@
 import { UPDATE_FIELD, ADD_ROW, DELETE_ROW, GET_ALL_ROWS, SET_INITIAL_STATE, REFRESH_STATE } from "../../actions/createBudgetAction/types";
-import generateUUID from "../../Utility/uniqueId";
+
 
 
 // const storedState = JSON.parse(localStorage.getItem('persist:root'));
@@ -8,11 +8,11 @@ const initialState = {
     items: [
         {
             action: '-',
-            Categories: '',
-            "Allocated Budget": '',
-            Currency: '',
-            Breakdown: '',
-            Remaining: '',
+            category: '',
+            amount: '',
+            currency: '',
+            breakdown: '',
+            remaining: '',
         }
     ],
     proposal: {}
@@ -31,10 +31,10 @@ const createBudgetReducer = (state = initialState, action) => {
                     },],
                 proposal:
                 {
-                    "Goverance": action.payload.proposal.space.name,
-                    "Total Budget": "182345",
-                    "Proposal": action.payload.proposal.id,
-                    "Ipfs Link": action.payload.proposal.ipfs,
+                    goverance: action.payload.proposal.space,
+                    totalBudget: action.payload.budget,
+                    proposalId: action.payload.proposal.id,
+                    ipfs: action.payload.proposal.ipfs,
                 },
             };
         };
@@ -54,7 +54,7 @@ const createBudgetReducer = (state = initialState, action) => {
                     idx === index ? {
                         ...item,
                         [field]: value,
-                        Breakdown: field === 'Allocated Budget' ? `${(parseInt(value) / 500) * 100}%` : item.Breakdown,
+                        breakdown: `${parseInt(item.amount) / parseInt(state.proposal.totalBudget) * 100}`,
                     } : item
                 )
             };
@@ -63,11 +63,11 @@ const createBudgetReducer = (state = initialState, action) => {
                 items: [
                     {
                         action: '-',
-                        Categories: '',
-                        "Allocated Budget": '',
-                        Currency: '',
-                        Breakdown: '',
-                        Remaining: '',
+                        category: '',
+                        amount: '',
+                        currency: '',
+                        breakdown: '',
+                        remaining: '',
                     }
                 ],
                 proposal: {}

@@ -1,5 +1,5 @@
 import './App.css';
-import React from 'react';
+import React, { useState } from 'react';
 // import SimpleStorage from "./contracts/SimpleStorage.json";
 // import Web3 from "web3";
 import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client';
@@ -15,10 +15,15 @@ import ProposalDetailView from "./Components/Proposals/ProposalDetailView";
 import CreateBudget from './Components/pages/Budgets/CreateBudget.jsx';
 import InvoiceListView from './Components/pages/Invoices/InvoiceListView';
 import InvoiceCreation from './Components/pages/Invoices/InvoiceCreation';
-import theme from "./styles/theme";
+import SnackbarMessage from './Components/atoms/SnackBarGql/SnackBarGql';
 
 function App() {
 
+  const [snackbarMessage, setSnackbarMessage] = useState({
+    open: false,
+    severity: 'error', // Default to 'error' severity for error messages
+    message: '',
+  });
   // const [state, setState] = useState({
   //   web3: null,
   //   contract: null,
@@ -78,13 +83,21 @@ function App() {
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
       graphQLErrors.forEach(({ message }) => {
-        console.log(message);
+        setSnackbarMessage({ open: true, severity: 'error', message });
       });
     }
     if (networkError) {
-      console.log(`Network Error: ${networkError}`);
+      setSnackbarMessage({ open: true, severity: 'error', message: `Network Error: ${networkError}` });
     }
   });
+
+
+  // if (snackbarMessage.open) {
+  //     const timer = setTimeout(() => {
+  //       setSnackbarMessage({ open: false, severity: 'error', message: '' });
+  //     }, 4000);
+  //     return () => clearTimeout(timer);
+  // }
 
   const client = new ApolloClient({
     link: errorLink.concat(httpLink),
@@ -96,7 +109,12 @@ function App() {
         <ApolloProvider client={client}>
           <Provider store={ storeConfig }>
             <PersistGate loading={null} persistor={persistor}>
-              <BrowserRouter>
+          <BrowserRouter>
+            {/* <SnackbarMessage
+              open={snackbarMessage.open}
+              severity={snackbarMessage.severity}
+              message={snackbarMessage.message}
+            /> */}
               <ResponsiveHeaderBar />
                 <Routes>
                   <Route exact path="/proposals" element={<Proposals />} />

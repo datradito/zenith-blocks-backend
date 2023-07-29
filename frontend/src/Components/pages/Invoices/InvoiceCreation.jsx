@@ -14,10 +14,12 @@ import CustomizedSnackbars from '../../atoms/SnackBar/SnackBar';
 function InvoiceCreation() {
     const dispatch = useDispatch();
     const { proposal } = useSelector(state => state.currentProposal);
-    const { header } = useSelector(state => state.createInvoice);
+    const { Budget } = useSelector(state => state.currentBudget);
+    const { header, lines } = useSelector(state => state.createInvoice);
     const navigate = useNavigate();
     const [submitInvoice, { loading, error }] = useMutation(SUBMIT_INVOICE_MUTATION, { errorPolicy: "all" });
     const [invoiceError, setInvoiceError] = useState(null);
+    const [successMessage, setSuccessMessage] = useState(null);
 
     const handleDraft = () => {
         //do validation and save file locally
@@ -52,21 +54,19 @@ function InvoiceCreation() {
     };
 
 
-    const handleSaveInvoice = async (event) => {
-
+    const handleValidation = () => {
         let errors = {};
 
         if (!header.Category || !header.Recipient || !header['Invoice Number'] || !header.Currency || !header['Invoice Date'] || !header['Due Date'] || !header['Upload Invoice'] || !header.Description) {
             errors['allFields'] = "Please fill all the fields";
         }
 
-        console.log(errors);
-        let convertedInvoiceDate= new Date(header['Invoice Date']);
+        let convertedInvoiceDate = new Date(header['Invoice Date']);
         if (!(convertedInvoiceDate instanceof Date)) {
             errors['Invoice Date'] = "Invalid date format for 'Invoice Date'";
         } else {
-                const { ['Invoice Date']: _, ...rest } = errors;
-                errors = rest;
+            const { ['Invoice Date']: _, ...rest } = errors;
+            errors = rest;
         }
 
         let convertedDate = new Date(header['Due Date']);
@@ -74,8 +74,8 @@ function InvoiceCreation() {
         if (!(convertedDate instanceof Date)) {
             errors['Due Date'] = "Invalid date format for 'Due Date'";
         } else {
-                const { ['Invoice Date']: _, ...rest } = errors;
-                errors = rest;
+            const { ['Invoice Date']: _, ...rest } = errors;
+            errors = rest;
         }
 
         if (header['Invoice Date'] > header['Due Date']) {
@@ -91,10 +91,13 @@ function InvoiceCreation() {
                 errors['Currency'] = "Invalid value for Currency";
             }
         }
-        setInvoiceError(Object.keys(errors).length > 0 ? errors : null);
 
-        console.log(invoiceError);
-        if (Object.keys(errors).length === 0) {
+        setInvoiceError(Object.keys(errors).length > 0 ? errors : null);
+        return Object.keys(errors).length === 0;
+    };
+    const handleSaveInvoice = async (event) => {
+        const isValid = handleValidation();
+        if (isValid) {
             await submitInvoice({
                 variables: {
                     Category: header.Category,
@@ -105,15 +108,16 @@ function InvoiceCreation() {
                     DueDate: header['Due Date'],
                     UploadInvoice: header['Upload Invoice'],
                     Description: header.Description,
+                    BudgetId: Budget.id,
+                    lines: lines
                 },
             }).then((res) => {
-                <CustomizedSnackbars message="Invoice saved successfully!" severity="success" autoOpen={true} />
+                setSuccessMessage("Invoice saved successfully!");
                 setTimeout(() => {
                     dispatch(resetInvoice());
                     navigate(`/proposals/${proposal.id}/invoices`);
-                }, 2000)
+                }, 2000);
             }).catch((error) => {
-
                 if (error.graphQLErrors) {
                     error.graphQLErrors.forEach(({ message }) => {
                         console.log(message);
@@ -159,12 +163,22 @@ function InvoiceCreation() {
                 <FormItem initialValues={initialValuesHeader} type="invoice" />
                 <FormRowInvoice tableHeaderData={["", "Category", "Notes", "Price", "Quantity", "Total"]} />
             </Box>
+            {/* {invoiceError && (
+                <>
+                    {Object.entries(invoiceError).map(([key, message]) => (
+                        <CustomizedSnackbars key={key} message={message} severity="error" autoOpen={true} />
+                    ))}
+                </>
+            )} */}
             {invoiceError && (
                 <>
                     {Object.entries(invoiceError).map(([key, message]) => (
                         <CustomizedSnackbars key={key} message={message} severity="error" autoOpen={true} />
                     ))}
                 </>
+            )}
+            {successMessage && (
+                <CustomizedSnackbars key="success" message={successMessage} severity="success" autoOpen={true} />
             )}
         </form>
     )

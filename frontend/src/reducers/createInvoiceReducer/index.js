@@ -8,11 +8,11 @@ const initialState = {
         lines: [
             {
                 action: '-',
-                Category: '',
-                Notes: '',
-                Price: '',
-                Quantity: '',
-                Total: ''
+                category: '',
+                notes: '',
+                price: '',
+                quantity: '',
+                total: ''
             }
         ]
 };

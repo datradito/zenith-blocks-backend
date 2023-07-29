@@ -1,32 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery, NetworkStatus } from '@apollo/client';
 import { GET_PROPOSAL_BY_SPACE } from '../../SnapShot/Queries.js';
 import { snapShotClient } from '../../SnapShot/client.js';
 
-const useProposals = () => {
-    const [stateQuery, setStateQuery] = useState({ first: 10, skip: 0 });
-    const [skipQuery, setSkipQuery] = useState(false);
-    const [syncedAt, setSyncedAt] = useState(new Date().toLocaleString());
 
-    useEffect(() => {
-        if (localStorage.getItem('currentPage') !== stateQuery.skip) {
-            setStateQuery({ ...stateQuery, skip: parseInt(localStorage.getItem('currentPage')) * 10 });
-            setSkipQuery(false);
-        } else {
-            setSkipQuery(true);
-        }
-    }, [skipQuery]);
-
-    const handleSkipValueChange = () => {
-        let currentPage = localStorage.getItem('currentPage');
-        if (currentPage === '1') {
-            setStateQuery({ ...stateQuery, skip: 0 });
-        }
-        setStateQuery({ ...stateQuery, skip: (parseInt(currentPage) - 1) * 10 });
-    };
-
-    const { loading, error, data, refetch, networkStatus } = useQuery(GET_PROPOSAL_BY_SPACE, {
-        skip: skipQuery,
+const useProposalQuery = (stateQuery) => {
+    return useQuery(GET_PROPOSAL_BY_SPACE, {
         variables: {
             first: parseInt(stateQuery.first),
             skip: parseInt(stateQuery.skip),
@@ -35,12 +14,28 @@ const useProposals = () => {
         notifyOnNetworkStatusChange: true,
         client: snapShotClient,
     });
+};
 
-    useEffect(() => {
-        if (networkStatus === NetworkStatus.refetch) {
-            console.log('Fetching proposals...');
-        }
-    }, [networkStatus]);
+
+const useProposals = () => {
+    const [stateQuery, setStateQuery] = useState({
+        first: 10,
+        skip: parseInt(localStorage.getItem('currentPage')) * 10 || 0,
+    });
+
+    let syncedAt;
+    // Refactor to useMemo to memoize the result of useQuery
+    const { loading, error, data, refetch, networkStatus } = useProposalQuery(stateQuery);
+
+    const handleSkipValueChange = () => {
+        setStateQuery((prevState) => {
+            const currentPage = parseInt(localStorage.getItem('currentPage')) || 1;
+            return {
+                ...prevState,
+                skip: (currentPage - 1) * 10,
+            };
+        });
+    };
 
     const handleExportCSV = () => {
         console.log('Export CSV');
@@ -52,19 +47,22 @@ const useProposals = () => {
             skip: parseInt(stateQuery.skip),
             name: 'balancer.eth',
         });
-        setSyncedAt(new Date().toLocaleString());
+        syncedAt = new Date().toLocaleString(); // Fix: Define setSyncedAt or remove this line if not used
     };
+
+    syncedAt = new Date().toLocaleString(); // Fix: Define syncedAt or remove this line if not used
 
     return {
         loading,
         error,
         data,
-        syncedAt,
+        syncedAt, 
         handleExportCSV,
         handleSyncProposals,
         handleSkipValueChange,
         networkStatus,
     };
+
 };
 
 export default useProposals;

@@ -1,31 +1,32 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux';
 import useStyles from "./CreateBudget.style";
-// import * as yup from 'yup';
 import FormItem from "../../atoms/FormItem/FormItem";
 import FormRow from "../../molecules/FormBudgetCreation/index";
 import SubHeader from '../../molecules/SubHeader/SubHeader';
-import axios from 'axios';
 import useWeb3IpfsContract from '../../hooks/web3IPFS';
 import getPathAfterBudgetId from '../../../Utility/getBudgetId';
-
-const url = process.env.BACKEND_URL;
+import useFilteredProposalAmount from '../../hooks/useFilteredProposalAmount';
+import useSubmitBudget from '../../hooks/Budgets/useSubmitBudget';
 
 function CreateBudget() {
+
+  const { proposals } = useSelector(state => state.currentProposalAmounts);
+  const { error, loading, submitBudget } = useSubmitBudget();
   const { web3, contract } = useWeb3IpfsContract();
   let { proposal } = useSelector(state => state.currentProposal);
+  let {items} = useSelector(state => state.createBudget);
 
   const classes = useStyles();
-  let budget = useSelector(state => state.createBudget);
+
+  const filteredProposalAmount = useFilteredProposalAmount(proposals, proposal.id);
 
 
   let dataForItemCard = {};
 
   if (proposal) {
-    dataForItemCard = { "Goverance": `${proposal.space}`, "Total Budget": "5,980,000", "Proposal": `${proposal.title}`, "Ipfs Link": `${proposal.ipfs}` }
+    dataForItemCard = { "Goverance": `${proposal.space}`, "Total Budget": filteredProposalAmount, "Proposal": `${proposal.title}`, "Ipfs Link": `${proposal.ipfs}` }
   }
-
-
 
   //Todo: Get CID from smartContract using proposalId, Upon submission of budget, Get Data from IPFS for that CID and append new data to it, add new file to Ipfs and update cid in smartContract.
 
@@ -35,30 +36,14 @@ function CreateBudget() {
 
   const handleSaveProposal = async () => {
     let proposalId = proposal.id;
+    
     try {
-      const dataToBeUploaded = {
-        jsonData: budget.items,
-        rootPath: proposalId,
-      };
+      const budgetData = { ...items[0], proposalid: proposalId, rootpath: proposalId, amount: parseInt(items[0].amount), breakdown: parseInt(items[0].breakdown) };
+      await submitBudget(budgetData);
 
-      const { data } = await axios.post(`http://localhost:8000/ipfs/uploadBudget`, dataToBeUploaded);
-      let proposalIdForContract = web3.utils.keccak256(web3.utils.fromAscii(proposalId));
-      data.ipfsResponses.forEach(async (budgetCID) => {
-        let budgetId = getPathAfterBudgetId(budgetCID);
-        try {
-          const accounts = await web3.eth.getAccounts();
-          budgetId = web3.utils.keccak256(web3.utils.fromAscii(budgetId));
-          //budgetCID = web3.utils.keccak256(web3.utils.fromAscii('QmVJZQE9Pr1cncADELH2kqkCshxhxBELACCDxDqX83Qu2D/0xce9b0991276c79cccc773a327814fa07942a3287e022fc9e75378bdcd491b337fa559ab2-6252-4d21-b0ee-d89616aa21df'));
-
-          //encrypt budgetCID to bytes32 so that smartcontract can understand it. but also have ability to convert it back to ipfs cid so that axios can understand it.
-          
-          await contract.methods.createBudget(proposalIdForContract, budgetId, budgetCID).send({ from: accounts[0], gas: "10000000" });
-        } catch (error) {
-          console.error("An error occurred while executing the method:", error);
-        }
-      })
+      await new Promise((resolve) => setTimeout(resolve, 2000));
     } catch (error) {
-      console.error(error);
+      console.error('Error submitting budget:', error.message);
     }
   };
 

@@ -15,30 +15,32 @@ import { useDispatch, useSelector } from 'react-redux';
 import ButtonAtom from '../../atoms/Button';
 import UnstyledSelectBasic from '../../atoms/SelectDropdown/SelectDropdown';
 import { categories } from '../../pages/Category/Category';
+import useFilteredProposalAmount from '../../hooks/useFilteredProposalAmount';
 
 function FormRow({ tableHeaderData }) {
     const dispatch = useDispatch();
     let currentProposal = useSelector(state => state.currentProposal);
+    const { proposals } = useSelector(state => state.currentProposalAmounts);
     let classes = useStyles();
     let { items, proposal } = useSelector(state => state.createBudget);
 
-    //Todo: Implement Proposal amount - allocated budget validation so that total budget amount does not exceed the total proposal amount
-    //Todo: Fix setting proposal correctly in initial state, implement hash funciton in store to generate unique id for each budget
+    const filteredProposalAmount = useFilteredProposalAmount(proposals, currentProposal.proposal.id);
 
     useEffect(() => {
         const setProposalData = async () => {
             const generatedBudgetId = generateUUID();
             const data = { proposal: currentProposal.proposal, id: generatedBudgetId };
-            dispatch(setInitialState(data));
+
+            dispatch(setInitialState({ ...data, ...proposal, budget: filteredProposalAmount }));
         }
         setProposalData();
-    }, []);
+    }, [currentProposal.proposal.id]);
 
 
     const handleAddRow = async () => {
         //here confirm no empty fields
         const generatedBudgetId = generateUUID();
-        dispatch(addRow({ action: '-', Categories: '', "Allocated Budget": '', Currency: '', Breakdown: '', id: generatedBudgetId }));
+        dispatch(addRow({ action: '-', category: '', amount: '', currency: '', breakdown: '', id: generatedBudgetId }));
     };
 
     const handleDeleteRow = (index) => {
@@ -151,7 +153,8 @@ function FormRow({ tableHeaderData }) {
                             >
                                 <UnstyledSelectBasic
                                     values={categories}
-                                    onChange={(value) => handleChange(index, 'Categories', value)}
+                                    defaultValue={item.category}
+                                    onChange={(value) => handleChange(index, 'category', value)}
                                 />
                             </FormControl>
                             <FormControl
@@ -159,9 +162,9 @@ function FormRow({ tableHeaderData }) {
                                 sx={formStyleCustom.default}
                             >
                                 <TextField
-                                    value={item['Allocated Budget']}
+                                    value={item.amount}
                                     type="number"
-                                    onChange={(e) => handleChange(index, 'Allocated Budget', e.target.value)}
+                                    onChange={(e) => handleChange(index, 'amount', e.target.value)}
                                     InputProps={{
                                         style: {
                                             color: 'white',
@@ -178,8 +181,8 @@ function FormRow({ tableHeaderData }) {
                                 sx={formStyleCustom.default}
                             >
                                 <Select
-                                    value={item.Currency}
-                                    onChange={(e) => handleChange(index, 'Currency', e.target.value)}
+                                    value={item.currency}
+                                    onChange={(e) => handleChange(index, 'currency', e.target.value)}
                                     sx={[formStyleCustom.currencyDropdown, formStyleCustom.default]}
                                     style={{ fontSize: '.85rem' }}
                                 >
@@ -195,7 +198,7 @@ function FormRow({ tableHeaderData }) {
                                 sx={formStyleCustom.default}
                             >
                                 <TextField
-                                    value={`${(item['Allocated Budget'] / 500) * 100}%`}
+                                    value={`${(parseInt(item.amount) / parseInt(filteredProposalAmount)) * 100}%`}
                                     //onChange={(e) => handleChange(index, 'Breakdown', (item["Allocated Budget"]/ 500))}
                                     InputProps={{
                                         style: {

@@ -1,22 +1,22 @@
 import { gql } from '@apollo/client';
 
 export const ADD_OR_UPDATE_PROPOSAL = gql`
-  mutation AddOrUpdateProposal(
-    $Id: String!
-    $Amount: Float!
-    $Modifier: String!
-    $RootPath: String!
-    $DaoId: String!
+  mutation SetProposalAmount(
+    $id: String!
+    $amount: Float!
+    $modifier: String!
+    $rootpath: String!
+    $daoid: String!
   ) {
-    addOrUpdateProposal(
-      Id: $Id
-      Amount: $Amount
-      Modifier: $Modifier
-      RootPath: $RootPath
-      DaoId: $DaoId
+    setProposalAmount(
+      id: $id
+      amount: $amount
+      modifier: $modifier
+      rootpath: $rootpath
+      daoid: $daoid
     ) {
-      Id
-      Amount
+      id
+      amount
     }
   }
 `;
