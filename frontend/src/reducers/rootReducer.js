@@ -4,7 +4,7 @@ import createBudgetReducer from './createBudgetReducers/index';
 import createInvoiceReducer from './createInvoiceReducer/index';
 import currentBudgetReducer from './currentBudget/index';
 import proposalAmountReducer from './currentProposal/proposalAmount';
-import { sessionReducer } from 'redux-react-session';
+
 
 
 const rootReducer = combineReducers({

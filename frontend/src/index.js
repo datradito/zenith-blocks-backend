@@ -23,7 +23,7 @@ import { publicProvider } from 'wagmi/providers/public';
 import { Zoom } from '@mui/material';
 
 
-const { chains, publicClient, webSocketPublicClient } = configureChains(
+const { chains, publicClient } = configureChains(
         [
                 mainnet,
                 polygon,
@@ -75,9 +75,9 @@ const connectors = connectorsForWallets([
 // })
 
 const wagmiConfig = createConfig({
+        autoConnect: true,
         connectors,
-        publicClient,
-        webSocketPublicClient,
+        publicClient
 });
 
 

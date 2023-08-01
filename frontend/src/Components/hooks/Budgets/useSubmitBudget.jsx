@@ -9,24 +9,24 @@ const useSubmitBudget = () => {
     const [submitBudgetMutation, { loading, error }] = useMutation(SUBMIT_BUDGET_MUTATION,
         {
             update(cache, { data: { submitBudget } }) {
-                cache.modify({
-                    fields: {
-                        getAllBudgetsForProposal(existingBudgets = []) {
-                            const newBudgetRef = cache.writeFragment({
-                                data: submitBudget,
-                                fragment: gql`
-                                    fragment NewBudget on Budget {
-                                        id
-                                        category
-                                        amount
-                                        currency
-                                    }
-                                `,
-                            });
-                            return [...existingBudgets, newBudgetRef];
-                        },
-                    },
-                });
+                // cache.modify({
+                //     fields: {
+                //         getAllBudgetsForProposal(existingBudgets = []) {
+                //             const newBudgetRef = cache.writeFragment({
+                //                 data: submitBudget,
+                //                 fragment: gql`
+                //                     fragment NewBudget on Budget {
+                //                         id
+                //                         category
+                //                         amount
+                //                         currency
+                //                     }
+                //                 `,
+                //             });
+                //             return [...existingBudgets, newBudgetRef];
+                //         },
+                //     },
+                // });
             },
             // refetchQueries: [
             //     getAllBudgetsForProposal,
