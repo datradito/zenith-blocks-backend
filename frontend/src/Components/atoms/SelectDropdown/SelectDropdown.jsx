@@ -4,7 +4,7 @@ import Option, { optionClasses } from '@mui/base/Option';
 import Popper from '@mui/base/Popper';
 import { styled } from '@mui/system';
 
-const CustomSelect = React.forwardRef(function CustomSelect(props, ref) {
+export const CustomSelect = React.forwardRef(function CustomSelect(props, ref) {
     const slots = {
         root: StyledButton,
         listbox: StyledListbox,
@@ -117,7 +117,7 @@ const StyledListbox = styled('ul')(
   `,
 );
 
-const StyledOption = styled(Option)(
+export const StyledOption = styled(Option)(
     ({ theme }) => `
   list-style: none;
   padding: 8px;

@@ -1,14 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import useStyles from './index.style';
 import {
     Box,
     Button,
-    TableCell,
-    TableRow,
     TextField,
     FormControl
 } from '@mui/material';
-import TableHeader from '../../atoms/TableHeader/index';
+
 import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
 import { useDispatch, useSelector } from 'react-redux';
 import ButtonAtom from '../../atoms/Button';

@@ -8,7 +8,7 @@ const ButtonAtom = ({ config }) => {
     const buttonComponentStyles = {
         buttonStyle: {
             backgroundColor: config.backgroundColor ? config.backgroundColor : "#055FFC",
-            margin: "1rem 0",
+            margin: config.margin? config.margin: "1rem 0",
             borderRadius: "50px",
             fontSize: ".85rem",
             textTransform: "none",
@@ -44,8 +44,9 @@ const ButtonAtom = ({ config }) => {
                         </Button>
                     </CSVLink>
                 ) : <Button
-                    sx={buttonComponentStyles.buttonStyle}
-                    variant="contained"
+                    sx={config.sx ? config.sx: buttonComponentStyles.buttonStyle}
+                        variant="contained"
+                        disabled={config.disabled ? config.disabled : false}
                     type={config.type ? config.type : "submit"}
                         onClick={handleClick}
                         // onSubmit={config.onSubmit}

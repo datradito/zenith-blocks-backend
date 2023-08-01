@@ -5,5 +5,5 @@ export default function transformItems(items, totalBudget) {
         return { ...rest, Remaining: parseInt(totalBudget - parseInt(item.amount)), Invoices: 'INVOICE' };
     }
     );
-    return items;
+    return items?.length > 0 ? items : null;
 }

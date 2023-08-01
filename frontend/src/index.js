@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from "./App.js"
 
+// import { SafeConnector } from 'wagmi/connectors/safe'
 
 import '@rainbow-me/rainbowkit/styles.css';
 import { getDefaultWallets, RainbowKitProvider, connectorsForWallets } from '@rainbow-me/rainbowkit';
@@ -11,17 +12,23 @@ import {
         rainbowWallet,
         walletConnectWallet,
         metaMaskWallet,
-        safeWallet
+        safeWallet,
+        argentWallet,
+        trustWallet,
+        ledgerWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
-import { mainnet, polygon, optimism, arbitrum, goerli } from 'wagmi/chains';
+import { mainnet, polygon, optimism, arbitrum, goerli, zkSync } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
+import { Zoom } from '@mui/material';
 
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
         [
                 mainnet,
                 polygon,
+                optimism,
+                zkSync,
                 arbitrum,
                 goerli,
                 ...(process.env.REACT_APP_ENABLE_TESTNETS === 'true' ? [goerli] : []),
@@ -53,15 +60,26 @@ const connectors = connectorsForWallets([
                         walletConnectWallet({ projectId, chains }),
                         safeWallet({ chains }),
                         metaMaskWallet({ chains }),
+                        argentWallet({ projectId, chains }),
+                        trustWallet({ projectId, chains }),
+                        ledgerWallet({ projectId, chains }),
                 ],
         },
 ]);
+// const connector = new SafeConnector({
+//         chains: [mainnet, optimism],
+//         options: {
+//                 allowedDomains: [/gnosis-safe.io$/, /app.safe.global$/],
+//                 debug: false,
+//         },
+// })
 
 const wagmiConfig = createConfig({
         connectors,
         publicClient,
         webSocketPublicClient,
 });
+
 
 const root = ReactDOM.createRoot(
         document.getElementById('root')
@@ -74,6 +92,7 @@ root.render(
                                 appInfo={{
                                         appName: 'ZenithBlocks',
                                 }}
+                                coolMode={true}
                                 chains={chains}
                                 showRecentTransactions={true}
                         >

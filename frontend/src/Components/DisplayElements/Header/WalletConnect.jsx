@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import User from '../../pages/Swap/user';
 import RecentTransactions from '../../molecules/Wallet/RecentTransactions';
 import {
     useAccount,
@@ -6,64 +7,70 @@ import {
     useDisconnect,
     useEnsAvatar,
     useEnsName,
+    useBalance
 } from 'wagmi'
 
-import Web3 from "web3";
-import {
-    IconButton,
-    Typography,
-    Menu,
-    Avatar,
-    Tooltip,
-    Button,
-} from '@mui/material';
+
 import MyContract from "../../../contracts/MyContract.json";
 // import { Mainnet,useEtherBalance, useEthers } from '@usedapp/core'
 // import { formatEther } from '@ethersproject/units';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-
+import { useNavigate } from 'react-router-dom';
 
 
 export default function WalletConnect() {
-
+    const navigate = useNavigate()
     const { address, connector, isConnected } = useAccount()
     const { data: ensAvatar } = useEnsAvatar({ address })
     const { data: ensName } = useEnsName({ address })
+    const { data, isError, isLoading } = useBalance({
+        address
+    })
 
     const [isAllowed, setIsAllowed] = useState(false);
-    const [state, setState] = useState({
-        web3: null,
-        contract: null,
-    });
 
+    // const [state, setState] = useState({
+    //     web3: null,
+    //     contract: null,
+    // });
 
+    //navigate user to /swap page if connected
     useEffect(() => {
-        const provider = new Web3.providers.HttpProvider("HTTP://127.0.0.1:7545");
-        async function template() {
-            const web3 = new Web3(provider);
-            const networkId = await web3.eth.net.getId();
-            const deployedNetwork = MyContract.networks[networkId];
-            const contract = new web3.eth.Contract(
-                MyContract.abi,
-                deployedNetwork.address
-            );
-            setState({ web3: web3, contract: contract });
+        if (isConnected) {
+            navigate('/swap')
         }
-        provider && template();
-    }, [])
+    }, [isConnected])
 
-    useEffect(() => {
-        async function isUserAllowed() {
-            const { contract } = state;
-            //manually allow users by default for now - need to come up with a better solution
-            allowUser();
-            //  const allowed = await contract.methods.isUserAllowed().call();
-            //     setIsAllowed(allowed);
-            //     console.log(allowed);
-            //  localStorage.setItem({`User: ${userAddress, "isAllowed: ${isAllowed}"}`})
-        }
-        //address && isUserAllowed();
-    }, [address]);
+
+    // useEffect(() => {
+    //     const provider = new Web3.providers.HttpProvider("HTTP://127.0.0.1:7545");
+    //     async function template() {
+    //         // const web3 = new Web3(provider);
+    //         // const networkId = await web3.eth.net.getId();
+    //         // const deployedNetwork = MyContract.networks[networkId];
+    //         const contract = new web3.eth.Contract(
+    //             MyContract.abi,
+    //             deployedNetwork.address
+    //         );
+    //         setState({ web3: web3, contract: contract });
+    //     }
+    //     provider && template();
+    // }, [])
+
+    // useEffect(() => {
+    //     // async function isUserAllowed() {
+    //     //     // const { contract } = state;
+    //     //     //manually allow users by default for now - need to come up with a better solution
+    //     //     allowUser();
+    //     //     //  const allowed = await contract.methods.isUserAllowed().call();
+    //     //     //     setIsAllowed(allowed);
+    //     //     //     console.log(allowed);
+    //     //     //  localStorage.setItem({`User: ${userAddress, "isAllowed: ${isAllowed}"}`})
+    //     // }
+    //     // isUserAllowed();
+    //     allowUser();
+    //     //address && isUserAllowed();
+    // }, [address]);
 
 
     // const connectWallet = async () => {
@@ -82,12 +89,12 @@ export default function WalletConnect() {
     const allowUser = async () => {
         console.log(address)
         if (address) {
-            const { contract } = state;
-            await contract.methods.setAddress().send({ from: "0x12EC8Ac7DA760d11E3452e3315f57804BD3a99f4" });
-            const addresses = contract.methods.getAddresses().call();
-            addresses.then((result) => {
-                console.log(result);
-            })
+            // const { contract } = state;
+            //await contract.methods.setAddress().send({ from: address });
+            // const addresses = contract.methods.getAddresses().call();
+            // addresses.then((result) => {
+            //     console.log(result);
+            // })
         }
     }
 
@@ -111,7 +118,6 @@ export default function WalletConnect() {
     //  localStorage.setItem({`User: ${userAddress, "isAllowed: ${isAllowed}"}`})
     //address && isUserAllowed();
 
-    console.log(address, isConnected, connector, ensAvatar, ensName)
 
 
     return (
@@ -122,25 +128,22 @@ export default function WalletConnect() {
                 padding: 12,
             }}
         >
-            {
-                 <ConnectButton
-                    accountStatus={{
-                        smallScreen: 'avatar',
-                        largeScreen: 'avatar',
-                    }}
-                    showBalance={{
-                        smallScreen: false,
-                        largeScreen: true,
-                    }}
-                    chainStatus={{
-                        smallScreen: "icon",
-                        largeScreen: "full",
-                    }}
-                    />
+        {
+            <ConnectButton
+            accountStatus={{
+                smallScreen: 'avatar',
+                largeScreen: 'full',
+            }}
+            showBalance={{
+                smallScreen: false,
+                largeScreen: true,
+            }}
+            chainStatus={{
+                smallScreen: "icon",
+                largeScreen: "full",
+            }}
+            />
             }
-            {/* {isConnected && (
-                <RecentTransactions hashProp={} />
-            )} */}
         </div>
     );
 }

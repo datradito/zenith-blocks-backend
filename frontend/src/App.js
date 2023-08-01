@@ -10,12 +10,14 @@ import { storeConfig, persistor } from './store/storeConfigure';
 import { PersistGate } from 'redux-persist/integration/react';
 import ResponsiveHeaderBar from "./Components/DisplayElements/Header/Header.jsx";
 import ErrorPage from "./Routes/ErrorPage";
-import Proposals from "./Components/Proposals/Proposals";
-import ProposalDetailView from "./Components/Proposals/ProposalDetailView";
+import Proposals from "./Components/pages/Proposals/Proposals";
+import ProposalDetailView from "./Components/pages/Proposals/ProposalDetailView";
 import CreateBudget from './Components/pages/Budgets/CreateBudget.jsx';
 import InvoiceListView from './Components/pages/Invoices/InvoiceListView';
 import InvoiceCreation from './Components/pages/Invoices/InvoiceCreation';
 import SnackbarMessage from './Components/atoms/SnackBarGql/SnackBarGql';
+import Swap from './Components/pages/Swap/Swap';
+
 
 function App() {
 
@@ -104,6 +106,8 @@ function App() {
     cache: new InMemoryCache(),
   });
 
+  // sessionService.initSessionService(storeConfig);
+
   return (
   
         <ApolloProvider client={client}>
@@ -124,7 +128,8 @@ function App() {
               <Route exact path="/budgets/:budgetId/createInvoice" element={<InvoiceCreation />} />
                   <Route exact path="/proposal/update/:proposalId" element={<CreateBudget />} />
                   <Route exact path="/proposals/:proposalId/invoices" element={<InvoiceListView />} />
-                  <Route exact path="/budgets/:budgetId/invoices" element={<InvoiceListView />} />
+              <Route exact path="/budgets/:budgetId/invoices" element={<InvoiceListView />} />
+              <Route exact path="/swap" element={<Swap />} />
                   <Route element={<ErrorPage />} />
                 </Routes>
               </BrowserRouter>
@@ -135,3 +140,100 @@ function App() {
 }
 
 export default App;
+
+
+
+// import React from 'react';
+// import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+// import { useSelector } from 'react-redux';
+// import { PersistGate } from 'redux-persist/integration/react';
+// import { ApolloProvider } from '@apollo/client';
+// import { Provider } from 'react-redux';
+// import { storeConfig, persistor } from './your-store-config';
+// import { client } from './your-apollo-client';
+
+// import ResponsiveHeaderBar from './components/ResponsiveHeaderBar';
+// import Proposals from './components/Proposals';
+// import ProposalDetailView from './components/ProposalDetailView';
+// import CreateBudget from './components/CreateBudget';
+// import InvoiceCreation from './components/InvoiceCreation';
+// import InvoiceListView from './components/InvoiceListView';
+// import Swap from './components/Swap';
+// import ErrorPage from './components/ErrorPage';
+
+// // Custom route guard function
+// const PrivateRoute = ({ element: Component, ...rest }) => {
+//   const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
+
+//   return (
+//     <Route
+//       {...rest}
+//       element={
+//         isAuthenticated ? <Component /> : <Navigate to="/login" replace />
+//       }
+//     />
+//   );
+// };
+
+// const App = () => {
+//   return (
+//     <ApolloProvider client={client}>
+//       <Provider store={storeConfig}>
+//         <PersistGate loading={null} persistor={persistor}>
+//           <BrowserRouter>
+//             {/* <SnackbarMessage
+//               open={snackbarMessage.open}
+//               severity={snackbarMessage.severity}
+//               message={snackbarMessage.message}
+//             /> */}
+//             <ResponsiveHeaderBar />
+//             <Routes>
+//               <Route exact path="/login" element={<LoginPage />} />
+//               <Route exact path="/register" element={<RegisterPage />} />
+//               <PrivateRoute exact path="/proposals" element={<Proposals />} />
+//               <PrivateRoute
+//                 exact
+//                 path="/proposals/:proposalId"
+//                 element={<ProposalDetailView />}
+//               />
+//               <PrivateRoute
+//                 exact
+//                 path="/proposal/budgets/:proposalId"
+//                 element={<CreateBudget />}
+//               />
+//               <PrivateRoute
+//                 exact
+//                 path="/proposal/budgets/createInvoice"
+//                 element={<InvoiceCreation />}
+//               />
+//               <PrivateRoute
+//                 exact
+//                 path="/budgets/:budgetId/createInvoice"
+//                 element={<InvoiceCreation />}
+//               />
+//               <PrivateRoute
+//                 exact
+//                 path="/proposal/update/:proposalId"
+//                 element={<CreateBudget />}
+//               />
+//               <PrivateRoute
+//                 exact
+//                 path="/proposals/:proposalId/invoices"
+//                 element={<InvoiceListView />}
+//               />
+//               <PrivateRoute
+//                 exact
+//                 path="/budgets/:budgetId/invoices"
+//                 element={<InvoiceListView />}
+//               />
+//               <PrivateRoute exact path="/swap" element={<Swap />} />
+//               <Route element={<ErrorPage />} />
+//             </Routes>
+//           </BrowserRouter>
+//         </PersistGate>
+//       </Provider>
+//     </ApolloProvider>
+//   );
+// };
+
+// export default App;
