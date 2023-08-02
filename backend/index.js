@@ -6,10 +6,12 @@ const schema = require('./schema/schema');
 var { graphqlHTTP } = require('express-graphql');
 const port = 8000;
 const Moralis = require("moralis").default;
-const session = require('express-session');
+// const session = require('express-session');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+
+const createSiweMessage = require('./utility/signMessage');
 // const getUserBalance = require('./utility/ipfs').getUserBalance;
 
 const { init } = require('./Database/sequalizeConnection');
@@ -19,12 +21,12 @@ app.use('/graphql', graphqlHTTP({
     graphiql: true
 }));
 
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
+// app.use(session({
+//     secret: process.env.SESSION_SECRET,
+//     resave: false,
+//     saveUninitialized: true,
     
-}));
+// }));
 
 
 // init();
@@ -67,6 +69,19 @@ app.get("/tokenPrice", async (req, res) => {
 
     return res.status(200).json(usdPrices);
 });
+
+
+
+app.post("/siwe", async (req, res) => {
+    const { address, network } = req.body;
+    console.log(address, network);
+    // const siweMessage = createSiweMessage(address, statement);
+    // const signature = await Moralis.Web3.sign(siweMessage);
+    const message = createSiweMessage(address, network, "1");
+    console.log(message);
+    return res.status(200).json(message);
+    }
+);
 
 
 app.listen(8000, () => {

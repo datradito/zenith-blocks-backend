@@ -20,10 +20,9 @@ import {
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import { mainnet, polygon, optimism, arbitrum, goerli, zkSync } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
-import { Zoom } from '@mui/material';
+import { alchemyProvider } from 'wagmi/providers/alchemy';
 
-
-const { chains, publicClient } = configureChains(
+const { chains, publicClient, webSocketPublicClient } = configureChains(
         [
                 mainnet,
                 polygon,
@@ -33,7 +32,7 @@ const { chains, publicClient } = configureChains(
                 goerli,
                 ...(process.env.REACT_APP_ENABLE_TESTNETS === 'true' ? [goerli] : []),
         ],
-        [publicProvider()]
+        [alchemyProvider({ apiKey: 'AsxwVAm7iKW3SxGD-z9inFZ9FoYeQ4lQ' }) , publicProvider()]
 );
 
 // const { connectors } = getDefaultWallets({
@@ -41,7 +40,7 @@ const { chains, publicClient } = configureChains(
 //         projectId: 'YOUR_PROJECT_ID',
 //         chains,
 // });
-const projectId = '5777';
+const projectId = '3a74d330e07a405df9ab1a0ff1825a9b';
 
 const { wallets } = getDefaultWallets({
         appName: 'ZenithBlocks',
@@ -77,7 +76,8 @@ const connectors = connectorsForWallets([
 const wagmiConfig = createConfig({
         autoConnect: true,
         connectors,
-        publicClient
+        publicClient,
+        webSocketPublicClient,
 });
 
 

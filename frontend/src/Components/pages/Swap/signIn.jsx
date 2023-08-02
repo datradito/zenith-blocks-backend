@@ -1,6 +1,5 @@
 // import { signIn } from "next-auth/react";
 import { useAccount, useConnect, useSignMessage, useDisconnect } from "wagmi";
-import { useRouter } from "next/router";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";

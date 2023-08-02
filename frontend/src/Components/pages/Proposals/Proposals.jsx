@@ -76,7 +76,7 @@ const Proposals = () => {
   } = useProposals();
 
 
-  if (networkStatus === NetworkStatus.refetch) return <CircularIndeterminate />;
+  if (networkStatus === NetworkStatus) return <CircularIndeterminate />;
   if (loading) return <CircularIndeterminate /> ;
   if (error) return <p>Error : {error.graphQLErrors}</p>;
 
