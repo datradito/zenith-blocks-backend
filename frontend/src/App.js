@@ -27,6 +27,8 @@ function App() {
     severity: 'error', // Default to 'error' severity for error messages
     message: '',
   });
+
+  console.log(process.env.REACT_APP_API_URL); 
   // const [state, setState] = useState({
   //   web3: null,
   //   contract: null,
@@ -80,7 +82,7 @@ function App() {
   //   cache: new InMemoryCache().restore(),
   // });
   const httpLink = createHttpLink({
-    uri: 'http://localhost:8000/graphql',
+    uri: `${process.env.REACT_APP_API_URL}/graphql`,
   });
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {

@@ -17,21 +17,23 @@ const createNonce = async () => {
 }
 
 function createSiweMessage(address, network, nonce) {
-    const siweMessage = new siwe.SiweMessage({
-        address,
-        network,
-        chainId: "1",
-        version: '1',
-        nonce: nonce,
-        ...config,
-    });
-
-    return siweMessage.prepareMessage();
-
+    try {
+        const siweMessage = new siwe.SiweMessage({
+            address,
+            network,
+            chainId: "1",
+            version: '1',
+            nonce: nonce,
+            ...config,
+        });
+        return siweMessage.prepareMessage();
+    }catch (error) {
+        return(error);
+    }
 }
 
 
-const verifySiweMessageHandler = (message, signature, nonce) => {
+const verifySiweMessageHandler = async(message, signature, nonce) => {
     let SIWEObject = new siwe.SiweMessage(message);
 
     return SIWEObject.verify({ signature: signature, nonce: nonce })

@@ -35,11 +35,13 @@ function Dashboard() {
                 flexWrap: "wrap",
                 justifyContent: "space-between",
                 width: "100%",
+                paddingBottom: "2rem",
+                borderBottom: "1px solid white",
             }}>
                     {wallet.length === 42 && (
                         <>
                             <div>
-                                <Avatar isRounded size={100} theme="image" />
+                                <Avatar isRounded size={100} avatarBackground="blue" theme="image" />
                                 <Typography variant="subtitle2">{`${wallet.slice(0, 6)}...${wallet.slice(36)}`}</Typography>
                             </div>
                             <PortfolioValue
@@ -61,6 +63,7 @@ function Dashboard() {
                 flexDirection: "row",
                 alignItems: "center",
                 flexWrap: "wrap",
+                marginTop: "2rem",
             }}>
                 <TabList>
                     <Tab tabKey={1} tabName={"Tokens"}>

@@ -27,10 +27,14 @@ export default function WalletConnect() {
     const { signMessageAsync } = useSignMessage();
 
 
+    useEffect(() => {
+        if (isConnected) {
+            handleAuth();
+        }
+    }, [isConnected])
+
     const handleAuth = async () => {
 
-        console.log(window.location.host)
-        console.log(window.location.origin)
         try {
             console.log("Connect To Site Via Wallet");
 
@@ -40,7 +44,7 @@ export default function WalletConnect() {
 
             console.log("Sending Connected Account and Chain ID to Moralis Auth API");
 
-            const { data: message } = await axios.post("http://localhost:8000/siwe", { address, network: "evm" }, {
+            const { data: message } = await axios.post(`${process.env.REACT_APP_API_URL}/siwe`, { address, network: "evm" }, {
                 headers: {
                     'Content-Type': 'application/json',
                     withCredntials: true,
@@ -54,7 +58,7 @@ export default function WalletConnect() {
 
             console.log(message, signature);
 
-            const response = await axios.post("http://localhost:8000/verify", { message, signature }, {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/verify`, { message, signature }, {
                 headers: {
                     'Content-Type': 'application/json',
                     withCredntials: true,
@@ -75,7 +79,7 @@ export default function WalletConnect() {
     };
 
     const checkSiwe = async () => {
-        const { data } = await axios.get("http://localhost:8000/checkSiwe");
+        const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/checkSiwe`);
         console.log(data);
         
     }

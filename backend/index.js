@@ -109,28 +109,27 @@ app.post("/siwe", async (req, res) => {
 
 app.post('/verify', async function (req, res) {
     try {
-        if (!req.body.message) {
-            res.status(422).json({ message: 'Expected prepareMessage object as body.' });
+        if (!req.body.message || !req.body.signature) {
+            res.status(422).json({ message: 'Expected message and signature object as body.' });
             return;
         }
 
         // const siweCookie = req.headers.cookie?.split(';').find(cookie => cookie.trim().startsWith('siwe='));
 
-        const nonce = req.session.nonce;
+        const { signature, message } = req.body;
+        const { address, profileId, expirationTime} = await Moralis.Auth.verify({message, signature, network: 'evm'});
 
-        console.log(req.session.id);
-        console.log(req.session.nonce);
-
-        verifySiweMessageHandler(req.body.message, req.body.signature, nonce)
-            .then(({message}) => {
-            req.session.cookie.expires = new Date(Date.now() + hour);
-            req.session.save(() => res.status(200).send(true));
-        }).catch((error) => {
-            req.session.siwe = null;
-            req.session.nonce = null;
-            req.session.save(() => res.status(422).json({ message: error.message }));
-        }
-        )
+        
+        // verifySiweMessageHandler(req.body.message, req.body.signature, nonce)
+        //     .then(({message}) => {
+        //     req.session.cookie.expires = new Date(Date.now() + hour);
+        //     req.session.save(() => res.status(200).send(true));
+        // }).catch((error) => {
+        //     req.session.siwe = null;
+        //     req.session.nonce = null;
+        //     req.session.save(() => res.status(422).json({ message: error.message }));
+        // }
+        // )
     } catch (e) {
         req.session.siwe = null;
         req.session.nonce = null;

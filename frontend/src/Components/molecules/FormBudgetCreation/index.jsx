@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import useStyles from './index.style';
+import { CryptoLogos, Select } from '@web3uikit/core';
 import { setInitialState, addRow, deleteRow, updateField } from '../../../actions/createBudgetAction';
 import {
     Box,
     Button,
     MenuItem,
-    Select,
+    // Select,
     FormControl,
     TextField,
 } from '@mui/material';
@@ -15,6 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import ButtonAtom from '../../atoms/Button';
 import UnstyledSelectBasic from '../../atoms/SelectDropdown/SelectDropdown';
 import { categories } from '../../pages/Category/Category';
+import CurrencyDropdown from '../../atoms/CurrencyDropdown/CurrencyDropdown';
 import useFilteredProposalAmount from '../../hooks/useFilteredProposalAmount';
 
 function FormRow({ tableHeaderData }) {
@@ -75,7 +77,7 @@ function FormRow({ tableHeaderData }) {
         textFieldStyle: {
             '& .MuiInputBase-root': {
                 color: 'white',
-                border: '2px solid #2C2C2C',
+                // border: '2px solid #2C2C2C',
                 backgroundColor: '#1A1C1E',
                 margin: '0',
                 fontSize: '.85rem',
@@ -84,7 +86,7 @@ function FormRow({ tableHeaderData }) {
         default: {
             color: 'white',
             padding: '0',
-            border: '2px solid #2C2C2C',
+
             '& .MuiInputBase-input': {
                 padding: '0.5rem',
                 fontSize: '.85rem',
@@ -180,18 +182,33 @@ function FormRow({ tableHeaderData }) {
                                 style={{ width: '200px', border: 'none', padding: '0.5rem' }}
                                 sx={formStyleCustom.default}
                             >
-                                <Select
+                                <CurrencyDropdown
+                                    value={item.currency}
+                                    onChange={(e) => handleChange(index, 'currency', e.target.value)}
+                                />
+                                {/* <Select
                                     value={item.currency}
                                     onChange={(e) => handleChange(index, 'currency', e.target.value)}
                                     sx={[formStyleCustom.currencyDropdown, formStyleCustom.default]}
                                     style={{ fontSize: '.85rem' }}
                                 >
                                     <MenuItem value="USD" color="primary">
-                                        USD
+                                        <CryptoLogos chain="usdt" />
                                     </MenuItem>
-                                    <MenuItem value="EUR">EUR</MenuItem>
+                                    <MenuItem value="EUR"> <CryptoLogos chain="ethereum" />ETH</MenuItem>
                                     <MenuItem value="GBP">GBP</MenuItem>
-                                </Select>
+                                </Select> */}
+{/*                            
+                                <Select
+                                    style={{ width: "2rem" }}
+                                    defaultOptionIndex={0}
+                                    onChange={(e) => handleChange(index, 'currency', e.value)}
+                                    value={item.currency}
+                                    options={[
+                                        { value: "0x1", label: "ETH", id: "ETH", prefix: <CryptoLogos chain="ethereum" /> },
+                                        { value: "0x89", label: "Matic", id: "Matic", prefix: <CryptoLogos chain="polygon" /> },
+                                    ]}
+                                /> */}
                             </FormControl>
                             <FormControl
                                 style={{ border: 'none', padding: '0.5rem' }}

@@ -15,7 +15,7 @@ function NativeTokens({ wallet, chain, nativeBalance, setNativeBalance, nativeVa
                 chain: chain,
             },
         });
-        console.log(response);
+
         if (response.data.balance && response.data.usd) {
             setNativeBalance((Number(response.data.balance) / 1e18).toFixed(3));
             setNativeValue(((Number(response.data.balance) / 1e18) * Number(response.data.usd)).toFixed(2));
