@@ -5,6 +5,7 @@ import { updateHeader } from './../../../actions/createInvoiceAction/index.js';
 import { categories } from '../../pages/Category/Category';
 import UnstyledSelectBasic from '../SelectDropdown/SelectDropdown';
 import useStyles from './index.style';
+import { Upload } from "@web3uikit/core";
 
 
 function FormItem({ initialValues, type}) {
@@ -77,6 +78,14 @@ function FormItem({ initialValues, type}) {
                                     key === 'Category' ? (
                                         <UnstyledSelectBasic defaultValue={initialValues.Category} values={categories} onChange={(value) => handleChange(key, value)} />
                                         ) :
+                                            key === 'Upload Invoice' ? (
+                                                <Upload
+                                                    acceptedFiles="image/jpeg"
+                                                    descriptionText="Only .jpeg files are accepted"
+                                                    onChange={function noRefCheck() { }}
+                                                    style={{}}
+                                                    theme="withIcon"
+                                                />):
                                             
                                             key === 'Invoice Number' ? (
                                                 <TextField

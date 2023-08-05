@@ -15,6 +15,7 @@ import ProposalDetailView from "./Components/pages/Proposals/ProposalDetailView"
 import CreateBudget from './Components/pages/Budgets/CreateBudget.jsx';
 import InvoiceListView from './Components/pages/Invoices/InvoiceListView';
 import InvoiceCreation from './Components/pages/Invoices/InvoiceCreation';
+import Dashboard from './Components/pages/walletDashboard/Dashboard';
 import SnackbarMessage from './Components/atoms/SnackBarGql/SnackBarGql';
 import Swap from './Components/pages/Swap/Swap';
 
@@ -130,6 +131,7 @@ function App() {
                   <Route exact path="/proposal/update/:proposalId" element={<CreateBudget />} />
                   <Route exact path="/proposals/:proposalId/invoices" element={<InvoiceListView />} />
               <Route exact path="/budgets/:budgetId/invoices" element={<InvoiceListView />} />
+              <Route exact path="/dashboard" element={<Dashboard />} />
               <Route exact path="/swap" element={<Swap />} />
                   <Route element={<ErrorPage />} />
                 </Routes>

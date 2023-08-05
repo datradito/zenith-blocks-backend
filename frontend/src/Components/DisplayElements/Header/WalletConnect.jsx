@@ -29,40 +29,56 @@ export default function WalletConnect() {
 
     const handleAuth = async () => {
 
-        console.log("Connect To Site Via Wallet");
+        console.log(window.location.host)
+        console.log(window.location.origin)
+        try {
+            console.log("Connect To Site Via Wallet");
 
-        const userData = { network: "evm" };
+            const userData = { network: "evm" };
+            userData.address = address;
+            userData.chain = connector.chains[0].id;
 
- 
-        userData.address = address;
-        userData.chain = connector.chains[0].id;
-     
-     
-        console.log("Sending Connected Account and Chain ID to Moralis Auth API");
+            console.log("Sending Connected Account and Chain ID to Moralis Auth API");
 
-        const { data } = await axios.post("http://localhost:8000/siwe", { address, network: "evm"}, {
-            headers: {
-                "content-type": "application/json",
-            },
-        });
+            const { data: message } = await axios.post("http://localhost:8000/siwe", { address, network: "evm" }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    withCredntials: true,
+                    credentials: 'include'
+                },
+            });
 
-        console.log("Received Signature Request From Moralis Auth API");
+            console.log("Received Signature Request From Moralis Auth API");
 
+            const signature = await signMessageAsync({ message });
 
-        const signature = await signMessageAsync({ message: data });
+            console.log(message, signature);
 
-        console.log(signature)
-        console.log("Succesful Sign In, Redirecting to User Page");
+            const response = await axios.post("http://localhost:8000/verify", { message, signature }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    withCredntials: true,
+                    credentials: 'include'
+                },
+            });
 
-        // const { url } = await signIn("credentials", {
-        //     message,
-        //     signature,
-        //     redirect: false,
-        //     callbackUrl: "/user",
-        // });
+            if (response.data) {
+                navigate('/proposals');
+            };
 
-        // push(url);
+            // Handle the response or redirect as needed
+            // For example:
+            // navigate('/user');
+        } catch (error) {
+            console.error('Error handling authentication:', error);
+        }
     };
+
+    const checkSiwe = async () => {
+        const { data } = await axios.get("http://localhost:8000/checkSiwe");
+        console.log(data);
+        
+    }
 
 
     //     const provider = new Web3.providers.HttpProvider("HTTP://127.0.0.1:7545");
@@ -95,7 +111,10 @@ export default function WalletConnect() {
             }
             {
                 isConnected && (
+                    <>
                     <Button onClick={handleAuth}>Sign Out</Button>
+                    <Button onClick={checkSiwe}>Check siwe</Button> 
+                    </>
                 )
             }
         </div>

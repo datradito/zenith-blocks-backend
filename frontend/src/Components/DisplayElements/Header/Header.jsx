@@ -40,8 +40,10 @@ const ResponsiveHeaderBar = () => {
     proposal ? pages.push(
         { name: 'Proposals', url: '/proposals' },
         { name: 'Invoices', url: `/proposals/${proposal.id}/invoices` },
-        { name: 'Accounts', url: '/accounts' }) : pages.push({ name: 'Proposals', url: '/proposals' },
-            { name: 'Accounts', url: '/accounts' });
+        { name: 'Accounts', url: '/accounts' },
+        { name: 'Swap', url: '/swap' },
+        { name: 'Dashboard', url: '/dashboard' }) : pages.push({ name: 'Proposals', url: '/proposals' },
+        { name: 'Accounts', url: '/accounts' });
 
 
 

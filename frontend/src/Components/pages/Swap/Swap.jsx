@@ -29,16 +29,15 @@ function Swap() {
         value: null,
     });
 
-    // console.log(isConnected, address)
-
 
     const { data, sendTransaction } = useSendTransaction({
-        request: {
             from: address,
-            to: String(txDetails.to),
-            data: String(txDetails.data),
-            value: String(txDetails.value),
-        }
+            to: txDetails.to,
+            data: txDetails.data,
+            value: txDetails.value,
+        onError(error) {
+            console.log('Error', error)
+        },
     })
 
     const { isLoading, isSuccess } = useWaitForTransaction({
@@ -110,10 +109,15 @@ function Swap() {
             const approve = await axios.get(`https://api.1inch.io/v5.0/1/approve/transaction?tokenAddress=${tokenOne.address}`)
 
             console.log(approve.data)
-            setTxDetails(approve.data);
+            setTxDetails((prevTxDetails) => ({
+                ...prevTxDetails,
+                to: approve.data.to,
+                data: approve.data.data,
+                value: approve.data.value,
+            }));
             console.log("not approved")
             console.log(txDetails)
-            return
+            return;
 
         }
 
@@ -124,29 +128,23 @@ function Swap() {
 
         let decimals = Number(`1E${tokenTwo.decimals}`)
         setTokenTwoAmount((Number(tx.data.toTokenAmount) / decimals).toFixed(2));
-
         setTxDetails(tx.data.tx);
-
     }
 
 
     useEffect(() => {
-
         fetchPrices(tokenList[0].address, tokenList[1].address)
-
     }, [])
 
     useEffect(() => {
-
+        console.log(txDetails)
         if (txDetails.to && isConnected) {
             sendTransaction();
         }
     }, [txDetails])
 
     useEffect(() => {
-
         messageApi.destroy();
-
         if (isLoading) {
             messageApi.open({
                 type: 'loading',
