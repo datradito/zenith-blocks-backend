@@ -82,7 +82,7 @@ function App() {
   //   cache: new InMemoryCache().restore(),
   // });
   const httpLink = createHttpLink({
-    uri: `${process.env.REACT_APP_API_URL}/graphql`,
+    uri: `http://localhost:8000/graphql`,
   });
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {

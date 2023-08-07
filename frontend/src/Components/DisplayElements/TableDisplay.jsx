@@ -1,7 +1,5 @@
 import React from 'react'
 import Table from "../molecules/Table/index"
-import Box from '@mui/material/Box';
-import { DataGrid } from '@mui/x-data-grid';
 
 function TableDisplay({ tableHeaderData, tableBodyData, dataToDisplay }) {
     

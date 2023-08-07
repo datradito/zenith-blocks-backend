@@ -7,10 +7,7 @@ const initializeIpfsNode = async () => {
     });
 };
 
-initializeIpfsNode();
-
 const UploadDataToIpfs = async (ipfsFilePath, jsonData) => {
-
     const abi = [
         {
             path: ipfsFilePath,

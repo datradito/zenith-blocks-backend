@@ -1,11 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect} from 'react'
 import axios from 'axios';
-import RecentTransactions from '../../molecules/Wallet/RecentTransactions';
 import {
     useAccount,
-    useConnect,
     useDisconnect,
-    useNetwork,
     useEnsAvatar,
     useEnsName,
     useBalance
@@ -14,7 +11,6 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useNavigate } from 'react-router-dom';
 
 import { useSignMessage } from 'wagmi';
-import { Button } from '@mui/material';
 
 export default function WalletConnect() {
     const navigate = useNavigate()
@@ -45,7 +41,7 @@ export default function WalletConnect() {
 
             console.log("Sending Connected Account and Chain ID to Moralis Auth API");
 
-            const { data: message } = await axios.post(`${process.env.REACT_APP_API_URL}/siwe`, { address, network: "evm" }, {
+            const { data: message } = await axios.post(`http://localhost:8000/siwe`, { address, network: "evm" }, {
                 headers: {
                     'Content-Type': 'application/json',
                     withCredntials: true,
@@ -59,7 +55,7 @@ export default function WalletConnect() {
 
             console.log(message, signature);
 
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/verify`, { message, signature }, {
+            const response = await axios.post(`http://localhost:8000/verify`, { message, signature }, {
                 headers: {
                     'Content-Type': 'application/json',
                     withCredntials: true,
@@ -71,21 +67,11 @@ export default function WalletConnect() {
                 navigate('/proposals');
             };
 
-            // Handle the response or redirect as needed
-            // For example:
-            // navigate('/user');
         } catch (error) {
             console.error('Error handling authentication:', error);
             disconnectAsync();
         }
     };
-
-    const checkSiwe = async () => {
-        const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/checkSiwe`);
-        console.log(data);
-        
-    }
-
 
     //     const provider = new Web3.providers.HttpProvider("HTTP://127.0.0.1:7545");
     //     const web3 = new Web3(provider);

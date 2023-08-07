@@ -9,8 +9,6 @@ const validateBudget = async (
 
     const errors = {}
 
-    console.log("this running")
-
     const proposalAmount = await Proposal.findByPk(proposalid, {
         attributes: ['amount'],
     });
@@ -22,11 +20,6 @@ const validateBudget = async (
             proposalid: proposalid
         }
     });
-
-    console.log(totalBudgetedAmount)
-
-    console.log(amount)
-    console.log(proposalAmount - totalBudgetedAmount < amount)
 
     if (amount > parseInt(proposalAmount) - parseInt(totalBudgetedAmount)) {
         errors.amount = "New Budget amount exceeds Proposal amount"

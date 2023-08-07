@@ -2,8 +2,11 @@ const BudgetType = require('./typeDefs');
 const { GraphQLNonNull, GraphQLString, GraphQLFloat } = require('graphql');
 const validateBudget = require('../../validators/validateBudget');
 const Budget = require("../../Database/models/Budget")
+const UploadDataToIpfs = require('../../utility/ipfs'); 
 
 const { AuthenticationError, UserInputError } = require('apollo-server')
+
+const updateProposalStatus = require('../../utility/budgetHelpers/updateProposalStatus');
 
 const submitBudget = {
     type: BudgetType,
@@ -24,39 +27,25 @@ const submitBudget = {
         if (!valid) {
             throw new UserInputError("BudgetErrors : Amount cannot exceed Proposal Allocated Total",  errors )
         }
-        // else {
-        //     //TODO: step 1: save invoice to ipfs
-        //     const jsonData = {
-        //         "category": args.category,
-        //         "amount": args.amount,
-        //         "currency": args.currency,
-        //         "breakdown": args.breakdown,
-        //         "proposalid": args.proposalid,
-        //     };
-            
-        //     let ipfsResponse
-        //     let ipfsFilePath = args.rootpath + 'budgetId' + jsonData.id;
-        //     try {
-        //         const response = await UploadDataToIpfs(ipfsFilePath, jsonData);
-        //          ipfsResponse = response.jsonResponse[0].path;
-        //     } catch (error) {
-        //         console.error("Error uploading to IPFS:", error);
-        //     }
 
-        //     //Todo: step 2: save ipfs hash + invoice data to mongo db
-        //     //send ipfs hash to mysql d
-        //     const budget = new Budget({
-        //         ...jsonData,
-        //         ipfsResponse: "ipfsResponse"
-        //     });
-        //     return await budget.save();
-        // }
+    
+        let ipfsResponse;
+
+        try {
+            const response = await UploadDataToIpfs(args.rootpath, JSON.stringify(args));
+                ipfsResponse = response.jsonResponse[0].path;
+        } catch (error) {
+            throw new UserInputError("BudgetErrors : Unable to load to IPFS, Will be tried again later!", errors)
+        }
+
         const budget = new Budget({
             ...args,
-            ipfs: "ipfsResponse"
+            ipfs: ipfsResponse ? ipfsResponse : `Failed to upload to IPFS at ${new Date().toISOString()}`,
         });
 
-        console.log("comes to here")
+        //update proposal status
+        await updateProposalStatus(args.proposalid, args.amount);
+
         return await budget.save();
     },
 };

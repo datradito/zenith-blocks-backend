@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { addAmount } from '../../../actions/currentProposal/amount.js';
-import useGetProposalDetails from '../../hooks/useProposalDetails.jsx';
 import useGetProposalAmount from '../../hooks/useGetProposalAmount.jsx';
-import CustomActionIcon from "../../atoms/ActionIcon/CustomActionIcon.jsx";
+import CustomActionIcon from '../../atoms/ActionIcon/CustomActionIcon.jsx';
 import Box from '@mui/material/Box';
 import CircularIndeterminate from '../../atoms/Loader/loader.jsx';
 

@@ -1,6 +1,5 @@
 import React from 'react'
 import EditIcon from '@mui/icons-material/Edit';
-import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 
 function CustomActionIcon({onClick}) {
@@ -15,7 +14,7 @@ function CustomActionIcon({onClick}) {
             },
     }
     const handleClick = () => {
-        onClick ? onClick() : console.log("No onClick function passed to CustomActionIcon")
+         onClick ? onClick() : console.log("No onClick function passed to CustomActionIcon")
     };
 
     return (
