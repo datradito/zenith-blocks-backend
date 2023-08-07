@@ -62,7 +62,6 @@ const createBudgetReducer = (state = initialState, action) => {
             return {
                 items: [
                     {
-                        action: '-',
                         category: '',
                         amount: '',
                         currency: '',

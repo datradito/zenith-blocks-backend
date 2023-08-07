@@ -8,24 +8,22 @@ import Box from '@mui/material/Box';
 import CircularIndeterminate from '../../atoms/Loader/loader.jsx';
 
 
-const Amount = ({ proposalid }) => {
+const Amount = ({ proposalid, onClick }) => {
     const dispatch = useDispatch();
 
     const { amount, proposalLoading, proposalError } = useGetProposalAmount(proposalid);
 
     // dispatch(addAmount({ amount: amount, proposalId: proposalId }));
 
-    // useEffect(() => {
-        if (amount) {
-            dispatch(addAmount({ amount: amount, proposalId: proposalid }));
-        }
-    // }, [amount]);
+    if (amount) {
+        dispatch(addAmount({ amount: amount, proposalId: proposalid }));
+    }
 
     if (proposalLoading) return (<Box sx={{ maxWidth: '50px', textAlign: 'left', maxHeight: '40px', marginTop: -2 }}><CircularIndeterminate /></Box>);
 
     return (
         <div>
-            {amount !== null ? amount : <CustomActionIcon />}
+            {amount !== null ? amount : <CustomActionIcon onClick={onClick} />}
         </div>
     )
 }

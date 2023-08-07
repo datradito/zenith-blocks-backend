@@ -3,7 +3,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 
-function CustomActionIcon() {
+function CustomActionIcon({onClick}) {
     const ActionIconStyles = {
         padding: '.5rem',
         color: '#1A65C0',
@@ -15,16 +15,12 @@ function CustomActionIcon() {
             },
     }
     const handleClick = () => {
-        console.info('You clicked the Chip.');
+        onClick ? onClick() : console.log("No onClick function passed to CustomActionIcon")
     };
 
     return (
         <Stack direction="row" spacing={1}>
-            {/* <Chip icon={<EditIcon />}
-                onClick={handleClick}
-                sx={ActionIconStyles.chipStyle}
-            /> */}
-            <EditIcon sx={ActionIconStyles} />
+            <EditIcon sx={ActionIconStyles} onClick={handleClick} />
         </Stack>
     );
 }

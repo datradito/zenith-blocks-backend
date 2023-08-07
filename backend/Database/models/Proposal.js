@@ -11,6 +11,11 @@ const Proposal = sequelize.define('proposals', {
         type: DataTypes.FLOAT,
         allowNull: false,
     },
+    status: {
+        type: DataTypes.STRING,
+        defaultValue: "NotFilled",
+        allowNull: false,
+    },
     modifier: {
         type: DataTypes.STRING,
         allowNull: false,

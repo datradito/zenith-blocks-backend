@@ -108,8 +108,7 @@ function InvoiceCreation() {
         }
 
         if (isValid) {
-            setInvoiceError(null);
-            try {
+            // setInvoiceError(null);
                 await submitInvoice({
                     variables: {
                         ...header,
@@ -120,30 +119,30 @@ function InvoiceCreation() {
                         UploadInvoice: "placeholder for now",
                         BudgetId: Budget.id,
                     },
+                }).then((res) => {
+                    if (res.data.submitInvoice !== null) {
+                        setSuccessMessage("Invoice saved successfully!")
+
+                        setTimeout(() => {
+                            // dispatch(resetInvoice());
+                            navigate(`/proposals/${proposal.id}/invoices`);
+                        }, 2000);
+                    }
+
+                }).catch((error) => {
+                    if (error.message) {
+                        setInvoiceError(`Error: ${error.message}`)
+                    }
+                    if (error.response && error.response.errors) {
+                        error.response.errors.forEach((err) => {
+                            setInvoiceError(`GraphQL Error: ${err.message}`)
+                        });
+                    }
+
+                    if (error.networkError) {
+                        setInvoiceError(`Network Error: ${error.networkError}`)
+                    }
                 });
-
-                setSuccessMessage("Invoice saved successfully!");
-
-                // setTimeout(() => {
-                //     dispatch(resetInvoice());
-                //     navigate(`/proposals/${proposal.id}/invoices`);
-                // }, 2000);
-            } catch (error) {
-                console.log(error)
-                if (error.message) {
-                    setInvoiceError(`Error: ${error.message}`)
-                }
-
-                if (error.response && error.response.errors) {
-                    error.response.errors.forEach((err) => {
-                        setInvoiceError(`GraphQL Error: ${err.message}`)
-                    });
-                }
-
-                if (error.networkError) {
-                    setInvoiceError(`Network Error: ${error.networkError}`)
-                }
-            };
         }
     }; 
 

@@ -44,7 +44,8 @@ function FormRow({ tableHeaderData }) {
         currencyDropdown: {
             '& .MuiTableCell-root': {
                 color: 'white',
-                backgroundColor: '#2C2C2C',
+                // backgroundColor: '#2C2C2C',
+                backgroundColor: 'black',
                 fontSize: '0.85rem',
             },
             '& .MuiInputBase-root': {
@@ -126,6 +127,7 @@ function FormRow({ tableHeaderData }) {
                                 <TextField
                                     value={item.amount}
                                     type="number"
+                                    max={filteredProposalAmount}
                                     onChange={(e) => handleChange(index, 'amount', e.target.value)}
                                     InputProps={{
                                         style: {

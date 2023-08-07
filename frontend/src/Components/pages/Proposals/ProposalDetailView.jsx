@@ -29,11 +29,49 @@ const BoxStyle = {
 
 const headers = ["Categories", "Allocated Budget", "Currency", "Breakdown", "Remaining", "Invoices"]
 
+const columns = [
+    {field: 'id', headerName: 'ID', width: 70},
+    { field: 'category', headerName: 'Category', width: '40%' },
+    {
+        field: 'amount',
+        headerName: 'Allocated Budget',
+        width: 150,
+        editable: true,
+    },
+    {
+        field: 'currency',
+        headerName: 'Currency',
+        width: 150,
+        editable: true,
+    },
+    {
+        field: 'breakdown',
+        headerName: 'Breakdown',
+        type: 'number',
+        width: 110,
+        editable: true,
+    },
+    {
+        field: 'Remaining',
+        headerName: 'Remaining',
+        description: 'This column has a value getter and is not sortable.',
+        sortable: false,
+        width: 160,
+        valueGetter: (params) =>
+            `${params.row.amount || ''} ${params.row.breakdown || ''}`,
+    },
+    {
+        field: 'Invoices',
+        headerName: 'Invoice',
+        width: 110,
+    },
+];
+
 function ProposalDetailView() {
 
     const { proposalId } = useParams();
     const dispatch = useDispatch();
-    console.log(proposalId);
+
     const { web3, contract } = useWeb3IpfsContract();
     const { loading, error, data } = useProposalDetails(proposalId);
     const { proposals } = useSelector(state => state.currentProposalAmounts);
@@ -77,6 +115,9 @@ function ProposalDetailView() {
         ["Yezzi", "Min l3b", "ymin@cocococo.com"]
     ];
 
+    //store status of proposal, if totalBudgetedAmount is equal to proposalAmount then set proposal status to filled
+    const proposalFilled = true;
+
     const componentButtonConfig = [
         {
             label: "Export CSVP",
@@ -89,11 +130,12 @@ function ProposalDetailView() {
         {
             label: "Update Proposal",
             variant: "contained",
-            onClick: handleUpdateProposal,
-            innerText: "Update Proposal",
+            onClick: proposalFilled ? null :handleUpdateProposal,
+            innerText: "Create Budget",
+            disabled: proposalFilled,
             ml: "0.5rem",
             type: "link",
-            to: `/proposal/update/${proposalId}`,
+            to:  proposalFilled ? null : `/proposal/update/${proposalId}`,
         }
     ];
 

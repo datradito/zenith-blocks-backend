@@ -4,7 +4,7 @@ const InvoiceType = require('./typeDefs');
 const Invoice = require('../../Database/models/Invoice');
 const Budget = require('../../Database/models/Budget');
 const InvoiceLines = require('../../Database/models/InvoiceLines');
-const UserInputError = require('apollo-server');
+const { UserInputError, ValidationError, GraphQLError }= require('apollo-server');
 const { validateInvoice } = require('../../validators/validateInvoice');
 
 // const InvoiceLine = new GraphQLInputObjectType({
@@ -49,21 +49,11 @@ const submitInvoice = {
         // if (!valid) {
         //     throw new UserInputError("InvoiceErrors", { errors })
         // } else {
-            // TODO: step 1: save invoice to ipfs
-            // const jsonData = {
-            //     "category": args.category,
-            //     "recipient": args.recipient,
-            //     "number": args.number,
-            //     "currency": args.currency,
-            //     "total": args.total,
-            //     "date": args.date,
-            //     "duedate": args.duedate,
-            //     "uploadinvoice": args.uploadinvoice,
-            //     "description": args.description,
-            //     "budgetid": args.budgetid
-            // };
         
-        //Todo: for budgetId sent in invoice check total amount for budget
+
+        //Todo: Validations
+        //Todo; Avoid duplicate invoices
+        //Todo: avoid overinvoicing
         const invoicedAmount = Invoice.findAll({
             where: {
                 budgetid: args.budgetid
@@ -80,18 +70,25 @@ const submitInvoice = {
             attributes: ['amount']
         })
 
-        if (args.total + invoicedAmount < budgetAmount) {
+        if (!(args.total + invoicedAmount < budgetAmount)) {
+            throw new GraphQLError('Invoice amount can not exceed total budget Amount', {
+                extensions: {
+                    code: 'BAD_USER_INPUT',
+                    argumentName: 'total',
+                },
+            })
+        } else {
             const invoice = new Invoice({
                 ...args,
                 ipfs: "ipfsResponse",
             });
-
             try {
                 const savedInvoice = await invoice.save();
                 return savedInvoice;
             } catch (error) {
-                console.error("Error saving invoice to MySQL:", error);
-                throw new ApolloError("Error saving invoice to MySQL.", 'INTERNAL_SERVER_ERROR', { error });
+                throw new GraphQLError('FAILED TO SAVE INVOICE', {
+                    extensions: { code: 'FAILED_TO_SAVE_INVOICE' },
+                });
             }
         }
 

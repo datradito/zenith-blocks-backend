@@ -136,19 +136,14 @@ const Proposals = () => {
                       <ColumnItem>{item.space.name}</ColumnItem>
                   </SubItem>
                     <SubItem sx={subItemStyle}
-                      onClick={() => handleTotalBudgetClick(item.id)}
+                      // onClick={() => handleTotalBudgetClick(item.id)}
                     >
                       <ColumnItem sx={label}>Total Budget</ColumnItem>
                       <ColumnItem>
-                        {/* { !selectedItemId || selectedItemId !== item.id ?
-                            <Amount proposalid={item.id} /> :
-                            <FormDetailPanel row={data.proposals.find((row) => row.id === selectedItemId)} onClose={onClose} />
-                        } */}
-
                         {selectedItemId === item.id ? (
                           <FormDetailPanel row={item} onClose={onClose} />
                         ) : (
-                          <Amount proposalid={item.id} />
+                          <Amount proposalid={item.id} key={selectedItemId} onClick={() => handleTotalBudgetClick(item.id)}  />
                         )}
                       </ColumnItem>
                     </SubItem>

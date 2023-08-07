@@ -10,7 +10,7 @@ import CurrencyDropdown from '../CurrencyDropdown/CurrencyDropdown.jsx';
 import FormRow from "../../molecules/FormBudgetCreation/index.jsx";
 import CustomizedSnackbars from '../SnackBar/SnackBar.jsx';
 
-function FormItem({ initialValues, type, errors}) {
+function FormItem({ initialValues, type, errors, maxAmount}) {
     const classes = useStyles();
     const dispatch = useDispatch();
 
@@ -46,9 +46,7 @@ function FormItem({ initialValues, type, errors}) {
 
     const handleChange = (key, value) => {
         dispatch(updateHeader(key, value));
-
     };
-
 
     return (
         <>
@@ -138,7 +136,8 @@ function FormItem({ initialValues, type, errors}) {
                             </Grid>
                         ))}
                     {type === 'budget' &&
-                        <FormRow tableHeaderData={["Category", "Amount", "Currency", "Breakdown"]} />
+                        <FormRow
+                            tableHeaderData={["Category", "Amount", "Currency", "Breakdown"]} />
                     }
 
                     {errors &&

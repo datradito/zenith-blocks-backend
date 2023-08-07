@@ -17,6 +17,7 @@ import InvoiceListView from './Components/pages/Invoices/InvoiceListView';
 import InvoiceCreation from './Components/pages/Invoices/InvoiceCreation';
 import Dashboard from './Components/pages/walletDashboard/Dashboard';
 import SnackbarMessage from './Components/atoms/SnackBarGql/SnackBarGql';
+import CustomizedSnackbars from './Components/atoms/SnackBar/SnackBar';
 import Swap from './Components/pages/Swap/Swap';
 
 
@@ -87,11 +88,13 @@ function App() {
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
       graphQLErrors.forEach(({ message }) => {
-        setSnackbarMessage({ open: true, severity: 'error', message });
+        alert(message);
+        // setSnackbarMessage({ open: true, severity: 'error', message });
       });
     }
     if (networkError) {
-      setSnackbarMessage({ open: true, severity: 'error', message: `Network Error: ${networkError}` });
+      alert(`Network Error: ${networkError}`);
+      // setSnackbarMessage({ open: true, severity: 'error', message: `Network Error: ${networkError}` });
     }
   });
 
@@ -117,11 +120,11 @@ function App() {
           <Provider store={ storeConfig }>
             <PersistGate loading={null} persistor={persistor}>
           <BrowserRouter>
-            {/* <SnackbarMessage
-              open={snackbarMessage.open}
+            <CustomizedSnackbars
+              autoOpen={true}
               severity={snackbarMessage.severity}
               message={snackbarMessage.message}
-            /> */}
+            />
               <ResponsiveHeaderBar />
                 <Routes>
                   <Route exact path="/proposals" element={<Proposals />} />

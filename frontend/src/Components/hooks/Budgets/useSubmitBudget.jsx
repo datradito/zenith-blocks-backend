@@ -41,28 +41,15 @@ const useSubmitBudget = () => {
     // Function to handle budget submission
     const submitBudget = useCallback(
         async (budget) => {
-
-            // Basic validation to check if any required field is null or has an incorrect datatype
-            if (
-                !budget.category ||
-                !budget.amount ||
-                !budget.currency ||
-                !budget.breakdown ||
-                !budget.proposalid ||
-                !budget.rootpath ||
-                typeof budget.amount !== 'number' ||
-                typeof budget.breakdown !== 'number'
-            ) {
-                throw new Error('Invalid budget data. Please provide valid values for all fields.');
-            }
-
+            
+            console.log("comes here")
+           
             try {
                 const { data } = await submitBudgetMutation({
                     variables: budget,
                 });
                 return data.submitBudget;
             } catch (error) {
-                // Handle error if the mutation fails
                 console.error('Budget submission failed:', error.message);
                 throw error;
             }
@@ -74,7 +61,7 @@ const useSubmitBudget = () => {
     const cachedSubmitBudget = useMemo(() => submitBudget, [submitBudget]);
 
     return {
-        submitBudget: cachedSubmitBudget,
+        submitBudget,
         loading,
         error,
     };

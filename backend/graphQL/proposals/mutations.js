@@ -29,12 +29,12 @@ const setProposalAmount = {
         let ipfsResponse;
 
         let ipfsFilePath = args.rootpath + 'proposalId' + jsonData.id;
-        try {
-            const response = await UploadDataToIpfs(ipfsFilePath, jsonData);
-            ipfsResponse = response.jsonResponse[0].path;
-        } catch (error) {
-            console.error("Error uploading to IPFS:", error);
-        }
+        // try {
+        //     const response = await UploadDataToIpfs(ipfsFilePath, jsonData);
+        //     ipfsResponse = response.jsonResponse[0].path;
+        // } catch (error) {
+        //     console.error("Error uploading to IPFS:", error);
+        // }
 
         let proposal = new Proposal({
             id: args.id,

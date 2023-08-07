@@ -15,12 +15,19 @@ const ButtonAtom = ({ config }) => {
             maxWidth: "10rem",
             mr: config.mr ? config.mr : "0",
             ml: config.ml ? config.ml : "0",
+            "&:hover": {
+                backgroundColor: config.hoverBackgroundColor ? config.hoverBackgroundColor : "#055FFC",
+            },
+            "&:disabled": {
+                backgroundColor: config.disabledBackgroundColor ? config.disabledBackgroundColor : "#9bb8ff",
+            },
         }
 
     }
 
 
     const handleClick = (e) => {
+
         if (config.preventDefault) {
             console.log("preventDefault")
             e.preventDefault();
@@ -47,9 +54,8 @@ const ButtonAtom = ({ config }) => {
                     sx={config.sx ? config.sx: buttonComponentStyles.buttonStyle}
                         variant="contained"
                         disabled={config.disabled ? config.disabled : false}
-                    type={config.type ? config.type : "submit"}
+                        type={config.type ? config.type : "submit"}
                         onClick={handleClick}
-                        // onSubmit={config.onSubmit}
                 >
                     {config.innerText}
                 </Button>

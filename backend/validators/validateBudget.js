@@ -1,55 +1,42 @@
-const validateBudget = (
-    Id,
-    Category,
-    Amount,
-    Currency,
-    Breakdown,
-    Proposal,
-    ProposalRemainingBudget,
+const { AuthenticationError, UserInputError } = require('apollo-server')
+const Budget = require("../Database/models/Budget");
+const Proposal = require("../Database/models/Proposal");
+
+const validateBudget = async (
+        amount,
+        proposalid,
 ) => {
 
     const errors = {}
 
-    if (Category.trim() === '') {
-        errors.Category = "Category Cant be empty"
-    }
+    console.log("this running")
 
-    if (Currency.trim() === '') {
-        errors.Currency = "Currency Cant be empty"
-    }
+    const proposalAmount = await Proposal.findByPk(proposalid, {
+        attributes: ['amount'],
+    });
 
-    //check if amount is less than remainingBudget, if not throw error
-    if (Amount.trim() === '') {
-        errors.Amount = "Amount Cant be empty"
-    } else if (Amount > ProposalRemainingBudget) {
-        errors.Amount = "Amount Cant be greater than remaining budget"
-    }
+    console.log(proposalAmount)
     
+    const totalBudgetedAmount = await Budget.sum('amount', {
+        where: {
+            proposalid: proposalid
+        }
+    });
 
-    // if (InvoiceDate.trim() === '') {
-    //     errors.InvoiceDate = "InvoiceDate Cant be empty"
-    // } else {
-    //     const regEx = /^\d{4}-\d{2}-\d{2}$/;
-    //     if (!InvoiceDate.match(regEx)) {
-    //         errors.InvoiceDate = "InvoiceDate Not Valid"
-    //     }
-    // }
+    console.log(totalBudgetedAmount)
 
+    console.log(amount)
+    console.log(proposalAmount - totalBudgetedAmount < amount)
 
-
-    // if (DueDate.trim() === '') {
-    //     errors.DueDate = "DueDate Cant be empty"
-    // } else if (DueDate < InvoiceDate) {
-    //     errors.DueDate = "DueDate Cant be less than InvoiceDate"
-    // } else {
-    //     const regEx = /^\d{4}-\d{2}-\d{2}$/;
-    //     if (!DueDate.match(regEx)) {
-    //         errors.DueDate = "DueDate Not Valid"
-    //     }
-    // }
+    if (amount > parseInt(proposalAmount) - parseInt(totalBudgetedAmount)) {
+        errors.amount = "New Budget amount exceeds Proposal amount"
+    }
 
     return {
         errors,
         valid: Object.keys(errors).length < 1
     }
 }
+
+
+module.exports = validateBudget;

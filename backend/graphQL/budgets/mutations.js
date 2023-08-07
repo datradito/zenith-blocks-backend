@@ -1,6 +1,9 @@
 const BudgetType = require('./typeDefs');
 const { GraphQLNonNull, GraphQLString, GraphQLFloat } = require('graphql');
+const validateBudget = require('../../validators/validateBudget');
 const Budget = require("../../Database/models/Budget")
+
+const { AuthenticationError, UserInputError } = require('apollo-server')
 
 const submitBudget = {
     type: BudgetType,
@@ -14,19 +17,14 @@ const submitBudget = {
     },
     async resolve(parent, args) {
 
-
-        // const { valid, errors } = await validateBudget(
-        //     args.id,
-        //     args.category,
-        //     args.amount,
-        //     args.currency,
-        //     args.breakdown,
-        //     args.proposal,
-        //     remainingBudgetAmount
-        // )
-        // if (!valid) {
-        //     throw new UserInputError("BudgetErrors", { errors })
-        // } else {
+        const { valid, errors } = validateBudget(
+                args.amount,
+                args.proposalid,
+        )
+        if (!valid) {
+            throw new UserInputError("BudgetErrors : Amount cannot exceed Proposal Allocated Total",  errors )
+        }
+        // else {
         //     //TODO: step 1: save invoice to ipfs
         //     const jsonData = {
         //         "category": args.category,

@@ -58,7 +58,6 @@ export const useAllBudgetsForProposal = (proposalId) => {
         variables: { proposalid: proposalId },
     });
 
-    
     return {
         budgetList,
         budgetsLoading,
