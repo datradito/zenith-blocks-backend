@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import SubHeader from "../../molecules/SubHeader/SubHeader"
 import { Box, Stack } from '@mui/material';
 import ItemCard from "../../atoms/ItemCard/ItemCard";
@@ -23,7 +23,8 @@ const tableBodyData = [
 function InvoiceListView() {
     let location = useLocation();
     let { proposal } = useSelector(state => state.currentProposal);
-    let navigate = useNavigate();
+    const { proposals } = useSelector(state => state.currentProposalAmounts);
+    const [amount, setProposalAmount] = useState(0);
     let { Budget } = useSelector(state => state.currentBudget);
     const { web3, contract } = useWeb3IpfsContract();
 
@@ -39,6 +40,13 @@ function InvoiceListView() {
         }
     };
 
+    const filteredProposal = useMemo(() => {
+        return proposals.filter((withAmountProposal) => withAmountProposal.id === proposal.id ? withAmountProposal.amount : null);
+    }, [proposal]);
+
+    useEffect(() => {
+        setProposalAmount(filteredProposal[0]?.amount);
+    }, [filteredProposal]);
 
     //step 1 - For Budget Id -> check in smartContract if it exists , if it does not render create invoices page
     useEffect(() => {
@@ -97,7 +105,7 @@ function InvoiceListView() {
             }
         ];
     
-    const dataForItemCard = { "Goverance": proposal.space, "Total Budget": "$5,980,000", "Proposal": proposal.title };
+    const dataForItemCard = { "Goverance": proposal.space, "Total Budget": `$ ${amount}`, "Proposal": proposal.title };
 
     const BoxStyle = {
         width: '90%',

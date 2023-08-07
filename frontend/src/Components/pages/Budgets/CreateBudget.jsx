@@ -86,7 +86,6 @@ function CreateBudget() {
       <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath="Proposals  Proposal  Budget" />
       <div className={classes.BoxStyle}>
         <FormItem initialValues={dataForItemCard} type="budget" />
-        <FormRow tableHeaderData={["", "Category", "Amount", "Currency", "Breakdown"]} />
       </div>
     </div>
   )

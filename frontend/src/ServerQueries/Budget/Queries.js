@@ -12,3 +12,15 @@ export const GET_ALL_BUDGETS_FOR_PROPOSAL = gql`
   }
 `;
 
+export const GET_BUDGET_BY_ID = gql`
+  query GetBudgetById($id: String!) {
+    getBudgetById(id: $id) {
+        category,
+        amount,
+        currency,
+        breakdown,
+        id,
+    }
+  }
+`;
+

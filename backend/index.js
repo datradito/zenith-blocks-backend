@@ -15,6 +15,7 @@ const { init } = require('./Database/sequalizeConnection');
 
 const app = express();
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
@@ -108,7 +109,6 @@ app.post("/siwe", async (req, res) => {
 );
 
 app.post('/verify', async function (req, res) {
-    try {
         if (!req.body.message || !req.body.signature) {
             res.status(422).json({ message: 'Expected message and signature object as body.' });
             return;
@@ -117,37 +117,38 @@ app.post('/verify', async function (req, res) {
         // const siweCookie = req.headers.cookie?.split(';').find(cookie => cookie.trim().startsWith('siwe='));
 
         const { signature, message } = req.body;
-        const { address, profileId, expirationTime} = await Moralis.Auth.verify({message, signature, network: 'evm'});
-
-        
-        // verifySiweMessageHandler(req.body.message, req.body.signature, nonce)
-        //     .then(({message}) => {
-        //     req.session.cookie.expires = new Date(Date.now() + hour);
-        //     req.session.save(() => res.status(200).send(true));
-        // }).catch((error) => {
-        //     req.session.siwe = null;
-        //     req.session.nonce = null;
-        //     req.session.save(() => res.status(422).json({ message: error.message }));
-        // }
-        // )
-    } catch (e) {
-        req.session.siwe = null;
-        req.session.nonce = null;
-        switch (e) {
-            case ErrorTypes.EXPIRED_MESSAGE: {
-                req.session.save(() => res.status(440).json({ message: e.message }));
-                break;
-            }
-            case ErrorTypes.INVALID_SIGNATURE: {
-                req.session.save(() => res.status(422).json({ message: e.message }));
-                break;
-            }
-            default: {
-                req.session.save(() => res.status(500).json({ message: e.message }));
-                break;
-            }
+       //const { address, profileId, expirationTime} = await Moralis.Auth.verify({message, signature, network: 'evm'});
+    const nonce = await createNonce();
+    
+        verifySiweMessageHandler(message, signature, nonce)
+            .then(({message}) => {
+            req.session.cookie.expires = new Date(Date.now() + hour);
+            req.session.save(() => res.status(200).send(true));
+        }).catch((error) => {
+            req.session.siwe = null;
+            req.session.nonce = null;
+            req.session.save(() => res.status(422).json({ message: error.message }));
         }
-    }
+        )
+    // } catch (e) {
+    //     req.session.siwe = null;
+    //     req.session.nonce = null;
+        // switch (e) {
+        //     case ErrorTypes.EXPIRED_MESSAGE: {
+        //         req.session.save(() => res.status(440).json({ message: e.message }));
+        //         break;
+        //     }
+        //     case ErrorTypes.INVALID_SIGNATURE: {
+        //         req.session.save(() => res.status(422).json({ message: e.message }));
+        //         break;
+        //     }
+        //     default: {
+        //         req.session.save(() => res.status(500).json({ message: e.message }));
+        //         break;
+        //     }
+        // }
+    //     req.session.save(() => res.json({ message: e.message }));
+    // }
 });
 
 app.get('/test', async(req, res) => {
@@ -203,7 +204,7 @@ app.get("/nativeBalance", async (req, res) => {
             chain: chain,
         });
 
-        const nativeBalance = response.data;
+        const nativeBalance = response.jsonResponse;
 
         let nativeCurrency;
         if (chain === "0x1") {
@@ -217,7 +218,9 @@ app.get("/nativeBalance", async (req, res) => {
             chain: chain,
         });
 
-        nativeBalance.usd = nativePrice.data.usdPrice;
+        console.log(nativePrice);
+
+        nativeBalance.usd = nativePrice.jsonResponse.usdPrice;
 
         res.send(nativeBalance);
     } catch (e) {
@@ -237,17 +240,19 @@ app.get("/tokenBalances", async (req, res) => {
             chain: chain,
         });
 
-        let tokens = response.data;
-        let legitTokens = [];
-        for (let i = 0; i < tokens.length; i++) {
+        const tokens = response.jsonResponse;
+        const legitTokens = [];
+
+        for (const token of tokens) {
             try {
                 const priceResponse = await Moralis.EvmApi.token.getTokenPrice({
-                    address: tokens[i].token_address,
+                    address: token.token_address,
                     chain: chain,
                 });
-                if (priceResponse.data.usdPrice > 0.01) {
-                    tokens[i].usd = priceResponse.data.usdPrice;
-                    legitTokens.push(tokens[i]);
+
+                if (priceResponse.jsonResponse.usdPrice > 0.01) {
+                    token.usd = priceResponse.jsonResponse.usdPrice;
+                    legitTokens.push(token);
                 } else {
                     console.log("💩 coin");
                 }
@@ -255,8 +260,6 @@ app.get("/tokenBalances", async (req, res) => {
                 console.log(e);
             }
         }
-
-
         res.send(legitTokens);
     } catch (e) {
         res.send(e);
@@ -333,6 +336,7 @@ app.use('/graphql', graphqlHTTP({
     graphiql: true,
 }));
 
-app.listen(8000, () => {
+app.listen(8000, async () => {
+    await init();
     console.log('Server is running on port 8000');
 });

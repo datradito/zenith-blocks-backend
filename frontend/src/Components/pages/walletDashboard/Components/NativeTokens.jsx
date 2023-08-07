@@ -3,12 +3,15 @@ import axios from "axios";
 import { Button, Table } from '@web3uikit/core';
 import { Reload } from '@web3uikit/icons';
 import { Typography, Box } from "@mui/material";
+import ButtonAtom from "../../../atoms/Button";
 
 function NativeTokens({ wallet, chain, nativeBalance, setNativeBalance, nativeValue, setNativeValue }) {
 
 
 
     async function getNativeBalance() {
+
+        console.log(chain, wallet)
         const response = await axios.get("http://localhost:8000/nativeBalance", {
             params: {
                 address: wallet,
@@ -16,15 +19,23 @@ function NativeTokens({ wallet, chain, nativeBalance, setNativeBalance, nativeVa
             },
         });
 
+        
+
         if (response.data.balance && response.data.usd) {
             setNativeBalance((Number(response.data.balance) / 1e18).toFixed(3));
             setNativeValue(((Number(response.data.balance) / 1e18) * Number(response.data.usd)).toFixed(2));
         }
     }
 
+    const buttonConfig = {
+        innerText: 'Native Tokens',
+        onClick: getNativeBalance,
+
+    }
+
     return (
         <>
-            <div>Native Balance <Reload onClick={getNativeBalance} /></div>
+            <ButtonAtom config={buttonConfig} />
             {(nativeBalance > 0 && nativeValue > 0) &&
                 <Table
                     pageSize={1}

@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../sequalizeConnection');
 
-const Budget = sequelize.define('Budget', {
+const Budget = sequelize.define('budgets', {
     id: {
         type: DataTypes.UUID, 
         defaultValue: DataTypes.UUIDV4,
@@ -35,8 +35,8 @@ const Budget = sequelize.define('Budget', {
 });
 
 Budget.associate = (models) => {
-    Budget.belongsTo(models.Proposal, { foreignKey: 'proposalid' });
-    Budget.hasMany(models.Invoice, {foreignKey: 'budgetid' });
+    Budget.belongsTo(models.proposals, { foreignKey: 'proposalid' });
+    Budget.hasMany(models.invoices, {foreignKey: 'budgetid' });
 }
 
 

@@ -6,9 +6,11 @@ import { categories } from '../../pages/Category/Category';
 import UnstyledSelectBasic from '../SelectDropdown/SelectDropdown';
 import useStyles from './index.style';
 import { Upload } from "@web3uikit/core";
+import CurrencyDropdown from '../CurrencyDropdown/CurrencyDropdown.jsx';
+import FormRow from "../../molecules/FormBudgetCreation/index.jsx";
+import CustomizedSnackbars from '../SnackBar/SnackBar.jsx';
 
-
-function FormItem({ initialValues, type}) {
+function FormItem({ initialValues, type, errors}) {
     const classes = useStyles();
     const dispatch = useDispatch();
 
@@ -18,6 +20,7 @@ function FormItem({ initialValues, type}) {
             padding: '0',
             border: ".08rem #2c2c2c solid",
             borderRadius: '5px',
+            backgroundColor: 'black',
 
             '& .MuiInputBase-input': {
                 padding: '0.5rem',
@@ -30,42 +33,46 @@ function FormItem({ initialValues, type}) {
             '& .MuiInputBase-root': {
                 padding: '0',
             },
+            '& .MuiSvgIcon-root': {
+                color: 'white',
+            },
         },
         typographyLabel: {
             color: 'gray',
             fontSize: ".70rem"
         },
     }
+    
 
     const handleChange = (key, value) => {
         dispatch(updateHeader(key, value));
+
     };
 
 
     return (
         <>
             <Box
-                component="form"
                 className={classes.boxStyle}
             >
                     <Grid container className={classes.containerStyles} spacing={3}>
                         {Object.entries(initialValues).map(([key, value], index) => (
-                            <Grid item xs={type === 'budget' ? (index < 2 ? 6 : index === 2 ? 8 : 4) : (index < 2 ? 6 : index === 2 ? 7 : index === 3 ? 3 : index === 4 ? 2 : index > 4 && index < 7 ? 6 : index === 7 ? 4 : 8)} key={index}>
+                            <Grid item xs={type === 'budget' ? (index < 2 ? 6 : index === 2 ? 8 : 4) : (index < 2 ? 6 : index === 2 ? 7 : index === 3 ? 3 : index === 4 ? 2 : index > 4 && index < 7 ? 4 : index === 7 ? 4 : 6)} key={index}>
                                 <Typography variant="h6"
                                     sx={componentStyles.typographyLabel}
                                 >{key}</Typography>
                                 {key === 'Currency' ? (
-                                    <TextField
-                                        id="outlined-number"
-                                        type="number"
-                                        InputLabelProps={{
-                                            shrink: true,
-                                        }}
+                                    <CurrencyDropdown
                                         value={initialValues[key]}
                                         sx={componentStyles.formInputFieldStyles}
                                         onChange={(e) => handleChange(key, e.target.value)}
-                                    />):
+                                    />)
+                                    :
                                     key === 'Due Date' || key === 'Invoice Date' ? (
+                                        <FormControl
+                                            required
+                                            fullWidth
+                                        >
                                         <TextField
                                             required
                                             type='date'
@@ -73,7 +80,8 @@ function FormItem({ initialValues, type}) {
                                             value={initialValues[key]}
                                             sx={componentStyles.formInputFieldStyles}
                                             onChange={(e) => handleChange(key, e.target.value)}
-                                        />
+                                            />
+                                            </FormControl>
                                 ) :
                                     key === 'Category' ? (
                                         <UnstyledSelectBasic defaultValue={initialValues.Category} values={categories} onChange={(value) => handleChange(key, value)} />
@@ -83,7 +91,13 @@ function FormItem({ initialValues, type}) {
                                                     acceptedFiles="image/jpeg"
                                                     descriptionText="Only .jpeg files are accepted"
                                                     onChange={function noRefCheck() { }}
-                                                    style={{}}
+                                                    style={{
+                                                        width: "100%",
+                                                        maxHeight: "120px",
+                                                        border: ".08rem #2c2c2c solid",
+                                                        borderRadius: '5px',
+                                                        backgroundColor: 'black',
+                                                    }}
                                                     theme="withIcon"
                                                 />):
                                             
@@ -95,9 +109,18 @@ function FormItem({ initialValues, type}) {
                                                     sx={componentStyles.formInputFieldStyles}
                                                     onChange={(e) => handleChange(key, e.target.value)}
                                                 />
-                                            ):
+                                                ) :
+                                                    key === 'Total' ? (
+                                                        <TextField
+                                                            required
+                                                            type="number"
+                                                            fullWidth
+                                                            value={initialValues[key]}
+                                                            sx={componentStyles.formInputFieldStyles}
+                                                            onChange={(e) => handleChange(key, e.target.value)}
+                                                        />
+                                                    ):
                                                 (
-
                                         <TextField
                                             name={key}
                                             required
@@ -111,10 +134,16 @@ function FormItem({ initialValues, type}) {
                                             }}
                                             sx={componentStyles.formInputFieldStyles}
                                             />
-
                                 )}
                             </Grid>
                         ))}
+                    {type === 'budget' &&
+                        <FormRow tableHeaderData={["Category", "Amount", "Currency", "Breakdown"]} />
+                    }
+
+                    {errors &&
+                        <CustomizedSnackbars message={errors} severity="error" autoOpen={true} />
+                    }
                     </Grid>
                 </Box>
         </>

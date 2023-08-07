@@ -7,7 +7,7 @@ import { UPDATE_FIELD, ADD_ROW, DELETE_ROW, GET_ALL_ROWS, SET_INITIAL_STATE, REF
 const initialState = {
     items: [
         {
-            action: '-',
+            // action: '-',
             category: '',
             amount: '',
             currency: '',
@@ -38,14 +38,14 @@ const createBudgetReducer = (state = initialState, action) => {
                 },
             };
         };
-        case ADD_ROW: {
-            state.items.push(action.payload)
-        };
-        case DELETE_ROW:
-            return {
-                ...state,
-                items: state.items.filter((_, index) => index !== action.payload)
-            };
+        // case ADD_ROW: {
+        //     state.items.push(action.payload)
+        // };
+        // case DELETE_ROW:
+        //     return {
+        //         ...state,
+        //         items: state.items.filter((_, index) => index !== action.payload)
+        //     };
         case UPDATE_FIELD:
             const { index, field, value } = action.payload;
             return {

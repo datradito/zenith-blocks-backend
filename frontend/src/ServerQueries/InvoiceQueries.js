@@ -14,7 +14,7 @@ export const SUBMIT_INVOICE_MUTATION = gql`
     $Category: String!
     $Recipient: String!
     $InvoiceNumber: String!
-    $Currency: Float!
+    $Currency: String!
     $InvoiceDate: String!
     $DueDate: String!
     $UploadInvoice: String!

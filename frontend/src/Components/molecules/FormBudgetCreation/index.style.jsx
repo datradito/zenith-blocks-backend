@@ -3,7 +3,7 @@ import { makeStyles } from '@mui/styles';
 const useStyles = makeStyles((theme) => ({
     boxStyle: {
         width: '95%',
-        margin: '0 auto',
+        margin: '2rem auto',
         textAlign: "left",
     },
     

@@ -1,19 +1,13 @@
 import React, { useEffect } from 'react';
 import useStyles from './index.style';
-import { CryptoLogos, Select } from '@web3uikit/core';
-import { setInitialState, addRow, deleteRow, updateField } from '../../../actions/createBudgetAction';
+import { setInitialState, updateField } from '../../../actions/createBudgetAction';
 import {
     Box,
-    Button,
-    MenuItem,
-    // Select,
     FormControl,
     TextField,
 } from '@mui/material';
 import generateUUID from '../../../Utility/uniqueId';
-import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
 import { useDispatch, useSelector } from 'react-redux';
-import ButtonAtom from '../../atoms/Button';
 import UnstyledSelectBasic from '../../atoms/SelectDropdown/SelectDropdown';
 import { categories } from '../../pages/Category/Category';
 import CurrencyDropdown from '../../atoms/CurrencyDropdown/CurrencyDropdown';
@@ -37,17 +31,6 @@ function FormRow({ tableHeaderData }) {
         }
         setProposalData();
     }, [currentProposal.proposal.id]);
-
-
-    const handleAddRow = async () => {
-        //here confirm no empty fields
-        const generatedBudgetId = generateUUID();
-        dispatch(addRow({ action: '-', category: '', amount: '', currency: '', breakdown: '', id: generatedBudgetId }));
-    };
-
-    const handleDeleteRow = (index) => {
-        dispatch(deleteRow(index));
-    };
 
     const handleChange = (index, field, value) => {
         dispatch(updateField(
@@ -93,21 +76,12 @@ function FormRow({ tableHeaderData }) {
             },
             '& .MuiButtonBase-root': {
                 minWidth: 'initial',
-
             }
         },
         buttonStyles: {
             color: 'white',
         },
     };
-
-    const buttonConfig = {
-        label: "Add Row",
-        variant: "contained",
-        onClick: handleAddRow,
-        innerText: "Add New"
-    };
-
 
     return (
         <Box className={classes.boxStyle}>
@@ -119,12 +93,12 @@ function FormRow({ tableHeaderData }) {
                 color: 'white',
                 backgroundColor: 'rgba(40, 42, 46, 0.5)',
                 fontSize: '0.75rem',
-                color: "gray",
+                color: "grey",
             }}>
                 {/* Render the header data */}
                 {tableHeaderData.map((item, index) => (
                     <FormControl key={index} sx={{
-                        width: index === 0 ? '25px' : index === 1 ? '40%' : index === 2 || index === 3 ? '200px' : 'auto',
+                        width: index === 0 ? '40%' : index === 1 || index === 2 ? '15%' : 'auto',
                         padding: '0.5rem'
                     }}>
                         {item}
@@ -136,20 +110,6 @@ function FormRow({ tableHeaderData }) {
                     {items.map((item, index) => (
                         <Box key={index}>
                             <FormControl
-                                style={{
-                                    border: 'none', padding: '0.5rem', width: '25px'
-                                    //width: index === 0 ? '25px' : index === 1 ? '40%' : index === 2 || index === 3 ? '200px' : 'auto'
-                                }}
-                                sx={formStyleCustom.default}
-                                required
-                            >
-                                <Button
-                                    startIcon={<RemoveCircleOutlineSharpIcon />}
-                                    onClick={() => handleDeleteRow(index)}
-                                    sx={formStyleCustom.buttonStyles}
-                                />
-                            </FormControl>
-                            <FormControl
                                 style={{ width: '40%', border: 'none', padding: '0.5rem' }}
                                 sx={formStyleCustom.default}
                             >
@@ -160,7 +120,7 @@ function FormRow({ tableHeaderData }) {
                                 />
                             </FormControl>
                             <FormControl
-                                style={{ border: 'none', padding: '0.5rem'  }}
+                                style={{ border: 'none', margin: '0.5rem'  }}
                                 sx={formStyleCustom.default}
                             >
                                 <TextField
@@ -172,57 +132,33 @@ function FormRow({ tableHeaderData }) {
                                             color: 'white',
                                             border: '2px solid #2C2C2C',
                                             backgroundColor: '#1A1C1E',
-                                            minWidth: '200px',
+                                            minWidth: '16%',
                                         },
                                     }}
                                     required
                                 />
                             </FormControl>
                             <FormControl
-                                style={{ width: '200px', border: 'none', padding: '0.5rem' }}
+                                style={{ width: '16%', border: 'none', padding: '0.5rem', mr: '0.5rem' }}
                                 sx={formStyleCustom.default}
                             >
                                 <CurrencyDropdown
                                     value={item.currency}
                                     onChange={(e) => handleChange(index, 'currency', e.target.value)}
                                 />
-                                {/* <Select
-                                    value={item.currency}
-                                    onChange={(e) => handleChange(index, 'currency', e.target.value)}
-                                    sx={[formStyleCustom.currencyDropdown, formStyleCustom.default]}
-                                    style={{ fontSize: '.85rem' }}
-                                >
-                                    <MenuItem value="USD" color="primary">
-                                        <CryptoLogos chain="usdt" />
-                                    </MenuItem>
-                                    <MenuItem value="EUR"> <CryptoLogos chain="ethereum" />ETH</MenuItem>
-                                    <MenuItem value="GBP">GBP</MenuItem>
-                                </Select> */}
-{/*                            
-                                <Select
-                                    style={{ width: "2rem" }}
-                                    defaultOptionIndex={0}
-                                    onChange={(e) => handleChange(index, 'currency', e.value)}
-                                    value={item.currency}
-                                    options={[
-                                        { value: "0x1", label: "ETH", id: "ETH", prefix: <CryptoLogos chain="ethereum" /> },
-                                        { value: "0x89", label: "Matic", id: "Matic", prefix: <CryptoLogos chain="polygon" /> },
-                                    ]}
-                                /> */}
                             </FormControl>
                             <FormControl
-                                style={{ border: 'none', padding: '0.5rem' }}
+                                style={{ border: 'none', padding: '0.5rem', width: '22%' }}
                                 sx={formStyleCustom.default}
                             >
                                 <TextField
+                                    fullWidth
                                     value={`${(parseInt(item.amount) / parseInt(filteredProposalAmount)) * 100}%`}
-                                    //onChange={(e) => handleChange(index, 'Breakdown', (item["Allocated Budget"]/ 500))}
                                     InputProps={{
                                         style: {
                                             color: 'white',
                                             border: '2px solid #2C2C2C',
                                             backgroundColor: '#1A1C1E',
-                                            minWidth: '200px',
                                         },
                                         readOnly: true,
                                     }}
@@ -232,10 +168,9 @@ function FormRow({ tableHeaderData }) {
                     ))}
                 </Box>
             )}
-            <Box>
+            {/* <Box>
                 <ButtonAtom config={buttonConfig} />
-            </Box>
-            {/* <InputAdornments /> */}
+            </Box> */}
         </Box>
     );
 }

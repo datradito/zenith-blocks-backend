@@ -41,6 +41,22 @@ export default function CurrencyDropdown({ onChange, value, sx }) {
         '& .MuiSvgIcon-root': {
             color: 'white',
         },
+            color: 'white',
+            padding: '0',
+            border: ".08rem #2c2c2c solid",
+            borderRadius: '5px',
+
+            '& .MuiInputBase-input': {
+                padding: '0.5rem',
+                color: 'white',
+                borderRadius: '5px',
+                fontSize: '.85rem',
+                fontWeight: 'small',
+            },
+
+            '& .MuiInputBase-root': {
+                padding: '0',
+            },
     }
     return (
         <Box

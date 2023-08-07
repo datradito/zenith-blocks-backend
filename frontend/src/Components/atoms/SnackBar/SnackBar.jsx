@@ -24,10 +24,10 @@ export default function CustomizedSnackbars({ message, severity, autoOpen }) {
     React.useEffect(() => {
         if (autoOpen) {
             handleClick();
-            const timer = setTimeout(() => {
-                setOpen(false);
-            }, 2000);
-            return () => clearTimeout(timer);
+            // const timer = setTimeout(() => {
+            //     setOpen(false);
+            // }, 2000);
+            // return () => clearTimeout(timer);
         }
     }, [autoOpen]);
 

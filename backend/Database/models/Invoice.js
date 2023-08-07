@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require("../sequalizeConnection")
 const Budget = require('./Budget');
 
-const Invoice = sequelize.define('Invoice', {
+const Invoice = sequelize.define('invoices', {
     id: {
         type: DataTypes.UUID, 
         defaultValue: DataTypes.UUIDV4,
@@ -22,7 +22,16 @@ const Invoice = sequelize.define('Invoice', {
         allowNull: false,
     },
     currency: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    total: {
         type: DataTypes.FLOAT,
+        allowNull: false,
+    },
+    status: {
+        type: DataTypes.STRING,
+        defaultValue: "New",
         allowNull: false,
     },
     date: {
@@ -53,7 +62,7 @@ const Invoice = sequelize.define('Invoice', {
 
 
 Invoice.associate = (models) => {
-    Invoice.belongsTo(models.Budget, { foreignKey: 'budgetid' });
+    Invoice.belongsTo(models.budgets, { foreignKey: 'budgetid' });
 };
 
 module.exports = Invoice;

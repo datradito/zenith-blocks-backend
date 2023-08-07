@@ -5,16 +5,6 @@ const initialState = {
             {
 
             },
-        lines: [
-            {
-                action: '-',
-                category: '',
-                notes: '',
-                price: '',
-                quantity: '',
-                total: ''
-            }
-        ]
 };
 
 const createBudgetReducer = (state = initialState, action) => {

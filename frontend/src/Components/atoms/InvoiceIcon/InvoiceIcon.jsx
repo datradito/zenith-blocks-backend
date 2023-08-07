@@ -22,6 +22,7 @@ export default function CustomInvoiceViewIcon({budgetId}) {
         }
     }
     const handleClick = () => {
+        //get budget info from db based on id and dispatch id,amount,description, and category to redux store instead of just id
         dispatch(setBudget(budgetId));
     };
 

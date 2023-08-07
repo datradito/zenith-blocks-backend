@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const {sequelize} = require('../sequalizeConnection');
 
-const Proposal = sequelize.define('Proposal', {
+const Proposal = sequelize.define('proposals', {
     id: {
         type: DataTypes.STRING.BINARY, // Use DataTypes.INTEGER if using auto-incrementing integer as primary key
         allowNull: false,
@@ -26,7 +26,7 @@ const Proposal = sequelize.define('Proposal', {
 });
 
 Proposal.associate = (models) => {
-    Proposal.hasMany(models.Budget, { foreignKey: 'proposalid' });
+    Proposal.hasMany(models.budgets, { foreignKey: 'proposalid' });
 };
 
 module.exports = Proposal;

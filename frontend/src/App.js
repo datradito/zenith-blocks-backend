@@ -28,7 +28,6 @@ function App() {
     message: '',
   });
 
-  console.log(process.env.REACT_APP_API_URL); 
   // const [state, setState] = useState({
   //   web3: null,
   //   contract: null,

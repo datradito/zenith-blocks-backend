@@ -25,6 +25,7 @@ export default function WalletConnect() {
         address
     })
     const { signMessageAsync } = useSignMessage();
+    const { disconnectAsync } = useDisconnect();
 
 
     useEffect(() => {
@@ -75,6 +76,7 @@ export default function WalletConnect() {
             // navigate('/user');
         } catch (error) {
             console.error('Error handling authentication:', error);
+            disconnectAsync();
         }
     };
 
@@ -113,14 +115,14 @@ export default function WalletConnect() {
             }}
             />
             }
-            {
+            {/* {
                 isConnected && (
                     <>
                     <Button onClick={handleAuth}>Sign Out</Button>
                     <Button onClick={checkSiwe}>Check siwe</Button> 
                     </>
                 )
-            }
+            } */}
         </div>
     );
 }

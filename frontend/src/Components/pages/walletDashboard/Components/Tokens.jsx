@@ -10,7 +10,8 @@ function Tokens({ wallet, chain, tokens, setTokens }) {
 
 
     async function getTokenBalances() {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/tokenBalances`, {
+        console.log(chain, wallet)
+        const response = await axios.get(`http://localhost:8000/tokenBalances`, {
             params: {
                 address: wallet,
                 chain: chain,
@@ -30,15 +31,16 @@ function Tokens({ wallet, chain, tokens, setTokens }) {
         setTokens(t);
     }
 
-    // const buttonConfig = {
-    //     innerText: 'ERC20 Tokens',
-    //     onClick: getTokenBalances,
+    const buttonConfig = {
+        innerText: 'ERC20 Tokens',
+        onClick: getTokenBalances,
 
-    // }
+    }
     return (
         <Box>
             <Typography>
-                <div>ERC20 Tokens <Reload onClick={getTokenBalances} /></div>
+                {/* <div>ERC20 Tokens <Reload onClick={getTokenBalances} /></div> */}
+                <ButtonAtom config={buttonConfig} />
                 <br />
                 {tokens.length > 0 && (
                     <Table

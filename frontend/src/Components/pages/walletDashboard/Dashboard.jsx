@@ -8,6 +8,16 @@ import PortfolioValue from "./Components/PortfolioValue";
 import { Avatar, TabList, Tab } from '@web3uikit/core';
 import { Box, Typography } from "@mui/material";
 
+import {
+    useAccount,
+    useConnect,
+    useDisconnect,
+    useNetwork,
+    useEnsAvatar,
+    useEnsName,
+    useBalance
+} from 'wagmi'
+
 function Dashboard() {
     const [wallet, setWallet] = useState("");
     const [chain, setChain] = useState("0x1");

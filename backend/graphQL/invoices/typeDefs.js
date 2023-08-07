@@ -20,12 +20,14 @@ const InvoiceType = new GraphQLObjectType({
         category: { type: GraphQLString },
         recipient: { type: GraphQLString },
         number: { type: GraphQLString },
-        currency: { type: GraphQLFloat },
+        currency: { type: GraphQLString },
+        total: { type: GraphQLFloat },
         date: { type: GraphQLString },
         duedate: { type: GraphQLString },
         uploadinvoice: { type: GraphQLString },
         description: { type: GraphQLString },
         budgetid: { type: GraphQLString },
+        amount: { type: GraphQLFloat },
     }),
 });
 
