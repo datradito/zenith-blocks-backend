@@ -1,24 +1,22 @@
 import './App.css';
-import React, { useState } from 'react';
-// import SimpleStorage from "./contracts/SimpleStorage.json";
-// import Web3 from "web3";
+import React, { useState, Suspense, lazy } from 'react';
 import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { storeConfig, persistor } from './store/storeConfigure';
 import { PersistGate } from 'redux-persist/integration/react';
-import ResponsiveHeaderBar from "./Components/DisplayElements/Header/Header.jsx";
 import ErrorPage from "./Routes/ErrorPage";
-import Proposals from "./Components/pages/Proposals/Proposals";
-import ProposalDetailView from "./Components/pages/Proposals/ProposalDetailView";
-import CreateBudget from './Components/pages/Budgets/CreateBudget.jsx';
-import InvoiceListView from './Components/pages/Invoices/InvoiceListView';
-import InvoiceCreation from './Components/pages/Invoices/InvoiceCreation';
-import Dashboard from './Components/pages/walletDashboard/Dashboard';
-import SnackbarMessage from './Components/atoms/SnackBarGql/SnackBarGql';
-import CustomizedSnackbars from './Components/atoms/SnackBar/SnackBar';
-import Swap from './Components/pages/Swap/Swap';
+
+const ResponsiveHeaderBar = lazy(() => import("./Components/DisplayElements/Header/Header"));
+const ProposalDetailView = lazy(() => import("./Components/pages/Proposals/ProposalDetailView"));
+const CreateBudget = lazy(() => import("./Components/pages/Budgets/CreateBudget"));
+const InvoiceListView = lazy(() => import("./Components/pages/Invoices/InvoiceListView"));
+const InvoiceCreation = lazy(() => import("./Components/pages/Invoices/InvoiceCreation"));
+const Dashboard = lazy(() => import("./Components/pages/walletDashboard/Dashboard"));
+const CustomizedSnackbars = lazy(() => import("./Components/atoms/SnackBar/SnackBar"));
+const Swap = lazy(() => import("./Components/pages/Swap/Swap"));
+const Proposals = lazy(() => import("./Components/pages/Proposals/Proposals"));
 
 
 function App() {
@@ -29,58 +27,6 @@ function App() {
     message: '',
   });
 
-  // const [state, setState] = useState({
-  //   web3: null,
-  //   contract: null,
-  // });
-  // const [data, setData] = useState("nill");
-  // useEffect(() => {
-  //   const provider = new Web3.providers.HttpProvider("HTTP://127.0.0.1:7545");
-
-  //   async function template() {
-  //     const web3 = new Web3(provider);
-  //     const networkId = await web3.eth.net.getId();
-  //     const deployedNetwork = SimpleStorage.networks[networkId];
-  //     const contract = new web3.eth.Contract(
-  //       SimpleStorage.abi,
-  //       deployedNetwork.address
-  //     );
-  //     console.log(contract);
-  //     setState({ web3: web3, contract: contract });
-  //   }
-  //   provider && template();
-  // }, []);
-  // useEffect(() => {
-  //   const { contract } = state;
-  //   async function readData() {
-  //     const data = await contract.methods.getter().call();
-  //     setData(data);
-  //   }
-  //   contract && readData();
-  // }, [state]);
-  // async function writeData() {
-  //   const { contract } = state;
-  //   const data = document.querySelector("#value").value;
-  //   await contract.methods
-  //     .setter(data)
-  //     .send({ from: "0x1f4F90f9aA5779f2C1E190133C2c872944bDED1c" });
-  //   window.location.reload();
-  // }
-
-  // const snapShotClient = new ApolloClient({
-  //   uri: 'http://localhost:8000/graphql',
-  //   cache: new InMemoryCache()
-  // });
-
-  // const client = new ApolloClient({
-  //   uri: 'https://hub.snapshot.org/graphql',
-  //   cache: new InMemoryCache(),
-  // });
-
-  // const client = new ApolloClient({
-  //   uri: concat(client.uri, snapshotClient.uri),
-  //   cache: new InMemoryCache().restore(),
-  // });
   const httpLink = createHttpLink({
     uri: `http://localhost:8000/graphql`,
   });
@@ -120,6 +66,7 @@ function App() {
           <Provider store={ storeConfig }>
             <PersistGate loading={null} persistor={persistor}>
           <BrowserRouter>
+            <Suspense fallback={<div>Loading...</div>}>
             <CustomizedSnackbars
               autoOpen={true}
               severity={snackbarMessage.severity}
@@ -138,7 +85,8 @@ function App() {
               <Route exact path="/dashboard" element={<Dashboard />} />
               <Route exact path="/swap" element={<Swap />} />
                   <Route element={<ErrorPage />} />
-                </Routes>
+              </Routes>
+            </Suspense>
               </BrowserRouter>
             </PersistGate>
           </Provider>
