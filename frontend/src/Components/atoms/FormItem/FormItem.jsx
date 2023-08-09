@@ -4,14 +4,12 @@ import { useDispatch } from 'react-redux';
 import { updateHeader } from './../../../actions/createInvoiceAction/index.js';
 import { categories } from '../../pages/Category/Category';
 import UnstyledSelectBasic from '../SelectDropdown/SelectDropdown';
-import useStyles from './index.style';
 import { Upload } from "@web3uikit/core";
 import CurrencyDropdown from '../CurrencyDropdown/CurrencyDropdown.jsx';
 import FormRow from "../../molecules/FormBudgetCreation/index.jsx";
 import CustomizedSnackbars from '../SnackBar/SnackBar.jsx';
 
 function FormItem({ initialValues, type, errors, maxAmount}) {
-    const classes = useStyles();
     const dispatch = useDispatch();
 
     const componentStyles = {
@@ -41,6 +39,17 @@ function FormItem({ initialValues, type, errors, maxAmount}) {
             color: 'gray',
             fontSize: ".70rem"
         },
+        boxStyles: {
+            display: "flex",
+            flexDirection: "column",
+            margin: "0rem auto",
+            textAlign: 'left',
+            borderBottom: '.05rem #2C2C2C solid',
+        },
+        containerStyles: {
+            padding: '2rem ',
+        },
+
     }
     
 
@@ -51,9 +60,9 @@ function FormItem({ initialValues, type, errors, maxAmount}) {
     return (
         <>
             <Box
-                className={classes.boxStyle}
+                sx={componentStyles.boxStyles}
             >
-                    <Grid container className={classes.containerStyles} spacing={3}>
+                    <Grid container sx={componentStyles.containerStyles} spacing={3}>
                         {Object.entries(initialValues).map(([key, value], index) => (
                             <Grid item xs={type === 'budget' ? (index < 2 ? 6 : index === 2 ? 8 : 4) : (index < 2 ? 6 : index === 2 ? 7 : index === 3 ? 3 : index === 4 ? 2 : index > 4 && index < 7 ? 4 : index === 7 ? 4 : 6)} key={index}>
                                 <Typography variant="h6"

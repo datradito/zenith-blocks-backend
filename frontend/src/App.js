@@ -39,7 +39,7 @@ function App() {
       });
     }
     if (networkError) {
-      alert(`Network Error: ${networkError}`);
+      // alert(`Network Error: ${networkError}`);
       // setSnackbarMessage({ open: true, severity: 'error', message: `Network Error: ${networkError}` });
     }
   });

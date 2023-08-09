@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import useStyles from './index.style';
 import { setInitialState, updateField } from '../../../actions/createBudgetAction';
 import {
     Box,
@@ -17,7 +16,6 @@ function FormRow({ tableHeaderData }) {
     const dispatch = useDispatch();
     let currentProposal = useSelector(state => state.currentProposal);
     const { proposals } = useSelector(state => state.currentProposalAmounts);
-    let classes = useStyles();
     let { items, proposal } = useSelector(state => state.createBudget);
 
     const filteredProposalAmount = useFilteredProposalAmount(proposals, currentProposal.proposal.id);
@@ -85,7 +83,11 @@ function FormRow({ tableHeaderData }) {
     };
 
     return (
-        <Box className={classes.boxStyle}>
+        <Box sx={{
+            width: '95%',
+            margin: '2rem auto',
+            textAlign: "left",
+                }}>
             <Box sx={{
                 display: 'flex',
                 justifyContent: 'flex-start',

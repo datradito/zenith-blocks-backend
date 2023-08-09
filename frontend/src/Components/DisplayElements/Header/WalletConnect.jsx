@@ -5,7 +5,9 @@ import {
     useDisconnect,
     useEnsAvatar,
     useEnsName,
-    useBalance
+    useBalance,
+    useConnect,
+    useNetwork,
 } from 'wagmi'
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useNavigate } from 'react-router-dom';
@@ -22,59 +24,113 @@ export default function WalletConnect() {
     })
     const { signMessageAsync } = useSignMessage();
     const { disconnectAsync } = useDisconnect();
-
+    const { connectAsync } = useConnect();
+    const { chain } = useNetwork()
 
     useEffect(() => {
-        if (isConnected) {
-            handleAuth();
+        const auth = sessionStorage.getItem('authenticated');
+        if (isConnected && !auth) {
+            signInWithEthereum();
         }
     }, [isConnected])
 
-    const handleAuth = async () => {
+
+    const createSiweMessage = async () => {
 
         try {
-            console.log("Connect To Site Via Wallet");
+            const userData = {
+                network: "evm",
+                address: address,  // Make sure 'address' is defined or provided in your code
+                chain: chain?.id
+            };
 
-            const userData = { network: "evm" };
-            userData.address = address;
-            userData.chain = connector.chains[0].id;
+            const res = await axios.get(`http://localhost:8000/nonce`);
+            const nonce = res.data;
 
-            console.log("Sending Connected Account and Chain ID to Moralis Auth API");
-
-            const { data: message } = await axios.post(`http://localhost:8000/siwe`, { address, network: "evm" }, {
+            const { data } = await axios.post(`http://localhost:8000/siwe`, {
+                address: userData.address,
+                network: userData.network,
+                nonce
+            }, {
                 headers: {
                     'Content-Type': 'application/json',
-                    withCredntials: true,
-                    credentials: 'include'
                 },
+                withCredentials: true,
             });
 
             console.log("Received Signature Request From Moralis Auth API");
-
-            const signature = await signMessageAsync({ message });
-
-            console.log(message, signature);
-
-            const response = await axios.post(`http://localhost:8000/verify`, { message, signature }, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    withCredntials: true,
-                    credentials: 'include'
-                },
-            });
-
-            if (response.data) {
-                navigate('/proposals');
-            };
-
+            return data;
         } catch (error) {
             console.error('Error handling authentication:', error);
             disconnectAsync();
+            throw error; // Rethrow the error to signal that the function encountered an error
         }
     };
 
-    //     const provider = new Web3.providers.HttpProvider("HTTP://127.0.0.1:7545");
-    //     const web3 = new Web3(provider);
+    const sendForVerification = async(message, signature) => {
+        try {
+            const response = await axios.post(
+                `http://localhost:8000/verify`,
+                { message, signature },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    withCredentials: true, // Moved outside the 'headers' object
+                }
+            );
+
+            sessionStorage.setItem('authenticated', response.data);
+        } catch (error) {
+            console.error('Error during verification:', error);
+            throw error; // Rethrow the error to signal that the function encountered an error
+        }
+    }
+
+    async function signInWithEthereum() {
+        try {
+            const message = await createSiweMessage();
+
+            if (!message) {
+                console.log("No message received from createSiweMessage");
+                return;
+            }
+
+            console.log(message)
+
+            const signature = await signMessageAsync({message});
+
+            if (!signature) {
+                console.log("No signature received from signMessageAsync");
+                return;
+            }
+
+            const res = await sendForVerification(message, signature);
+
+            console.log(res);
+            console.log("Signature Received From Moralis Auth API");
+        } catch (error) {
+            console.error("Error during sign-in:", error);
+            disconnectAsync();
+        }
+    }
+
+    const testAuth = async () => {
+        try {
+            const res = await axios.get(`http://localhost:8000/test`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                withCredentials: true
+                
+            });
+            console.log(res.data);
+        } catch (error) {
+            console.error('Error handling authentication:', error);
+            throw error; // Rethrow the error to signal that the function encountered an error
+        }
+    }
+
 
 
     return (
@@ -105,10 +161,11 @@ export default function WalletConnect() {
                 isConnected && (
                     <>
                     <Button onClick={handleAuth}>Sign Out</Button>
-                    <Button onClick={checkSiwe}>Check siwe</Button> 
+                    // <Button onClick={checkSiwe}>Check siwe</Button> 
                     </>
                 )
             } */}
+            <button onClick={testAuth}>Check siwe</button> 
         </div>
     );
 }

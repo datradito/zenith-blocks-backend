@@ -4,13 +4,10 @@ import {
     TableBody as TableBodyMUI,
 } from '@mui/material';
 
-import useStyles from "./index.style"
-
 const TableBody = ({ tableBodyData }) => {
 
-    const classes = useStyles();
     return (
-        <TableBodyMUI className={classes.tableBody}>
+        <TableBodyMUI sx={{ border: "none"}}>
                 {
                     tableBodyData.map((item, index )=> {
                         return <TableRow

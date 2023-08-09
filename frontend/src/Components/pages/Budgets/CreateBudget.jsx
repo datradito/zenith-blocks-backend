@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import useStyles from "./CreateBudget.style";
 import FormItem from "../../atoms/FormItem/FormItem";
 import SubHeader from '../../molecules/SubHeader/SubHeader';
 import useWeb3IpfsContract from '../../hooks/web3IPFS';
@@ -24,10 +23,7 @@ function CreateBudget() {
 
   const navigate = useNavigate();
 
-  const classes = useStyles();
-
   const filteredProposalAmount = useFilteredProposalAmount(proposals, proposal.id);
-
 
   let dataForItemCard = {};
 
@@ -118,7 +114,14 @@ function CreateBudget() {
   return (
     <div>
       <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath="Proposals  Proposal  Budget" />
-      <div className={classes.BoxStyle}>
+      <div sx={{
+        width: '90%',
+        margin: '0rem auto',
+        textAlign: "center",
+        border: `.05rem #2C2C2C solid`,
+        marginTop: "1rem",
+        borderRadius: 10
+      }}>
         <FormItem
           initialValues={dataForItemCard}
           type="budget"

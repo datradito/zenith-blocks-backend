@@ -1,11 +1,31 @@
 import React from 'react'
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
-import useStyles from './ItemCard.style';
+
 
 function ItemCard({ label,value }) {
-    const classes = useStyles();
-    
+
+    const componentStyles = {
+        buttonStyle: {
+            backgroundColor: "#035FFC",
+            margin: "2rem",
+        },
+        label: {
+            color: 'Grey',
+            fontSize: '.65rem'
+        },
+        subItemStyle: {
+            minWidth: 200,
+        },
+        minWidth: {
+            minWidth: '200px',
+            maxWidth: '200px',
+        },
+        defaultWidth: {
+            minWidth: '700px'
+        }
+    }
+
     const ColumnItemLabel = styled(Paper)(({ theme }) => ({
         backgroundColor: '#1A1C1E',
         textAlign: 'left',
@@ -32,8 +52,8 @@ function ItemCard({ label,value }) {
         boxShadow: 'none',
     }));
     return (
-        <SubItem key={label} className={classes.subItemStyle}>
-                <ColumnItemLabel className={`${ label !== "Title" ? classes.minWidth: classes.defaultWidth}`}>{label}</ColumnItemLabel>
+        <SubItem key={label} className={componentStyles.subItemStyle}>
+                <ColumnItemLabel className={`${ label !== "Title" ? componentStyles.minWidth: componentStyles.defaultWidth}`}>{label}</ColumnItemLabel>
                 <ColumnItemValue>{value}</ColumnItemValue>
         </SubItem>
   )

@@ -9,12 +9,9 @@ const config = {
     domain: process.env.DOMAIN || domain,
     statement: process.env.STATEMENT || "Siwe Quickstart",
     origin: process.env.DEV_ORIGIN || origin,
-    uri: process.env.DEV_URI,
+    uri: process.env.DEV_URI || 'http://localhost:3000',
 };
 
-const createNonce = async () => {
-    return await siwe.generateNonce();
-}
 
 function createSiweMessage(address, network, nonce) {
     try {
@@ -23,7 +20,7 @@ function createSiweMessage(address, network, nonce) {
             network,
             chainId: "1",
             version: '1',
-            nonce: nonce,
+            nonce,
             ...config,
         });
         return siweMessage.prepareMessage();
@@ -52,4 +49,4 @@ const verifySiweMessageHandler = async(message, signature, nonce) => {
 };
 
 
-module.exports = { createSiweMessage, createNonce, verifySiweMessageHandler };
+module.exports = { createSiweMessage, verifySiweMessageHandler };

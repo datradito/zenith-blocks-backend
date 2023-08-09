@@ -7,7 +7,7 @@ import proposalAmountReducer from './currentProposal/proposalAmount';
 
 
 
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
     currentProposal: currentProposalReducer,
     createBudget: createBudgetReducer,
     createInvoice: createInvoiceReducer,
@@ -15,4 +15,4 @@ const rootReducer = combineReducers({
     currentProposalAmounts: proposalAmountReducer,
 });
 
-export default rootReducer;
+

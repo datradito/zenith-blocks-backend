@@ -10,7 +10,7 @@ require("dotenv").config();
 var { graphqlHTTP } = require('express-graphql');
 
 const Moralis = require("moralis").default;
-const { createSiweMessage, createNonce, verifySiweMessageHandler } = require('./utility/signMessage');
+const { createSiweMessage, verifySiweMessageHandler } = require('./utility/signMessage');
 const { init } = require('./Database/sequalizeConnection');
 
 const app = express();
@@ -18,10 +18,11 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({
-    origin: true,
-    credentials: true,
-}));
+// app.use(cors({
+//     origin: 'http://localhost:3000',
+//     credentials: true,
+// }));
+app.use(cors({ credentials: true, origin: true }));
 
 const hour = 3600000
 
@@ -87,12 +88,15 @@ app.get("/tokenPrice", async (req, res) => {
     return res.status(200).json(usdPrices);
 });
 
+app.get('/nonce', function (_, res) {
+    res.setHeader('Content-Type', 'text/plain');
+    res.send(siwe.generateNonce());
+});
+
 
 app.post("/siwe", async (req, res) => {
-    const { address, network } = req.body;
+    const { address, network, nonce } = req.body;
 
-    // console.log("from siwe " + JSON.stringify(req.body));
-    const nonce = await createNonce();
 
     const message = createSiweMessage(address, network, nonce);
 
@@ -103,76 +107,57 @@ app.post("/siwe", async (req, res) => {
 
     res.cookie('siwe', message, { httpOnly: true, secure: true, sameSite: 'none' });
 
-    console.log(req.session.id)
     return res.status(200).json(message);
     }
 );
 
 app.post('/verify', async function (req, res) {
-        if (!req.body.message || !req.body.signature) {
-            res.status(422).json({ message: 'Expected message and signature object as body.' });
+    try {
+        if (!req.body.message) {
+            res.status(422).json({ message: 'Expected prepareMessage object as body.' });
             return;
         }
 
-        // const siweCookie = req.headers.cookie?.split(';').find(cookie => cookie.trim().startsWith('siwe='));
+        let SIWEObject = new siwe.SiweMessage(req.body.message);
+        const { data: message } = await SIWEObject.verify({ signature: req.body.signature, nonce: req.session.nonce });
 
-    const { signature, message } = req.body;
-    try {
-        const { address, profileId, expirationTime } = await Moralis.Auth.verify({ message, signature, network: 'evm' });
-
-        console.log(profileId, expirationTime, address)
-
-        req.session.cookie.expires = expirationTime;
+        req.session.siwe = message;
+        req.session.cookie.expires = new Date(message.expirationTime);
         req.session.save(() => res.status(200).send(true));
-        
+        console.log(req.session.id)
     } catch (e) {
-        console.log(e)
-        req.session.save(() => res.json({ message: e.message }));
+        req.session.siwe = null;
+        req.session.nonce = null;
+
+        switch (e) {
+            // case ErrorTypes.EXPIRED_MESSAGE: {
+            //     req.session.save(() => res.status(440).json({ message: e.message }));
+            //     break;
+            // }
+            // case ErrorTypes.INVALID_SIGNATURE: {
+            //     req.session.save(() => res.status(422).json({ message: e.message }));
+            //     break;
+            // }
+            default: {
+                req.session.save(() => res.status(500).send(false));
+                break;
+            }
+        }
     }
-
-
-    
-        // verifySiweMessageHandler(message, signature, nonce)
-        //     .then(({message}) => {
-        //     req.session.cookie.expires = new Date(Date.now() + hour);
-        //     req.session.save(() => res.status(200).send(true));
-        // }).catch((error) => {
-        //     req.session.siwe = null;
-        //     req.session.nonce = null;
-        //     req.session.save(() => res.status(422).json({ message: error.message }));
-        // }
-        // )
-    // } catch (e) {
-    //     req.session.siwe = null;
-    //     req.session.nonce = null;
-        // switch (e) {
-        //     case ErrorTypes.EXPIRED_MESSAGE: {
-        //         req.session.save(() => res.status(440).json({ message: e.message }));
-        //         break;
-        //     }
-        //     case ErrorTypes.INVALID_SIGNATURE: {
-        //         req.session.save(() => res.status(422).json({ message: e.message }));
-        //         break;
-        //     }
-        //     default: {
-        //         req.session.save(() => res.status(500).json({ message: e.message }));
-        //         break;
-        //     }
-        // }
-    //     req.session.save(() => res.json({ message: e.message }));
-    // }
 });
 
-app.get('/test', async(req, res) => {
-    console.log(req.session.id);
 
-    req.session.test = true
-    const nonce = await createNonce();
-    console.log(nonce)
-    req.session.nonce = nonce;
-    req.session.save();
-    return res.status(200).json({ message: 'User logged out' });
-}
+app.get('/test', async (req, res) => {
+
+    console.log(req.session.id);
+    if (!req.session.siwe) {
+        res.status(401).send(false);
+        return;
+    }
+    console.log("User is authenticated!");
+    res.setHeader('Content-Type', 'text/plain');
+    res.send(true);
+    }
 );
 
 app.get('/logout', (req, res) => {
