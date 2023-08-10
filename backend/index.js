@@ -6,6 +6,7 @@ const schema = require('./schema/schema');
 const store = session.MemoryStore()
 
 require("dotenv").config();
+const signJWTToken = require('./utility/middlewares/auth').signJWTToken;
 
 var { graphqlHTTP } = require('express-graphql');
 
@@ -38,15 +39,20 @@ app.use(session({
 //create middleware here to check if req.session.authenticated is true 
 //if it is true then allow the request to continue
 //if it is false then return a 401 status code
-const authenticationMiddleware = (req, res, next) => {
-    if (req.session.id) {
-        // If the user is authenticated, proceed to the next middleware or route handler.
+const authorize = (req, res, next) => {
+    if (!req.headers.authorization) return res.status(401).json({ message: 'This route requires authentication' });
+
+    const token = req.headers.authorization.split(' ')[1];
+
+    // Verify the token sent to us from client
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+        if (err) return res.status(401).json({ message: 'The token is invalid' });
+
+        // We want to set our payload on a request object so we can use it in our authorized endpoints
+        req.decoded = decoded;
         next();
-    } else {
-        // If the user is not authenticated, return a 401 Unauthorized status and an error message.
-        res.status(401).json({ error: 'Unauthorized: User not authenticated' });
-    }
-};
+    })
+}
 
 
 // init();
@@ -97,6 +103,7 @@ app.get('/nonce', function (_, res) {
 app.post("/siwe", async (req, res) => {
     const { address, network, nonce } = req.body;
 
+    //check if user exist in db with daoId and address
 
     const message = createSiweMessage(address, network, nonce);
 
@@ -123,21 +130,23 @@ app.post('/verify', async function (req, res) {
 
         req.session.siwe = message;
         req.session.cookie.expires = new Date(message.expirationTime);
-        req.session.save(() => res.status(200).send(true));
-        console.log(req.session.id)
+
+        // const user = {
+        //     address: req.session.address,
+        //     message: req.session.message,
+        //     daoId: "eth.1inch",
+        // }
+
+        req.session.save(() => {
+            // const token = signJWTToken(user);
+            return res.status(200).send(true);
+        });
+
     } catch (e) {
         req.session.siwe = null;
         req.session.nonce = null;
 
         switch (e) {
-            // case ErrorTypes.EXPIRED_MESSAGE: {
-            //     req.session.save(() => res.status(440).json({ message: e.message }));
-            //     break;
-            // }
-            // case ErrorTypes.INVALID_SIGNATURE: {
-            //     req.session.save(() => res.status(422).json({ message: e.message }));
-            //     break;
-            // }
             default: {
                 req.session.save(() => res.status(500).send(false));
                 break;

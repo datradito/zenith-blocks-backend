@@ -17,6 +17,7 @@ const ProposalType = new GraphQLObjectType({
         id: { type: GraphQLString },
         amount: { type: GraphQLFloat },
         modified: { type: GraphQLString },
+        status: { type: GraphQLString },
         modifier: { type: GraphQLString },
         rootpath: { type: GraphQLString },
         daoid: { type: GraphQLString },

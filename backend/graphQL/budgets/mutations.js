@@ -20,10 +20,12 @@ const submitBudget = {
     },
     async resolve(parent, args) {
 
-        const { valid, errors } = validateBudget(
+        const { errors , valid } = await validateBudget(
                 args.amount,
                 args.proposalid,
         )
+
+        console.log(errors, valid)
         if (!valid) {
             throw new UserInputError("BudgetErrors : Amount cannot exceed Proposal Allocated Total",  errors )
         }
@@ -31,12 +33,12 @@ const submitBudget = {
     
         let ipfsResponse;
 
-        try {
-            const response = await UploadDataToIpfs(args.rootpath, JSON.stringify(args));
-                ipfsResponse = response.jsonResponse[0].path;
-        } catch (error) {
-            throw new UserInputError("BudgetErrors : Unable to load to IPFS, Will be tried again later!", errors)
-        }
+        // try {
+        //     const response = await UploadDataToIpfs(args.rootpath, JSON.stringify(args));
+        //         ipfsResponse = response.jsonResponse[0].path;
+        // } catch (error) {
+        //     throw new UserInputError("BudgetErrors : Unable to load to IPFS, Will be tried again later!", errors)
+        // }
 
         const budget = new Budget({
             ...args,

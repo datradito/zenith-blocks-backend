@@ -2,7 +2,7 @@ const { GraphQLList, GraphQLString } = require('graphql');
 const ProposalType = require('./typeDefs');
 const Proposal = require('../../Database/models/Proposal');
 
-const getProposalAmountById = {
+const getProposalDetailsById = {
     type: ProposalType,
     args: { id: { type: GraphQLString } },
     resolve(parent, args) {
@@ -19,6 +19,6 @@ const getProposalsByDao = {
 }
 
 module.exports = {
-    getProposalAmountById,
+    getProposalDetailsById,
     getProposalsByDao,
 }
