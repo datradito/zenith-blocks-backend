@@ -9,11 +9,9 @@ const validateBudget = async (
 
     const errors = {}
 
-    const proposalAmount = await Proposal.findByPk(proposalid, {
+    const proposal = await Proposal.findByPk(proposalid, {
         attributes: ['amount'],
     });
-
-    console.log(proposalAmount)
     
     const totalBudgetedAmount = await Budget.sum('amount', {
         where: {
@@ -21,7 +19,11 @@ const validateBudget = async (
         }
     });
 
-    if (amount > parseInt(proposalAmount) - parseInt(totalBudgetedAmount)) {
+    const proposalAmount = proposal.get('amount');
+
+    console.log(parseInt(proposalAmount) - parseInt(totalBudgetedAmount));
+
+    if (parseInt(amount) > parseInt(proposalAmount) - parseInt(totalBudgetedAmount)) {
         errors.amount = "New Budget amount exceeds Proposal amount"
     }
 

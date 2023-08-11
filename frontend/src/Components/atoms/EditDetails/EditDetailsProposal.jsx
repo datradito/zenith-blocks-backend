@@ -64,7 +64,6 @@ export default function DetailPanelContent({ row }) {
     const [dialogOpen, setDialogOpen] = React.useState(true);
 
     const onSubmit = (data) => {
-        console.log(data);
         // Call the custom hook function to save the proposal details
         saveProposalDetails(data);
         setDialogOpen(false); // Close the dialog after submitting the form

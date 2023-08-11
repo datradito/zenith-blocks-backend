@@ -4,7 +4,6 @@ import { ADD_OR_UPDATE_PROPOSAL } from '../../ServerQueries/proposalMutation'; /
 
 const useSaveProposalDetails = () => {
     // const [proposalAmount, setProposalAmount] = useState(null);
-    let proposalId;
     const [SetProposalAmount, { data, loading, error }] = useMutation(ADD_OR_UPDATE_PROPOSAL);
 
     const saveProposalDetails = async (formData) => {
@@ -19,12 +18,6 @@ const useSaveProposalDetails = () => {
                     daoid: formData.space.id,
                 },
             });
-
-            //we can use proposalId from here to update currentProposalAmount state upon success from backend
-            // proposalId= formData.id;
-            // console.log(formData.id)
-            // const { amount } = data.setProposalAmount;
-            // setProposalAmount(amount);
         } catch (error) {
             // Handle any errors from the mutation
             console.error(error);

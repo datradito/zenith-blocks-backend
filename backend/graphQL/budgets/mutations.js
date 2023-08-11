@@ -39,16 +39,18 @@ const submitBudget = {
         // } catch (error) {
         //     throw new UserInputError("BudgetErrors : Unable to load to IPFS, Will be tried again later!", errors)
         // }
-
-        const budget = new Budget({
-            ...args,
-            ipfs: ipfsResponse ? ipfsResponse : `Failed to upload to IPFS at ${new Date().toISOString()}`,
-        });
-
-        //update proposal status
-        await updateProposalStatus(args.proposalid, args.amount);
-
-        return await budget.save();
+        try {
+            await updateProposalStatus(args.proposalid, args.amount);
+            
+            const budget = new Budget({
+                ...args,
+                ipfs: ipfsResponse ? ipfsResponse : `Failed to upload to IPFS at ${new Date().toISOString()}`,
+            });
+            return await budget.save();
+        } catch (error) {
+            throw new UserInputError("BudgetErrors : Unable to save to database, Please ensure value and try again!", errors)
+        }
+        
     },
 };
 

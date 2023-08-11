@@ -52,8 +52,8 @@ function ItemCard({ label,value }) {
         boxShadow: 'none',
     }));
     return (
-        <SubItem key={label} className={componentStyles.subItemStyle}>
-                <ColumnItemLabel className={`${ label !== "Title" ? componentStyles.minWidth: componentStyles.defaultWidth}`}>{label}</ColumnItemLabel>
+        <SubItem key={label} sx={componentStyles.subItemStyle}>
+                <ColumnItemLabel sx={`${ label !== "Title" ? componentStyles.minWidth: componentStyles.defaultWidth}`}>{label}</ColumnItemLabel>
                 <ColumnItemValue>{value}</ColumnItemValue>
         </SubItem>
   )

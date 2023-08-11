@@ -1,10 +1,7 @@
 import { ADD_AMOUNT } from "../../actions/currentProposal/amountTypes";
 
 const initialState = {
-    proposals: [
-        {
-        }
-    ]
+    proposals: []
 };
 
 
@@ -21,13 +18,11 @@ const proposalAmountReducer = (state = initialState, action) => {
                     ...state,
                     proposals: state.proposals.map((proposal, index) =>
                         index === existingProposalIndex
-                            ? { ...proposal, amount: action.payload.amount }
+                            ? { ...proposal, amount: action.payload.amount, status: action.payload.status }
                             : proposal
                     ),
                 };
             } else {
-                console.log("from reducer")
-                // Proposal doesn't exist, push a new object
                 return {
                     ...state,
                     proposals: [
@@ -35,6 +30,7 @@ const proposalAmountReducer = (state = initialState, action) => {
                         {
                             id: action.payload.proposalId,
                             amount: action.payload.amount,
+                            status: action.payload.status
                         },
                     ],
                 };

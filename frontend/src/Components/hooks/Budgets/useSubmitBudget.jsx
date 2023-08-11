@@ -1,8 +1,6 @@
 import { SUBMIT_BUDGET_MUTATION } from '../../../ServerQueries/Budget/Mutation';
 import { useCallback, useMemo } from 'react';
 import { useMutation } from '@apollo/client';
-import { gql } from '@apollo/client';
-import { useSelector } from 'react-redux';
 
 
 const useSubmitBudget = () => {
@@ -41,8 +39,6 @@ const useSubmitBudget = () => {
     // Function to handle budget submission
     const submitBudget = useCallback(
         async (budget) => {
-            
-            console.log("comes here")
            
             try {
                 const { data } = await submitBudgetMutation({

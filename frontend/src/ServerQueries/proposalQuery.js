@@ -11,8 +11,9 @@ import { gql } from '@apollo/client';
 
 export const GET_PROPOSAL_DETAILS = gql`
   query GetProposalDetails($proposalid: String!) {
-    getProposalAmountById(id: $proposalid) {
-      amount
+    getProposalDetailsById(id: $proposalid) {
+      amount,
+      status
     }
   }
 `;

@@ -67,11 +67,11 @@ function App() {
             <PersistGate loading={null} persistor={persistor}>
           <BrowserRouter>
             <Suspense fallback={<div>Loading...</div>}>
-            <CustomizedSnackbars
+            {/* <CustomizedSnackbars
               autoOpen={true}
               severity={snackbarMessage.severity}
               message={snackbarMessage.message}
-            />
+            /> */}
               <ResponsiveHeaderBar />
                 <Routes>
                   <Route exact path="/proposals" element={<Proposals />} />

@@ -14,6 +14,8 @@ import useWeb3IpfsContract from '../../hooks/web3IPFS';
 import { useAllBudgetsForProposal } from '../../hooks/Budgets/useBudgetsForProposal.jsx';
 import CustomizedSnackbars from '../../atoms/SnackBar/SnackBar.jsx';
 import transformItems from '../../../Utility/transformItems.js';
+import SnackbarMessage from '../../atoms/SnackBarGql/SnackBarGql.jsx';
+import { set } from 'react-hook-form';
 
 
 const BoxStyle = {
@@ -23,7 +25,8 @@ const BoxStyle = {
     color: 'white',
     border: ".05rem #2c2c2c solid",
     marginTop: "1rem",
-    borderRadius: 3
+    borderRadius: 3,
+    paddingBottom: "1rem"
 };
 
 
@@ -75,18 +78,38 @@ function ProposalDetailView() {
     const { web3, contract } = useWeb3IpfsContract();
     const { loading, error, data } = useProposalDetails(proposalId);
     const { proposals } = useSelector(state => state.currentProposalAmounts);
-    const [ amount, setProposalAmount] = useState(0);
+    const [pageWarnings, setPageWarnings] = useState();
+    const [amount, setProposalAmount] = useState(0);
+    const [ status, setStatus ] = useState();
     let { budgetList, budgetsLoading, budgetsError  } = useAllBudgetsForProposal(proposalId);
 
     dispatch(refreshState());
 
     const filteredProposal = useMemo(() => {
-        return proposals.filter((proposal) => proposal.id === proposalId ? proposal.amount : null);
+        return proposals.filter((proposal) => proposal.id === proposalId ? proposal : null);
     }, [proposalId]);
 
     useEffect(() => {
         setProposalAmount(filteredProposal[0]?.amount);
+        setStatus(filteredProposal[0]?.status === 'Funded' ? true : false);
+        
+        console.log(filteredProposal[0]?.status)
     }, [filteredProposal]);
+
+    const handlePageValidation = () => {
+        setPageWarnings(["Either Proposal is already filled or Missing Amount"]);
+    };
+
+    useEffect(() => {
+        if (data) {
+            dispatch(setProposal(data.proposal));
+        }
+    }
+    , []);
+
+    useEffect(() => {
+        !amount ? handlePageValidation() : setPageWarnings(null);
+    }, [amount]);
     
     //TOdo: move budget loading to tableDisplay to localize the loading
     if (loading || budgetsLoading) return <CircularIndeterminate />;
@@ -104,6 +127,8 @@ function ProposalDetailView() {
     const handleUpdateProposal = async () => {
         dispatch(setProposal(data.proposal, budgetList));
     };
+
+
     const handleBudgetCreateOnClick = () => {
         dispatch(setProposal(data.proposal, budgetList));
     }
@@ -116,7 +141,7 @@ function ProposalDetailView() {
     ];
 
     //store status of proposal, if totalBudgetedAmount is equal to proposalAmount then set proposal status to filled
-    const proposalFilled = true;
+    const proposalFilled = false;
 
     const componentButtonConfig = [
         {
@@ -130,12 +155,12 @@ function ProposalDetailView() {
         {
             label: "Update Proposal",
             variant: "contained",
-            onClick: proposalFilled ? null :handleUpdateProposal,
+            onClick: proposalFilled  ? handlePageValidation : handleUpdateProposal,
             innerText: "Create Budget",
-            disabled: proposalFilled,
+            disabled:( status || !amount),
             ml: "0.5rem",
             type: "link",
-            to:  proposalFilled ? null : `/proposal/update/${proposalId}`,
+            to: status || !amount ? null  : `/proposal/update/${proposalId}`,
         }
     ];
 
@@ -151,6 +176,7 @@ function ProposalDetailView() {
         to: `/proposals`
     };
 
+    console.log(status)
     return (
         <div>
             <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath='Proposals' />
@@ -174,13 +200,10 @@ function ProposalDetailView() {
                         tableHeaderData={headers}
                         tableBodyData={budgetList}
                     />
-                ) || <>
-                            <Link to={`/proposal/budgets/${proposalId}`}>
-                                <ButtonAtom
-                                    config={buttonConfig}
-                                />
-                            </Link>
-                    </>
+                        )
+                }
+                {
+                    pageWarnings && <SnackbarMessage severity="error" message={pageWarnings} open={pageWarnings ? true: false} />
                 }
             </Box>
         </div>

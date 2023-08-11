@@ -91,7 +91,7 @@ const TableRow = ({ tableBodyData }) => {
                                 <TableCell key={key}  sx={[customTableCellStyles[key] , customTableCellStyles.tableDataCellItem]}><CustomActionIcon budgetId={tableBodyData["id"]} /></TableCell> :
                             key === 'Status' ?
                                                     <TableCell key={key} sx={[customTableCellStyles[key] ,customTableCellStyles.tableDataCellItem ]}><StatusChip status={tableBodyData[key]} /></TableCell> :
-                                                    key === 'breakdown' ?
+                                                    key === 'Breakdown' ?
                                                         <TableCell key={key} sx={[customTableCellStyles[key] , customTableCellStyles.tableDataCellItem]}>{tableBodyData[key]} %</TableCell> :
                                 <TableCell key={key} sx={[customTableCellStyles[key], customTableCellStyles.default, customTableCellStyles.tableDataCellItem]}>{tableBodyData[key]}</TableCell>
                         )

@@ -10,12 +10,12 @@ import CircularIndeterminate from '../../atoms/Loader/loader.jsx';
 const Amount = ({ proposalid, onClick }) => {
     const dispatch = useDispatch();
 
-    const { amount, proposalLoading, proposalError } = useGetProposalAmount(proposalid);
+    const { amount, status, proposalLoading, proposalError } = useGetProposalAmount(proposalid);
 
     // dispatch(addAmount({ amount: amount, proposalId: proposalId }));
 
     if (amount) {
-        dispatch(addAmount({ amount: amount, proposalId: proposalid }));
+        dispatch(addAmount({ amount: amount, proposalId: proposalid, status: status }));
     }
 
     if (proposalLoading) return (<Box sx={{ maxWidth: '50px', textAlign: 'left', maxHeight: '40px', marginTop: -2 }}><CircularIndeterminate /></Box>);

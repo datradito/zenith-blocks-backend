@@ -249,6 +249,8 @@ app.get("/tokenBalances", async (req, res) => {
         const tokens = response.jsonResponse;
         const legitTokens = [];
 
+        console.log(tokens);
+
         for (const token of tokens) {
             try {
                 const priceResponse = await Moralis.EvmApi.token.getTokenPrice({
@@ -327,8 +329,6 @@ app.get("/tokenTransfers", async (req, res) => {
             }
 
         }
-
-
 
         res.send(userTransDetails);
     } catch (e) {

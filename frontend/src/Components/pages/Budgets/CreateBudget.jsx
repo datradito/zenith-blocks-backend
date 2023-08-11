@@ -8,6 +8,7 @@ import getPathAfterBudgetId from '../../../Utility/getBudgetId';
 import useFilteredProposalAmount from '../../hooks/useFilteredProposalAmount';
 import useSubmitBudget from '../../hooks/Budgets/useSubmitBudget';
 import CustomizedSnackbars from '../../atoms/SnackBar/SnackBar';
+import { Box, Stack } from '@mui/material';
 
 function CreateBudget() {
 
@@ -58,19 +59,18 @@ function CreateBudget() {
     let proposalId = proposal.id;
 
     if (!validateBudget()) {
-      console.log("Budget validation failed");
       return;
     }
     
     try {
       const budgetData = { ...items[0], proposalid: proposalId, rootpath: proposalId, amount: parseInt(items[0].amount), breakdown: parseInt(items[0].breakdown) };
 
-      console.log(budgetData)
       await submitBudget(budgetData);
       setSuccessMessage("Budget Saved Successfully");
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      navigate(`/proposals/${proposalId}`);
+      // navigate(`/proposals/${proposalId}`);
+      navigate(`/proposals`);
     } catch (error) {
       setBudgetError('Error submitting budget:', error.message);
       setBudgetErrorKey(budgetErrorKey + 1);
@@ -95,6 +95,7 @@ function CreateBudget() {
         onClick: handleSaveProposal,
         innerText: "Save Proposal",
         ml: "0.5rem",
+        //   to: `/proposals/${proposal.id}`,
         // subButton: {
         //   label: "View Proposal",
         //   innerText: "View Proposal",
@@ -112,15 +113,15 @@ function CreateBudget() {
 
 
   return (
-    <div>
+    <Box>
       <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath="Proposals  Proposal  Budget" />
-      <div sx={{
+      <Box sx={{
         width: '90%',
         margin: '0rem auto',
         textAlign: "center",
         border: `.05rem #2C2C2C solid`,
         marginTop: "1rem",
-        borderRadius: 10
+        borderRadius: 5
       }}>
         <FormItem
           initialValues={dataForItemCard}
@@ -128,11 +129,11 @@ function CreateBudget() {
           errors={budgetError ? budgetError : null}
           key={budgetErrorKey}
         />
-      </div>
+      </Box>
       {successMessage && (
         <CustomizedSnackbars key="success" message={successMessage} severity="success" autoOpen={true} />
       )}
-    </div>
+    </Box>
   )
 }
 

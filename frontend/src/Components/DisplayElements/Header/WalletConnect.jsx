@@ -28,12 +28,21 @@ export default function WalletConnect() {
     const { chain } = useNetwork()
 
     useEffect(() => {
-        const auth = sessionStorage.getItem('authenticated');
+        const auth = getCookies('siwe');
+
+        console.log(auth);
         if (isConnected && !auth) {
             signInWithEthereum();
         }
     }, [isConnected])
 
+
+    function getCookies(key) {
+        var b = document.cookie.match("(^|;)\\s*" + key + "\\s*=\\s*([^;]+)");
+        return b ? b.pop() : "";
+    }
+
+    // const siweCookieValue = getCookies('siwe');
 
     const createSiweMessage = async () => {
 
@@ -80,6 +89,7 @@ export default function WalletConnect() {
                 }
             );
 
+            //sessionStorage.setItem('authToken', res.data.authToken);
             sessionStorage.setItem('authenticated', response.data);
         } catch (error) {
             console.error('Error during verification:', error);
@@ -143,18 +153,18 @@ export default function WalletConnect() {
         >
         {
             <ConnectButton
-            accountStatus={{
-                smallScreen: 'avatar',
-                largeScreen: 'full',
-            }}
-            showBalance={{
-                smallScreen: false,
-                largeScreen: true,
-            }}
-            chainStatus={{
-                smallScreen: "icon",
-                largeScreen: "full",
-            }}
+                accountStatus={{
+                    smallScreen: 'avatar',
+                    largeScreen: 'full',
+                }}
+                showBalance={{
+                    smallScreen: false,
+                    largeScreen: true,
+                }}
+                chainStatus={{
+                    smallScreen: "icon",
+                    largeScreen: "full",
+                }}
             />
             }
             {/* {
@@ -165,7 +175,6 @@ export default function WalletConnect() {
                     </>
                 )
             } */}
-            <button onClick={testAuth}>Check siwe</button> 
         </div>
     );
 }
