@@ -12,6 +12,14 @@ export const GET_PROPOSAL = gql`
     }
 `;
 
+export const GET_SPACES = gql`
+  query Spaces {
+    spaces {
+      name,
+      id
+    }
+}`
+
 export const GET_All_PROPOSALS = gql`
     query GetProposals($first: Int, $skip: Int) {
       proposals(first: $first, skip: $skip) {

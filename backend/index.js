@@ -131,6 +131,10 @@ app.post('/verify', async function (req, res) {
         req.session.siwe = message;
         req.session.cookie.expires = new Date(message.expirationTime);
 
+        //Todo: once signature is verified find user from database based on address and retrieve daoId
+        
+
+
         // const user = {
         //     address: req.session.address,
         //     message: req.session.message,
@@ -211,7 +215,8 @@ app.get("/nativeBalance", async (req, res) => {
         });
 
         const nativeBalance = response.jsonResponse;
-
+        
+        console.log(response);
         let nativeCurrency;
         if (chain === "0x1") {
             nativeCurrency = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
@@ -223,8 +228,6 @@ app.get("/nativeBalance", async (req, res) => {
             address: nativeCurrency, //WETH Contract
             chain: chain,
         });
-
-        console.log(nativePrice);
 
         nativeBalance.usd = nativePrice.jsonResponse.usdPrice;
 

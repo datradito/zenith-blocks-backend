@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 import { storeConfig, persistor } from './store/storeConfigure';
 import { PersistGate } from 'redux-persist/integration/react';
 import ErrorPage from "./Routes/ErrorPage";
+import CircularIndeterminate from './Components/atoms/Loader/loader';
 
 const ResponsiveHeaderBar = lazy(() => import("./Components/DisplayElements/Header/Header"));
 const ProposalDetailView = lazy(() => import("./Components/pages/Proposals/ProposalDetailView"));
@@ -15,8 +16,10 @@ const InvoiceListView = lazy(() => import("./Components/pages/Invoices/InvoiceLi
 const InvoiceCreation = lazy(() => import("./Components/pages/Invoices/InvoiceCreation"));
 const Dashboard = lazy(() => import("./Components/pages/walletDashboard/Dashboard"));
 const CustomizedSnackbars = lazy(() => import("./Components/atoms/SnackBar/SnackBar"));
+const LogIn = lazy(() => import("./Components/pages/Home/logIn"));
 const Swap = lazy(() => import("./Components/pages/Swap/Swap"));
 const Proposals = lazy(() => import("./Components/pages/Proposals/Proposals"));
+
 
 
 function App() {
@@ -62,35 +65,33 @@ function App() {
 
   return (
   
-        <ApolloProvider client={client}>
-          <Provider store={ storeConfig }>
-            <PersistGate loading={null} persistor={persistor}>
-          <BrowserRouter>
-            <Suspense fallback={<div>Loading...</div>}>
-            {/* <CustomizedSnackbars
-              autoOpen={true}
-              severity={snackbarMessage.severity}
-              message={snackbarMessage.message}
-            /> */}
-              <ResponsiveHeaderBar />
+    <ApolloProvider client={client}>
+      <Provider store={storeConfig}>
+        <PersistGate loading={null} persistor={persistor}>
+          <Suspense fallback={<CircularIndeterminate />}>
+          {/* {true ? ( 
+            <LogIn />
+          ) : ( */}
+            <BrowserRouter>
+                <ResponsiveHeaderBar />
                 <Routes>
-                  <Route exact path="/proposals" element={<Proposals />} />
-                  <Route exact path="/proposals/:proposalId" element={<ProposalDetailView />} />
-                  <Route exact path="/proposal/budgets/:proposalId" element={<CreateBudget />} />
-              <Route exact path="/proposal/budgets/createInvoice" element={<InvoiceCreation />} />
-              <Route exact path="/budgets/:budgetId/createInvoice" element={<InvoiceCreation />} />
-                  <Route exact path="/proposal/update/:proposalId" element={<CreateBudget />} />
-                  <Route exact path="/proposals/:proposalId/invoices" element={<InvoiceListView />} />
-              <Route exact path="/budgets/:budgetId/invoices" element={<InvoiceListView />} />
-              <Route exact path="/dashboard" element={<Dashboard />} />
-              <Route exact path="/swap" element={<Swap />} />
-                  <Route element={<ErrorPage />} />
-              </Routes>
-            </Suspense>
-              </BrowserRouter>
-            </PersistGate>
-          </Provider>
-        </ApolloProvider>
+                  <Route path="/proposals/*" element={<Proposals />} />
+                  <Route path="/proposals/:proposalId" element={<ProposalDetailView />} />
+                  <Route path="/proposal/budgets/:proposalId" element={<CreateBudget />} />
+                  <Route path="/budgets/:budgetId/createInvoice" element={<InvoiceCreation />} />
+                  <Route path="/proposal/update/:proposalId" element={<CreateBudget />} />
+                  <Route path="/proposals/:proposalId/invoices" element={<InvoiceListView />} />
+                  <Route path="/budgets/:budgetId/invoices" element={<InvoiceListView />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/swap" element={<Swap />} />
+                  <Route path="/*" element={<ErrorPage />} />
+                </Routes>
+            </BrowserRouter>
+            {/* )} */}
+          </Suspense>
+        </PersistGate>
+      </Provider>
+    </ApolloProvider>
   );
 }
 

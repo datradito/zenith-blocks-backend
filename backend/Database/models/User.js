@@ -16,11 +16,7 @@ const User = sequelize.define('users', {
     address: {
         type: DataTypes.STRING,
         allowNull: false,
-    },
-    message: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
+    }
 });
 
 module.exports = User;

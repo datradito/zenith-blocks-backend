@@ -24,13 +24,14 @@ export default function UnstyledSelectBasic({ values, onChange, defaultValue }) 
     return (
         <CustomSelect defaultValue={defaultValue}>
             {values.map((value) => (
-                <StyledOption
-                    key={value}
-                    value={value}
-                    onClick={(event) => triggerOnChange(event)}
-                >
-                    {value}
-                </StyledOption>
+              
+              <StyledOption
+                key={typeof value === 'object' ? value.id : value}
+                value={typeof value === 'object' ? value.name : value}
+                onClick={() => triggerOnChange(value)}
+              >
+                {typeof value === 'object' ? value.name : value}
+              </StyledOption>
             ))}
         </CustomSelect>
     );

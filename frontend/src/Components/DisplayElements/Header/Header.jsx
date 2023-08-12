@@ -16,14 +16,6 @@ import {
 import logo from "../../../Images/logo.png"
 
 
-// const pages = [
-//     { name: 'Proposals', url: '/proposals' },
-//     { name: 'Invoices', url: `/proposals/proposalId/invoices` },
-//     { name: 'Accounts', url: '/accounts' },
-    // Add more pages with their corresponding URLs and information
-// ];
-//const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-
 const navLinkStyle = {
     textDecoration: "none",
     color: "white"
