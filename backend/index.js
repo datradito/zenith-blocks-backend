@@ -7,6 +7,12 @@ const store = session.MemoryStore()
 
 require("dotenv").config();
 const signJWTToken = require('./utility/middlewares/auth').signJWTToken;
+const hashUserData = require('./utility/middlewares/auth').hashUserData;
+const JWT_SECRET = process.env.JWT_SECRET;
+const jwt = require('jsonwebtoken');
+const User = require('./Database/models/User');
+
+const { AuthenticationError } = require('apollo-server')
 
 var { graphqlHTTP } = require('express-graphql');
 
@@ -36,23 +42,23 @@ app.use(session({
     store
 }));
 
-//create middleware here to check if req.session.authenticated is true 
-//if it is true then allow the request to continue
-//if it is false then return a 401 status code
 const authorize = (req, res, next) => {
-    if (!req.headers.authorization) return res.status(401).json({ message: 'This route requires authentication' });
+    if (!req.headers.authorization) return res.status(401).json({ message: 'AUTH_REQUIRED' });
 
     const token = req.headers.authorization.split(' ')[1];
 
     // Verify the token sent to us from client
     jwt.verify(token, JWT_SECRET, (err, decoded) => {
-        if (err) return res.status(401).json({ message: 'The token is invalid' });
+        if (err) throw new AuthenticationError(`INVALID_TOKEN`);
 
         // We want to set our payload on a request object so we can use it in our authorized endpoints
         req.decoded = decoded;
         next();
     })
 }
+
+//use authorize middleware here for each request 
+
 
 
 // init();
@@ -129,11 +135,30 @@ app.post('/verify', async function (req, res) {
         const { data: message } = await SIWEObject.verify({ signature: req.body.signature, nonce: req.session.nonce });
 
         req.session.siwe = message;
-        req.session.cookie.expires = new Date(message.expirationTime);
+        req.session.cookie.expires = new Date(Date.now() + hour);
 
         //Todo: once signature is verified find user from database based on address and retrieve daoId
+
+        try {
+            const user = await User.findOne({ where: { address: req.session.address } });
+
+            if (!user) {
+                return res.status(401).send(false);
+            }
+
+            const token = signJWTToken({ userAddress: user.address, dao: user.daoId });
+            
+            return res.status(201).json({ authToken: token });
+        } catch (e) {
+            console.log(e);
+            return res.status(500).json("User not found");
+        }
         
 
+        // console.log(user);
+        // hashUserData(user);
+
+        //const token = jwt.sign({ userAddress: user.address, dao: user.daoId }, secretKey, { expiresIn: '1h' });
 
         // const user = {
         //     address: req.session.address,
@@ -141,10 +166,10 @@ app.post('/verify', async function (req, res) {
         //     daoId: "eth.1inch",
         // }
 
-        req.session.save(() => {
-            // const token = signJWTToken(user);
-            return res.status(200).send(true);
-        });
+        // req.session.save(() => {
+        //     // const token = signJWTToken(user);
+        //     return res.status(200).send(token);
+        // });
 
     } catch (e) {
         req.session.siwe = null;
@@ -159,6 +184,15 @@ app.post('/verify', async function (req, res) {
     }
 });
 
+
+app.post('/createUser', async (req, res) => {
+    const { address, daoId } = req.body;
+
+    const user = await User.create({ address, daoId });
+
+    return res.status(200).json(user);
+}
+);
 
 app.get('/test', async (req, res) => {
 
@@ -330,9 +364,7 @@ app.get("/tokenTransfers", async (req, res) => {
             } catch (e) {
                 console.log(e);
             }
-
         }
-
         res.send(userTransDetails);
     } catch (e) {
         res.send(e);
@@ -340,7 +372,7 @@ app.get("/tokenTransfers", async (req, res) => {
 });
 
 
-app.use('/graphql', graphqlHTTP({
+app.use('/graphql',authorize,  graphqlHTTP({
     schema,
     graphiql: true,
 }));

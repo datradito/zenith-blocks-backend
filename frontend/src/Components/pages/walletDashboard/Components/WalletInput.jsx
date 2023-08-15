@@ -1,21 +1,16 @@
 import React from "react";
-import { Input, Select, CryptoLogos } from '@web3uikit/core';
 import { Typography, Box } from "@mui/material";
 import {
     useAccount,
-    useConnect,
-    useDisconnect,
-    useNetwork,
-    useEnsAvatar,
-    useEnsName,
-    useBalance
 } from 'wagmi'
 
 function WalletInputs({ chain, wallet, setChain, setWallet }) {
 
     const { address, connector, isConnected } = useAccount()
+
+
     if (isConnected) setWallet(address) && setChain(connector.chains[0].id)
-    console.log(connector.chains[0].id)
+
 
     return (
         <Box sx={{

@@ -9,6 +9,7 @@ import {
 import CustomPDFViewIcon from '../PdfIcon/padfIcon';
 import CustomPaymentViewIcon from '../PaymentIcon/paymentIcon';
 import CustomActionIcon from '../ActionIcon/CustomActionIcon';
+import Avatar from '@mui/material/Avatar';
 
 const TableRow = ({ tableBodyData }) => {
     //this is where you can introduce filtering for the table data
@@ -61,6 +62,17 @@ const TableRow = ({ tableBodyData }) => {
         "Status": {
             padding: '0.5rem',
         },
+        "Logo": {
+            width: '250px',
+            borderRadius: '50%',
+            marginRight: '1rem',
+        },
+        "Balance": {
+            width: '250px',
+        },
+        "Value": {
+            width: '250px',
+        },
         tableRow: {
             borderTop: ".05rem #272A30 solid",
             borderBottom: ".05rem #272A30 solid",
@@ -90,7 +102,9 @@ const TableRow = ({ tableBodyData }) => {
                             key === 'Action' ?
                                 <TableCell key={key}  sx={[customTableCellStyles[key] , customTableCellStyles.tableDataCellItem]}><CustomActionIcon budgetId={tableBodyData["id"]} /></TableCell> :
                             key === 'Status' ?
-                                                    <TableCell key={key} sx={[customTableCellStyles[key] ,customTableCellStyles.tableDataCellItem ]}><StatusChip status={tableBodyData[key]} /></TableCell> :
+                                                    <TableCell key={key} sx={[customTableCellStyles[key], customTableCellStyles.tableDataCellItem]}><StatusChip status={tableBodyData[key]} /></TableCell> :
+                                                    key === 'Logo' ?
+                                                        <TableCell key={key} sx={[customTableCellStyles[key], customTableCellStyles.tableDataCellItem]}><Avatar alt="Currency logo" src={tableBodyData[key]} /></TableCell> :
                                                     key === 'Breakdown' ?
                                                         <TableCell key={key} sx={[customTableCellStyles[key] , customTableCellStyles.tableDataCellItem]}>{tableBodyData[key]} %</TableCell> :
                                 <TableCell key={key} sx={[customTableCellStyles[key], customTableCellStyles.default, customTableCellStyles.tableDataCellItem]}>{tableBodyData[key]}</TableCell>

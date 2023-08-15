@@ -15,7 +15,6 @@ const UserType = new GraphQLObjectType({
     fields: () => ({
         id: { type: GraphQLString },
         address: { type: GraphQLString },
-        message: { type: GraphQLString },
         daoId: { type: GraphQLString },
         createdAt: { type: GraphQLString },
         updatedAt: { type: GraphQLString },

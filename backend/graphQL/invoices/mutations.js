@@ -3,7 +3,7 @@ const { GraphQLFloat, GraphQLInputObjectType, GraphQLString, GraphQLNonNull, Gra
 const InvoiceType = require('./typeDefs');
 const Invoice = require('../../Database/models/Invoice');
 const Budget = require('../../Database/models/Budget');
-const InvoiceLines = require('../../Database/models/InvoiceLines');
+const User = require('../../Database/models/User');
 const { UserInputError, ValidationError, GraphQLError }= require('apollo-server');
 const { validateInvoice } = require('../../validators/validateInvoice');
 

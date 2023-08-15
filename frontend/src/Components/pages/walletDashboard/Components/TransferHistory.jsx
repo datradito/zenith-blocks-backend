@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
-import { Button, Table } from '@web3uikit/core';
-import { Reload } from '@web3uikit/icons';
+import { Table } from "@mui/material";
+import ButtonAtom from "../../../atoms/Button";
 
 function TransferHistory({ chain, wallet, transfers, setTransfers }) {
 
@@ -15,14 +15,18 @@ function TransferHistory({ chain, wallet, transfers, setTransfers }) {
 
         if (response.data) {
             setTransfers(response.data);
-            console.log(response.data);
         }
     }
+
+    const buttonConfig = {
+        innerText: "ERC20 Transfers",
+        onClick: getTokenTransfers,
+    };
 
     return (
         <>
             <div className="tabHeading">
-                Tansfer History <Reload onClick={getTokenTransfers} />
+                <ButtonAtom config={buttonConfig} />
             </div>
             <div>
                 {transfers.length > 0 && (

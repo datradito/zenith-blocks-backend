@@ -17,23 +17,22 @@ export const CustomSelect = React.forwardRef(function CustomSelect(props, ref) {
 
 
 export default function UnstyledSelectBasic({ values, onChange, defaultValue }) {
-    const triggerOnChange = (event) => {
+  const triggerOnChange = (event) => {
         const { outerText } = event.target;
         onChange(outerText);
     };
     return (
-        <CustomSelect defaultValue={defaultValue}>
-            {values.map((value) => (
-              
-              <StyledOption
-                key={typeof value === 'object' ? value.id : value}
-                value={typeof value === 'object' ? value.name : value}
-                onClick={() => triggerOnChange(value)}
-              >
-                {typeof value === 'object' ? value.name : value}
-              </StyledOption>
-            ))}
-        </CustomSelect>
+      <CustomSelect defaultValue={defaultValue}>
+        {values.map((value) => (
+          <StyledOption
+            key={value}
+            value={value}
+            onClick={(event) => triggerOnChange(event)}
+          >
+            {value}
+          </StyledOption>
+        ))}
+      </CustomSelect>
     );
 }
 

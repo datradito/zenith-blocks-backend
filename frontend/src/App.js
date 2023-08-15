@@ -1,14 +1,17 @@
 import './App.css';
-import React, { useState, Suspense, lazy } from 'react';
-import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client';
-import { onError } from '@apollo/client/link/error';
+import React, { useState, Suspense, lazy, useEffect } from 'react';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { storeConfig, persistor } from './store/storeConfigure';
 import { PersistGate } from 'redux-persist/integration/react';
 import ErrorPage from "./Routes/ErrorPage";
 import CircularIndeterminate from './Components/atoms/Loader/loader';
+import WalletConnect from './Components/DisplayElements/Header/WalletConnect';
 
+import { links ,authLink, errorLink, httpLink } from './apolloConfig/links';
+
+const TransferHistory = lazy(() => import("./Components/pages/walletDashboard/Components/TransferHistory.jsx"));
 const ResponsiveHeaderBar = lazy(() => import("./Components/DisplayElements/Header/Header"));
 const ProposalDetailView = lazy(() => import("./Components/pages/Proposals/ProposalDetailView"));
 const CreateBudget = lazy(() => import("./Components/pages/Budgets/CreateBudget"));
@@ -20,33 +23,18 @@ const LogIn = lazy(() => import("./Components/pages/Home/logIn"));
 const Swap = lazy(() => import("./Components/pages/Swap/Swap"));
 const Proposals = lazy(() => import("./Components/pages/Proposals/Proposals"));
 
-
-
 function App() {
+  const [walletConnected, setWalletConnected] = useState(false);
 
   const [snackbarMessage, setSnackbarMessage] = useState({
     open: false,
-    severity: 'error', // Default to 'error' severity for error messages
+    severity: 'error', 
     message: '',
   });
 
-  const httpLink = createHttpLink({
-    uri: `http://localhost:8000/graphql`,
-  });
-
-  const errorLink = onError(({ graphQLErrors, networkError }) => {
-    if (graphQLErrors) {
-      graphQLErrors.forEach(({ message }) => {
-        alert(message);
-        // setSnackbarMessage({ open: true, severity: 'error', message });
-      });
-    }
-    if (networkError) {
-      // alert(`Network Error: ${networkError}`);
-      // setSnackbarMessage({ open: true, severity: 'error', message: `Network Error: ${networkError}` });
-    }
-  });
-
+  useEffect(() => {
+    sessionStorage.getItem('authToken') ? setWalletConnected(true) : setWalletConnected(false);
+  }, [walletConnected]);
 
   // if (snackbarMessage.open) {
   //     const timer = setTimeout(() => {
@@ -55,39 +43,40 @@ function App() {
   //     return () => clearTimeout(timer);
   // }
 
-
   const client = new ApolloClient({
-    link: errorLink.concat(httpLink),
+    link: links,
     cache: new InMemoryCache(),
   });
 
-  // sessionService.initSessionService(storeConfig);
-
   return (
-  
     <ApolloProvider client={client}>
       <Provider store={storeConfig}>
         <PersistGate loading={null} persistor={persistor}>
           <Suspense fallback={<CircularIndeterminate />}>
-          {/* {true ? ( 
-            <LogIn />
-          ) : ( */}
-            <BrowserRouter>
-                <ResponsiveHeaderBar />
-                <Routes>
-                  <Route path="/proposals/*" element={<Proposals />} />
-                  <Route path="/proposals/:proposalId" element={<ProposalDetailView />} />
-                  <Route path="/proposal/budgets/:proposalId" element={<CreateBudget />} />
-                  <Route path="/budgets/:budgetId/createInvoice" element={<InvoiceCreation />} />
-                  <Route path="/proposal/update/:proposalId" element={<CreateBudget />} />
-                  <Route path="/proposals/:proposalId/invoices" element={<InvoiceListView />} />
-                  <Route path="/budgets/:budgetId/invoices" element={<InvoiceListView />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/swap" element={<Swap />} />
-                  <Route path="/*" element={<ErrorPage />} />
-                </Routes>
-            </BrowserRouter>
-            {/* )} */}
+            {!walletConnected ? (
+              <WalletConnect />
+            ) : (
+              <BrowserRouter>
+                {
+                  !walletConnected ? <WalletConnect /> :
+                    <>
+                      <ResponsiveHeaderBar />
+                        <Routes>
+                        <Route path="/proposals/*" element={<Proposals />} />
+                        <Route path="/proposals/:proposalId" element={<ProposalDetailView />} />
+                        <Route path="/proposal/budgets/:proposalId" element={<CreateBudget />} />
+                        <Route path="/budgets/:budgetId/createInvoice" element={<InvoiceCreation />} />
+                        <Route path="/proposal/update/:proposalId" element={<CreateBudget />} />
+                        <Route path="/proposals/:proposalId/invoices" element={<InvoiceListView />} />
+                        <Route path="/budgets/:budgetId/invoices" element={<InvoiceListView />} />
+                        <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/swap" element={<Swap />} />
+                        <Route path="/*" element={<ErrorPage />} />
+                      </Routes>
+                    </>
+                }
+              </BrowserRouter>
+            )}
           </Suspense>
         </PersistGate>
       </Provider>
@@ -107,7 +96,6 @@ export default App;
 // import { Provider } from 'react-redux';
 // import { storeConfig, persistor } from './your-store-config';
 // import { client } from './your-apollo-client';
-
 // import ResponsiveHeaderBar from './components/ResponsiveHeaderBar';
 // import Proposals from './components/Proposals';
 // import ProposalDetailView from './components/ProposalDetailView';
@@ -191,5 +179,4 @@ export default App;
 //     </ApolloProvider>
 //   );
 // };
-
 // export default App;

@@ -5,11 +5,13 @@ import { snapShotClient } from '../../SnapShot/client.js';
 
 
 const useProposalQuery = (stateQuery) => {
+    const dao = sessionStorage.getItem('daoId');
+    
     return useQuery(GET_PROPOSAL_BY_SPACE, {
         variables: {
             first: parseInt(stateQuery.first),
             skip: parseInt(stateQuery.skip),
-            name: 'balancer.eth',
+            name: dao,
         },
         notifyOnNetworkStatusChange: true,
         client: snapShotClient,

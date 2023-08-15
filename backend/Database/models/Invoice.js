@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require("../sequalizeConnection")
-const Budget = require('./Budget');
+
 
 const Invoice = sequelize.define('invoices', {
     id: {
@@ -14,6 +14,10 @@ const Invoice = sequelize.define('invoices', {
         allowNull: false,
     },
     recipient: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    owneraddress: {
         type: DataTypes.STRING,
         allowNull: false,
     },

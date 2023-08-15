@@ -10,12 +10,11 @@ import {
     useNetwork,
 } from 'wagmi'
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useNavigate } from 'react-router-dom';
+
 
 import { useSignMessage } from 'wagmi';
 
 export default function WalletConnect() {
-    const navigate = useNavigate()
     const { address, connector, isConnected } = useAccount()
     const { data: ensAvatar } = useEnsAvatar({ address })
     const { data: ensName } = useEnsName({ address })
@@ -28,19 +27,19 @@ export default function WalletConnect() {
     const { chain } = useNetwork()
 
     useEffect(() => {
-        const auth = getCookies('siwe');
+        const auth = sessionStorage.getItem('authToken');
 
-        console.log(auth);
         if (isConnected && !auth) {
             signInWithEthereum();
+        } else if (!isConnected) {
+            sessionStorage.removeItem('authToken');
+            sessionStorage.removeItem('daoId');
+            sessionStorage.removeItem('address');
         }
+
+
     }, [isConnected])
 
-
-    function getCookies(key) {
-        var b = document.cookie.match("(^|;)\\s*" + key + "\\s*=\\s*([^;]+)");
-        return b ? b.pop() : "";
-    }
 
     // const siweCookieValue = getCookies('siwe');
 
@@ -89,8 +88,7 @@ export default function WalletConnect() {
                 }
             );
 
-            //sessionStorage.setItem('authToken', res.data.authToken);
-            sessionStorage.setItem('authenticated', response.data);
+            return response.data;
         } catch (error) {
             console.error('Error during verification:', error);
             throw error; // Rethrow the error to signal that the function encountered an error
@@ -116,13 +114,27 @@ export default function WalletConnect() {
             }
 
             const res = await sendForVerification(message, signature);
-
             console.log(res);
-            console.log("Signature Received From Moralis Auth API");
+
+            const { daoId, address} = decodeToken(res.authToken);
+
+            sessionStorage.setItem('authToken', res.authToken);
+            sessionStorage.setItem('daoId', daoId);
+            sessionStorage.setItem('address', address);
         } catch (error) {
             console.error("Error during sign-in:", error);
             disconnectAsync();
+            sessionStorage.removeItem('authToken');
         }
+    }
+
+    function decodeToken(token) {
+        if (!token) {
+            return;
+        }
+        const base64Url = token.split(".")[1];
+        const base64 = base64Url.replace("-", "+").replace("_", "/");
+        return JSON.parse(window.atob(base64));
     }
 
     const testAuth = async () => {

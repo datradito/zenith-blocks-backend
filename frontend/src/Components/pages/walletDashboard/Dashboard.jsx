@@ -5,8 +5,10 @@ import Tokens from "./Components/Tokens";
 import TransferHistory from "./Components/TransferHistory";
 import WalletInputs from "./Components/WalletInput";
 import PortfolioValue from "./Components/PortfolioValue";
-import { Avatar, TabList, Tab } from '@web3uikit/core';
-import { Box, Typography } from "@mui/material";
+import Avatar from '@mui/material/Avatar';
+// import { Avatar, TabList, Box } from '@web3uikit/core';
+import { Link } from "react-router-dom";
+import { Box, Button, Typography } from "@mui/material";
 
 import {
     useAccount,
@@ -19,6 +21,11 @@ import {
 } from 'wagmi'
 
 function Dashboard() {
+    const address = sessionStorage.getItem('address');
+    const ensAvatar = useEnsAvatar({
+        address: address,
+        cacheTime: 2_000,
+    })
     const [wallet, setWallet] = useState("");
     const [chain, setChain] = useState("0x1");
     const [nativeBalance, setNativeBalance] = useState(0);
@@ -51,8 +58,9 @@ function Dashboard() {
                     {wallet.length === 42 && (
                         <>
                             <div>
-                                <Avatar isRounded size={100} avatarBackground="blue" theme="image" />
-                                <Typography variant="subtitle2">{`${wallet.slice(0, 6)}...${wallet.slice(36)}`}</Typography>
+                            <Avatar sx={{ width: 50, height: 50, marginRight: "1rem" }} src={ensAvatar} />
+                            <br />
+                            <Typography variant="subtitle2">{`${wallet.slice(0, 6)}...${wallet.slice(36)}`}</Typography>
                             </div>
                             <PortfolioValue
                                 nativeValue={nativeValue}
@@ -75,8 +83,8 @@ function Dashboard() {
                 flexWrap: "wrap",
                 marginTop: "2rem",
             }}>
-                <TabList>
-                    <Tab tabKey={1} tabName={"Tokens"}>
+                <Box>
+                    <Box tabKey={1} tabName={"Tokens"}>
                         <NativeTokens
                             wallet={wallet}
                             chain={chain}
@@ -90,16 +98,18 @@ function Dashboard() {
                             chain={chain}
                             tokens={tokens}
                             setTokens={setTokens} />
-                    </Tab>
-                    <Tab tabKey={2} tabName={"Transfers"}>
-                        <TransferHistory
+                    </Box>
+                    <Box tabKey={2} tabName={"Transfers"}>
+                        <Link to="/transfer">Transaction History </Link>
+                        
+                        {/* <TransferHistory
                             chain={chain}
                             wallet={wallet}
                             transfers={transfers}
                             setTransfers={setTransfers}
-                        />
-                    </Tab>
-                </TabList>
+                        /> */}
+                    </Box>
+                </Box>
             </Box>
         </Box>
     );

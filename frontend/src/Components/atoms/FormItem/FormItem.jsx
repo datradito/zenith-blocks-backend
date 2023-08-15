@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { updateHeader } from './../../../actions/createInvoiceAction/index.js';
 import { categories } from '../../pages/Category/Category';
 import UnstyledSelectBasic from '../SelectDropdown/SelectDropdown';
-import { Upload } from "@web3uikit/core";
+// import { Upload } from "@web3uikit/core";
 import CurrencyDropdown from '../CurrencyDropdown/CurrencyDropdown.jsx';
 import FormRow from "../../molecules/FormBudgetCreation/index.jsx";
 import CustomizedSnackbars from '../SnackBar/SnackBar.jsx';
@@ -93,20 +93,20 @@ function FormItem({ initialValues, type, errors, maxAmount}) {
                                     key === 'Category' ? (
                                         <UnstyledSelectBasic defaultValue={initialValues.Category} values={categories} onChange={(value) => handleChange(key, value)} />
                                         ) :
-                                            key === 'Upload Invoice' ? (
-                                                <Upload
-                                                    acceptedFiles="image/jpeg"
-                                                    descriptionText="Only .jpeg files are accepted"
-                                                    onChange={function noRefCheck() { }}
-                                                    style={{
-                                                        width: "100%",
-                                                        maxHeight: "120px",
-                                                        border: ".08rem #2c2c2c solid",
-                                                        borderRadius: '5px',
-                                                        backgroundColor: 'black',
-                                                    }}
-                                                    theme="withIcon"
-                                                />):
+                                            // key === 'Upload Invoice' ? (
+                                                // <Upload
+                                                //     acceptedFiles="image/jpeg"
+                                                //     descriptionText="Only .jpeg files are accepted"
+                                                //     onChange={function noRefCheck() { }}
+                                                //     style={{
+                                                //         width: "100%",
+                                                //         maxHeight: "120px",
+                                                //         border: ".08rem #2c2c2c solid",
+                                                //         borderRadius: '5px',
+                                                //         backgroundColor: 'black',
+                                                //     }}
+                                                //     theme="withIcon"
+                                                // />):
                                             
                                             key === 'Invoice Number' ? (
                                                 <TextField
