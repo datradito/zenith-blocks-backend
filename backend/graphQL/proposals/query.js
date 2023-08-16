@@ -5,7 +5,9 @@ const Proposal = require('../../Database/models/Proposal');
 const getProposalDetailsById = {
     type: ProposalType,
     args: { id: { type: GraphQLString } },
-    resolve(parent, args) {
+    resolve(parent, args, context) {
+
+        console.log('context: ', context);
         return Proposal.findByPk(args.id)
     }
 }
@@ -13,7 +15,9 @@ const getProposalDetailsById = {
 const getProposalsByDao = {
     type: new GraphQLList(ProposalType),
     args: { daoid: { type: GraphQLString } },
-    resolve(parent, args) {
+    resolve(parent, args, context) {
+
+        console.log('context: ', context);
         return Proposal.find({ daoid: args.daoid })
     }
 }

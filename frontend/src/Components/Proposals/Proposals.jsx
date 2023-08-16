@@ -139,11 +139,6 @@ const Proposals = () => {
                     >
                       <ColumnItem sx={label}>Total Budget</ColumnItem>
                       <ColumnItem>
-                        {/* { !selectedItemId || selectedItemId !== item.id ?
-                            <Amount proposalid={item.id} /> :
-                            <FormDetailPanel row={data.proposals.find((row) => row.id === selectedItemId)} onClose={onClose} />
-                        } */}
-
                         {selectedItemId === item.id ? (
                           <FormDetailPanel row={item} onClose={onClose} />
                         ) : (

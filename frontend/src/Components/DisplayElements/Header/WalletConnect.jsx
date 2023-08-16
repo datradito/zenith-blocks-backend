@@ -40,9 +40,6 @@ export default function WalletConnect() {
 
     }, [isConnected])
 
-
-    // const siweCookieValue = getCookies('siwe');
-
     const createSiweMessage = async () => {
 
         try {
@@ -66,7 +63,6 @@ export default function WalletConnect() {
                 withCredentials: true,
             });
 
-            console.log("Received Signature Request From Moralis Auth API");
             return data;
         } catch (error) {
             console.error('Error handling authentication:', error);
@@ -104,8 +100,6 @@ export default function WalletConnect() {
                 return;
             }
 
-            console.log(message)
-
             const signature = await signMessageAsync({message});
 
             if (!signature) {
@@ -114,7 +108,6 @@ export default function WalletConnect() {
             }
 
             const res = await sendForVerification(message, signature);
-            console.log(res);
 
             const { daoId, address} = decodeToken(res.authToken);
 

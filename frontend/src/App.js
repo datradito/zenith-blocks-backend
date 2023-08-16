@@ -1,15 +1,16 @@
 import './App.css';
 import React, { useState, Suspense, lazy, useEffect } from 'react';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { storeConfig, persistor } from './store/storeConfigure';
 import { PersistGate } from 'redux-persist/integration/react';
 import ErrorPage from "./Routes/ErrorPage";
 import CircularIndeterminate from './Components/atoms/Loader/loader';
 import WalletConnect from './Components/DisplayElements/Header/WalletConnect';
+import Root from './Routes/Root';
 
-import { links ,authLink, errorLink, httpLink } from './apolloConfig/links';
+import { links } from './apolloConfig/links';
 
 const TransferHistory = lazy(() => import("./Components/pages/walletDashboard/Components/TransferHistory.jsx"));
 const ResponsiveHeaderBar = lazy(() => import("./Components/DisplayElements/Header/Header"));
@@ -28,7 +29,7 @@ function App() {
 
   const [snackbarMessage, setSnackbarMessage] = useState({
     open: false,
-    severity: 'error', 
+    severity: 'error',
     message: '',
   });
 
@@ -48,36 +49,35 @@ function App() {
     cache: new InMemoryCache(),
   });
 
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route path="/"element={<Root />}>
+        <Route index
+          element={<Proposals />}
+        />
+        <Route path="proposals/:proposalId" element={<ProposalDetailView />} />
+        <Route path="proposal/budgets/:proposalId" element={<CreateBudget />} />
+        <Route path="budgets/:budgetId/createInvoice" element={<InvoiceCreation />} />
+        <Route path="proposal/update/:proposalId" element={<CreateBudget />} />
+        <Route path="proposals/:proposalId/invoices" element={<InvoiceListView />} />
+        <Route path="budgets/:budgetId/invoices" element={<InvoiceListView />} />
+        <Route path="dashboard" element={<Dashboard />} >
+          {/* <Route path="transferHistory" element={<TransferHistory />} />  
+          <Route path="tokens" element={<TransferHistory />} /> */}
+        </Route>
+        <Route path="swap" element={<Swap />} />
+        <Route path="*" element={<ErrorPage />} />
+      </Route>
+    )
+  );
+
   return (
     <ApolloProvider client={client}>
       <Provider store={storeConfig}>
         <PersistGate loading={null} persistor={persistor}>
           <Suspense fallback={<CircularIndeterminate />}>
-            {!walletConnected ? (
-              <WalletConnect />
-            ) : (
-              <BrowserRouter>
-                {
-                  !walletConnected ? <WalletConnect /> :
-                    <>
-                      <ResponsiveHeaderBar />
-                        <Routes>
-                        <Route path="/proposals/*" element={<Proposals />} />
-                        <Route path="/proposals/:proposalId" element={<ProposalDetailView />} />
-                        <Route path="/proposal/budgets/:proposalId" element={<CreateBudget />} />
-                        <Route path="/budgets/:budgetId/createInvoice" element={<InvoiceCreation />} />
-                        <Route path="/proposal/update/:proposalId" element={<CreateBudget />} />
-                        <Route path="/proposals/:proposalId/invoices" element={<InvoiceListView />} />
-                        <Route path="/budgets/:budgetId/invoices" element={<InvoiceListView />} />
-                        <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/swap" element={<Swap />} />
-                        <Route path="/*" element={<ErrorPage />} />
-                      </Routes>
-                    </>
-                }
-              </BrowserRouter>
-            )}
-          </Suspense>
+            {!walletConnected ? <WalletConnect /> : <RouterProvider router={router} />}
+            </Suspense>
         </PersistGate>
       </Provider>
     </ApolloProvider>

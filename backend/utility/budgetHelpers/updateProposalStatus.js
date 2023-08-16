@@ -27,7 +27,6 @@ const updateProposalStatus = async (proposalId, currentBudgetAmount) => {
             proposal.status = "Funded";
             await proposal.save();
         } catch (error) {
-            console.log(error);
             throw new UserInputError("BudgetErrors : Unable to update proposal status", errors)
         }
     }

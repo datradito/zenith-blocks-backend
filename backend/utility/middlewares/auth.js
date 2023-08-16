@@ -1,12 +1,12 @@
 const jwt = require('jsonwebtoken');
-
+const { AuthenticationError } = require('apollo-server')
 require('dotenv').config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
 
 const signJWTToken = ({ userAddress, dao }) => {
-    console.log("signJWTToken", userAddress, dao);
+
     const token = jwt.sign({
         daoId: dao,
         address: userAddress,
@@ -19,7 +19,6 @@ const signJWTToken = ({ userAddress, dao }) => {
 };
 
 const hashUserData = (user) => {
-
         try {
             const token = signJWTToken(user);
             return res.status(201).json({ authToken: token });
@@ -29,4 +28,22 @@ const hashUserData = (user) => {
         }
 }
 
-module.exports = { signJWTToken, hashUserData };
+const checkAuth = (context) => {
+    const authHeader = context.req.headers.authorization;
+
+    if (authHeader) {
+        const token = authHeader.split('Bearer ')[1];
+        if (token) {
+            try {
+                const user = jwt.verify(token, JWT_SECRET)
+                return user;
+            } catch (err) {
+                throw new AuthenticationError('Invalid/Expired Token')
+            }
+        }
+        throw new Error('AUthentication error is not formatted as Bearer [token]')
+    }
+    throw new Error('Authorization header is not provided')
+}
+
+module.exports = { signJWTToken, checkAuth, hashUserData };

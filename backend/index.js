@@ -8,11 +8,14 @@ const store = session.MemoryStore()
 require("dotenv").config();
 const signJWTToken = require('./utility/middlewares/auth').signJWTToken;
 const hashUserData = require('./utility/middlewares/auth').hashUserData;
+const checkAuth = require('./utility/middlewares/auth').checkAuth;
 const JWT_SECRET = process.env.JWT_SECRET;
 const jwt = require('jsonwebtoken');
 const User = require('./Database/models/User');
 
-const { AuthenticationError } = require('apollo-server')
+const { AuthenticationError, ApolloServer } = require('apollo-server')
+const { GraphQLError } = require('graphql');
+const context = require('./utility/middlewares/context');
 
 var { graphqlHTTP } = require('express-graphql');
 
@@ -42,20 +45,24 @@ app.use(session({
     store
 }));
 
-const authorize = (req, res, next) => {
-    if (!req.headers.authorization) return res.status(401).json({ message: 'AUTH_REQUIRED' });
+// const authenticationMiddleware = (req, res, next) => {
+//     if (!req.headers.authorization) {
+//         const authError = new AuthenticationError('AUTH_REQUIRED');
+//         return next(authError);
+//     }
 
-    const token = req.headers.authorization.split(' ')[1];
+//     const token = req.headers.authorization.split(' ')[1];
 
-    // Verify the token sent to us from client
-    jwt.verify(token, JWT_SECRET, (err, decoded) => {
-        if (err) throw new AuthenticationError(`INVALID_TOKEN`);
+//     jwt.verify(token, JWT_SECRET, (err, decoded) => {
+//         if (err) {
+//             const authError = new AuthenticationError('TOKEN_EXPIRED');
+//             return next(authError);
+//         }
 
-        // We want to set our payload on a request object so we can use it in our authorized endpoints
-        req.decoded = decoded;
-        next();
-    })
-}
+//         req.decoded = decoded;
+//         next();
+//     });
+// };
 
 //use authorize middleware here for each request 
 
@@ -371,9 +378,21 @@ app.get("/tokenTransfers", async (req, res) => {
     }
 });
 
+// const server = new ApolloServer({
+//     schema,
+//     formatError: (error) => {
+//         if (error.originalError instanceof AuthenticationError) {
+//             // Handle authentication errors here
+//             return { message: error.message, code: 'AUTH_ERROR' };
+//         }
+//         // Return other errors as is
+//         return error;
+//     }
+// });
 
-app.use('/graphql',authorize,  graphqlHTTP({
+app.use('/graphql',  graphqlHTTP({
     schema,
+    context: context,
     graphiql: true,
 }));
 

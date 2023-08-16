@@ -4,15 +4,29 @@ import { createHttpLink } from '@apollo/client';
 // import ApolloLinkTimeout from '@apollo/client/link/timeout';
 import { RetryLink } from '@apollo/client/link/retry';
 import { onError } from '@apollo/client/link/error';
+import { redirect } from "react-router-dom";
 
 export const authLink = () => (setContext(async (_, { headers }) => {
     const token = sessionStorage.getItem('authToken');
-    return {
-        headers: {
-            ...headers,
-            Authorization: token ? `Bearer ${token}` : "",
-        },
-    };
+
+    if (token) {
+        return {
+            headers: {
+                ...headers,
+                Authorization: `Bearer ${token}`,
+            },
+        };
+    } else {
+        // redirect to login
+        redirect('/');
+        
+    }
+    // return {
+    //     headers: {
+    //         ...headers,
+    //         Authorization: token ? `Bearer ${token}` : "",
+    //     },
+    // };
 }));
 
 export const loggerLink = new ApolloLink((operation, forward) => {
@@ -26,6 +40,8 @@ export const loggerLink = new ApolloLink((operation, forward) => {
 });
 
 export const errorLink = onError(({ graphQLErrors, networkError }) => {
+
+    
     if (graphQLErrors)
         graphQLErrors.forEach(({ message, locations, path }) => {
             console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
@@ -46,6 +62,8 @@ export const errorLink = onError(({ graphQLErrors, networkError }) => {
         });
     
     if (networkError) console.log(`[Network error]: ${networkError}`);
+
+    if (networkError.statusCode === 401) redirect('/');
 });
 
 export const httpLink = () => (createHttpLink({

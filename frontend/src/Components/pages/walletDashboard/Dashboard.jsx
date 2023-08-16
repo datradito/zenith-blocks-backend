@@ -7,7 +7,7 @@ import WalletInputs from "./Components/WalletInput";
 import PortfolioValue from "./Components/PortfolioValue";
 import Avatar from '@mui/material/Avatar';
 // import { Avatar, TabList, Box } from '@web3uikit/core';
-import { Link } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import { Box, Button, Typography } from "@mui/material";
 
 import {
@@ -83,7 +83,10 @@ function Dashboard() {
                 flexWrap: "wrap",
                 marginTop: "2rem",
             }}>
+                <NavLink to="transfer">Transfer History </NavLink>
+                <NavLink to="tokens">Tokens </NavLink>
                 <Box>
+                    {/* <Outlet /> */}
                     <Box tabKey={1} tabName={"Tokens"}>
                         <NativeTokens
                             wallet={wallet}
@@ -102,12 +105,12 @@ function Dashboard() {
                     <Box tabKey={2} tabName={"Transfers"}>
                         <Link to="/transfer">Transaction History </Link>
                         
-                        {/* <TransferHistory
+                        <TransferHistory
                             chain={chain}
                             wallet={wallet}
                             transfers={transfers}
                             setTransfers={setTransfers}
-                        /> */}
+                        />
                     </Box>
                 </Box>
             </Box>
