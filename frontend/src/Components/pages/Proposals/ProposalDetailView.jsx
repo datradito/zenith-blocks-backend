@@ -2,7 +2,6 @@ import React, { useEffect, useState, useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom';
 import { Box, Stack } from '@mui/material';
 import TableDisplay from '../../DisplayElements/TableDisplay.jsx';
-import ButtonAtom from "../../atoms/Button/index";
 import { useDispatch, useSelector } from 'react-redux';
 import { setProposal } from '../../../actions/currentProposal/index.js';
 import { refreshState } from '../../../actions/createBudgetAction/index.js';
@@ -15,7 +14,7 @@ import { useAllBudgetsForProposal } from '../../hooks/Budgets/useBudgetsForPropo
 import CustomizedSnackbars from '../../atoms/SnackBar/SnackBar.jsx';
 import transformItems from '../../../Utility/transformItems.js';
 import SnackbarMessage from '../../atoms/SnackBarGql/SnackBarGql.jsx';
-import { set } from 'react-hook-form';
+
 
 
 const BoxStyle = {
@@ -92,8 +91,6 @@ function ProposalDetailView() {
     useEffect(() => {
         setProposalAmount(filteredProposal[0]?.amount);
         setStatus(filteredProposal[0]?.status === 'Funded' ? true : false);
-        
-        console.log(filteredProposal[0]?.status)
     }, [filteredProposal]);
 
     const handlePageValidation = () => {

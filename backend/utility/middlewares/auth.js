@@ -12,7 +12,7 @@ const signJWTToken = ({ userAddress, dao }) => {
         address: userAddress,
     },
         JWT_SECRET,
-        { expiresIn: '5m' }
+        { expiresIn: '3600000' }
     );
 
     return token;

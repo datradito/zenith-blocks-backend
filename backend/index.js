@@ -2,22 +2,20 @@ const express = require('express');
 const cors = require('cors')
 const siwe = require('siwe');
 const session = require('express-session');
-const schema = require('./schema/schema');
 const store = session.MemoryStore()
 
 require("dotenv").config();
 const signJWTToken = require('./utility/middlewares/auth').signJWTToken;
-const hashUserData = require('./utility/middlewares/auth').hashUserData;
-const checkAuth = require('./utility/middlewares/auth').checkAuth;
-const JWT_SECRET = process.env.JWT_SECRET;
-const jwt = require('jsonwebtoken');
 const User = require('./Database/models/User');
 
-const { AuthenticationError, ApolloServer } = require('apollo-server')
-const { GraphQLError } = require('graphql');
+const { startStandaloneServer } = require('@apollo/server/standalone');
+const server = require('./schema/schema')
 const context = require('./utility/middlewares/context');
 
-var { graphqlHTTP } = require('express-graphql');
+// const { GraphQLError } = require('graphql');
+// const context = require('./utility/middlewares/context');
+
+// var { graphqlHTTP } = require('express-graphql');
 
 const Moralis = require("moralis").default;
 const { createSiweMessage, verifySiweMessageHandler } = require('./utility/signMessage');
@@ -44,28 +42,6 @@ app.use(session({
     saveUninitialized: false,
     store
 }));
-
-// const authenticationMiddleware = (req, res, next) => {
-//     if (!req.headers.authorization) {
-//         const authError = new AuthenticationError('AUTH_REQUIRED');
-//         return next(authError);
-//     }
-
-//     const token = req.headers.authorization.split(' ')[1];
-
-//     jwt.verify(token, JWT_SECRET, (err, decoded) => {
-//         if (err) {
-//             const authError = new AuthenticationError('TOKEN_EXPIRED');
-//             return next(authError);
-//         }
-
-//         req.decoded = decoded;
-//         next();
-//     });
-// };
-
-//use authorize middleware here for each request 
-
 
 
 // init();
@@ -157,7 +133,6 @@ app.post('/verify', async function (req, res) {
             
             return res.status(201).json({ authToken: token });
         } catch (e) {
-            console.log(e);
             return res.status(500).json("User not found");
         }
         
@@ -226,12 +201,6 @@ app.get('/logout', (req, res) => {
     }
 }
 );
-
-// app.use('/graphql', authenticationMiddleware, graphqlHTTP({
-//     schema,
-//     graphiql: true,
-//     context: { session: session },
-// }));
 
 app.get('/checkSiwe', (req, res) => {
     console.log(req.session.id);
@@ -379,24 +348,36 @@ app.get("/tokenTransfers", async (req, res) => {
 });
 
 // const server = new ApolloServer({
-//     schema,
-//     formatError: (error) => {
-//         if (error.originalError instanceof AuthenticationError) {
-//             // Handle authentication errors here
-//             return { message: error.message, code: 'AUTH_ERROR' };
-//         }
-//         // Return other errors as is
-//         return error;
-//     }
+//     // schema,
+//     // formatError: (error) => {
+//     //     if (error.originalError instanceof AuthenticationError) {
+//     //         // Handle authentication errors here
+//     //         return { message: error.message, code: 'AUTH_ERROR' };
+//     //     }
+//     //     // Return other errors as is
+//     //     return error;
+//     // }
 // });
 
-app.use('/graphql',  graphqlHTTP({
-    schema,
-    context: context,
-    graphiql: true,
-}));
+//cannot use await like following so create a method which does that for us
+
+
+
+
+// const { url } = await standAloneApolloServer(server, {
+//    listen: { port: 8000},
+// })
+// app.use('/graphql',  graphqlHTTP({
+//     schema,
+//     graphiql: true,
+// }));
 
 app.listen(8000, async () => {
     await init();
-    console.log('Server is running on port 8000');
+
+    const { url } = await startStandaloneServer(server, {
+        listen: { port: 8080 },
+        context: context
+    });
+    console.log('Server is running on port' + url);
 });

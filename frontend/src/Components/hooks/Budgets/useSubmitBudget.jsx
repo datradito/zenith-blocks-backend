@@ -42,7 +42,16 @@ const useSubmitBudget = () => {
            
             try {
                 const { data } = await submitBudgetMutation({
-                    variables: budget,
+                    variables: {
+                        budget: {
+                            category: budget.category,
+                            amount: budget.amount,
+                            currency: budget.currency,
+                            breakdown: budget.breakdown,
+                            proposalid: budget.proposalid,
+                            rootpath: budget.rootpath
+                        }
+                    }
                 });
                 return data.submitBudget;
             } catch (error) {

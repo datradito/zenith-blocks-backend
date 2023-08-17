@@ -15,9 +15,6 @@ const updateProposalStatus = async (proposalId, currentBudgetAmount) => {
         attributes: ['amount'],
     });
 
-    console.log(proposal.get('amount'));
-    console.log(budget);
-
     const proposalAmount = proposal.get('amount');
     const budgetedAmount = parseInt(currentBudgetAmount) + parseInt(budget || "0");
 

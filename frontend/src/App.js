@@ -52,7 +52,7 @@ function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/"element={<Root />}>
-        <Route index
+        <Route path='proposals'
           element={<Proposals />}
         />
         <Route path="proposals/:proposalId" element={<ProposalDetailView />} />

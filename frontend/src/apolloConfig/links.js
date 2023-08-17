@@ -43,9 +43,9 @@ export const errorLink = onError(({ graphQLErrors, networkError }) => {
 
     
     if (graphQLErrors)
-        graphQLErrors.forEach(({ message, locations, path }) => {
+        graphQLErrors.forEach(({ message, extensions, locations, path }) => {
             console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
-            if (message === 'INVALID_TOKEN') {
+            if (extensions.code === 'UNAUTHENTICATED') {
                 sessionStorage.removeItem('authToken');
                 sessionStorage.removeItem('address');
                 sessionStorage.removeItem('daoId');
@@ -59,6 +59,8 @@ export const errorLink = onError(({ graphQLErrors, networkError }) => {
                 // setWalletConnected(false);
                 console.log("AUTH_REQUIRED");
             }
+
+
         });
     
     if (networkError) console.log(`[Network error]: ${networkError}`);
@@ -67,7 +69,7 @@ export const errorLink = onError(({ graphQLErrors, networkError }) => {
 });
 
 export const httpLink = () => (createHttpLink({
-    uri: 'http://localhost:8000/graphql',
+    uri: 'http://localhost:8080/graphql',
 }));
 
 const retryIf = (error, operation) => {

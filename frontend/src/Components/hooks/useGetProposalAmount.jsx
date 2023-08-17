@@ -8,7 +8,7 @@ const useGetProposalAmount = (proposalid) => {
     });
 
     if (proposalError) {
-        console.log('error', proposalError);
+        return;
     }
     // You can extract the proposal Details from the 'data' object based on your GraphQL query structure
     const amount = proposalAmountData?.getProposalDetailsById?.amount || null;
