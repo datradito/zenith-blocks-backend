@@ -11,21 +11,20 @@ import WalletConnect from './Components/DisplayElements/Header/WalletConnect';
 import Root from './Routes/Root';
 
 import { links } from './apolloConfig/links';
+import PrivateRoute from './Routes/PrivateRoutes';
 
 const TransferHistory = lazy(() => import("./Components/pages/walletDashboard/Components/TransferHistory.jsx"));
-const ResponsiveHeaderBar = lazy(() => import("./Components/DisplayElements/Header/Header"));
 const ProposalDetailView = lazy(() => import("./Components/pages/Proposals/ProposalDetailView"));
 const CreateBudget = lazy(() => import("./Components/pages/Budgets/CreateBudget"));
 const InvoiceListView = lazy(() => import("./Components/pages/Invoices/InvoiceListView"));
 const InvoiceCreation = lazy(() => import("./Components/pages/Invoices/InvoiceCreation"));
 const Dashboard = lazy(() => import("./Components/pages/walletDashboard/Dashboard"));
 const CustomizedSnackbars = lazy(() => import("./Components/atoms/SnackBar/SnackBar"));
-const LogIn = lazy(() => import("./Components/pages/Home/logIn"));
 const Swap = lazy(() => import("./Components/pages/Swap/Swap"));
 const Proposals = lazy(() => import("./Components/pages/Proposals/Proposals"));
+const Accounts = lazy(() => import("./Components/pages/Accounts/Accounts"));
 
 function App() {
-  const [walletConnected, setWalletConnected] = useState(false);
 
   const [snackbarMessage, setSnackbarMessage] = useState({
     open: false,
@@ -33,9 +32,6 @@ function App() {
     message: '',
   });
 
-  useEffect(() => {
-    sessionStorage.getItem('authToken') ? setWalletConnected(true) : setWalletConnected(false);
-  }, [walletConnected]);
 
   // if (snackbarMessage.open) {
   //     const timer = setTimeout(() => {
@@ -51,22 +47,23 @@ function App() {
 
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/"element={<Root />}>
-        <Route path='proposals'
-          element={<Proposals />}
-        />
+      <Route path="/" element={<Root />}>
+        <Route path= "/" element={<PrivateRoute />} >
+        <Route path='proposals'element={<Proposals />}/>
         <Route path="proposals/:proposalId" element={<ProposalDetailView />} />
         <Route path="proposal/budgets/:proposalId" element={<CreateBudget />} />
         <Route path="budgets/:budgetId/createInvoice" element={<InvoiceCreation />} />
         <Route path="proposal/update/:proposalId" element={<CreateBudget />} />
         <Route path="proposals/:proposalId/invoices" element={<InvoiceListView />} />
         <Route path="budgets/:budgetId/invoices" element={<InvoiceListView />} />
-        <Route path="dashboard" element={<Dashboard />} >
+          <Route path="dashboard" element={<Dashboard />} >
           {/* <Route path="transferHistory" element={<TransferHistory />} />  
           <Route path="tokens" element={<TransferHistory />} /> */}
-        </Route>
+          </Route>
+          <Route path="accounts" element={<Accounts />} />
         <Route path="swap" element={<Swap />} />
-        <Route path="*" element={<ErrorPage />} />
+          <Route path="*" element={<ErrorPage />} />
+        </Route>
       </Route>
     )
   );
@@ -76,7 +73,7 @@ function App() {
       <Provider store={storeConfig}>
         <PersistGate loading={null} persistor={persistor}>
           <Suspense fallback={<CircularIndeterminate />}>
-            {!walletConnected ? <WalletConnect /> : <RouterProvider router={router} />}
+            <RouterProvider router={router} />
             </Suspense>
         </PersistGate>
       </Provider>

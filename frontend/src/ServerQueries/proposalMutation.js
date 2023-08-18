@@ -2,18 +2,10 @@ import { gql } from '@apollo/client';
 
 export const ADD_OR_UPDATE_PROPOSAL = gql`
   mutation SetProposalAmount(
-    $id: String!
-    $amount: Float!
-    $modifier: String!
-    $rootpath: String!
-    $daoid: String!
+    $proposalAmountInput: ProposalAmountInput
   ) {
     setProposalAmount(
-      id: $id
-      amount: $amount
-      modifier: $modifier
-      rootpath: $rootpath
-      daoid: $daoid
+      proposal: $proposalAmountInput
     ) {
       id
       amount

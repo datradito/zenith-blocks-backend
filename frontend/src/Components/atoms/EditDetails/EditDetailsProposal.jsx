@@ -5,13 +5,12 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import { useForm, Controller } from 'react-hook-form';
-import { useMutation } from '@apollo/client';
 import ButtonAtom from '../Button';
-import { ADD_OR_UPDATE_PROPOSAL } from "../../../ServerQueries/proposalMutation";
 import CircularIndeterminate from '../Loader/loader';
 import useSaveProposalDetails from '../../hooks/useSetAmountProposal';
-import useGetProposalDetails from '../../hooks/useGetProposalAmount';
 import CustomizedSnackBar from '../SnackBar/SnackBar.jsx';
+import { useDispatch } from 'react-redux';
+import { addAmount } from '../../../actions/currentProposal/amount';
 
 let dialogContainerStyle = {
     position: 'fixed',
@@ -45,6 +44,7 @@ let dialogContentStyle = {
 };
 
 export default function DetailPanelContent({ row }) {
+    const dispatch = useDispatch();
     const {
         loading,
         error,
@@ -60,12 +60,14 @@ export default function DetailPanelContent({ row }) {
         mode: 'onChange',
     });
 
-
     const [dialogOpen, setDialogOpen] = React.useState(true);
 
     const onSubmit = (data) => {
         // Call the custom hook function to save the proposal details
         saveProposalDetails(data);
+        //find proposal from state from redux store and set its amount to data.amount
+
+        dispatch(addAmount({ amount: data.amount, proposalId: data.proposalid, status: "NotFilled" }));
         setDialogOpen(false); // Close the dialog after submitting the form
     };
 

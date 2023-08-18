@@ -11,11 +11,13 @@ const useSaveProposalDetails = () => {
         try {
             const { data } = await SetProposalAmount({
                 variables: {
-                    id: formData.id,
-                    amount: parseInt(formData.amount),
-                    modifier: '0x9f74662aD05840Ba35d111930501c617920dD68e',
-                    rootpath: formData.space.id,
-                    daoid: formData.space.id,
+                    proposalAmountInput: {
+                        id: formData.id,
+                        amount: parseInt(formData.amount),
+                        modifier: '0x9f74662aD05840Ba35d111930501c617920dD68e',
+                        rootpath: formData.space.id,
+                        daoid: formData.space.id,
+                    }
                 },
             });
         } catch (error) {

@@ -11,7 +11,6 @@ const proposalAmountReducer = (state = initialState, action) => {
             const existingProposalIndex = state.proposals.findIndex(
                 (proposal) => proposal.id === action.payload.proposalId
             );
-                console.log("state.proposals")
             if (existingProposalIndex !== -1) {
                 // Proposal exists, replace the amount
                 return {

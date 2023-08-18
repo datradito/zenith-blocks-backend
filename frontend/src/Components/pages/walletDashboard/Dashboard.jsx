@@ -21,6 +21,8 @@ import {
 } from 'wagmi'
 
 function Dashboard() {
+    const [activeTab, setActiveTab] = useState('tokens'); // Default tab
+
     const address = sessionStorage.getItem('address');
     const ensAvatar = useEnsAvatar({
         address: address,
@@ -33,7 +35,9 @@ function Dashboard() {
     const [tokens, setTokens] = useState([]);
     const [transfers, setTransfers] = useState([]);
 
-
+    const handleTabClick = (tabName) => {
+        setActiveTab(tabName);
+    };
     return (
         <Box style={{
             color: "white",
@@ -74,6 +78,44 @@ function Dashboard() {
                     wallet={wallet}
                     setWallet={setWallet}
                 />
+
+            </Box>
+            <Box
+                sx={{
+                    width: '100%',
+                    borderBottom: '1px solid white',
+                    padding: '1rem 0 1rem 0',
+                }}
+            > 
+                <NavLink
+                    style={{
+                        textDecoration: "none",
+                        color: "white",
+                        paddingTop: "1rem",
+                    }}
+                    sx={{
+                        color: 'white',
+                        textTransform: 'capitalize',
+                        display: 'block'
+                    }}
+                    isActive={() => activeTab === 'tokens'}
+                    onClick={() => handleTabClick('tokens')}
+                >
+                    Tokens
+                </NavLink>
+                <NavLink
+                    style={{
+                        textDecoration: "none",
+                        color: "white",
+                        paddingLeft: "1rem",
+                        paddingTop: "1rem",
+                    }}
+                    sx={{ color: 'white', textTransform: 'capitalize', display: 'block' }}
+                    isActive={() => activeTab === 'transfers'}
+                    onClick={() => handleTabClick('transfers')}
+                >
+                    Transaction History
+                </NavLink>
             </Box>
 
             <Box style={{
@@ -83,35 +125,35 @@ function Dashboard() {
                 flexWrap: "wrap",
                 marginTop: "2rem",
             }}>
-                <NavLink to="transfer">Transfer History </NavLink>
-                <NavLink to="tokens">Tokens </NavLink>
                 <Box>
-                    {/* <Outlet /> */}
-                    <Box tabKey={1} tabName={"Tokens"}>
-                        <NativeTokens
-                            wallet={wallet}
-                            chain={chain}
-                            nativeBalance={nativeBalance}
-                            setNativeBalance={setNativeBalance}
-                            nativeValue={nativeValue}
-                            setNativeValue={setNativeValue}
-                        />
-                        <Tokens
-                            wallet={wallet}
-                            chain={chain}
-                            tokens={tokens}
-                            setTokens={setTokens} />
-                    </Box>
-                    <Box tabKey={2} tabName={"Transfers"}>
-                        <Link to="/transfer">Transaction History </Link>
-                        
-                        <TransferHistory
-                            chain={chain}
-                            wallet={wallet}
-                            transfers={transfers}
-                            setTransfers={setTransfers}
-                        />
-                    </Box>
+                    {activeTab === "tokens" && (
+                        <Box tabKey={1} tabName={"Tokens"}>
+                            <NativeTokens
+                                wallet={wallet}
+                                chain={chain}
+                                nativeBalance={nativeBalance}
+                                setNativeBalance={setNativeBalance}
+                                nativeValue={nativeValue}
+                                setNativeValue={setNativeValue}
+                            />
+                            <Tokens
+                                wallet={wallet}
+                                chain={chain}
+                                tokens={tokens}
+                                setTokens={setTokens} />
+                        </Box>
+                        )
+                    }
+                    {activeTab === "transfers" && (
+                        <Box tabKey={2} tabName={"Transfers"}>
+                            <TransferHistory
+                                chain={chain}
+                                wallet={wallet}
+                                transfers={transfers}
+                                setTransfers={setTransfers}
+                            />
+                        </Box>
+                    )}
                 </Box>
             </Box>
         </Box>

@@ -83,7 +83,7 @@ const typeDefs = `#graphql
     type Mutation {
         submitBudget(budget: BudgetInput): Budget,
         submitInvoice(invoice: InvoiceInput): Invoice,
-        setProposalAmount(proposal: ProposalInput): Proposal,
+        setProposalAmount(proposal: ProposalAmountInput): Proposal,
     }
     
     input BudgetInput {
@@ -102,6 +102,13 @@ const typeDefs = `#graphql
         date: String
         rootpath: String
         ipfs: String
+    }
+    input ProposalAmountInput {
+        id: String
+        amount: Float
+        modifier: String
+        rootpath: String
+        daoid: String
     }
     input ProposalInput {
         id: String

@@ -58,9 +58,6 @@ export const useAllBudgetsForProposal = (proposalId) => {
         variables: { proposalid: proposalId },
     });
 
-    //filter out proposalId from returned data
-
-    
 
     return {
         budgetList,

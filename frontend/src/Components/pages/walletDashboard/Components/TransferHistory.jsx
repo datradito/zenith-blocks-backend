@@ -11,7 +11,8 @@ function TransferHistory({ chain, wallet, transfers, setTransfers }) {
                 address: wallet,
                 chain: chain,
             },
-        });
+            });
+        console.log(response.data);
 
         if (response.data) {
             setTransfers(response.data);

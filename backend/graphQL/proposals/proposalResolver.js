@@ -23,18 +23,18 @@ const proposalResolver = {
             //do some validations here to avoid overwriting amount once its written
             //check if proposal exists
             //check if proposal has amount
-
+            console.log(args)
             //save proposal to ipfs with jsonData id,amountand daoId
             const jsonData = {
-                "id": args.id,
-                "amount": args.amount,
-                "modifier": args.modifier,
-                "daoid": args.daoid
+                "id": args.proposal.id,
+                "amount": args.proposal.amount,
+                "modifier": args.proposal.modifier,
+                "daoid": args.proposal.daoid
             };
 
             let ipfsResponse;
 
-            let ipfsFilePath = args.rootpath + 'proposalId' + jsonData.id;
+            let ipfsFilePath = args.proposal.rootpath + 'proposalId' + jsonData.id;
             // try {
             //     const response = await UploadDataToIpfs(ipfsFilePath, jsonData);
             //     ipfsResponse = response.jsonResponse[0].path;
@@ -43,12 +43,12 @@ const proposalResolver = {
             // }
 
             let proposal = new Proposal({
-                id: args.id,
-                amount: args.amount,
-                modifier: args.modifier,
-                rootpath: args.rootpath,
+                id: args.proposal.id,
+                amount: args.proposal.amount,
+                modifier: args.proposal.modifier,
+                rootpath: args.proposal.rootpath,
                 ipfs: "dummy ipfs",
-                daoid: args.daoid,
+                daoid: args.proposal.daoid,
             });
 
             try {

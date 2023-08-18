@@ -3,6 +3,8 @@ import AdbIcon from '@mui/icons-material/Adb';
 import { NavLink } from 'react-router-dom';
 import WalletConnect from './WalletConnect';
 import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import Login from '../../pages/Home/logIn';
 
 import {
     Box,
@@ -15,19 +17,20 @@ import {
 
 import logo from "../../../Images/logo.png"
 
-
 const navLinkStyle = {
     textDecoration: "none",
     color: "white"
 }
 
-
 const ResponsiveHeaderBar = () => {
-    // const [anchorElNav, setAnchorElNav] = React.useState(null);
-    // const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const [walletConnected, setWalletConnected] = useState(false);
 
     let { proposal } = useSelector(state => state.currentProposal);
     let pages = [];
+
+    useEffect(() => {
+        sessionStorage.getItem('authToken') ? setWalletConnected(true) : setWalletConnected(false);
+    }, [walletConnected]);
 
     proposal ? pages.push(
         { name: 'Proposals', url: '/proposals' },
@@ -86,25 +89,27 @@ const ResponsiveHeaderBar = () => {
                         <img style={{ maxWidth: "8rem" }} src={logo} alt="Logo" />
                     </Typography>
                     <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {pages.map((page, index) => (
-                            <Button key={index}>
-                                <NavLink
-                                    style={navLinkStyle}
-                                    to={page.url}
-                                    key={page.name}
-                                    // onClick={handlePageClick}
-                                    sx={{  color: 'white', textTransform: 'capitalize', display: 'block' }}
+                    {/* {walletConnected ? ( */}
+                        <>
+                        <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                            {pages.map((page, index) => (
+                                <Button key={index}>
+                                    <NavLink
+                                        style={navLinkStyle}
+                                        to={page.url}
+                                        key={page.name}
+                                        sx={{ color: 'white', textTransform: 'capitalize', display: 'block' }}
                                     >
-                                    {page.name}
-                                </NavLink>
-                            </Button>
-                        ))}
-                    </Box>
-
-                    <Box sx={{ flexGrow: 0 }}>
-                           <WalletConnect /> 
-                    </Box>
+                                        {page.name}
+                                    </NavLink>
+                                </Button>
+                            ))}
+                        </Box>
+                            <Box sx={{ flexGrow: 0 }}>
+                                <WalletConnect />
+                            </Box>   
+                        </>
+                    { !walletConnected &&  <Login />  }
                 </Toolbar>
             </Container>
         </AppBar>

@@ -10,11 +10,12 @@ import {
     useNetwork,
 } from 'wagmi'
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-
+import { useNavigate } from 'react-router-dom';
 
 import { useSignMessage } from 'wagmi';
 
 export default function WalletConnect() {
+    const navigate = useNavigate();
     const { address, connector, isConnected } = useAccount()
     const { data: ensAvatar } = useEnsAvatar({ address })
     const { data: ensName } = useEnsName({ address })
@@ -28,7 +29,6 @@ export default function WalletConnect() {
 
     useEffect(() => {
         const auth = sessionStorage.getItem('authToken');
-
         if (isConnected && !auth) {
             signInWithEthereum();
         } else if (!isConnected) {
@@ -36,8 +36,6 @@ export default function WalletConnect() {
             sessionStorage.removeItem('daoId');
             sessionStorage.removeItem('address');
         }
-
-
     }, [isConnected])
 
     const createSiweMessage = async () => {
@@ -114,6 +112,7 @@ export default function WalletConnect() {
             sessionStorage.setItem('authToken', res.authToken);
             sessionStorage.setItem('daoId', daoId);
             sessionStorage.setItem('address', address);
+            navigate(`/proposals`);
         } catch (error) {
             console.error("Error during sign-in:", error);
             disconnectAsync();

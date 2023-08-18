@@ -19,14 +19,7 @@ export const authLink = () => (setContext(async (_, { headers }) => {
     } else {
         // redirect to login
         redirect('/');
-        
     }
-    // return {
-    //     headers: {
-    //         ...headers,
-    //         Authorization: token ? `Bearer ${token}` : "",
-    //     },
-    // };
 }));
 
 export const loggerLink = new ApolloLink((operation, forward) => {
@@ -59,13 +52,11 @@ export const errorLink = onError(({ graphQLErrors, networkError }) => {
                 // setWalletConnected(false);
                 console.log("AUTH_REQUIRED");
             }
-
-
         });
     
     if (networkError) console.log(`[Network error]: ${networkError}`);
 
-    if (networkError.statusCode === 401) redirect('/');
+    // if (networkError.statusCode === 401) redirect('/');
 });
 
 export const httpLink = () => (createHttpLink({

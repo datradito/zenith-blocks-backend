@@ -89,7 +89,7 @@ const TableRow = ({ tableBodyData }) => {
             {
                 Object.keys(tableBodyData).map((key) => {
                     //update budgetId to id
-                    if (key !== "id" && key !== "budgetId")  {
+                    if (key !== "id" && key !== "budgetId" && key !== "proposalid")  {
                         return (
                             key === "Remaining" ?
                                 <TableCell key={ key} sx={[customTableCellStyles[key] , customTableCellStyles.tableDataCellItem]}><CustomizedProgressBars value={tableBodyData[key]} /></TableCell> :
@@ -106,7 +106,7 @@ const TableRow = ({ tableBodyData }) => {
                                                     key === 'Logo' ?
                                                         <TableCell key={key} sx={[customTableCellStyles[key], customTableCellStyles.tableDataCellItem]}><Avatar alt="Currency logo" src={tableBodyData[key]} /></TableCell> :
                                                     key === 'Breakdown' ?
-                                                        <TableCell key={key} sx={[customTableCellStyles[key] , customTableCellStyles.tableDataCellItem]}>{tableBodyData[key]} %</TableCell> :
+                                                        <TableCell key={key} sx={[customTableCellStyles[key] , customTableCellStyles.tableDataCellItem]}>{tableBodyData[key].toFixed(2)} %</TableCell> :
                                 <TableCell key={key} sx={[customTableCellStyles[key], customTableCellStyles.default, customTableCellStyles.tableDataCellItem]}>{tableBodyData[key]}</TableCell>
                         )
                     }
