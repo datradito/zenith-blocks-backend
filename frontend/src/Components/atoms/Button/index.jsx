@@ -13,6 +13,7 @@ const ButtonAtom = ({ config }) => {
             fontSize: ".85rem",
             textTransform: "none",
             maxWidth: "10rem",
+            width: config.width ? config.width : "10rem",
             mr: config.mr ? config.mr : "0",
             ml: config.ml ? config.ml : "0",
             "&:hover": {

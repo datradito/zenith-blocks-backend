@@ -7,32 +7,6 @@ const Invoice = require('../Database/models/Invoice');
 
 
 
-// const {
-//     GraphQLObjectType,
-// } = graphql;
-
-// const allTypeDefs = [];
-
-// const RootQuery = new GraphQLObjectType({
-//     name: 'RootQueryType',
-//     fields: () => ({
-//         ...budgetQueries,
-//         ...invoiceQueries,
-//         ...proposalQueries,
-//     })
-// });
-
-//Todo: update date and currency filed to correct type in this file and validate  also in front end in serverQueries file
-
-// const Mutation = new GraphQLObjectType({
-//     name: 'Mutation',
-//     fields: () => ({
-//         ...budgetMutations,
-//         ...invoiceMutations,
-//         ...proposalMutations,
-//     }),
-// })
-
 const typeDefs = `#graphql
     type Budget {
         id: String
@@ -61,6 +35,7 @@ const typeDefs = `#graphql
         id: String
         category: String
         recipient: String
+        owneraddress: String
         number: String
         currency: String
         total: Float
@@ -69,7 +44,7 @@ const typeDefs = `#graphql
         uploadinvoice: String
         description: String
         budgetid: String
-        amount: Float
+        status: String
     }
 
     type Query {
@@ -95,13 +70,19 @@ const typeDefs = `#graphql
         rootpath: String
     }
     input InvoiceInput {
-        id: String
+        category: String
+        recipient: String
+        owneraddress: String
+        proposal: String
+        number: String
         budgetid: String
-        amount: Float
+        total: Float
         currency: String
         date: String
+        duedate: String
+        description: String
+        uploadinvoice: String
         rootpath: String
-        ipfs: String
     }
     input ProposalAmountInput {
         id: String

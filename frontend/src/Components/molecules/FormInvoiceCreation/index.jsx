@@ -1,5 +1,4 @@
 import React from 'react';
-import useStyles from './index.style';
 import {
     Box,
     Button,
@@ -17,7 +16,6 @@ import { categories } from '../../pages/Category/Category';
 function FormRowInvoice({ tableHeaderData }) {
     const dispatch = useDispatch();
     let currentProposal = useSelector(state => state.currentProposal);
-    let classes = useStyles();
     // const [proposalIsSet, setProposalIsSet] = React.useState(false);
     let { header, lines} = useSelector(state => state.createInvoice);
 
@@ -75,7 +73,11 @@ function FormRowInvoice({ tableHeaderData }) {
 
 
     return (
-        <Box className={classes.boxStyle}>
+        <Box sx={{
+            width: '95%',
+            margin: '0 auto',
+            textAlign: "left",
+        }}>
             <Box sx={{
                 display: 'flex',
                 justifyContent: 'flex-start',

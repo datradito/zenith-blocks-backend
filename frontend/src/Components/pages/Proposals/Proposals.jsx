@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { NetworkStatus } from '@apollo/client';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -7,7 +7,7 @@ import Paper from '@mui/material/Paper';
 import PaginationControlled from '../../DisplayElements/Pagination.jsx';
 import SubHeader from "../../molecules/SubHeader/SubHeader.jsx"
 import CircularIndeterminate from '../../atoms/Loader/loader.jsx';
-import useProposals from '../../hooks/useProposals.jsx';
+import useProposals from '../../hooks/Proposals/useProposals.jsx';
 import ProposalCard from './ProposalCard.jsx';
 
 
@@ -27,7 +27,7 @@ const ProposalListCardStyle = {
 
 const pagination = {
   width: '90%',
-  margin:'1rem',
+  margin: '1rem',
   alignItems: 'flex-end',
   color: "white"
 }
@@ -54,7 +54,7 @@ const Proposals = () => {
 
 
   if (networkStatus === NetworkStatus) return <CircularIndeterminate />;
-  if (loading) return <CircularIndeterminate /> ;
+  if (loading) return <CircularIndeterminate />;
   if (error) return <p>Error : {error.graphQLErrors}</p>;
 
 
@@ -103,22 +103,22 @@ const Proposals = () => {
                     border={.05}
                     borderRadius={3}
                     marginTop={1}
-                    padding = {1}
+                    padding={1}
                     borderColor='#BDBDBB'
                     direction="row"
                     justifyContent='flex-start'
-                >
-                  <ProposalCard item={item} handleTotalBudgetClick={handleTotalBudgetClick} selectedItemId={selectedItemId} onClose={onClose} />
-                </Stack> 
+                  >
+                    <ProposalCard item={item} handleTotalBudgetClick={handleTotalBudgetClick} selectedItemId={selectedItemId} onClose={onClose} />
+                  </Stack>
                 )
               })
-          }
+            }
           </Item>
         </Stack>
       </Box>
       <Stack sx={pagination}>
         <PaginationControlled
-            handleSkip = {handleSkipValueChange}
+          handleSkip={handleSkipValueChange}
         />
       </Stack>
     </>

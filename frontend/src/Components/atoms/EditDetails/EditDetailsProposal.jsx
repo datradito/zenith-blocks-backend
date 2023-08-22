@@ -7,7 +7,7 @@ import TextField from '@mui/material/TextField';
 import { useForm, Controller } from 'react-hook-form';
 import ButtonAtom from '../Button';
 import CircularIndeterminate from '../Loader/loader';
-import useSaveProposalDetails from '../../hooks/useSetAmountProposal';
+import useSaveProposalDetails from '../../hooks/Proposals/useSetAmountProposal';
 import CustomizedSnackBar from '../SnackBar/SnackBar.jsx';
 import { useDispatch } from 'react-redux';
 import { addAmount } from '../../../actions/currentProposal/amount';
@@ -79,7 +79,7 @@ export default function DetailPanelContent({ row }) {
         onClick: onSubmit,
     };
 
-    if (loading ) return <CircularIndeterminate />;
+    if (loading) return <CircularIndeterminate />;
     if (error) return <CustomizedSnackBar message={error.message} severity="error" autoOpen={true} />;
 
 

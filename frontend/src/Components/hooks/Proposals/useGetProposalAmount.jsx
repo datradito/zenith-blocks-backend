@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { GET_PROPOSAL_DETAILS } from '../../ServerQueries/proposalQuery'; // Import the GET_PROPOSAL_Details query
+import { GET_PROPOSAL_DETAILS } from '../../../ServerQueries/proposalQuery'; // Import the GET_PROPOSAL_Details query
 
 const useGetProposalAmount = (proposalid) => {
 
@@ -8,8 +8,15 @@ const useGetProposalAmount = (proposalid) => {
     });
 
     if (proposalError) {
-        return;
+        console.error(proposalError); // Log the error for debugging
+        return {
+            proposalLoading: false,
+            proposalError: "An error occurred while fetching the proposal amount.",
+            amount: null,
+            status: null,
+        };
     }
+
     // You can extract the proposal Details from the 'data' object based on your GraphQL query structure
     const amount = proposalAmountData?.getProposalDetailsById?.amount || null;
     const status = proposalAmountData?.getProposalDetailsById?.status || null;  // Replace 'amount' with the actual field name from the query result

@@ -1,7 +1,7 @@
 import React from 'react'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ButtonAtom from '../../atoms/Button';
-import { Box, Stack, Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import ModalDialog from '../DialogBox/dialogBox';
 
@@ -21,12 +21,12 @@ function SubHeader({ buttonConfig, currentPath, previousPath }) {
           width: '90%',
           margin: '1rem auto',
       }}>
-          <Typography variant='caption' style={{ color: 'white' }}>
+          <Typography variant='caption' style={{ color: 'white'}}>
               {previousPath}
           </Typography>
           <Grid
               container
-              style={{ justifyContent: 'space-between', alignItems: 'center', width: "100%" }}
+              style={{ justifyContent: 'space-between', alignItems: 'center', width: "100%", marginTop: "1rem" }}
           >
               <Grid>
                   <Link to={currentPath.to} style={{ textDecoration: 'none' }}>

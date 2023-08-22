@@ -9,8 +9,7 @@ const budgetResolver = {
     Query: {
         getBudgetById: async (parent, args) => {
             try {
-                await Budget.findByPk(args.id);
-                console.log("this ran")
+                return await Budget.findByPk(args.id);
             } catch (error) {
                 throw new GraphQLError(error.message);
             }

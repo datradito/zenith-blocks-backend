@@ -8,11 +8,11 @@ import { refreshState } from '../../../actions/createBudgetAction/index.js';
 import ItemCard from '../../atoms/ItemCard/ItemCard.jsx';
 import SubHeader from "../../molecules/SubHeader/SubHeader.jsx"
 import CircularIndeterminate from '../../atoms/Loader/loader.jsx';
-import useProposalDetails from '../../hooks/useProposalDetails.jsx';
+import useProposalDetails from '../../hooks/Proposals/useProposalDetails.jsx';
 import useWeb3IpfsContract from '../../hooks/web3IPFS';
 import { useAllBudgetsForProposal } from '../../hooks/Budgets/useBudgetsForProposal.jsx';
 import CustomizedSnackbars from '../../atoms/SnackBar/SnackBar.jsx';
-import transformItems from '../../../Utility/transformItems.js';
+import {transformItems} from '../../../Utility/transformItems.js';
 import SnackbarMessage from '../../atoms/SnackBarGql/SnackBarGql.jsx';
 
 
@@ -31,43 +31,6 @@ const BoxStyle = {
 
 const headers = ["Categories", "Allocated Budget", "Currency", "Breakdown", "Remaining", "Invoices"]
 
-const columns = [
-    {field: 'id', headerName: 'ID', width: 70},
-    { field: 'category', headerName: 'Category', width: '40%' },
-    {
-        field: 'amount',
-        headerName: 'Allocated Budget',
-        width: 150,
-        editable: true,
-    },
-    {
-        field: 'currency',
-        headerName: 'Currency',
-        width: 150,
-        editable: true,
-    },
-    {
-        field: 'breakdown',
-        headerName: 'Breakdown',
-        type: 'number',
-        width: 110,
-        editable: true,
-    },
-    {
-        field: 'Remaining',
-        headerName: 'Remaining',
-        description: 'This column has a value getter and is not sortable.',
-        sortable: false,
-        width: 160,
-        valueGetter: (params) =>
-            `${params.row.amount || ''} ${params.row.breakdown || ''}`,
-    },
-    {
-        field: 'Invoices',
-        headerName: 'Invoice',
-        width: 110,
-    },
-];
 
 function ProposalDetailView() {
 
@@ -160,14 +123,7 @@ function ProposalDetailView() {
             to: status || !amount ? null  : `/proposal/update/${proposalId}`,
         }
     ];
-
-    const buttonConfig = {
-        label: "Create budget",
-        variant: "contained",
-        onClick: handleBudgetCreateOnClick,
-        innerText: "Create Budget"
-    };
-
+    
     const currentPathConfig = {
         path: "Proposals",
         to: `/proposals`

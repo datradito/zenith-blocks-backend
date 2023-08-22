@@ -16,6 +16,7 @@ function ItemCard({ label,value }) {
         },
         subItemStyle: {
             minWidth: 200,
+            
         },
         minWidth: {
             minWidth: '200px',
@@ -27,7 +28,7 @@ function ItemCard({ label,value }) {
     }
 
     const ColumnItemLabel = styled(Paper)(({ theme }) => ({
-        backgroundColor: '#1A1C1E',
+       backgroundColor: "rgba(40, 42, 46, 0.2)",
         textAlign: 'left',
         color: 'grey',
         padding: '.5rem 0',
@@ -36,15 +37,17 @@ function ItemCard({ label,value }) {
     }));
 
     const ColumnItemValue = styled(Paper)(({ theme }) => ({
-        backgroundColor: '#1A1C1E',
+       backgroundColor: "rgba(40, 42, 46, 0.2)",
         textAlign: 'left',
         color: 'white',
         boxShadow: 'none',
         fontSize: '.95rem'
     }));
 
+    const exclude = ["Invoice", "Date", "Due"]
+
     const SubItem = styled(Paper)(({ theme }) => ({
-        backgroundColor: '#1A1C1E',
+       backgroundColor: "rgba(40, 42, 46, 0.2)",
         padding: theme.spacing(1),
         margin: theme.spacing(.5),
         textAlign: 'left',
@@ -52,10 +55,12 @@ function ItemCard({ label,value }) {
         boxShadow: 'none',
     }));
     return (
-        <SubItem key={label} sx={componentStyles.subItemStyle}>
-                <ColumnItemLabel sx={`${ label !== "Title" ? componentStyles.minWidth: componentStyles.defaultWidth}`}>{label}</ColumnItemLabel>
+        !exclude.includes(label) ?
+            <SubItem key={label} sx={componentStyles.subItemStyle}>
+                <ColumnItemLabel sx={`${label !== "Title" ? componentStyles.minWidth : componentStyles.defaultWidth}`}>{label}</ColumnItemLabel>
                 <ColumnItemValue>{value}</ColumnItemValue>
-        </SubItem>
+        </SubItem> : null
+
   )
 }
 

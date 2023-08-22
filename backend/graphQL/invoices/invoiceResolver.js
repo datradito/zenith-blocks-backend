@@ -7,7 +7,7 @@ const invoiceResolver = {
     Query: {
         getInvoicesByBudget: async (parent, args, context) => {
             try {
-                Invoice.findAll({
+                return await Invoice.findAll({
                     where: { budgetid: args.budgetid }
                 }, {
                     sort: {
@@ -20,32 +20,36 @@ const invoiceResolver = {
         },
         getInvoiceById: async (parent, args, context) => {
             try {
-                Invoice.findByPk(args.id)
+                return await Invoice.findByPk(args.id)
             } catch (error) {
                 throw new GraphQLError(error.message);
             }
         }
     },
     Mutation: {
-        submitInvoice: async (parent, args, context) => {
+        submitInvoice: async (parent, { invoice }, context) => {
 
-            const invoicedAmount = Invoice.findAll({
-                where: {
-                    budgetid: args.budgetid
-                }
-            }).then((invoices) => {
-                let totalAmount = 0;
-                invoices.forEach((invoice) => {
-                    totalAmount += invoice.total;
-                });
-                console.log("Total Amount: ", totalAmount);
-            });
+            // const invoicedAmount = Invoice.findAll({
+            //     where: {
+            //         budgetid: invoice.budgetid
+            //     }
+            // }).then((invoices) => {
+            //     let totalAmount = 0;
+            //     invoices.forEach((invoice) => {
+            //         totalAmount += invoice.total;
+            //     });
+            //     console.log("Total Amount: ", totalAmount);
+            // });
 
-            const budgetAmount = Budget.findByPk(args.budgetid, {
+            //ensure to check amount against all invoices for budget
+            const budgetAmount = await Budget.findByPk(invoice.budgetid, {
                 attributes: ['amount']
             })
 
-            if (!(args.total + invoicedAmount < budgetAmount)) {
+            console.log("Budget Amount: ", budgetAmount.get('amount') );
+            console.log("Invoice Amount: ", invoice.total);
+
+            if (invoice.total > budgetAmount.get('amount')) {
                 throw new GraphQLError('Invoice amount can not exceed total budget Amount', {
                     extensions: {
                         code: 'BAD_USER_INPUT',
@@ -53,12 +57,13 @@ const invoiceResolver = {
                     },
                 })
             } else {
-                const invoice = new Invoice({
-                    ...args,
+                const newInvoice = new Invoice({
+                    ...invoice,
                     ipfs: "ipfsResponse",
                 });
+
                 try {
-                    const savedInvoice = await invoice.save();
+                    const savedInvoice = await newInvoice.save();
                     return savedInvoice;
                 } catch (error) {
                     throw new GraphQLError(error.message);

@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import FormItem from "../../atoms/FormItem/FormItem";
 import SubHeader from '../../molecules/SubHeader/SubHeader';
 import useWeb3IpfsContract from '../../hooks/web3IPFS';
-import getPathAfterBudgetId from '../../../Utility/getBudgetId';
-import useFilteredProposalAmount from '../../hooks/useFilteredProposalAmount';
+import useFilteredProposalAmount from '../../hooks/Proposals/useFilteredProposalAmount';
 import useSubmitBudget from '../../hooks/Budgets/useSubmitBudget';
 import CustomizedSnackbars from '../../atoms/SnackBar/SnackBar';
 import { Box, Stack } from '@mui/material';
@@ -17,7 +16,7 @@ function CreateBudget() {
   const { web3, contract } = useWeb3IpfsContract();
   let { proposal } = useSelector(state => state.currentProposal);
   let { items } = useSelector(state => state.createBudget);
-  
+
   const [budgetError, setBudgetError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [budgetErrorKey, setBudgetErrorKey] = useState(0);
@@ -61,7 +60,7 @@ function CreateBudget() {
     if (!validateBudget()) {
       return;
     }
-    
+
     try {
       const budgetData = { ...items[0], proposalid: proposalId, rootpath: proposalId, amount: parseInt(items[0].amount), breakdown: parseInt(items[0].breakdown) };
 

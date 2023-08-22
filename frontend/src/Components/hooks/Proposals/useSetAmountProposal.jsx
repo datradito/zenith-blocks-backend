@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { ADD_OR_UPDATE_PROPOSAL } from '../../ServerQueries/proposalMutation'; // Import the ADD_OR_UPDATE_PROPOSAL mutation
+import { ADD_OR_UPDATE_PROPOSAL } from '../../../ServerQueries/proposalMutation'; // Import the ADD_OR_UPDATE_PROPOSAL mutation
 
 const useSaveProposalDetails = () => {
     // const [proposalAmount, setProposalAmount] = useState(null);

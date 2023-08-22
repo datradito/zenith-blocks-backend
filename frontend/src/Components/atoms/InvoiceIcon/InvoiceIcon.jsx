@@ -8,7 +8,6 @@ import { setBudget, getBudget } from '../../../actions/currentBudgetAction';
 
 export default function CustomInvoiceViewIcon({budgetId}) {
     const dispatch = useDispatch();
-    const { proposalId } = useParams();
     const invoiceIconStyles = {
         chipStyle: {
             padding: '0 .25rem',

@@ -4,12 +4,12 @@ import { useDispatch } from 'react-redux';
 import { updateHeader } from './../../../actions/createInvoiceAction/index.js';
 import { categories } from '../../pages/Category/Category';
 import UnstyledSelectBasic from '../SelectDropdown/SelectDropdown';
-// import { Upload } from "@web3uikit/core";
 import CurrencyDropdown from '../CurrencyDropdown/CurrencyDropdown.jsx';
 import FormRow from "../../molecules/FormBudgetCreation/index.jsx";
 import CustomizedSnackbars from '../SnackBar/SnackBar.jsx';
+import { Form } from 'react-router-dom';
 
-function FormItem({ initialValues, type, errors, maxAmount}) {
+function FormItem({ initialValues, type, errors}) {
     const dispatch = useDispatch();
 
     const componentStyles = {
@@ -147,6 +147,11 @@ function FormItem({ initialValues, type, errors, maxAmount}) {
                     {type === 'budget' &&
                         <FormRow
                             tableHeaderData={["Category", "Amount", "Currency", "Breakdown"]} />
+                    }
+
+                    {type === 'payment' && 
+                        <FormRow 
+                            tableHeaderData={["Vendor", "Currency", "Amount", "Payee"]} />
                     }
 
                     {errors &&

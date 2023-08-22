@@ -1,12 +1,12 @@
-import { useState, useMemo } from 'react';
-import { useQuery, NetworkStatus } from '@apollo/client';
-import { GET_PROPOSAL_BY_SPACE } from '../../SnapShot/Queries.js';
-import { snapShotClient } from '../../SnapShot/client.js';
+import { useState } from 'react';
+import { useQuery } from '@apollo/client';
+import { GET_PROPOSAL_BY_SPACE } from '../../../SnapShot/Queries.js';
+import { snapShotClient } from '../../../SnapShot/client.js';
 
 
 const useProposalQuery = (stateQuery) => {
     const dao = sessionStorage.getItem('daoId');
-    
+
     return useQuery(GET_PROPOSAL_BY_SPACE, {
         variables: {
             first: parseInt(stateQuery.first),
@@ -58,7 +58,7 @@ const useProposals = () => {
         loading,
         error,
         data,
-        syncedAt, 
+        syncedAt,
         handleExportCSV,
         handleSyncProposals,
         handleSkipValueChange,

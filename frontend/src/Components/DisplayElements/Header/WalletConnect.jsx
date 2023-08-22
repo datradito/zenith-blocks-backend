@@ -16,18 +16,32 @@ import { useSignMessage } from 'wagmi';
 
 export default function WalletConnect() {
     const navigate = useNavigate();
-    const { address, connector, isConnected } = useAccount()
+    const { address, connector, onConnect, isConnected } = useAccount()
     const { data: ensAvatar } = useEnsAvatar({ address })
     const { data: ensName } = useEnsName({ address })
-    const { data, isError, isLoading } = useBalance({
+    const { data:balance, isError: balanceError, isLoading: balanceLoading } = useBalance({
         address
     })
     const { signMessageAsync } = useSignMessage();
     const { disconnectAsync } = useDisconnect();
-    const { connectAsync } = useConnect();
+    const { connectAsync , isSuccess:connectSuccess, status } = useConnect();
     const { chain } = useNetwork()
+    // const { data, isError, isLoading, isSuccess, signMessage } = useSignMessage({
+    //     message: 'gm wagmi frens',
+    // })
+
+    // const connect = useConnect({
+    //     onSettled(data, error) {
+    //         console.log('Settled', { data, error })
+    //     },
+
+    //     onSuccess(data) {
+    //         console.log('Connect', data)
+    //     },
+    // })
 
     useEffect(() => {
+        
         const auth = sessionStorage.getItem('authToken');
         if (isConnected && !auth) {
             signInWithEthereum();
@@ -37,6 +51,20 @@ export default function WalletConnect() {
             sessionStorage.removeItem('address');
         }
     }, [isConnected])
+
+    // const connect = useConnect({
+    //     onSettled(data, error) {
+    //         console.log('Settled', { data, error })
+    //     },
+    // })
+    console.log(status, onConnect)
+
+    useEffect(() => {
+        const auth = sessionStorage.getItem('authToken');
+        if (!auth) {
+            disconnectAsync();
+        }
+    }, [])
 
     const createSiweMessage = async () => {
 
@@ -129,23 +157,6 @@ export default function WalletConnect() {
         return JSON.parse(window.atob(base64));
     }
 
-    const testAuth = async () => {
-        try {
-            const res = await axios.get(`http://localhost:8000/test`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                withCredentials: true
-                
-            });
-            console.log(res.data);
-        } catch (error) {
-            console.error('Error handling authentication:', error);
-            throw error; // Rethrow the error to signal that the function encountered an error
-        }
-    }
-
-
 
     return (
         <div
@@ -171,14 +182,13 @@ export default function WalletConnect() {
                 }}
             />
             }
-            {/* {
-                isConnected && (
-                    <>
-                    <Button onClick={handleAuth}>Sign Out</Button>
-                    // <Button onClick={checkSiwe}>Check siwe</Button> 
-                    </>
-                )
-            } */}
+            {/* <div>
+                <button disabled={isLoading} onClick={() => signMessage()}>
+                    Sign message
+                </button>
+                {isSuccess && <div>Signature: {data}</div>}
+                {isError && <div>Error signing message</div>}
+            </div> */}
         </div>
     );
 }

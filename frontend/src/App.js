@@ -7,11 +7,11 @@ import { storeConfig, persistor } from './store/storeConfigure';
 import { PersistGate } from 'redux-persist/integration/react';
 import ErrorPage from "./Routes/ErrorPage";
 import CircularIndeterminate from './Components/atoms/Loader/loader';
-import WalletConnect from './Components/DisplayElements/Header/WalletConnect';
 import Root from './Routes/Root';
 
 import { links } from './apolloConfig/links';
 import PrivateRoute from './Routes/PrivateRoutes';
+import PaymentCreation from './Components/pages/Payments/PaymentCreation';
 
 const TransferHistory = lazy(() => import("./Components/pages/walletDashboard/Components/TransferHistory.jsx"));
 const ProposalDetailView = lazy(() => import("./Components/pages/Proposals/ProposalDetailView"));
@@ -61,7 +61,8 @@ function App() {
           <Route path="tokens" element={<TransferHistory />} /> */}
           </Route>
           <Route path="accounts" element={<Accounts />} />
-        <Route path="swap" element={<Swap />} />
+          <Route path="swap" element={<Swap />} />
+          <Route path="invoice/:invoiceId/payment" element={<PaymentCreation />} />  
           <Route path="*" element={<ErrorPage />} />
         </Route>
       </Route>

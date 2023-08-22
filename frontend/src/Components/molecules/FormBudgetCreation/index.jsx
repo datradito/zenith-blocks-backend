@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import UnstyledSelectBasic from '../../atoms/SelectDropdown/SelectDropdown';
 import { categories } from '../../pages/Category/Category';
 import CurrencyDropdown from '../../atoms/CurrencyDropdown/CurrencyDropdown';
-import useFilteredProposalAmount from '../../hooks/useFilteredProposalAmount';
+import useFilteredProposalAmount from '../../hooks/Proposals/useFilteredProposalAmount';
 
 function FormRow({ tableHeaderData }) {
     const dispatch = useDispatch();
@@ -32,10 +32,10 @@ function FormRow({ tableHeaderData }) {
 
     const handleChange = (index, field, value) => {
         dispatch(updateField(
-                index,
-                field,
-                value,
-            ));
+            index,
+            field,
+            value,
+        ));
     };
 
     const formStyleCustom = {
@@ -87,7 +87,7 @@ function FormRow({ tableHeaderData }) {
             width: '95%',
             margin: '2rem auto',
             textAlign: "left",
-                }}>
+        }}>
             <Box sx={{
                 display: 'flex',
                 justifyContent: 'flex-start',
@@ -123,7 +123,7 @@ function FormRow({ tableHeaderData }) {
                                 />
                             </FormControl>
                             <FormControl
-                                style={{ border: 'none', margin: '0.5rem'  }}
+                                style={{ border: 'none', margin: '0.5rem' }}
                                 sx={formStyleCustom.default}
                             >
                                 <TextField

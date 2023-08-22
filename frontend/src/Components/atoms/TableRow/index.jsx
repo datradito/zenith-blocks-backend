@@ -84,12 +84,14 @@ const TableRow = ({ tableBodyData }) => {
         }
     };
 
+    console.log(tableBodyData)
+
     return (
         <TableRowMUI sx={[customTableCellStyles.tableRow, customTableCellStyles.default]}>
             {
                 Object.keys(tableBodyData).map((key) => {
                     //update budgetId to id
-                    if (key !== "id" && key !== "budgetId" && key !== "proposalid")  {
+                    if (key !== "id" && key !== "budgetId" && key !== "proposalid" && key !== "InvoiceId")  {
                         return (
                             key === "Remaining" ?
                                 <TableCell key={ key} sx={[customTableCellStyles[key] , customTableCellStyles.tableDataCellItem]}><CustomizedProgressBars value={tableBodyData[key]} /></TableCell> :
@@ -98,7 +100,7 @@ const TableRow = ({ tableBodyData }) => {
                             key === 'View' ?
                                 <TableCell key={key}  sx={[customTableCellStyles[key] , customTableCellStyles.tableDataCellItem]}><CustomPDFViewIcon budgetId={tableBodyData["id"]} /></TableCell> :
                             key === 'Payment' ?
-                                <TableCell key={key}  sx={[ customTableCellStyles[key] , customTableCellStyles.tableDataCellItem ]}><CustomPaymentViewIcon budgetId={tableBodyData["id"]} /></TableCell> :
+                                <TableCell key={key}  sx={[ customTableCellStyles[key] , customTableCellStyles.tableDataCellItem ]}><CustomPaymentViewIcon invoiceId={tableBodyData["InvoiceId"]} /></TableCell> :
                             key === 'Action' ?
                                 <TableCell key={key}  sx={[customTableCellStyles[key] , customTableCellStyles.tableDataCellItem]}><CustomActionIcon budgetId={tableBodyData["id"]} /></TableCell> :
                             key === 'Status' ?

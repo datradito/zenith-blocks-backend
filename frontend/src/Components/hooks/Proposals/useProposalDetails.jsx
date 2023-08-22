@@ -1,9 +1,9 @@
 // src/hooks/useProposal.js
 import { useQuery } from '@apollo/client';
-import { GET_PROPOSAL_BY_ID } from '../../SnapShot/Queries.js';
-import { snapShotClient } from '../../SnapShot/client.js';
+import { GET_PROPOSAL_BY_ID } from '../../../SnapShot/Queries.js';
+import { snapShotClient } from '../../../SnapShot/client.js';
 import { useDispatch } from 'react-redux';
-import { setProposal } from '../../actions/currentProposal/index.js';
+import { setProposal } from '../../../actions/currentProposal/index.js';
 import { useEffect } from 'react';
 
 export default function useProposalDetails(id) {

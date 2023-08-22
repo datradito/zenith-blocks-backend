@@ -108,16 +108,23 @@ function InvoiceCreation() {
         }
 
         if (isValid) {
-            // setInvoiceError(null);
+            const owneraddress = sessionStorage.getItem("address");
                 await submitInvoice({
                     variables: {
-                        ...header,
-                        InvoiceNumber: header['Invoice Number'],
-                        Total: parseInt(header.Total),
-                        InvoiceDate: header['Invoice Date'],
-                        DueDate: header['Due Date'],
-                        UploadInvoice: "placeholder for now",
-                        BudgetId: Budget.id,
+                        invoice: {
+                            category: header.Category,
+                            recipient: header.Recipient,
+                            owneraddress: owneraddress,
+                            proposal: proposal.id,
+                            number: header['Invoice Number'],
+                            budgetid: Budget.id,
+                            total: parseInt(header.Total),
+                            currency: header.Currency,
+                            date: header['Invoice Date'],
+                            duedate: header['Due Date'],
+                            description: header.Description,
+                            uploadinvoice: "placeholder for now",
+                        }
                     },
                 }).then((res) => {
                     if (res.data.submitInvoice !== null) {

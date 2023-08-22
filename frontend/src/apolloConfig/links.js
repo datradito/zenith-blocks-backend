@@ -5,9 +5,11 @@ import { createHttpLink } from '@apollo/client';
 import { RetryLink } from '@apollo/client/link/retry';
 import { onError } from '@apollo/client/link/error';
 import { redirect } from "react-router-dom";
+import { useDisconnect } from 'wagmi';
 
 export const authLink = () => (setContext(async (_, { headers }) => {
     const token = sessionStorage.getItem('authToken');
+    // const { disconnectAsync } = useDisconnect();
 
     if (token) {
         return {
@@ -18,6 +20,7 @@ export const authLink = () => (setContext(async (_, { headers }) => {
         };
     } else {
         // redirect to login
+        // await disconnectAsync();
         redirect('/');
     }
 }));
@@ -33,8 +36,6 @@ export const loggerLink = new ApolloLink((operation, forward) => {
 });
 
 export const errorLink = onError(({ graphQLErrors, networkError }) => {
-
-    
     if (graphQLErrors)
         graphQLErrors.forEach(({ message, extensions, locations, path }) => {
             console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)

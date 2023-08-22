@@ -10,13 +10,9 @@ import { useState } from 'react';
 import useWeb3IpfsContract from '../../hooks/web3IPFS';
 import ButtonAtom from '../../atoms/Button';
 import { useGetAllInvoicesByBudget } from '../../hooks/Invoices/useGetAllInvoices';
+
+
 const tableHeaderData = ["Invoice", "Receipient", "Amount", "Currency", "Status", "Date", "Due","View", "Payment", "Action"]
-const tableBodyData = [
-    { id: 1, Invoice: 1234, Receipient: "John Doe", Amount: 50000, Currenyc: 'ETH', Status: 'PAID', Date: '03/01/2023', Due: '03/01/2023', View: 'INVOICE', Payment: 'PAID', Action: 'ACTION', budgetId: "123" },
-    { id: 1, Invoice: 1234, Receipient: "John Doe", Amount: 50000, Currenyc: 'ETH', Status: 'PAID', Date: '03/01/2023', Due: '03/01/2023', View: 'INVOICE', Payment: 'PAID', Action: 'ACTION' },
-    { id: 1, Invoice: 1234, Receipient: "John Doe", Amount: 50000, Currenyc: 'ETH', Status: 'UNPAID', Date: '03/01/2023', Due: '03/01/2023', View: 'INVOICE', Payment: 'PAID', Action: 'ACTION' },
-    { id: 1, Invoice: 1234, Receipient: "John Doe", Amount: 50000, Currenyc: 'ETH', Status: 'PAID', Date: '03/01/2023', Due: '03/01/2023', View: 'INVOICE', Payment: 'PAID', Action: 'ACTION' }
-]; 
 
 
 function InvoiceListView() {
@@ -27,17 +23,16 @@ function InvoiceListView() {
     let { Budget } = useSelector(state => state.currentBudget);
     const { web3, contract } = useWeb3IpfsContract();
 
-    let [invoices, setInvoices] = useState([]);
+    // const getInvoicesCid = async (contract, budgetId) => {
+    //     try {
+    //         const decryptedbudgetId = web3.utils.keccak256(web3.utils.fromAscii(budgetId));
+    //         const result = await contract.methods.getInvoicesByBudget(decryptedbudgetId).call();
+    //         setInvoices(result);
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //     }
+    // };
 
-    const getInvoicesCid = async (contract, budgetId) => {
-        try {
-            const decryptedbudgetId = web3.utils.keccak256(web3.utils.fromAscii(budgetId));
-            const result = await contract.methods.getInvoicesByBudget(decryptedbudgetId).call();
-            setInvoices(result);
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
 
     const filteredProposal = useMemo(() => {
         return proposals.filter((withAmountProposal) => withAmountProposal.id === proposal.id ? withAmountProposal.amount : null);
@@ -48,20 +43,22 @@ function InvoiceListView() {
     }, [filteredProposal]);
 
     //step 1 - For Budget Id -> check in smartContract if it exists , if it does not render create invoices page
-    useEffect(() => {
-        if (parseInvoiceUrl(location.pathname) !== null) {
-            let { budgetId } = parseInvoiceUrl(location.pathname);
-            if (contract !== null) {
-                let result = getInvoicesCid(contract, budgetId);
-                result.then((res) => {
-                    setInvoices(res);
-                });
-            }
-        }
-    }, []);
+    // useEffect(() => {
+    //     // if (parseInvoiceUrl(location.pathname) !== null) {
+    //     //     let { budgetId } = parseInvoiceUrl(location.pathname);
+    //     //     // if (contract !== null) {
+    //     //     //     let result = getInvoicesCid(contract, budgetId);
+    //     //     //     result.then((res) => {
+    //     //     //         setInvoices(res);
+    //     //     //     });
+    //     //     // }
+    //     // }
+    // }, []);
 
-    // const { loading, error, data } = useGetAllInvoicesByBudget(Budget.id);
+    const { loading, error, data, budgetInvoices } = useGetAllInvoicesByBudget(Budget.id);
 
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error :(</p>;
 
     const handleExportCSV = () => {
         console.log("Export CSV");
@@ -94,13 +91,6 @@ function InvoiceListView() {
                 ml: "0.5rem",
                 type: "link",
                 to: '/proposal/budgets/createinvoice',
-                // subButton: {
-                //     label: "V",
-                //     innerText: "View Proposal",
-                //     type: "link",
-                //     to: `/proposals`,
-                //     message: "Proposal Saved Successfully",
-                // }
             }
         ];
     
@@ -119,6 +109,7 @@ function InvoiceListView() {
     function handleInvoiceCreateOnClick() {
 
     }
+    
     const buttonConfig = {
         label: "Create Invoices",
         variant: "contained",
@@ -126,10 +117,9 @@ function InvoiceListView() {
         innerText: "Create Invoice"
     };
 
-    if (invoices === [] || invoices === null || invoices === undefined || invoices.length === 0 && parseInvoiceUrl(location.pathname) !== null) {
+    if (budgetInvoices === [] || budgetInvoices === null || budgetInvoices === undefined || budgetInvoices.length === 0 && parseInvoiceUrl(location.pathname) !== null) {
         return (
-            <Box sx={BoxStyle}>
-                
+            <Box sx={BoxStyle}>  
                 <p>Create invoices for budget below. No invoices has been coded for this budget so far.</p>
                 <Link to={`/budgets/${Budget.id}/createInvoice`}>
                     <ButtonAtom config={buttonConfig} />
@@ -163,7 +153,7 @@ function InvoiceListView() {
                 <Box sx={BoxStyle}>
                     <TableDisplay
                         tableHeaderData={tableHeaderData}
-                        tableBodyData={tableBodyData}
+                        tableBodyData={budgetInvoices}
                         dataToDisplay={[]}
                     />
                 </Box>

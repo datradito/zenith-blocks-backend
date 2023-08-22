@@ -50,29 +50,11 @@ import { gql } from "@apollo/client";
 
 
 export const SUBMIT_INVOICE_MUTATION = gql`
-  mutation (
-    $Category: String!
-    $Recipient: String!
-    $InvoiceNumber: String!
-    $Currency: String!
-    $Total: Float!
-    $InvoiceDate: String!
-    $DueDate: String!
-    $UploadInvoice: String!
-    $Description: String!
-    $BudgetId: String!
+  mutation SubmitInvoice(
+    $invoice: InvoiceInput
   ) {
     submitInvoice(
-      category: $Category
-      recipient: $Recipient
-      number: $InvoiceNumber
-      currency: $Currency
-      total: $Total
-      date: $InvoiceDate
-      duedate: $DueDate
-      uploadinvoice: $UploadInvoice
-      description: $Description
-      budgetid: $BudgetId
+      invoice: $invoice
     ){
       category
       recipient

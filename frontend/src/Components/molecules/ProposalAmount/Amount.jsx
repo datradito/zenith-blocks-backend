@@ -1,13 +1,13 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { addAmount } from '../../../actions/currentProposal/amount.js';
-import useGetProposalAmount from '../../hooks/useGetProposalAmount.jsx';
+import useGetProposalAmount from '../../hooks/Proposals/useGetProposalAmount.jsx';
 import CustomActionIcon from '../../atoms/ActionIcon/CustomActionIcon.jsx';
 import Box from '@mui/material/Box';
 import CircularIndeterminate from '../../atoms/Loader/loader.jsx';
 
 
-const Amount = ({ proposalid, onClick }) => {
+export default  function Amount({ proposalid, onClick }){
     const dispatch = useDispatch();
 
     const { amount, status, proposalLoading, proposalError } = useGetProposalAmount(proposalid);
@@ -26,5 +26,3 @@ const Amount = ({ proposalid, onClick }) => {
         </div>
     )
 }
-
-export default Amount;
