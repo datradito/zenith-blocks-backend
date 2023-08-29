@@ -16,7 +16,6 @@ const getUser = async (token) => {
 };
 
 const context = async ({ req, res }) => {
-    // //   console.log(req.body.operationName);
     if (req.body.operationName === 'IntrospectionQuery') {
         // console.log('blocking introspection query..');
         return {};
@@ -27,10 +26,8 @@ const context = async ({ req, res }) => {
     const user = await getUser(token);
 
     if (!user) {
-        throwCustomError('User is not Authenticated', ErrorTypes.UNAUTHENTICATED);
+        throwCustomError('Please re-connect your wallet', ErrorTypes.UNAUTHENTICATED);
     }
-
-    // add the user to the context
     return { user };
 };
 

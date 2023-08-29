@@ -1,9 +1,9 @@
 import React from 'react'
 import { Box, Stack, Typography, Grid, TextField } from '@mui/material'
 import SubHeader from '../../molecules/SubHeader/SubHeader'
-import FormItem from '../../atoms/FormItem/FormItem';
 import ItemCard from '../../atoms/ItemCard/ItemCard';
 import ButtonAtom from '../../atoms/Button';
+import { useSendTransaction, useWaitForTransaction } from "wagmi";
 
 
 const componentStyles = {
@@ -49,6 +49,21 @@ const componentStyles = {
 }
 
 function PaymentCreation() {
+
+
+    // const { data, sendTransaction } = useSendTransaction({
+    //     from: address,
+    //     to: txDetails.to,
+    //     data: txDetails.data,
+    //     value: txDetails.value,
+    //     onError(error) {
+    //         console.log('Error', error)
+    //     },
+    // })
+
+    // const { isLoading, isSuccess } = useWaitForTransaction({
+    //     hash: data?.hash,
+    // })
 
 
     const dataForItemCard = {

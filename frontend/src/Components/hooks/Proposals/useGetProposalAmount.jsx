@@ -1,17 +1,24 @@
 import { useQuery } from '@apollo/client';
 import { GET_PROPOSAL_DETAILS } from '../../../ServerQueries/proposalQuery'; // Import the GET_PROPOSAL_Details query
+import { useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 const useGetProposalAmount = (proposalid) => {
 
-    const { loading: proposalLoading, error: proposalError, data: proposalAmountData } = useQuery(GET_PROPOSAL_DETAILS, {
+    const { loading: proposalLoading, error: proposalError, data: proposalAmountData, refetch } = useQuery(GET_PROPOSAL_DETAILS, {
         variables: { proposalid },
+        fetchPolicy: 'network-only',
     });
 
+
+    useEffect(() => {
+        refetch();
+    }, []);
+
     if (proposalError) {
-        console.error(proposalError); // Log the error for debugging
+        toast.error("Failed to Load Proposal Details");
         return {
             proposalLoading: false,
-            proposalError: "An error occurred while fetching the proposal amount.",
             amount: null,
             status: null,
         };
@@ -25,7 +32,6 @@ const useGetProposalAmount = (proposalid) => {
         amount,
         status,
         proposalLoading,
-        proposalError,
         proposalid,
     };
 };

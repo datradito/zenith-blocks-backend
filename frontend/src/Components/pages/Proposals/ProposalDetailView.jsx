@@ -11,11 +11,9 @@ import CircularIndeterminate from '../../atoms/Loader/loader.jsx';
 import useProposalDetails from '../../hooks/Proposals/useProposalDetails.jsx';
 import useWeb3IpfsContract from '../../hooks/web3IPFS';
 import { useAllBudgetsForProposal } from '../../hooks/Budgets/useBudgetsForProposal.jsx';
-import CustomizedSnackbars from '../../atoms/SnackBar/SnackBar.jsx';
 import {transformItems} from '../../../Utility/transformItems.js';
 import SnackbarMessage from '../../atoms/SnackBarGql/SnackBarGql.jsx';
-
-
+import { toast } from 'react-toastify';
 
 const BoxStyle = {
     width: '90%',
@@ -28,9 +26,7 @@ const BoxStyle = {
     paddingBottom: "1rem"
 };
 
-
 const headers = ["Categories", "Allocated Budget", "Currency", "Breakdown", "Remaining", "Invoices"]
-
 
 function ProposalDetailView() {
 
@@ -43,7 +39,7 @@ function ProposalDetailView() {
     const [pageWarnings, setPageWarnings] = useState();
     const [amount, setProposalAmount] = useState(0);
     const [ status, setStatus ] = useState();
-    let { budgetList, budgetsLoading, budgetsError  } = useAllBudgetsForProposal(proposalId);
+    let { budgetList, budgetsLoading, budgetsError } = useAllBudgetsForProposal(proposalId);
 
     dispatch(refreshState());
 
@@ -73,12 +69,20 @@ function ProposalDetailView() {
     
     //TOdo: move budget loading to tableDisplay to localize the loading
     if (loading || budgetsLoading) return <CircularIndeterminate />;
-    if (error) return <CustomizedSnackbars severity="error" message={error.message} />;
+    if (error) return toast.error("Failed to Load Proposal Details");
     
     let dataForItemCard = { "Goverance": data.proposal.space.name, "Total Budget": amount, "Proposal": data.proposal.title };
 
     //TODO: memoize this
-    budgetList = transformItems(budgetList.getBudgetsForProposal, amount);
+    if (budgetList && budgetList.getBudgetsForProposal) {
+        budgetList = transformItems(budgetList.getBudgetsForProposal, amount);
+    } else if (budgetsError) {
+        // Navigate to homepage if error code is 401
+        if (budgetsError.networkError?.statusCode === 401) {
+            toast.error("User session expired. Please re-connect in order to continue.");
+        }
+        return null; // Stop rendering rest of the component
+    }
 
     const handleExportCSV = () => {
         console.log("Export CSV");
@@ -113,9 +117,9 @@ function ProposalDetailView() {
             data: csvData,
         },
         {
-            label: "Update Proposal",
+            label: "Create Budget",
             variant: "contained",
-            onClick: proposalFilled  ? handlePageValidation : handleUpdateProposal,
+            onClick: handlePageValidation || handleUpdateProposal,
             innerText: "Create Budget",
             disabled:( status || !amount),
             ml: "0.5rem",
@@ -129,7 +133,6 @@ function ProposalDetailView() {
         to: `/proposals`
     };
 
-    console.log(status)
     return (
         <div>
             <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath='Proposals' />

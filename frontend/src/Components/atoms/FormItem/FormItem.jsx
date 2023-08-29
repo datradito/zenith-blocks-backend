@@ -18,7 +18,7 @@ function FormItem({ initialValues, type, errors}) {
             padding: '0',
             border: ".08rem #2c2c2c solid",
             borderRadius: '5px',
-            backgroundColor: 'black',
+            backgroundColor: '#24292E',
 
             '& .MuiInputBase-input': {
                 padding: '0.5rem',

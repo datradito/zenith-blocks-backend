@@ -21,10 +21,8 @@ const validateBudget = async (
 
     const proposalAmount = proposal.get('amount');
 
-    console.log(parseInt(proposalAmount) - parseInt(totalBudgetedAmount));
-
     if (parseInt(amount) > parseInt(proposalAmount) - parseInt(totalBudgetedAmount)) {
-        errors.amount = "New Budget amount exceeds Proposal amount"
+        errors.amount = "Combined total of budgets can not exceed total proposal amount"
     }
 
     return {

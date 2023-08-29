@@ -42,29 +42,29 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
 // });
 const projectId = '3a74d330e07a405df9ab1a0ff1825a9b';
 
-const { wallets } = getDefaultWallets({
+const { connectors } = getDefaultWallets({
         appName: 'ZenithBlocks',
         projectId,
         chains,
 });
 
 
-const connectors = connectorsForWallets([
-        ...wallets,
-        {
-                groupName: 'Recommended',
-                wallets: [
-                        injectedWallet({ chains }),
-                        rainbowWallet({ projectId, chains }),
-                        walletConnectWallet({ projectId, chains }),
-                        safeWallet({ chains }),
-                        metaMaskWallet({ chains }),
-                        argentWallet({ projectId, chains }),
-                        trustWallet({ projectId, chains }),
-                        ledgerWallet({ projectId, chains }),
-                ],
-        },
-]);
+// const connectors = connectorsForWallets([
+//         ...wallets,
+//         {
+//                 groupName: 'Recommended',
+//                 wallets: [
+//                         injectedWallet({ chains }),
+//                         rainbowWallet({ projectId, chains }),
+//                         walletConnectWallet({ projectId, chains }),
+//                         safeWallet({ chains }),
+//                         metaMaskWallet({ chains }),
+//                         argentWallet({ projectId, chains }),
+//                         trustWallet({ projectId, chains }),
+//                         ledgerWallet({ projectId, chains }),
+//                 ],
+//         },
+// ]);
 // const connector = new SafeConnector({
 //         chains: [mainnet, optimism],
 //         options: {
@@ -85,8 +85,8 @@ const root = ReactDOM.createRoot(
         document.getElementById('root')
 );
 
-root.render(
-        <React.StrictMode>
+root.render(    
+        <>
                 <WagmiConfig config={wagmiConfig}>
                         <RainbowKitProvider
                                 appInfo={{
@@ -99,7 +99,8 @@ root.render(
                                 <App />   
                         </RainbowKitProvider>
                 </WagmiConfig>
-        </React.StrictMode>
+
+        </>
 );
 
 // If you want to start measuring performance in your app, pass a function

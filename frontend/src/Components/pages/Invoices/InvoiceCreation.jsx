@@ -44,7 +44,7 @@ function InvoiceCreation() {
 
     const currentPathConfig = {
         path: "Invoices",
-        to: `/proposals/${proposal.id}/invoices`
+        to: `/proposal/${proposal.id}/invoices`
     }
 
     const BoxStyle = {

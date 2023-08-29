@@ -10,7 +10,7 @@ import CircularIndeterminate from '../../atoms/Loader/loader.jsx';
 export default  function Amount({ proposalid, onClick }){
     const dispatch = useDispatch();
 
-    const { amount, status, proposalLoading, proposalError } = useGetProposalAmount(proposalid);
+    const { amount, status, proposalLoading } = useGetProposalAmount(proposalid);
 
     // dispatch(addAmount({ amount: amount, proposalId: proposalId }));
 

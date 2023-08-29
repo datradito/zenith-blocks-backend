@@ -93,17 +93,14 @@ function Swap() {
             axios.get(`http://localhost:8000/tokenPrice`, {
             params: { addressOne: one, addressTwo: two }
         })
-
-
         setPrices(res.data)
     }
 
     async function fetchDexSwap() {
 
-        console.log(tokenTwo);
-
         const allowance = await axios.get(`https://api.1inch.io/v5.0/1/approve/allowance?tokenAddress=${tokenOne.address}&walletAddress=${address}`)
 
+        console.log(allowance.data)
         if (allowance.data.allowance === "0") {
 
             const approve = await axios.get(`https://api.1inch.io/v5.0/1/approve/transaction?tokenAddress=${tokenOne.address}`)
@@ -170,8 +167,6 @@ function Swap() {
                 duration: 1.50,
             })
         }
-
-
     }, [isSuccess])
 
     const settings = (

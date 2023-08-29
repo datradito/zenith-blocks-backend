@@ -43,9 +43,6 @@ app.use(session({
     store
 }));
 
-
-// init();
-
 let isMoralisInitialized = false;
 
 const initializeIpfsNode = async () => {
@@ -176,62 +173,50 @@ app.post('/createUser', async (req, res) => {
 }
 );
 
-app.get('/test', async (req, res) => {
-
-    console.log(req.session.id);
-    if (!req.session.siwe) {
-        res.status(401).send(false);
-        return;
-    }
-    console.log("User is authenticated!");
-    res.setHeader('Content-Type', 'text/plain');
-    res.send(true);
-    }
-);
-
 app.get('/logout', (req, res) => {
-    console.log(req.session.id);
-
-    if (req.session.test) {
-        console.log(req.session.nonce);
-        
-        return res.status(200).json({ message: 'cookie cleared' });
-    } else {
-        return res.status(401).json({ error: 'Unauthorized: User not authenticated' });
+        if (req.session.test) {
+            console.log(req.session.nonce);
+            
+            return res.status(200).json({ message: 'cookie cleared' });
+        } else {
+            return res.status(401).json({ error: 'Unauthorized: User not authenticated' });
+        }
     }
-}
 );
 
 app.get('/checkSiwe', (req, res) => {
-    console.log(req.session.id);
-    console.log("from  check siwe")
-    if (req.session.test) {
-        console.log(req.session.nonce);
-        return res.status(200).json(req.session.siwe);
-    } else {
-        return res.status(401).json({ error: 'Unauthorized: User not authenticated' });
+        if (req.session.test) {
+            console.log(req.session.nonce);
+            return res.status(200).json(req.session.siwe);
+        } else {
+            return res.status(401).json({ error: 'Unauthorized: User not authenticated' });
+        }
     }
-}
 );
 
 app.get("/nativeBalance", async (req, res) => {
 
     try {
         const { address, chain } = req.query;
-
         const response = await Moralis.EvmApi.balance.getNativeBalance({
             address: address,
             chain: chain,
         });
 
+        // const data = await response.getResponse();
+        // console.log(data);
+
         const nativeBalance = response.jsonResponse;
         
-        console.log(response);
         let nativeCurrency;
         if (chain === "0x1") {
             nativeCurrency = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
         } else if (chain === "0x89") {
             nativeCurrency = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270";
+        } else if (chain === "0x4") {
+            nativeCurrency = "0xc778417E063141139Fce010982780140Aa0cD5Ab";
+        } else if (chain === "0x324") {
+            nativeCurrency = "0xaBEA9132b05A70803a4E85094fD0e1800777fBEF";
         }
 
         const nativePrice = await Moralis.EvmApi.token.getTokenPrice({
@@ -247,8 +232,6 @@ app.get("/nativeBalance", async (req, res) => {
     }
 });
 
-//GET AMOUNT AND VALUE OF ERC20 TOKENS
-
 app.get("/tokenBalances", async (req, res) => {
 
     try {
@@ -261,8 +244,6 @@ app.get("/tokenBalances", async (req, res) => {
 
         const tokens = response.jsonResponse;
         const legitTokens = [];
-
-        console.log(tokens);
 
         for (const token of tokens) {
             try {
@@ -287,8 +268,6 @@ app.get("/tokenBalances", async (req, res) => {
     }
 });
 
-//GET Users NFT's
-
 app.get("/nftBalance", async (req, res) => {
 
     try {
@@ -306,8 +285,6 @@ app.get("/nftBalance", async (req, res) => {
         res.send(e);
     }
 });
-
-//GET USERS TOKEN TRANSFERS
 
 app.get("/tokenTransfers", async (req, res) => {
 
@@ -347,30 +324,6 @@ app.get("/tokenTransfers", async (req, res) => {
     }
 });
 
-// const server = new ApolloServer({
-//     // schema,
-//     // formatError: (error) => {
-//     //     if (error.originalError instanceof AuthenticationError) {
-//     //         // Handle authentication errors here
-//     //         return { message: error.message, code: 'AUTH_ERROR' };
-//     //     }
-//     //     // Return other errors as is
-//     //     return error;
-//     // }
-// });
-
-//cannot use await like following so create a method which does that for us
-
-
-
-
-// const { url } = await standAloneApolloServer(server, {
-//    listen: { port: 8000},
-// })
-// app.use('/graphql',  graphqlHTTP({
-//     schema,
-//     graphiql: true,
-// }));
 
 app.listen(8000, async () => {
     await init();

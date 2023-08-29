@@ -11,12 +11,32 @@ import {
 } from 'wagmi'
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useNavigate } from 'react-router-dom';
-
+import { useError } from '../../../Routes/ErrorRouterProvider';
 import { useSignMessage } from 'wagmi';
+
+
+const clearAuthData = () => {
+    sessionStorage.removeItem('authToken');
+    sessionStorage.removeItem('address');
+    sessionStorage.removeItem('daoId');
+};
+
 
 export default function WalletConnect() {
     const navigate = useNavigate();
-    const { address, connector, onConnect, isConnected } = useAccount()
+    const { handleError } = useError();
+    const { address } = useAccount({
+        onConnect: () => {
+            const auth = sessionStorage.getItem('authToken');
+            !auth && signInWithEthereum();
+        },
+        onDisconnect() {
+            clearAuthData();
+            localStorage.clear();
+            navigate(`/`);
+            handleError({ error: "success", message: "User disconnected" })
+        }
+    })
     const { data: ensAvatar } = useEnsAvatar({ address })
     const { data: ensName } = useEnsName({ address })
     const { data:balance, isError: balanceError, isLoading: balanceLoading } = useBalance({
@@ -26,43 +46,15 @@ export default function WalletConnect() {
     const { disconnectAsync } = useDisconnect();
     const { connectAsync , isSuccess:connectSuccess, status } = useConnect();
     const { chain } = useNetwork()
-    // const { data, isError, isLoading, isSuccess, signMessage } = useSignMessage({
-    //     message: 'gm wagmi frens',
-    // })
 
-    // const connect = useConnect({
-    //     onSettled(data, error) {
-    //         console.log('Settled', { data, error })
-    //     },
 
-    //     onSuccess(data) {
-    //         console.log('Connect', data)
-    //     },
-    // })
-
-    useEffect(() => {
-        
-        const auth = sessionStorage.getItem('authToken');
-        if (isConnected && !auth) {
-            signInWithEthereum();
-        } else if (!isConnected) {
-            sessionStorage.removeItem('authToken');
-            sessionStorage.removeItem('daoId');
-            sessionStorage.removeItem('address');
-        }
-    }, [isConnected])
-
-    // const connect = useConnect({
-    //     onSettled(data, error) {
-    //         console.log('Settled', { data, error })
-    //     },
-    // })
-    console.log(status, onConnect)
+    //console.log("WalletConnect", { address, connector, isConnected, ensAvatar, ensName, balance, balanceError, balanceLoading, chain, connectSuccess, status })
 
     useEffect(() => {
         const auth = sessionStorage.getItem('authToken');
         if (!auth) {
             disconnectAsync();
+            localStorage.clear();
         }
     }, [])
 
@@ -122,27 +114,26 @@ export default function WalletConnect() {
             const message = await createSiweMessage();
 
             if (!message) {
-                console.log("No message received from createSiweMessage");
+                handleError({ error: "error", message: "Error creating message" });
                 return;
             }
 
             const signature = await signMessageAsync({message});
 
             if (!signature) {
-                console.log("No signature received from signMessageAsync");
+                handleError({ error: "error", message: "Error signing message" });
                 return;
             }
-
             const res = await sendForVerification(message, signature);
-
             const { daoId, address} = decodeToken(res.authToken);
 
             sessionStorage.setItem('authToken', res.authToken);
             sessionStorage.setItem('daoId', daoId);
             sessionStorage.setItem('address', address);
-            navigate(`/proposals`);
+            handleError({ error: "success", message: "User successfully connected" });
+            navigate(`/`);
         } catch (error) {
-            console.error("Error during sign-in:", error);
+            handleError({ error: "error", message: "Error signing message" });
             disconnectAsync();
             sessionStorage.removeItem('authToken');
         }
@@ -182,13 +173,6 @@ export default function WalletConnect() {
                 }}
             />
             }
-            {/* <div>
-                <button disabled={isLoading} onClick={() => signMessage()}>
-                    Sign message
-                </button>
-                {isSuccess && <div>Signature: {data}</div>}
-                {isError && <div>Error signing message</div>}
-            </div> */}
         </div>
     );
 }

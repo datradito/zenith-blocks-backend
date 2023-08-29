@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import Login from '../../pages/Home/logIn';
 
+
 import {
     Box,
     AppBar,
@@ -26,42 +27,24 @@ const ResponsiveHeaderBar = () => {
     const [walletConnected, setWalletConnected] = useState(false);
 
     let { proposal } = useSelector(state => state.currentProposal);
+    let { Budget } = useSelector(state => state.currentBudget);
     let pages = [];
 
     useEffect(() => {
-        sessionStorage.getItem('authToken') ? setWalletConnected(true) : setWalletConnected(false);
-    }, [walletConnected]);
+        sessionStorage.getItem('authToken') ? setWalletConnected(true)  : setWalletConnected(false);
+    }, []);
 
     proposal ? pages.push(
         { name: 'Proposals', url: '/proposals' },
-        { name: 'Invoices', url: `/proposals/${proposal.id}/invoices` },
         { name: 'Accounts', url: '/accounts' },
         { name: 'Swap', url: '/swap' },
-        { name: 'Dashboard', url: '/dashboard' }) : pages.push({ name: 'Proposals', url: '/proposals' },
+        { name: 'Dashboard', url: '/dashboard' }) : Budget ?
+            pages.push(
+                { name: 'Invoices', url: `/proposal/${proposal.id}/invoices` },
+                { name: 'Proposals', url: '/proposals' },
+                { name: 'Accounts', url: '/accounts' }
+            ) : pages.push({ name: 'Proposals', url: '/proposals' },
         { name: 'Accounts', url: '/accounts' });
-
-
-
-    // const handlePageClick = (page) => {
-    //     const navigate = useNavigate();
-    //     navigate(`/${page}`);
-    //     handleCloseNavMenu();
-    // };
-
-    // const handleOpenNavMenu = (event) => {
-    //     setAnchorElNav(event.currentTarget);
-    // };
-    // const handleConnectToWallet = (event) => {
-    //     setAnchorElUser(event.currentTarget);
-    // };
-
-    // const handleCloseNavMenu = () => {
-    //     setAnchorElNav(null);
-    // };
-
-    // const handleCloseUserMenu = () => {
-    //     setAnchorElUser(null);
-    // };
 
     return (
         <AppBar
@@ -88,8 +71,6 @@ const ResponsiveHeaderBar = () => {
                     >
                         <img style={{ maxWidth: "8rem" }} src={logo} alt="Logo" />
                     </Typography>
-                    <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-                    {/* {walletConnected ? ( */}
                         <>
                         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                             {pages.map((page, index) => (

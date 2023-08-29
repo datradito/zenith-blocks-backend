@@ -1,15 +1,13 @@
-import { useState } from 'react';
+import { toast } from 'react-toastify';
 import { useMutation } from '@apollo/client';
 import { ADD_OR_UPDATE_PROPOSAL } from '../../../ServerQueries/proposalMutation'; // Import the ADD_OR_UPDATE_PROPOSAL mutation
 
 const useSaveProposalDetails = () => {
-    // const [proposalAmount, setProposalAmount] = useState(null);
     const [SetProposalAmount, { data, loading, error }] = useMutation(ADD_OR_UPDATE_PROPOSAL);
 
     const saveProposalDetails = async (formData) => {
-
         try {
-            const { data } = await SetProposalAmount({
+            await SetProposalAmount({
                 variables: {
                     proposalAmountInput: {
                         id: formData.id,
@@ -21,16 +19,13 @@ const useSaveProposalDetails = () => {
                 },
             });
         } catch (error) {
-            // Handle any errors from the mutation
-            console.error(error);
+            toast.error(`Failed to Save Proposal Amount: ${error.message}`);
         }
     };
 
     return {
-        // proposalAmount,
         loading,
         error,
-        // proposalId,
         saveProposalDetails,
     };
 };

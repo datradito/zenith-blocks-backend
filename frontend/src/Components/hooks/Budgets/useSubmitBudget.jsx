@@ -1,6 +1,7 @@
 import { SUBMIT_BUDGET_MUTATION } from '../../../ServerQueries/Budget/Mutation';
 import { useCallback, useMemo } from 'react';
 import { useMutation } from '@apollo/client';
+import { toast } from 'react-toastify';
 
 
 const useSubmitBudget = () => {
@@ -55,7 +56,6 @@ const useSubmitBudget = () => {
                 });
                 return data.submitBudget;
             } catch (error) {
-                console.error('Budget submission failed:', error.message);
                 throw error;
             }
         },
@@ -63,7 +63,7 @@ const useSubmitBudget = () => {
     );
 
     // Cache the submitBudget function using useMemo to avoid recreating it on each render
-    const cachedSubmitBudget = useMemo(() => submitBudget, [submitBudget]);
+    useMemo(() => submitBudget, [submitBudget]);
 
     return {
         submitBudget,

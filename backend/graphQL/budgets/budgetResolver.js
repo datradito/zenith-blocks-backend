@@ -42,7 +42,7 @@ const budgetResolver = {
             )
 
             if (!valid) {
-                throwCustomError('Budget validation failed', errors);
+                throwCustomError(errors.amount, ErrorTypes.BAD_USER_INPUT);
             }
 
             let ipfsResponse;
@@ -63,10 +63,12 @@ const budgetResolver = {
                 try {
                     return await budget.save();
                 } catch (error) {
+                    console.log(error);
                     throw new GraphQLError(error.message);
                 }
                 
             } catch (error) {
+                console.log(error);
                 throw new GraphQLError(error.message)
             }
         }

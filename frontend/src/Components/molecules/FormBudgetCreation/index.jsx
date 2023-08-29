@@ -43,7 +43,7 @@ function FormRow({ tableHeaderData }) {
             '& .MuiTableCell-root': {
                 color: 'white',
                 // backgroundColor: '#2C2C2C',
-                backgroundColor: 'black',
+                backgroundColor: '#24292E',
                 fontSize: '0.85rem',
             },
             '& .MuiInputBase-root': {
@@ -60,7 +60,7 @@ function FormRow({ tableHeaderData }) {
             '& .MuiInputBase-root': {
                 color: 'white',
                 // border: '2px solid #2C2C2C',
-                backgroundColor: '#1A1C1E',
+                backgroundColor: '#24292E',
                 margin: '0',
                 fontSize: '.85rem',
             }
@@ -84,17 +84,18 @@ function FormRow({ tableHeaderData }) {
 
     return (
         <Box sx={{
-            width: '95%',
-            margin: '2rem auto',
-            textAlign: "left",
+            width: '98%',
+            marginLeft: '2%',
         }}>
             <Box sx={{
+                width: '100%',
+                margin: '2rem auto',
                 display: 'flex',
                 justifyContent: 'flex-start',
                 border: 'none',
                 padding: '0.1rem',
                 color: 'white',
-                backgroundColor: 'rgba(40, 42, 46, 0.5)',
+                backgroundColor: '#24292E',
                 fontSize: '0.75rem',
                 color: "grey",
             }}>
@@ -135,7 +136,7 @@ function FormRow({ tableHeaderData }) {
                                         style: {
                                             color: 'white',
                                             border: '2px solid #2C2C2C',
-                                            backgroundColor: '#1A1C1E',
+                                            backgroundColor: '#24292E',
                                             minWidth: '16%',
                                         },
                                     }}
@@ -162,7 +163,7 @@ function FormRow({ tableHeaderData }) {
                                         style: {
                                             color: 'white',
                                             border: '2px solid #2C2C2C',
-                                            backgroundColor: '#1A1C1E',
+                                            backgroundColor: '#24292E',
                                         },
                                         readOnly: true,
                                     }}

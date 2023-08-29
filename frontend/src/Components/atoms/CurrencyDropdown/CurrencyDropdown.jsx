@@ -26,10 +26,10 @@ export default function CurrencyDropdown({ onChange, value, sx }) {
     
     const currencyColors = {
         border: '2px solid #2C2C2C',
-        color: 'white',
+        color: '#24292E',
         '& .MuiTableCell-root': {
             color: 'white',
-            backgroundColor: '#2C2C2C',
+            backgroundColor: '#24292E',
             fontSize: '0.85rem',
         },
         '& .MuiInputBase-root': {

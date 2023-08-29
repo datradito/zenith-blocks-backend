@@ -9,6 +9,7 @@ import SubHeader from "../../molecules/SubHeader/SubHeader.jsx"
 import CircularIndeterminate from '../../atoms/Loader/loader.jsx';
 import useProposals from '../../hooks/Proposals/useProposals.jsx';
 import ProposalCard from './ProposalCard.jsx';
+import { useError } from '../../../Routes/ErrorRouterProvider.jsx';
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -32,7 +33,13 @@ const pagination = {
   color: "white"
 }
 
-const Proposals = () => {
+const currentPathConfig = {
+  path: "Proposals",
+  // to: `/proposals/${proposal.id}`
+}
+
+const Proposals = (props) => {
+  const { handleError } = useError();
   const [selectedItemId, setSelectedItemId] = useState(null);
 
   const {
@@ -46,8 +53,10 @@ const Proposals = () => {
     networkStatus,
   } = useProposals();
 
+  const onClose = () => {
+    setSelectedItemId(null);
+  };
 
-  //load this page or sync proposals every time proposal Amount is set up
   useEffect(() => {
     handleSyncProposals();
   }, []);
@@ -55,7 +64,7 @@ const Proposals = () => {
 
   if (networkStatus === NetworkStatus) return <CircularIndeterminate />;
   if (loading) return <CircularIndeterminate />;
-  if (error) return <p>Error : {error.graphQLErrors}</p>;
+  if (error) return handleError({error: "error", message: "Something went wrong! Please try again later."});
 
 
   const handleTotalBudgetClick = (itemId, e) => {
@@ -78,15 +87,6 @@ const Proposals = () => {
         ml: "0.5rem"
       }
     ];
-
-  const currentPathConfig = {
-    path: "Proposals",
-    // to: `/proposals/${proposal.id}`
-  }
-
-  const onClose = () => {
-    setSelectedItemId(null);
-  };
 
   return (
     <>

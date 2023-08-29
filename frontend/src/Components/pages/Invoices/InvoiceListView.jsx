@@ -10,6 +10,7 @@ import { useState } from 'react';
 import useWeb3IpfsContract from '../../hooks/web3IPFS';
 import ButtonAtom from '../../atoms/Button';
 import { useGetAllInvoicesByBudget } from '../../hooks/Invoices/useGetAllInvoices';
+import CircularIndeterminate from '../../atoms/Loader/loader';
 
 
 const tableHeaderData = ["Invoice", "Receipient", "Amount", "Currency", "Status", "Date", "Due","View", "Payment", "Action"]
@@ -22,6 +23,8 @@ function InvoiceListView() {
     const [amount, setProposalAmount] = useState(0);
     let { Budget } = useSelector(state => state.currentBudget);
     const { web3, contract } = useWeb3IpfsContract();
+
+    console.log("proposal", proposal);
 
     // const getInvoicesCid = async (contract, budgetId) => {
     //     try {
@@ -55,10 +58,9 @@ function InvoiceListView() {
     //     // }
     // }, []);
 
-    const { loading, error, data, budgetInvoices } = useGetAllInvoicesByBudget(Budget.id);
+    const { loading, data, budgetInvoices, queryError } = useGetAllInvoicesByBudget(Budget?.id);
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error :(</p>;
+    if (loading) return <CircularIndeterminate />;
 
     const handleExportCSV = () => {
         console.log("Export CSV");
@@ -90,7 +92,7 @@ function InvoiceListView() {
                 innerText: "Create Invoice",
                 ml: "0.5rem",
                 type: "link",
-                to: '/proposal/budgets/createinvoice',
+                to: `/budgets/${Budget.id}/createinvoice`,
             }
         ];
     

@@ -1,11 +1,19 @@
 import { setContext } from "@apollo/client/link/context";
 import { from, ApolloLink } from '@apollo/client';
 import { createHttpLink } from '@apollo/client';
-// import ApolloLinkTimeout from '@apollo/client/link/timeout';
+import { toast } from 'react-toastify';
 import { RetryLink } from '@apollo/client/link/retry';
 import { onError } from '@apollo/client/link/error';
 import { redirect } from "react-router-dom";
 import { useDisconnect } from 'wagmi';
+
+
+const clearAuthData = () => {
+    sessionStorage.removeItem('authToken');
+    sessionStorage.removeItem('address');
+    sessionStorage.removeItem('daoId');
+};
+
 
 export const authLink = () => (setContext(async (_, { headers }) => {
     const token = sessionStorage.getItem('authToken');
@@ -38,21 +46,17 @@ export const loggerLink = new ApolloLink((operation, forward) => {
 export const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
         graphQLErrors.forEach(({ message, extensions, locations, path }) => {
-            console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
-            if (extensions.code === 'UNAUTHENTICATED') {
-                sessionStorage.removeItem('authToken');
-                sessionStorage.removeItem('address');
-                sessionStorage.removeItem('daoId');
-                console.log("INVALID_TOKEN");
+
+            if (message === 'UNAUTHENTICATED') {
+                toast.error("A GraphQL error occurred.");
+                clearAuthData();
             }
 
             if (message === 'AUTH_REQUIRED') {
-                sessionStorage.removeItem('authToken');
-                sessionStorage.removeItem('address');
-                sessionStorage.removeItem('daoId');
-                // setWalletConnected(false);
-                console.log("AUTH_REQUIRED");
+                clearAuthData();
             }
+
+            toast.error(message);
         });
     
     if (networkError) console.log(`[Network error]: ${networkError}`);
@@ -65,9 +69,25 @@ export const httpLink = () => (createHttpLink({
 }));
 
 const retryIf = (error, operation) => {
-    const doNotRetryCodes = [500, 400];
-    return !!error && !doNotRetryCodes.includes(error.statusCode);
+    if (error.statusCode) {
+        const doNotRetryCodes = [400, 401, 403, 500];
+        clearAuthData();
+        return !doNotRetryCodes.includes(error.statusCode);
+    }
+
+    if (error.graphQLErrors) {
+        for (let graphQLError of error.graphQLErrors) {
+            // Customize conditions based on your needs
+            if (graphQLError.extensions?.code === 'UNAUTHENTICATED' ||
+                graphQLError.extensions?.code === 'BAD_USER_INPUT') {
+                clearAuthData();
+                return false;
+            }
+        }
+    }
+    return true;
 };
+
 
 export const retryLink = new RetryLink({
     delay: {

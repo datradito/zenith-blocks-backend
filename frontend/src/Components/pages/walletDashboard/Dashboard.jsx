@@ -1,4 +1,3 @@
-// import "./Dashboard.css";
 import { useState } from "react";
 import NativeTokens from "./Components/NativeTokens";
 import Tokens from "./Components/Tokens";
@@ -6,9 +5,8 @@ import TransferHistory from "./Components/TransferHistory";
 import WalletInputs from "./Components/WalletInput";
 import PortfolioValue from "./Components/PortfolioValue";
 import Avatar from '@mui/material/Avatar';
-// import { Avatar, TabList, Box } from '@web3uikit/core';
-import { Link, NavLink, Outlet } from "react-router-dom";
-import { Box, Button, Typography } from "@mui/material";
+import { NavLink } from "react-router-dom";
+import { Box, Typography } from "@mui/material";
 
 import {
     useAccount,
@@ -21,15 +19,17 @@ import {
 } from 'wagmi'
 
 function Dashboard() {
-    const [activeTab, setActiveTab] = useState('tokens'); // Default tab
 
-    const address = sessionStorage.getItem('address');
+    const { address, connector, onConnect, isConnected } = useAccount();
+    const [activeTab, setActiveTab] = useState('tokens');
+    const { chain: networkChain } = useNetwork();
+
     const ensAvatar = useEnsAvatar({
         address: address,
         cacheTime: 2_000,
     })
     const [wallet, setWallet] = useState("");
-    const [chain, setChain] = useState("0x1");
+    const [chain, setChain] = useState(networkChain?.id);
     const [nativeBalance, setNativeBalance] = useState(0);
     const [nativeValue, setNativeValue] = useState(0);
     const [tokens, setTokens] = useState([]);
@@ -38,6 +38,7 @@ function Dashboard() {
     const handleTabClick = (tabName) => {
         setActiveTab(tabName);
     };
+
     return (
         <Box style={{
             color: "white",

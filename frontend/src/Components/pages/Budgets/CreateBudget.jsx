@@ -7,7 +7,8 @@ import useWeb3IpfsContract from '../../hooks/web3IPFS';
 import useFilteredProposalAmount from '../../hooks/Proposals/useFilteredProposalAmount';
 import useSubmitBudget from '../../hooks/Budgets/useSubmitBudget';
 import CustomizedSnackbars from '../../atoms/SnackBar/SnackBar';
-import { Box, Stack } from '@mui/material';
+import { Box } from '@mui/material';
+import { toast } from 'react-toastify';
 
 function CreateBudget() {
 
@@ -17,9 +18,6 @@ function CreateBudget() {
   let { proposal } = useSelector(state => state.currentProposal);
   let { items } = useSelector(state => state.createBudget);
 
-  const [budgetError, setBudgetError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
-  const [budgetErrorKey, setBudgetErrorKey] = useState(0);
 
   const navigate = useNavigate();
 
@@ -39,15 +37,13 @@ function CreateBudget() {
 
   const validateBudget = () => {
     if (items[0].category === "" || items[0].amount === "" || items[0].currency === "" || items[0].breakdown === "") {
-      setBudgetError("Please fill out all fields");
-      setBudgetErrorKey(budgetErrorKey + 1);
+      toast.error("Please fill out all fields");
       return false;
     }
 
 
     if (parseInt(items[0].amount) > parseInt(filteredProposalAmount)) {
-      setBudgetError("Budget amount cannot be greater than proposal amount");
-      setBudgetErrorKey(budgetErrorKey + 1);
+      toast.error("Budget amount cannot be greater than proposal amount");
       return false;
     }
 
@@ -63,16 +59,12 @@ function CreateBudget() {
 
     try {
       const budgetData = { ...items[0], proposalid: proposalId, rootpath: proposalId, amount: parseInt(items[0].amount), breakdown: parseInt(items[0].breakdown) };
-
       await submitBudget(budgetData);
-      setSuccessMessage("Budget Saved Successfully");
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // navigate(`/proposals/${proposalId}`);
+      toast.success("Budget Saved Successfully");
       navigate(`/proposals`);
     } catch (error) {
-      setBudgetError('Error submitting budget:', error.message);
-      setBudgetErrorKey(budgetErrorKey + 1);
+      console.log(error);
+      // toast.error(`Failed to Save Budget: ${error.message}`);
     }
   };
 
@@ -94,14 +86,6 @@ function CreateBudget() {
         onClick: handleSaveProposal,
         innerText: "Save Proposal",
         ml: "0.5rem",
-        //   to: `/proposals/${proposal.id}`,
-        // subButton: {
-        //   label: "View Proposal",
-        //   innerText: "View Proposal",
-        //   type: "link",
-        //   to: `/proposals/${proposal.id}`,
-        //   message: "Proposal Saved Successfully",
-        // }
       }
     ];
 
@@ -125,13 +109,8 @@ function CreateBudget() {
         <FormItem
           initialValues={dataForItemCard}
           type="budget"
-          errors={budgetError ? budgetError : null}
-          key={budgetErrorKey}
         />
       </Box>
-      {successMessage && (
-        <CustomizedSnackbars key="success" message={successMessage} severity="success" autoOpen={true} />
-      )}
     </Box>
   )
 }

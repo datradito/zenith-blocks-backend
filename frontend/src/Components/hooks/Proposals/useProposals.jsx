@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_PROPOSAL_BY_SPACE } from '../../../SnapShot/Queries.js';
 import { snapShotClient } from '../../../SnapShot/client.js';
@@ -13,6 +13,7 @@ const useProposalQuery = (stateQuery) => {
             skip: parseInt(stateQuery.skip),
             name: dao,
         },
+        fetchPolicy: 'network-only',
         notifyOnNetworkStatusChange: true,
         client: snapShotClient,
     });
@@ -43,11 +44,19 @@ const useProposals = () => {
         console.log('Export CSV');
     };
 
+    useEffect(() => {
+        refetch({
+            first: parseInt(stateQuery.first),
+            skip: parseInt(stateQuery.skip),
+            name: sessionStorage.getItem('daoId'),
+        });
+    }, []);
+
     const handleSyncProposals = () => {
         refetch({
             first: parseInt(stateQuery.first),
             skip: parseInt(stateQuery.skip),
-            name: 'balancer.eth',
+            name: sessionStorage.getItem('daoId'),
         });
         syncedAt = new Date().toLocaleString(); // Fix: Define setSyncedAt or remove this line if not used
     };
