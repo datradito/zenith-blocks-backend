@@ -339,8 +339,7 @@ app.get("/allowance", async (req, res) => {
     } catch (e) {
         res.send(e);
     }
-    
-    
+
 });
 
 app.get("/approve", async (req, res) => {
