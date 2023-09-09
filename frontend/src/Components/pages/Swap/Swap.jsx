@@ -90,7 +90,7 @@ function Swap() {
     async function fetchPrices(one, two) {
 
         const res = await
-            axios.get(`http://localhost:8000/tokenPrice`, {
+            axios.get(`${process.env.REACT_APP_API_URL}/tokenPrice`, {
             params: { addressOne: one, addressTwo: two }
         })
         setPrices(res.data)

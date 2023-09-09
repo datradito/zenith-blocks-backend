@@ -9,7 +9,23 @@ import { useNavigate } from 'react-router-dom';
 import CircularIndeterminate from '../../atoms/Loader/loader';
 import { resetInvoice } from '../../../actions/createInvoiceAction';
 import CustomizedSnackbars from '../../atoms/SnackBar/SnackBar';
-import generateUUID  from '../../../Utility/uniqueId';
+import generateUUID from '../../../Utility/uniqueId';
+import { useGetAllInvoicesByBudget } from '../../hooks/Invoices/useGetAllInvoices';
+
+const BoxStyle = {
+    width: '90%',
+    margin: '0rem auto',
+    textAlign: "center",
+    color: 'white',
+    border: ".05rem #2c2c2c solid",
+    marginTop: "1rem",
+    borderRadius: 3
+};
+
+const handleDraft = () => {
+    //do validation and save file locally
+    console.log("Save Draft");
+};
 
 function InvoiceCreation() {
     const dispatch = useDispatch();
@@ -17,17 +33,16 @@ function InvoiceCreation() {
     const { Budget } = useSelector(state => state.currentBudget);
     const { header } = useSelector(state => state.createInvoice);
     const navigate = useNavigate();
-    const [submitInvoice, { loading, error }] = useMutation(SUBMIT_INVOICE_MUTATION, { errorPolicy: "all" });
+    const [submitInvoice, { loading, error }] = useMutation(SUBMIT_INVOICE_MUTATION,
+        {
+            errorPolicy: "all",
+        }
+    );
+    const {refetch} = useGetAllInvoicesByBudget(Budget?.id);
     const [invoiceError, setInvoiceError] = useState(null);
     const [successMessage, setSuccessMessage] = useState(null);
     const [invoiceErrorKey, setInvoiceErrorKey] = useState(0);
 
-
-
-    const handleDraft = () => {
-        //do validation and save file locally
-        console.log("Save Draft");
-    };
 
     const initialValuesHeader = {
         Proposal: proposal.title,
@@ -46,16 +61,6 @@ function InvoiceCreation() {
         path: "Invoices",
         to: `/proposal/${proposal.id}/invoices`
     }
-
-    const BoxStyle = {
-        width: '90%',
-        margin: '0rem auto',
-        textAlign: "center",
-        color: 'white',
-        border: ".05rem #2c2c2c solid",
-        marginTop: "1rem",
-        borderRadius: 3
-    };
 
 
     const handleValidation = () => {
@@ -99,9 +104,7 @@ function InvoiceCreation() {
     };
 
     const handleSaveInvoice = async (event) => {
-        
         let isValid = handleValidation();
-
         if (!isValid) {
             setInvoiceErrorKey(generateUUID());
             return;
@@ -129,10 +132,10 @@ function InvoiceCreation() {
                 }).then((res) => {
                     if (res.data.submitInvoice !== null) {
                         setSuccessMessage("Invoice saved successfully!")
-
                         setTimeout(() => {
-                            // dispatch(resetInvoice());
-                            navigate(`/proposals/${proposal.id}/invoices`);
+                            dispatch(resetInvoice());
+                            navigate(`/proposal/${proposal.id}/invoices`);
+                            refetch();
                         }, 2000);
                     }
 
@@ -153,8 +156,6 @@ function InvoiceCreation() {
         }
     }; 
 
-
-
     const componentButtonConfig =
         [
             {
@@ -172,7 +173,7 @@ function InvoiceCreation() {
                 innerText: "Save Invoice",
                 ml: "0.5rem",
                 type: "Submit",
-                // redirectTo: `/proposals/${proposal.id}/invoices`,
+                redirectTo: `/proposal/${proposal.id}/invoices`,
             }
         ];
 

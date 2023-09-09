@@ -1,38 +1,40 @@
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { transformInvoices } from "../../../Utility/transformItems.js";
 import { GET_ALL_INVOICES_BY_BUDGET } from "../../../ServerQueries/Invoices/Queries";
-import { useSelector } from "react-redux";
-
 
 export const useGetAllInvoicesByBudget = (budgetId) => {
-    const { Budget } = useSelector(state => state.currentBudget);
-    const [budgetInvoices, setBudgetInvoices] = useState();
+    const [invoices, setInvoices] = useState([]);
     const [queryError, setQueryError] = useState(null);
-    const memoizedQuery = useMemo(() => GET_ALL_INVOICES_BY_BUDGET, [budgetId]);
+    const [isFetching, setIsFetching] = useState(false); // New state to handle manual fetching
 
-    const { loading, error, data, refetch } = useQuery(memoizedQuery, {
+    const { loading, error, data, refetch } = useQuery(GET_ALL_INVOICES_BY_BUDGET, {
         variables: { budgetid: budgetId },
         skip: !budgetId,
+        onError: (error) => console.log("Error in fetching invoices", error),
+        onCompleted: (data) => console.log("Data", data),
     });
 
     const getInvoices = async () => {
+        setIsFetching(true);
         try {
             const { data } = await refetch();
-            setBudgetInvoices(transformInvoices(data?.getInvoicesByBudget));
+            const transformedData = transformInvoices(data?.getInvoicesByBudget);
+            setInvoices(transformedData);
             setQueryError(null);
-            return data;
         } catch (error) {
             setQueryError(error);
-            return error;
         }
+        setIsFetching(false);
     };
 
     useEffect(() => {
         if (data) {
-            setBudgetInvoices(transformInvoices(data?.getInvoicesByBudget));
+            const transformedData = transformInvoices(data?.getInvoicesByBudget);
+            setInvoices(transformedData);
         }
     }, [data]);
 
-    return { loading, data, budgetInvoices, getInvoices, queryError };
+
+    return { loading, invoices, queryError, isFetching, refetch };
 };

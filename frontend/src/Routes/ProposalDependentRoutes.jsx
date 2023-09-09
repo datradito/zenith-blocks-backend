@@ -2,13 +2,11 @@ import { useSelector } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useError } from './ErrorRouterProvider';
-import { toast } from 'react-toastify';
 
 const ProposalRoute = ({ children }) => {
     const { handleError } = useError();
     const [showSnackbar, setShowSnackbar] = useState(false);
     let { proposal } = useSelector(state => state.currentProposal);
-    let { Budget } = useSelector(state => state.currentBudget);
 
     useEffect(() => {
         if (proposal === null) {
@@ -17,7 +15,7 @@ const ProposalRoute = ({ children }) => {
         } else {
             setShowSnackbar(false);
         }
-    }, []);
+    }, [handleError, proposal]);
 
     return !showSnackbar ? <Outlet /> : (
         handleError({ error: 'error', message: 'Please select a proposal and budget' })

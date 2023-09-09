@@ -6,7 +6,7 @@ import ButtonAtom from "../../../atoms/Button";
 function TransferHistory({ chain, wallet, transfers, setTransfers }) {
 
     async function getTokenTransfers() {
-            const response = await axios.get(`http://localhost:8000/tokenTransfers`, {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/tokenTransfers`, {
             params: {
                 address: wallet,
                 chain: chain,

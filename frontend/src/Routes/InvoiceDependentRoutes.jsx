@@ -4,7 +4,7 @@ import { Snackbar } from '@mui/material';
 import { Alert } from '@mui/material';
 import { Outlet } from "react-router-dom";
 
-const InvoiceRoutes = ({ component: component, ...rest }) => {
+const InvoiceRoutes = ({ component, ...rest }) => {
     const [showSnackbar, setShowSnackbar] = useState(false);
     const { proposal } = useSelector(state => state.currentProposal);
     const { Budget } = useSelector(state => state.currentBudget);
@@ -15,7 +15,7 @@ const InvoiceRoutes = ({ component: component, ...rest }) => {
         } else {
             setShowSnackbar(false);
         }
-    }, [proposal]);
+    }, [proposal, Budget]);
 
     return !showSnackbar ? <Outlet /> : (
         <Snackbar

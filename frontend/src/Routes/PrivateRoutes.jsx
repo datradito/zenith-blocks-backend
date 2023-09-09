@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Navigate, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { useDisconnect } from 'wagmi';
 
-const PrivateRoute = ({ component: component, ...rest }) => {
+const PrivateRoute = ({ component, ...rest }) => {
     const [authError, setAuthError] = useState(null);
     const token = sessionStorage.getItem("authToken");
-    const { disconnect } = useDisconnect();
+    const { disconnectAsync } = useDisconnect();
     
 
     useEffect(() => {
         if (token === null) {
+            disconnectAsync();
             setAuthError("User is not Authenticated. Please connect wallet!");
-            disconnect();
         } else {
             setAuthError(null);
         }
-    }, [token]);
+    }, [token, disconnectAsync]);
 
 
     return token ? <Outlet /> : (

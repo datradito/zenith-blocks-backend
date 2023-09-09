@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react'
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Box, Stack } from '@mui/material';
 import TableDisplay from '../../DisplayElements/TableDisplay.jsx';
 import { useDispatch, useSelector } from 'react-redux';
@@ -45,7 +45,7 @@ function ProposalDetailView() {
 
     const filteredProposal = useMemo(() => {
         return proposals.filter((proposal) => proposal.id === proposalId ? proposal : null);
-    }, [proposalId]);
+    }, [proposalId, proposals]);
 
     useEffect(() => {
         setProposalAmount(filteredProposal[0]?.amount);
@@ -61,7 +61,7 @@ function ProposalDetailView() {
             dispatch(setProposal(data.proposal));
         }
     }
-    , []);
+    , [data]);
 
     useEffect(() => {
         !amount ? handlePageValidation() : setPageWarnings(null);
@@ -104,17 +104,15 @@ function ProposalDetailView() {
         ["Yezzi", "Min l3b", "ymin@cocococo.com"]
     ];
 
-    //store status of proposal, if totalBudgetedAmount is equal to proposalAmount then set proposal status to filled
-    const proposalFilled = false;
-
     const componentButtonConfig = [
         {
-            label: "Export CSVP",
+            label: "Export CSV",
             variant: "contained",
             onClick: handleExportCSV,
             innerText: "Export CSV",
             backgroundColor: "#282A2E",
-            data: csvData,
+            data: budgetList,
+            filetype: "ProposalDetail"
         },
         {
             label: "Create Budget",

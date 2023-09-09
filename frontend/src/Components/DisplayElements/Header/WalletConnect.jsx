@@ -50,13 +50,13 @@ export default function WalletConnect() {
 
     //console.log("WalletConnect", { address, connector, isConnected, ensAvatar, ensName, balance, balanceError, balanceLoading, chain, connectSuccess, status })
 
-    useEffect(() => {
-        const auth = sessionStorage.getItem('authToken');
-        if (!auth) {
-            disconnectAsync();
-            localStorage.clear();
-        }
-    }, [])
+    // useEffect(() => {
+    //     const auth = sessionStorage.getItem('authToken');
+    //     if (!auth) {
+    //         disconnectAsync();
+    //         localStorage.clear();
+    //     }
+    // }, [])
 
     const createSiweMessage = async () => {
 
@@ -67,19 +67,23 @@ export default function WalletConnect() {
                 chain: chain?.id
             };
 
-            const res = await axios.get(`http://localhost:8000/nonce`);
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/nonce`);
             const nonce = res.data;
 
-            const { data } = await axios.post(`http://localhost:8000/siwe`, {
+            const { data } = await axios.post(
+              `${process.env.REACT_APP_API_URL}/siwe`,
+              {
                 address: userData.address,
                 network: userData.network,
-                nonce
-            }, {
+                nonce,
+              },
+              {
                 headers: {
-                    'Content-Type': 'application/json',
+                  "Content-Type": "application/json",
                 },
                 withCredentials: true,
-            });
+              }
+            );
 
             return data;
         } catch (error) {
@@ -92,19 +96,19 @@ export default function WalletConnect() {
     const sendForVerification = async(message, signature) => {
         try {
             const response = await axios.post(
-                `http://localhost:8000/verify`,
-                { message, signature },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    withCredentials: true, // Moved outside the 'headers' object
-                }
+              `${process.env.REACT_APP_API_URL}/verify`,
+              { message, signature },
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                withCredentials: true, // Moved outside the 'headers' object
+              }
             );
 
             return response.data;
         } catch (error) {
-            console.error('Error during verification:', error);
+            console.error('Error during verification:', error.response.data);
             throw error; // Rethrow the error to signal that the function encountered an error
         }
     }

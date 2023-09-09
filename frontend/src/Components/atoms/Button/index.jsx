@@ -38,31 +38,35 @@ const ButtonAtom = ({ config }) => {
         }  
     };
     return (
-        <>
-            {
-                config.label === 'Export CSVP' ? (
-                    <CSVLink data={config.data} style={{ textDecoration: "none" }}>
-                        <Button
-                            sx={buttonComponentStyles.buttonStyle}
-                            variant="contained"
-                            type={config.type ? config.type : "submit"}
-                            // onClick={config.onClick}
-                        >
-                            {config.innerText}
-                        </Button>
-                    </CSVLink>
-                ) : <Button
-                    sx={config.sx ? config.sx: buttonComponentStyles.buttonStyle}
-                        variant="contained"
-                        disabled={config.disabled ? config.disabled : false}
-                        type={config.type ? config.type : "submit"}
-                        onClick={handleClick}
-                >
-                    {config.innerText}
-                </Button>
-            }
-        </>
-    )
+      <>
+        {config.label === "Export CSV" ? (
+          <CSVLink
+            data={config.data}
+            style={{ textDecoration: "none" }}
+            filename={`${config.filetype}.${new Date().toLocaleString()}.csv`}
+          >
+            <Button
+              sx={buttonComponentStyles.buttonStyle}
+              variant="contained"
+              type={config.type ? config.type : "submit"}
+              // onClick={config.onClick}
+            >
+              {config.innerText}
+            </Button>
+          </CSVLink>
+        ) : (
+          <Button
+            sx={config.sx ? config.sx : buttonComponentStyles.buttonStyle}
+            variant="contained"
+            disabled={config.disabled ? config.disabled : false}
+            type={config.type ? config.type : "submit"}
+            onClick={handleClick}
+          >
+            {config.innerText}
+          </Button>
+        )}
+      </>
+    );
 }
 
 export default ButtonAtom

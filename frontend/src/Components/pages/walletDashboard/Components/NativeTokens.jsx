@@ -6,7 +6,7 @@ import TableDisplay from "../../../DisplayElements/TableDisplay";
 function NativeTokens({ wallet, chain, nativeBalance, setNativeBalance, nativeValue, setNativeValue }) {
 
     async function getNativeBalance() {
-        const response = await axios.get("http://localhost:8000/nativeBalance", {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/nativeBalance`, {
             params: {
                 address: wallet,
                 chain: chain,

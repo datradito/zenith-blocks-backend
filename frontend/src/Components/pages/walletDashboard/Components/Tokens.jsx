@@ -9,7 +9,7 @@ import TableDisplay from "../../../DisplayElements/TableDisplay";
 function Tokens({ wallet, chain, tokens, setTokens }) {
 
     async function getTokenBalances() {
-        const response = await axios.get(`http://localhost:8000/tokenBalances`, {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/tokenBalances`, {
             params: {
                 address: wallet,
                 chain: chain,

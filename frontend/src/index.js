@@ -42,29 +42,29 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
 // });
 const projectId = '3a74d330e07a405df9ab1a0ff1825a9b';
 
-const { connectors } = getDefaultWallets({
+const { wallets } = getDefaultWallets({
         appName: 'ZenithBlocks',
         projectId,
         chains,
 });
 
 
-// const connectors = connectorsForWallets([
-//         ...wallets,
-//         {
-//                 groupName: 'Recommended',
-//                 wallets: [
-//                         injectedWallet({ chains }),
-//                         rainbowWallet({ projectId, chains }),
-//                         walletConnectWallet({ projectId, chains }),
-//                         safeWallet({ chains }),
-//                         metaMaskWallet({ chains }),
-//                         argentWallet({ projectId, chains }),
-//                         trustWallet({ projectId, chains }),
-//                         ledgerWallet({ projectId, chains }),
-//                 ],
-//         },
-// ]);
+const connectors = connectorsForWallets([
+        ...wallets,
+        {
+                groupName: 'Recommended',
+                wallets: [
+                        injectedWallet({ chains }),
+                        rainbowWallet({ projectId, chains }),
+                        walletConnectWallet({ projectId, chains }),
+                        safeWallet({ chains }),
+                        metaMaskWallet({ chains }),
+                        argentWallet({ projectId, chains }),
+                        trustWallet({ projectId, chains }),
+                        ledgerWallet({ projectId, chains }),
+                ],
+        },
+]);
 // const connector = new SafeConnector({
 //         chains: [mainnet, optimism],
 //         options: {

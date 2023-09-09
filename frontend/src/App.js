@@ -40,42 +40,50 @@ function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<Root />}>
-        <Route path="/" element={<PrivateRoute />} >
-          
-            <Route path="proposals" element={<Proposals />} />
+        <Route path="/" element={<PrivateRoute />}>
+          <Route path="proposals" element={<Proposals />} />
           <Route
             path="proposals/:proposalId"
             element={<ProposalDetailView />}
             errorElement={<ErrorPage />}
           />
-          
-            <Route path="proposal" element={<ProposalRoute />}>
-              <Route path="update/:proposalId" element={<CreateBudget />} />
+
+          <Route path="proposal" element={<ProposalRoute />}>
+            <Route path="update/:proposalId" element={<CreateBudget />} />
             <Route
               path=":proposalId/invoices"
               element={<InvoiceListView />}
               errorElement={<ErrorPage />}
             />
-            </Route>
-          
-            <Route path="invoice/:invoiceId/payment" element={<PaymentCreation />} />
+          </Route>
 
-            <Route path="budgets" element={<InvoiceRoutes />}>
-              <Route
-                path=":budgetId/invoices"
-                element={<InvoiceListView />}
-                errorElement={<ErrorPage />}
-              />
-              <Route path=":budgetId/createInvoice" element={<InvoiceCreation />} />
-            </Route>
-          
-        </Route>
+          <Route
+            path="invoice/:invoiceId/payment"
+            element={<PaymentCreation />}
+          />
+
+          <Route path="budgets" element={<InvoiceRoutes />}>
+            <Route
+              path=":budgetId/invoices"
+              element={<InvoiceListView />}
+              errorElement={<ErrorPage />}
+            />
+            <Route
+              path=":budgetId/createInvoice"
+              element={<InvoiceCreation />}
+            />
+          </Route>
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="accounts" element={<Accounts />} />
+          <Route
+            path="accounts"
+            errorElement={<ErrorPage />}
+            element={<Accounts />}
+          />
           <Route path="swap" element={<Swap />} />
-          <Route path="*" element={<ErrorPage />} />
+        </Route>
+        <Route path="*" element={<ErrorPage />} />
       </Route>
-      )
+    )
   );
 
     return (
@@ -84,7 +92,10 @@ function App() {
           <PersistGate loading={null} persistor={persistor}>
             <Suspense fallback={<CircularIndeterminate />}>
               <ErrorProvider>
-                <ToastContainer />
+                <ToastContainer
+                  limit={2}
+                  position="bottom-left"
+                />
                 <RouterProvider router={router} />
               </ErrorProvider>
             </Suspense>

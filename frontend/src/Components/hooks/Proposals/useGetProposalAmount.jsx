@@ -13,7 +13,7 @@ const useGetProposalAmount = (proposalid) => {
 
     useEffect(() => {
         refetch();
-    }, []);
+    }, [refetch]);
 
     if (proposalError) {
         toast.error("Failed to Load Proposal Details");

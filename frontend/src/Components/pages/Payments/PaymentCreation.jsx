@@ -3,8 +3,21 @@ import { Box, Stack, Typography, Grid, TextField } from '@mui/material'
 import SubHeader from '../../molecules/SubHeader/SubHeader'
 import ItemCard from '../../atoms/ItemCard/ItemCard';
 import ButtonAtom from '../../atoms/Button';
-import { useSendTransaction, useWaitForTransaction } from "wagmi";
+import { useAccount } from 'wagmi';
+import { SendTransaction } from './SendTransaction';
+import { Divider } from '@mui/material';
 
+
+const BoxStyle = {
+    width: '90%',
+    margin: '0rem auto',
+    textAlign: "center",
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    color: 'white',
+    borderRadius: 3
+};
 
 const componentStyles = {
     formInputFieldStyles: {
@@ -49,22 +62,7 @@ const componentStyles = {
 }
 
 function PaymentCreation() {
-
-
-    // const { data, sendTransaction } = useSendTransaction({
-    //     from: address,
-    //     to: txDetails.to,
-    //     data: txDetails.data,
-    //     value: txDetails.value,
-    //     onError(error) {
-    //         console.log('Error', error)
-    //     },
-    // })
-
-    // const { isLoading, isSuccess } = useWaitForTransaction({
-    //     hash: data?.hash,
-    // })
-
+    const { isConnected } = useAccount()
 
     const dataForItemCard = {
         "Payee": "Dao address",
@@ -72,9 +70,6 @@ function PaymentCreation() {
         "Budget": "Budget [BIP-392] Enable a new BRZ-jBRL Stable Pool Gauge | 2% cap (Polygon)",
         "Proposal": "[BIP-392] Enable a new BRZ-jBRL Stable Pool Gauge | 2% cap (Polygon)",
         "Invoice": "1234",
-        
-        // "Amount": "1000",
-        // "Currency": "USD",
         "Date": "10/10/2021",
         "Due": "10/10/2021",
     }
@@ -82,23 +77,7 @@ function PaymentCreation() {
     const paymentBar = {
         "Payee": "Dao address",
         "Currency": "USD",
-
-        "Receipient": "Receipient 1",
-
-        "Amount": "1000",
-
     }
-
-    const BoxStyle = {
-        width: '90%',
-        margin: '0rem auto',
-        textAlign: "center",
-        display: 'flex',    
-        justifyContent: 'space-between',
-        flexDirection: 'row',
-        color: 'white',
-        borderRadius: 3
-    };
 
     const handlePaymentCreateOnClick = () => {
         console.log("payment")
@@ -206,21 +185,17 @@ function PaymentCreation() {
                                     sx={componentStyles.formInputFieldStyles}
                                 />
                             </>
-                        }
+                        }   
                         )
                     }
-                    <ButtonAtom
-                        config={{
-                            variant: "contained",
-                            text: "Pay Invoice",
-                            color: "primary",
-                            size: "large",
-                            type: "submit",
-                            innerText: "Pay Invoice",
-                            width: "100%",
-                        }}
-                        onClick={handlePaymentCreateOnClick}
-                        />
+                    <Divider sx={{
+                        height: 28,
+                        m: 1,
+                        color: 'white',
+                    }}
+                        orientation="horizontal"
+                    />
+                    {isConnected && <SendTransaction /> }
                 </Box>
             </Grid>
         </Box>

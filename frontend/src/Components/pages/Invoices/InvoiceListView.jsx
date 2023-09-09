@@ -4,13 +4,14 @@ import { Box, Stack } from '@mui/material';
 import ItemCard from "../../atoms/ItemCard/ItemCard";
 import TableDisplay from "../../DisplayElements/TableDisplay";
 import { parseInvoiceUrl } from '../../../Utility/parseInvoiceUrl';
-import { useLocation, useNavigate, Link  } from 'react-router-dom';
+import { useLocation, Link  } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import useWeb3IpfsContract from '../../hooks/web3IPFS';
 import ButtonAtom from '../../atoms/Button';
 import { useGetAllInvoicesByBudget } from '../../hooks/Invoices/useGetAllInvoices';
 import CircularIndeterminate from '../../atoms/Loader/loader';
+import { toast } from 'react-toastify';
 
 
 const tableHeaderData = ["Invoice", "Receipient", "Amount", "Currency", "Status", "Date", "Due","View", "Payment", "Action"]
@@ -22,20 +23,8 @@ function InvoiceListView() {
     const { proposals } = useSelector(state => state.currentProposalAmounts);
     const [amount, setProposalAmount] = useState(0);
     let { Budget } = useSelector(state => state.currentBudget);
-    const { web3, contract } = useWeb3IpfsContract();
-
-    console.log("proposal", proposal);
-
-    // const getInvoicesCid = async (contract, budgetId) => {
-    //     try {
-    //         const decryptedbudgetId = web3.utils.keccak256(web3.utils.fromAscii(budgetId));
-    //         const result = await contract.methods.getInvoicesByBudget(decryptedbudgetId).call();
-    //         setInvoices(result);
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //     }
-    // };
-
+    //const { web3, contract } = useWeb3IpfsContract();
+    const { loading, invoices, queryError, isFetching } = useGetAllInvoicesByBudget(Budget?.id);
 
     const filteredProposal = useMemo(() => {
         return proposals.filter((withAmountProposal) => withAmountProposal.id === proposal.id ? withAmountProposal.amount : null);
@@ -45,20 +34,10 @@ function InvoiceListView() {
         setProposalAmount(filteredProposal[0]?.amount);
     }, [filteredProposal]);
 
-    //step 1 - For Budget Id -> check in smartContract if it exists , if it does not render create invoices page
-    // useEffect(() => {
-    //     // if (parseInvoiceUrl(location.pathname) !== null) {
-    //     //     let { budgetId } = parseInvoiceUrl(location.pathname);
-    //     //     // if (contract !== null) {
-    //     //     //     let result = getInvoicesCid(contract, budgetId);
-    //     //     //     result.then((res) => {
-    //     //     //         setInvoices(res);
-    //     //     //     });
-    //     //     // }
-    //     // }
-    // }, []);
 
-    const { loading, data, budgetInvoices, queryError } = useGetAllInvoicesByBudget(Budget?.id);
+    if (queryError) {
+        toast.error("Error in fetching invoices");
+    }
 
     if (loading) return <CircularIndeterminate />;
 
@@ -83,8 +62,8 @@ function InvoiceListView() {
                 onClick: handleExportCSV,
                 innerText: "Export CSV",
                 backgroundColor: "#282A2E",
-                type: "link",
-                to: '/proposal/budgets/export-csv',
+                data: invoices,
+                filetype: "invoices"
             }, {
                 label: "Create Invoice",
                 variant: "contained",
@@ -119,7 +98,7 @@ function InvoiceListView() {
         innerText: "Create Invoice"
     };
 
-    if (budgetInvoices === [] || budgetInvoices === null || budgetInvoices === undefined || budgetInvoices.length === 0 && parseInvoiceUrl(location.pathname) !== null) {
+    if (invoices === [] || invoices === null || invoices === undefined || invoices.length === 0 && parseInvoiceUrl(location.pathname) !== null) {
         return (
             <Box sx={BoxStyle}>  
                 <p>Create invoices for budget below. No invoices has been coded for this budget so far.</p>
@@ -155,14 +134,13 @@ function InvoiceListView() {
                 <Box sx={BoxStyle}>
                     <TableDisplay
                         tableHeaderData={tableHeaderData}
-                        tableBodyData={budgetInvoices}
+                        tableBodyData={invoices}
                         dataToDisplay={[]}
                     />
                 </Box>
             </div>
         )
     }
-    
 }
 
 export default InvoiceListView

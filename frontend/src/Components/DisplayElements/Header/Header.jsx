@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import Login from '../../pages/Home/logIn';
 
-
 import {
     Box,
     AppBar,
@@ -25,7 +24,6 @@ const navLinkStyle = {
 
 const ResponsiveHeaderBar = () => {
     const [walletConnected, setWalletConnected] = useState(false);
-
     let { proposal } = useSelector(state => state.currentProposal);
     let { Budget } = useSelector(state => state.currentBudget);
     let pages = [];
