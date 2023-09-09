@@ -3,6 +3,7 @@ const cors = require('cors')
 const siwe = require('siwe');
 const session = require('express-session');
 const store = session.MemoryStore()
+const axios = require('axios');
 
 require("dotenv").config();
 const signJWTToken = require('./utility/middlewares/auth').signJWTToken;
@@ -85,7 +86,6 @@ app.get('/nonce', function (_, res) {
     res.send(siwe.generateNonce());
 });
 
-
 app.post("/siwe", async (req, res) => {
     const { address, network, nonce } = req.body;
 
@@ -163,7 +163,6 @@ app.post('/verify', async function (req, res) {
     }
 });
 
-
 app.post('/createUser', async (req, res) => {
     const { address, daoId } = req.body;
 
@@ -203,10 +202,7 @@ app.get("/nativeBalance", async (req, res) => {
             chain: chain,
         });
 
-        // const data = await response.getResponse();
-        // console.log(data);
-
-        const nativeBalance = response.jsonResponse;
+        const nativeBalance = response.toJSON();
         
         let nativeCurrency;
         if (chain === "0x1") {
@@ -225,6 +221,7 @@ app.get("/nativeBalance", async (req, res) => {
         });
 
         nativeBalance.usd = nativePrice.jsonResponse.usdPrice;
+        console.log(nativeBalance.usd);
 
         res.send(nativeBalance);
     } catch (e) {
@@ -242,7 +239,7 @@ app.get("/tokenBalances", async (req, res) => {
             chain: chain,
         });
 
-        const tokens = response.jsonResponse;
+        const tokens = response.toJSON();
         const legitTokens = [];
 
         for (const token of tokens) {
@@ -323,6 +320,50 @@ app.get("/tokenTransfers", async (req, res) => {
         res.send(e);
     }
 });
+
+app.get("/allowance", async (req, res) => {
+    const { tokenAddress, walletAddress } = req.query;
+
+    try {
+        const response = await axios.get(
+                `https://api.1inch.dev/swap/v5.2/1/approve/allowance?tokenAddress=${tokenAddress}&walletAddress=${walletAddress}`,
+                {
+                headers: {
+                    accept: "*/*",
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer mkOi8PEitK1DvNUL8kCzHRxBhQ5AtHIB`,
+                },
+                }
+        );
+        res.send(response.data);
+    } catch (e) {
+        res.send(e);
+    }
+    
+    
+});
+
+app.get("/approve", async (req, res) => {
+    const { tokenOneAddress } = req.query;
+
+    try {
+        const response = await axios.get(
+          `https://api.1inch.dev/swap/v5.2/1/approve/transaction?tokenAddress=${tokenOneAddress}`,
+          {
+            headers: {
+              accept: "*/*",
+              "Content-Type": "application/json",
+              Authorization: `Bearer mkOi8PEitK1DvNUL8kCzHRxBhQ5AtHIB`,
+            },
+          }
+        );
+        res.send(response.data);
+    }   
+    catch (e) {
+        res.send(e);
+    }
+});
+
 
 
 app.listen(8000, async () => {

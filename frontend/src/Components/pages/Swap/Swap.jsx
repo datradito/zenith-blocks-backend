@@ -36,6 +36,7 @@ function Swap() {
             data: txDetails.data,
             value: txDetails.value,
         onError(error) {
+            //here set the context with error - error.message
             console.log('Error', error)
         },
     })
@@ -96,14 +97,27 @@ function Swap() {
         setPrices(res.data)
     }
 
+    async function checkAllowance() {
+
+        return await axios.get(
+            `${process.env.REACT_APP_API_URL}/allowance`,
+            {
+            params: { tokenAddress: tokenOne.address, walletAddress: address }
+            }
+        )
+    }
+
     async function fetchDexSwap() {
 
-        const allowance = await axios.get(`https://api.1inch.io/v5.0/1/approve/allowance?tokenAddress=${tokenOne.address}&walletAddress=${address}`)
+        const allowance = await checkAllowance();
 
-        console.log(allowance.data)
         if (allowance.data.allowance === "0") {
 
-            const approve = await axios.get(`https://api.1inch.io/v5.0/1/approve/transaction?tokenAddress=${tokenOne.address}`)
+            const approve = await axios.get(`${process.env.REACT_APP_API_URL}/approve`, {
+                params: {
+                    tokenOneAddress: tokenOne.address,
+                }
+            })
 
             console.log(approve.data)
             setTxDetails((prevTxDetails) => ({
@@ -112,8 +126,6 @@ function Swap() {
                 data: approve.data.data,
                 value: approve.data.value,
             }));
-            console.log("not approved")
-            console.log(txDetails)
             return;
 
         }
@@ -134,7 +146,6 @@ function Swap() {
     }, [])
 
     useEffect(() => {
-        console.log(txDetails)
         if (txDetails.to && isConnected) {
             sendTransaction();
         }

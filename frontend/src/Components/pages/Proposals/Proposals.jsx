@@ -74,7 +74,7 @@ const Proposals = (props) => {
   const componentButtonConfig =
     [
       {
-        label: "Export CSV",
+        label: "Export CSV-Hidden",
         variant: "contained",
         onClick: handleExportCSV,
         innerText: "Export CSV",
