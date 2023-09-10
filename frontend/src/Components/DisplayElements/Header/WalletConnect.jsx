@@ -1,115 +1,156 @@
-import React, { useEffect, useState } from 'react'
-
+import React, { useEffect} from 'react'
+import axios from 'axios';
 import {
     useAccount,
-    useConnect,
     useDisconnect,
     useEnsAvatar,
     useEnsName,
+    useBalance,
+    useConnect,
+    useNetwork,
 } from 'wagmi'
-
-import Web3 from "web3";
-import {
-    IconButton,
-    Typography,
-    Menu,
-    Avatar,
-    Tooltip,
-    Button,
-} from '@mui/material';
-import MyContract from "../../../contracts/MyContract.json";
-// import { Mainnet,useEtherBalance, useEthers } from '@usedapp/core'
-// import { formatEther } from '@ethersproject/units';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useNavigate } from 'react-router-dom';
+import { useError } from '../../../Routes/ErrorRouterProvider';
+import { useSignMessage } from 'wagmi';
 
+
+const clearAuthData = () => {
+    sessionStorage.removeItem('authToken');
+    sessionStorage.removeItem('address');
+    sessionStorage.removeItem('daoId');
+};
 
 
 export default function WalletConnect() {
-
-    const { address, connector, isConnected } = useAccount()
+    const navigate = useNavigate();
+    const { handleError } = useError();
+    const { address } = useAccount({
+        onConnect: () => {
+            const auth = sessionStorage.getItem('authToken');
+            !auth && signInWithEthereum();
+        },
+        onDisconnect() {
+            clearAuthData();
+            localStorage.clear();
+            navigate(`/`);
+            handleError({ error: "success", message: "User disconnected" })
+        }
+    })
     const { data: ensAvatar } = useEnsAvatar({ address })
     const { data: ensName } = useEnsName({ address })
-
-    const [isAllowed, setIsAllowed] = useState(false);
-    const [state, setState] = useState({
-        web3: null,
-        contract: null,
-    });
-
-
-    useEffect(() => {
-        const provider = new Web3.providers.HttpProvider("HTTP://127.0.0.1:7545");
-        async function template() {
-            const web3 = new Web3(provider);
-            const networkId = await web3.eth.net.getId();
-            const deployedNetwork = MyContract.networks[networkId];
-            const contract = new web3.eth.Contract(
-                MyContract.abi,
-                deployedNetwork.address
-            );
-            setState({ web3: web3, contract: contract });
-        }
-        provider && template();
-    }, [])
-
-    useEffect(() => {
-        async function isUserAllowed() {
-            const { contract } = state;
-            //manually allow users by default for now - need to come up with a better solution
-            allowUser();
-            //  const allowed = await contract.methods.isUserAllowed().call();
-            //     setIsAllowed(allowed);
-            //     console.log(allowed);
-            //  localStorage.setItem({`User: ${userAddress, "isAllowed: ${isAllowed}"}`})
-        }
-        //address && isUserAllowed();
-    }, [address]);
+    const { data:balance, isError: balanceError, isLoading: balanceLoading } = useBalance({
+        address
+    })
+    const { signMessageAsync } = useSignMessage();
+    const { disconnectAsync } = useDisconnect();
+    const { connectAsync , isSuccess:connectSuccess, status } = useConnect();
+    const { chain } = useNetwork()
 
 
-    // const connectWallet = async () => {
-    //     if (window.ethereum) {
-    //         try {
-    //             // request the user's Ethereum account address
-    //             const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-    //             setUserAddress(accounts[0]);
-    //             console.log(isAllowed);
-    //         } catch (error) {
-    //             console.error(error);
-    //         }
+    //console.log("WalletConnect", { address, connector, isConnected, ensAvatar, ensName, balance, balanceError, balanceLoading, chain, connectSuccess, status })
+
+    // useEffect(() => {
+    //     const auth = sessionStorage.getItem('authToken');
+    //     if (!auth) {
+    //         disconnectAsync();
+    //         localStorage.clear();
     //     }
-    // }
+    // }, [])
 
-    const allowUser = async () => {
-        console.log(address)
-        if (address) {
-            const { contract } = state;
-            await contract.methods.setAddress().send({ from: "0x12EC8Ac7DA760d11E3452e3315f57804BD3a99f4" });
-            const addresses = contract.methods.getAddresses().call();
-            addresses.then((result) => {
-                console.log(result);
-            })
+    const createSiweMessage = async () => {
+
+        try {
+            const userData = {
+                network: "evm",
+                address: address,  // Make sure 'address' is defined or provided in your code
+                chain: chain?.id
+            };
+
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/nonce`);
+            const nonce = res.data;
+
+            const { data } = await axios.post(
+              `${process.env.REACT_APP_API_URL}/siwe`,
+              {
+                address: userData.address,
+                network: userData.network,
+                nonce,
+              },
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                withCredentials: true,
+              }
+            );
+
+            return data;
+        } catch (error) {
+            console.error('Error handling authentication:', error);
+            disconnectAsync();
+            throw error; // Rethrow the error to signal that the function encountered an error
+        }
+    };
+
+    const sendForVerification = async(message, signature) => {
+        try {
+            const response = await axios.post(
+              `${process.env.REACT_APP_API_URL}/verify`,
+              { message, signature },
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                withCredentials: true, // Moved outside the 'headers' object
+              }
+            );
+
+            return response.data;
+        } catch (error) {
+            console.error('Error during verification:', error.response.data);
+            throw error; // Rethrow the error to signal that the function encountered an error
         }
     }
 
-    // User click on connect button -> connects to wallet -> we retrieve user addresses master file ipfs address from smart contract -> we retrieve master file from ipfs -> if user address belongs to particular dao in file then allow otherwise deny
+    async function signInWithEthereum() {
+        try {
+            const message = await createSiweMessage();
 
-    // which means file should be structured as follows:
-    // { customers : [{
-    //     "dao-1" : {
-    //         "addresses" : {
-    //             "address" : {
-    //              "isAllowed" : "true"
-    //              }
-    //         },
-    //       "appendPreviousFileipfsAddress" : "ipfs://ipfs-hash"
-    //     }
-    //   }]
-    // }
-    //  const allowed = await contract.methods.isUserAllowed().call();
-    //     setIsAllowed(allowed);
-    //     console.log(allowed);
-    //  localStorage.setItem({`User: ${userAddress, "isAllowed: ${isAllowed}"}`})
-    //address && isUserAllowed();
+            if (!message) {
+                handleError({ error: "error", message: "Error creating message" });
+                return;
+            }
+
+            const signature = await signMessageAsync({message});
+
+            if (!signature) {
+                handleError({ error: "error", message: "Error signing message" });
+                return;
+            }
+            const res = await sendForVerification(message, signature);
+            const { daoId, address} = decodeToken(res.authToken);
+
+            sessionStorage.setItem('authToken', res.authToken);
+            sessionStorage.setItem('daoId', daoId);
+            sessionStorage.setItem('address', address);
+            handleError({ error: "success", message: "User successfully connected" });
+            navigate(`/`);
+        } catch (error) {
+            handleError({ error: "error", message: "Error signing message" });
+            disconnectAsync();
+            sessionStorage.removeItem('authToken');
+        }
+    }
+
+    function decodeToken(token) {
+        if (!token) {
+            return;
+        }
+        const base64Url = token.split(".")[1];
+        const base64 = base64Url.replace("-", "+").replace("_", "/");
+        return JSON.parse(window.atob(base64));
+    }
 
 
     return (
@@ -120,12 +161,21 @@ export default function WalletConnect() {
                 padding: 12,
             }}
         >
-            {
-                 <ConnectButton
-                    accountStatus={{
-                        smallScreen: 'avatar',
-                        largeScreen: 'full',
-                    }} />
+        {
+            <ConnectButton
+                accountStatus={{
+                    smallScreen: 'avatar',
+                    largeScreen: 'full',
+                }}
+                showBalance={{
+                    smallScreen: false,
+                    largeScreen: true,
+                }}
+                chainStatus={{
+                    smallScreen: "icon",
+                    largeScreen: "full",
+                }}
+            />
             }
         </div>
     );

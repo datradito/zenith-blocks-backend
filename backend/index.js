@@ -1,90 +1,376 @@
 const express = require('express');
-const app = express();
-require("dotenv").config();
 const cors = require('cors')
-const UploadDataToIpfs = require('./utility/ipfs');
-const schema = require('./schema/schema');
-var { graphqlHTTP } = require('express-graphql');
+const siwe = require('siwe');
+const session = require('express-session');
+const store = session.MemoryStore()
+const axios = require('axios');
 
-// Middleware to parse JSON bodies
+require("dotenv").config();
+const signJWTToken = require('./utility/middlewares/auth').signJWTToken;
+const User = require('./Database/models/User');
+
+const { startStandaloneServer } = require('@apollo/server/standalone');
+const server = require('./schema/schema')
+const context = require('./utility/middlewares/context');
+
+// const { GraphQLError } = require('graphql');
+// const context = require('./utility/middlewares/context');
+
+// var { graphqlHTTP } = require('express-graphql');
+
+const Moralis = require("moralis").default;
+const { createSiweMessage, verifySiweMessageHandler } = require('./utility/signMessage');
+const { init } = require('./Database/sequalizeConnection');
+
+const app = express();
+
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
-console.log(process.env.DATABASE_URL)
-const mysql = require('mysql2')
-const connection = mysql.createConnection(process.env.DATABASE_URL_DEV)
-console.log('Connected to PlanetScale!')
-connection.end()
+// app.use(cors({
+//     origin: 'http://localhost:3000',
+//     credentials: true,
+// }));
+app.use(cors({ credentials: true, origin: true }));
 
+const hour = 3600000
 
-// app.post('/ipfs/uploadBudget', async (req, res) => {
-//     // Extract the content from the request body
-//     const { rootPath, jsonData } = req.body;
-//     const ipfsResponses = [];
-//     for (let data of jsonData) {
-//         let ipfsFilePath = rootPath + 'budgetId' + data.id;
-//         try {
-
-//             //Todo: Need to implement rate limit in case some items fail to upload
-//             const response= await UploadDataToIpfs(ipfsFilePath, data);
-//             ipfsResponses.push(response.jsonResponse[0].path);
-//         } catch (error) {
-//             console.error("Error uploading to IPFS:", error);
-//         }
-//     }
-
-//     res.json({ message: 'Proposal saved successfully', ipfsResponses });
-// });
-
-// app.post('/ipfs/uploadInvoice', async (req, res) => {
-//     // Extract the content from the request body
-//     const { rootPath, jsonData } = req.body;
-//     const ipfsResponses = [];
-//     for (let data of jsonData) {
-//         let ipfsFilePath = rootPath + 'InvoiceId' + data.id;
-//         try {
-
-//             //Todo: Need to implement rate limit in case some items fail to upload
-//             const response = await UploadDataToIpfs(ipfsFilePath, data);
-//             ipfsResponses.push(response.jsonResponse[0].path);
-//         } catch (error) {
-//             console.error("Error uploading to IPFS:", error);
-//         }
-//     }
-
-//     res.json({ message: 'Proposal saved successfully', ipfsResponses });
-// });
-
-
-// app.get('/', (req, res) => {
-//     // Extract the content from the request body
-//     console.log("content");
-// })
-
-
-app.use('/graphql', graphqlHTTP({
-    schema,
-    // graphiql: true
+app.use(session({
+    name: 'siwe',
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    expires: new Date(Date.now() + hour),
+    saveUninitialized: false,
+    store
 }));
 
-app.listen(8000, () => {
-    console.log('Server is running on port 8000');
+let isMoralisInitialized = false;
+
+const initializeIpfsNode = async () => {
+    if (!isMoralisInitialized) {
+        await Moralis.start({
+            apiKey: process.env.MORALIS_KEY,
+        });
+
+        isMoralisInitialized = true;
+    }
+};
+
+initializeIpfsNode();
+
+
+app.get("/tokenPrice", async (req, res) => {
+
+    const { query } = req;
+
+    const responseOne = await Moralis.EvmApi.token.getTokenPrice({
+        address: query.addressOne
+    })
+
+    const responseTwo = await Moralis.EvmApi.token.getTokenPrice({
+        address: query.addressTwo
+    })
+
+    const usdPrices = {
+        tokenOne: responseOne.raw.usdPrice,
+        tokenTwo: responseTwo.raw.usdPrice,
+        ratio: responseOne.raw.usdPrice / responseTwo.raw.usdPrice
+    }
+
+
+    return res.status(200).json(usdPrices);
+});
+
+app.get('/nonce', function (_, res) {
+    res.setHeader('Content-Type', 'text/plain');
+    res.send(siwe.generateNonce());
+});
+
+app.post("/siwe", async (req, res) => {
+    const { address, network, nonce } = req.body;
+
+    //check if user exist in db with daoId and address
+
+    const message = createSiweMessage(address, network, nonce);
+
+    req.session.nonce = nonce;
+    req.session.address = address;
+    req.session.message = message;
+    req.session.save();
+
+    res.cookie('siwe', message, { httpOnly: true, secure: true, sameSite: 'none' });
+
+    return res.status(200).json(message);
+    }
+);
+
+app.post('/verify', async function (req, res) {
+    try {
+        if (!req.body.message) {
+            res.status(422).json({ message: 'Expected prepareMessage object as body.' });
+            return;
+        }
+
+        let SIWEObject = new siwe.SiweMessage(req.body.message);
+        const { data: message } = await SIWEObject.verify({ signature: req.body.signature, nonce: req.session.nonce });
+
+        req.session.siwe = message;
+        req.session.cookie.expires = new Date(Date.now() + hour);
+
+        //Todo: once signature is verified find user from database based on address and retrieve daoId
+
+        try {
+            const user = await User.findOne({ where: { address: req.session.address } });
+
+            if (!user) {
+                return res.status(401).send(false);
+            }
+
+            const token = signJWTToken({ userAddress: user.address, dao: user.daoId });
+            
+            return res.status(201).json({ authToken: token });
+        } catch (e) {
+            return res.status(500).json("User not found");
+        }
+        
+
+        // console.log(user);
+        // hashUserData(user);
+
+        //const token = jwt.sign({ userAddress: user.address, dao: user.daoId }, secretKey, { expiresIn: '1h' });
+
+        // const user = {
+        //     address: req.session.address,
+        //     message: req.session.message,
+        //     daoId: "eth.1inch",
+        // }
+
+        // req.session.save(() => {
+        //     // const token = signJWTToken(user);
+        //     return res.status(200).send(token);
+        // });
+
+    } catch (e) {
+        req.session.siwe = null;
+        req.session.nonce = null;
+
+        switch (e) {
+            default: {
+                req.session.save(() => res.status(500).send(false));
+                break;
+            }
+        }
+    }
+});
+
+app.post('/createUser', async (req, res) => {
+    const { address, daoId } = req.body;
+
+    const user = await User.create({ address, daoId });
+
+    return res.status(200).json(user);
+}
+);
+
+app.get('/logout', (req, res) => {
+        if (req.session.test) {
+            console.log(req.session.nonce);
+            
+            return res.status(200).json({ message: 'cookie cleared' });
+        } else {
+            return res.status(401).json({ error: 'Unauthorized: User not authenticated' });
+        }
+    }
+);
+
+app.get('/checkSiwe', (req, res) => {
+        if (req.session.test) {
+            console.log(req.session.nonce);
+            return res.status(200).json(req.session.siwe);
+        } else {
+            return res.status(401).json({ error: 'Unauthorized: User not authenticated' });
+        }
+    }
+);
+
+app.get("/nativeBalance", async (req, res) => {
+
+    try {
+        const { address, chain } = req.query;
+        const response = await Moralis.EvmApi.balance.getNativeBalance({
+            address: address,
+            chain: chain,
+        });
+
+        const nativeBalance = response.toJSON();
+        
+        let nativeCurrency;
+        if (chain === "0x1") {
+            nativeCurrency = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+        } else if (chain === "0x89") {
+            nativeCurrency = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270";
+        } else if (chain === "0x4") {
+            nativeCurrency = "0xc778417E063141139Fce010982780140Aa0cD5Ab";
+        } else if (chain === "0x324") {
+            nativeCurrency = "0xaBEA9132b05A70803a4E85094fD0e1800777fBEF";
+        }
+
+        const nativePrice = await Moralis.EvmApi.token.getTokenPrice({
+            address: nativeCurrency, //WETH Contract
+            chain: chain,
+        });
+
+        nativeBalance.usd = nativePrice.jsonResponse.usdPrice;
+        console.log(nativeBalance.usd);
+
+        res.send(nativeBalance);
+    } catch (e) {
+        res.send(e);
+    }
+});
+
+app.get("/tokenBalances", async (req, res) => {
+
+    try {
+        const { address, chain } = req.query;
+
+        const response = await Moralis.EvmApi.token.getWalletTokenBalances({
+            address: address,
+            chain: chain,
+        });
+
+        const tokens = response.toJSON();
+        const legitTokens = [];
+
+        for (const token of tokens) {
+            try {
+                const priceResponse = await Moralis.EvmApi.token.getTokenPrice({
+                    address: token.token_address,
+                    chain: chain,
+                });
+
+                if (priceResponse.jsonResponse.usdPrice > 0.01) {
+                    token.usd = priceResponse.jsonResponse.usdPrice;
+                    legitTokens.push(token);
+                } else {
+                    console.log("💩 coin");
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        res.send(legitTokens);
+    } catch (e) {
+        res.send(e);
+    }
+});
+
+app.get("/nftBalance", async (req, res) => {
+
+    try {
+        const { address, chain } = req.query;
+
+        const response = await Moralis.EvmApi.nft.getWalletNFTs({
+            address: address,
+            chain: chain,
+        });
+
+        const userNFTs = response.data;
+
+        res.send(userNFTs);
+    } catch (e) {
+        res.send(e);
+    }
+});
+
+app.get("/tokenTransfers", async (req, res) => {
+
+    try {
+        const { address, chain } = req.query;
+
+        const response = await Moralis.EvmApi.token.getWalletTokenTransfers({
+            address: address,
+            chain: chain,
+        });
+
+        const userTrans = response.data.result;
+
+        let userTransDetails = [];
+
+        for (let i = 0; i < userTrans.length; i++) {
+
+            try {
+                const metaResponse = await Moralis.EvmApi.token.getTokenMetadata({
+                    addresses: [userTrans[i].address],
+                    chain: chain,
+                });
+                if (metaResponse.data) {
+                    userTrans[i].decimals = metaResponse.data[0].decimals;
+                    userTrans[i].symbol = metaResponse.data[0].symbol;
+                    userTransDetails.push(userTrans[i]);
+                } else {
+                    console.log("no details for coin");
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        res.send(userTransDetails);
+    } catch (e) {
+        res.send(e);
+    }
+});
+
+app.get("/allowance", async (req, res) => {
+    const { tokenAddress, walletAddress } = req.query;
+
+    try {
+        const response = await axios.get(
+                `https://api.1inch.dev/swap/v5.2/1/approve/allowance?tokenAddress=${tokenAddress}&walletAddress=${walletAddress}`,
+                {
+                headers: {
+                    accept: "*/*",
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer mkOi8PEitK1DvNUL8kCzHRxBhQ5AtHIB`,
+                },
+                }
+        );
+        res.send(response.data);
+    } catch (e) {
+        res.send(e);
+    }
+
+});
+
+app.get("/approve", async (req, res) => {
+    const { tokenOneAddress } = req.query;
+
+    try {
+        const response = await axios.get(
+          `https://api.1inch.dev/swap/v5.2/1/approve/transaction?tokenAddress=${tokenOneAddress}`,
+          {
+            headers: {
+              accept: "*/*",
+              "Content-Type": "application/json",
+              Authorization: `Bearer mkOi8PEitK1DvNUL8kCzHRxBhQ5AtHIB`,
+            },
+          }
+        );
+        res.send(response.data);
+    }   
+    catch (e) {
+        res.send(e);
+    }
 });
 
 
-// let proposalJson = {
-//     "daoId" : {
-//         "proposalId" : "cid"
-//     }
-// };
-// let budgetJson = {
-//     "proposalId" : {
-//         "budgetId" : "cid"
-//     }
-// };
-// let invoiceJson = {
-//     "budget" : {
-//         "invoiceId" : "cid"
-//     }
-// };
 
+app.listen(8000, async () => {
+    await init();
+
+    const { url } = await startStandaloneServer(server, {
+        listen: { port: 8080 },
+        context: context
+    });
+    console.log('Server is running on port' + url);
+});

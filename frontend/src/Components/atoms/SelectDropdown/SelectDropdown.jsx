@@ -1,10 +1,10 @@
 import * as React from 'react';
-import Select, { selectClasses } from '@mui/base/Select';
-import Option, { optionClasses } from '@mui/base/Option';
-import Popper from '@mui/base/Popper';
+import { Select, selectClasses } from '@mui/base/Select';
+import { Option,  optionClasses } from '@mui/base/Option';
+import {Popper} from '@mui/base/Popper';
 import { styled } from '@mui/system';
 
-const CustomSelect = React.forwardRef(function CustomSelect(props, ref) {
+export const CustomSelect = React.forwardRef(function CustomSelect(props, ref) {
     const slots = {
         root: StyledButton,
         listbox: StyledListbox,
@@ -17,22 +17,22 @@ const CustomSelect = React.forwardRef(function CustomSelect(props, ref) {
 
 
 export default function UnstyledSelectBasic({ values, onChange, defaultValue }) {
-    const triggerOnChange = (event) => {
+  const triggerOnChange = (event) => {
         const { outerText } = event.target;
         onChange(outerText);
     };
     return (
-        <CustomSelect defaultValue={defaultValue}>
-            {values.map((value) => (
-                <StyledOption
-                    key={value}
-                    value={value}
-                    onClick={(event) => triggerOnChange(event)}
-                >
-                    {value}
-                </StyledOption>
-            ))}
-        </CustomSelect>
+      <CustomSelect defaultValue={defaultValue}>
+        {values.map((value) => (
+          <StyledOption
+            key={value}
+            value={value}
+            onClick={(event) => triggerOnChange(event)}
+          >
+            {value}
+          </StyledOption>
+        ))}
+      </CustomSelect>
     );
 }
 
@@ -54,8 +54,8 @@ const grey = {
     500: '#6e7781',
     600: '#57606a',
     700: '#424a53',
-    800: '#32383f',
-    900: '#24292f',
+  800: '#24292E',
+  900: '#24292E',
     1000: '#1A1C1E',
     150: '#2c2c2c',
 };
@@ -68,7 +68,7 @@ const StyledButton = styled('button')(
   min-width: 100%;
   border-radius: 5px;
   text-align: left;
-  background: ${theme.palette.mode === 'dark' ? grey[900] : grey[1000]};
+  background: ${theme.palette.mode === 'dark' ? grey[800] : grey[800]};
   border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[150]};
   color: ${theme.palette.mode === 'dark' ? grey[300] : 'white'};
 
@@ -110,14 +110,14 @@ const StyledListbox = styled('ul')(
   overflow: auto;
   outline: 0px;
   background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
-  border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[800]};
-  color: ${theme.palette.mode === 'dark' ? grey[300] : grey[500]};
+  border: 1px solid #24292E;
+  color: '#24292E';
   box-shadow: 0px 4px 30px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0, 0.95)' : 'rgba(0,0,0, 0.15)'
         };
   `,
 );
 
-const StyledOption = styled(Option)(
+export const StyledOption = styled(Option)(
     ({ theme }) => `
   list-style: none;
   padding: 8px;

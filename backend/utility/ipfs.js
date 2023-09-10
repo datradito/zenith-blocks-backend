@@ -7,14 +7,11 @@ const initializeIpfsNode = async () => {
     });
 };
 
-initializeIpfsNode();
-
-const UploadDataToIpfs = async (ipfsFilePath, jsonData) => { // Wait for the Moralis node initialization
-
+const UploadDataToIpfs = async (ipfsFilePath, jsonData) => {
     const abi = [
         {
             path: ipfsFilePath,
-            content: jsonData, // Use the actual Json data here
+            content: jsonData, 
         },
     ];
 
@@ -27,4 +24,23 @@ const UploadDataToIpfs = async (ipfsFilePath, jsonData) => { // Wait for the Mor
     }
 };
 
-module.exports = UploadDataToIpfs ;
+
+const getUserBalance = async (address) => {
+    initializeIpfsNode();
+    try {
+        const response = await Moralis.EvmApi.balance.getNativeBalance({
+            address,
+            chain: 1,
+        });
+        console.log("Balance:", response);
+        return response;
+    } catch (error) {
+        console.error("Error getting balance:", error);
+        throw error; 
+    }
+}
+module.exports = {
+    UploadDataToIpfs,
+    getUserBalance,
+    initializeIpfsNode
+} ;

@@ -8,14 +8,12 @@ import {
     Box
 } from '@mui/material';
 
-import useStyle from "./index.style"
 
 function Table({ tableHeaderData, tableBodyData }) {
 
-    const classes = useStyle();
     const renderTable = () => {
         return (
-            <TableMUI className={classes.tableBodySection}>
+            <TableMUI sx={{ border: "none" }}>
                 <TableHeader tableHeaderData={tableHeaderData} />
                 <TableBody
                     tableBodyData={tableBodyData} />

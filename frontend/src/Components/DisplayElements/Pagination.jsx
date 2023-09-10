@@ -1,7 +1,6 @@
 import React, {useEffect, useState}  from 'react';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
 
 const paginationElement = {
     color: 'white',
@@ -14,7 +13,7 @@ const paginationElement = {
     }
 }
 
-export default function PaginationControlled({ handleSkip }) {
+const PaginationControlled = ({ handleSkip }) => {
     const [page, setPage] = useState(1);
 
     useEffect(() => {
@@ -29,10 +28,11 @@ export default function PaginationControlled({ handleSkip }) {
         setPage(value);
     };
 
+    console.log(page);
+
     return (
         <Stack
             spacing={2}>
-            {/* <Typography>Page: {page}</Typography> */}
             <Pagination
                 value={page}
                 count={499}
@@ -44,3 +44,5 @@ export default function PaginationControlled({ handleSkip }) {
         </Stack>
     );
 }
+
+export default PaginationControlled;

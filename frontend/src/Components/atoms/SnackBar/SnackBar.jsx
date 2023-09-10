@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 
@@ -25,10 +24,10 @@ export default function CustomizedSnackbars({ message, severity, autoOpen }) {
     React.useEffect(() => {
         if (autoOpen) {
             handleClick();
-            const timer = setTimeout(() => {
-                setOpen(false);
-            }, 2000);
-            return () => clearTimeout(timer);
+            // const timer = setTimeout(() => {
+            //     setOpen(false);
+            // }, 2000);
+            // return () => clearTimeout(timer);
         }
     }, [autoOpen]);
 

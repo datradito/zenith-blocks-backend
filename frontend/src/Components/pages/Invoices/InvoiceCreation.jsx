@@ -3,26 +3,46 @@ import SubHeader from '../../molecules/SubHeader/SubHeader';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
 import FormItem from '../../atoms/FormItem/FormItem';
-import FormRowInvoice from '../../molecules/FormInvoiceCreation';
-import { SUBMIT_INVOICE_MUTATION } from '../../../ServerQueries/InvoiceQueries';
+import { SUBMIT_INVOICE_MUTATION } from '../../../ServerQueries/Invoices/Mutations';
 import { useMutation } from "@apollo/client";
 import { useNavigate } from 'react-router-dom';
 import CircularIndeterminate from '../../atoms/Loader/loader';
 import { resetInvoice } from '../../../actions/createInvoiceAction';
 import CustomizedSnackbars from '../../atoms/SnackBar/SnackBar';
+import generateUUID from '../../../Utility/uniqueId';
+import { useGetAllInvoicesByBudget } from '../../hooks/Invoices/useGetAllInvoices';
+
+const BoxStyle = {
+    width: '90%',
+    margin: '0rem auto',
+    textAlign: "center",
+    color: 'white',
+    border: ".05rem #2c2c2c solid",
+    marginTop: "1rem",
+    borderRadius: 3
+};
+
+const handleDraft = () => {
+    //do validation and save file locally
+    console.log("Save Draft");
+};
 
 function InvoiceCreation() {
     const dispatch = useDispatch();
     const { proposal } = useSelector(state => state.currentProposal);
+    const { Budget } = useSelector(state => state.currentBudget);
     const { header } = useSelector(state => state.createInvoice);
     const navigate = useNavigate();
-    const [submitInvoice, { loading, error }] = useMutation(SUBMIT_INVOICE_MUTATION, { errorPolicy: "all" });
+    const [submitInvoice, { loading, error }] = useMutation(SUBMIT_INVOICE_MUTATION,
+        {
+            errorPolicy: "all",
+        }
+    );
+    const {refetch} = useGetAllInvoicesByBudget(Budget?.id);
     const [invoiceError, setInvoiceError] = useState(null);
+    const [successMessage, setSuccessMessage] = useState(null);
+    const [invoiceErrorKey, setInvoiceErrorKey] = useState(0);
 
-    const handleDraft = () => {
-        //do validation and save file locally
-        console.log("Save Draft");
-    };
 
     const initialValuesHeader = {
         Proposal: proposal.title,
@@ -30,6 +50,7 @@ function InvoiceCreation() {
         Recipient: header.Recipient,
         'Invoice Number': header['Invoice Number'],
         Currency: header.Currency,
+        Total: header.Total,
         'Invoice Date': header['Invoice Date'],
         'Due Date': header['Due Date'],
         'Upload Invoice': header['Upload Invoice'],
@@ -38,95 +59,102 @@ function InvoiceCreation() {
 
     const currentPathConfig = {
         path: "Invoices",
-        to: `/proposals/${proposal.id}/invoices`
+        to: `/proposal/${proposal.id}/invoices`
     }
 
-    const BoxStyle = {
-        width: '90%',
-        margin: '0rem auto',
-        textAlign: "center",
-        color: 'white',
-        border: ".05rem #2c2c2c solid",
-        marginTop: "1rem",
-        borderRadius: 3
-    };
 
+    const handleValidation = () => {
 
-    const handleSaveInvoice = async (event) => {
-
-        let errors = {};
-
-        if (!header.Category || !header.Recipient || !header['Invoice Number'] || !header.Currency || !header['Invoice Date'] || !header['Due Date'] || !header['Upload Invoice'] || !header.Description) {
-            errors['allFields'] = "Please fill all the fields";
+        if (!header.Category) {
+            setInvoiceError("Category field cannot be empty");
+            return false;
         }
 
-        console.log(errors);
-        let convertedInvoiceDate= new Date(header['Invoice Date']);
-        if (!(convertedInvoiceDate instanceof Date)) {
-            errors['Invoice Date'] = "Invalid date format for 'Invoice Date'";
-        } else {
-                const { ['Invoice Date']: _, ...rest } = errors;
-                errors = rest;
+        if (!header['Invoice Number'] || header['Invoice Number'].length === 0) {
+            setInvoiceError("Invoice Number field cannot be empty");
+            return false;
         }
 
-        let convertedDate = new Date(header['Due Date']);
+        if (!header.Recipient) {
+            setInvoiceError("Recipient field cannot be empty");
+            return false;
+        }
 
-        if (!(convertedDate instanceof Date)) {
-            errors['Due Date'] = "Invalid date format for 'Due Date'";
-        } else {
-                const { ['Invoice Date']: _, ...rest } = errors;
-                errors = rest;
+        if (!header.Total) {
+            setInvoiceError("Total field cannot be empty");
+            return false;
+        }
+
+        if (parseInt(header.Total) > parseInt(1000)) {
+            setInvoiceError("Total cannot be greater than Allocated amount of Budget");
+            return false;
         }
 
         if (header['Invoice Date'] > header['Due Date']) {
-            errors['Invoice Date'] = "Invoice Date cannot be greater than Due Date";
+            setInvoiceError("Invoice Date cannot be greater than Due Date");
+            return false;
         }
 
         if (!header.Currency) {
-            errors['Currency'] = "Currency field cannot be empty";
-        } else {
-            // Check if Currency is a valid number (Float)
-            const parsedCurrency = parseFloat(header.Currency);
-            if (isNaN(parsedCurrency)) {
-                errors['Currency'] = "Invalid value for Currency";
-            }
+            setInvoiceError("Currency field cannot be empty");
+            return false;
         }
-        setInvoiceError(Object.keys(errors).length > 0 ? errors : null);
 
-        console.log(invoiceError);
-        if (Object.keys(errors).length === 0) {
-            await submitInvoice({
-                variables: {
-                    Category: header.Category,
-                    Recipient: header.Recipient,
-                    InvoiceNumber: header['Invoice Number'],
-                    Currency: parseInt(header.Currency),
-                    InvoiceDate: header['Invoice Date'],
-                    DueDate: header['Due Date'],
-                    UploadInvoice: header['Upload Invoice'],
-                    Description: header.Description,
-                },
-            }).then((res) => {
-                <CustomizedSnackbars message="Invoice saved successfully!" severity="success" autoOpen={true} />
-                setTimeout(() => {
-                    dispatch(resetInvoice());
-                    navigate(`/proposals/${proposal.id}/invoices`);
-                }, 2000)
-            }).catch((error) => {
+        return true;
+    };
 
-                if (error.graphQLErrors) {
-                    error.graphQLErrors.forEach(({ message }) => {
-                        console.log(message);
-                    });
-                }
-                if (error.networkError) {
-                    console.log(`Network Error: ${error.networkError}`);
-                }
-            });
+    const handleSaveInvoice = async (event) => {
+        let isValid = handleValidation();
+        if (!isValid) {
+            setInvoiceErrorKey(generateUUID());
+            return;
+        }
+
+        if (isValid) {
+            const owneraddress = sessionStorage.getItem("address");
+                await submitInvoice({
+                    variables: {
+                        invoice: {
+                            category: header.Category,
+                            recipient: header.Recipient,
+                            owneraddress: owneraddress,
+                            proposal: proposal.id,
+                            number: header['Invoice Number'],
+                            budgetid: Budget.id,
+                            total: parseInt(header.Total),
+                            currency: header.Currency,
+                            date: header['Invoice Date'],
+                            duedate: header['Due Date'],
+                            description: header.Description,
+                            uploadinvoice: "placeholder for now",
+                        }
+                    },
+                }).then((res) => {
+                    if (res.data.submitInvoice !== null) {
+                        setSuccessMessage("Invoice saved successfully!")
+                        setTimeout(() => {
+                            dispatch(resetInvoice());
+                            navigate(`/proposal/${proposal.id}/invoices`);
+                            refetch();
+                        }, 2000);
+                    }
+
+                }).catch((error) => {
+                    if (error.message) {
+                        setInvoiceError(`Error: ${error.message}`)
+                    }
+                    if (error.response && error.response.errors) {
+                        error.response.errors.forEach((err) => {
+                            setInvoiceError(`GraphQL Error: ${err.message}`)
+                        });
+                    }
+
+                    if (error.networkError) {
+                        setInvoiceError(`Network Error: ${error.networkError}`)
+                    }
+                });
         }
     }; 
-
-
 
     const componentButtonConfig =
         [
@@ -144,29 +172,30 @@ function InvoiceCreation() {
                 onClick: handleSaveInvoice,
                 innerText: "Save Invoice",
                 ml: "0.5rem",
-                preventDefault: true,
                 type: "Submit",
-                // redirectTo: `/proposals/${proposal.id}/invoices`,
+                redirectTo: `/proposal/${proposal.id}/invoices`,
             }
         ];
 
     if (loading) return <CircularIndeterminate />;
 
     return (
-        <form onSubmit={handleSaveInvoice}>
+        <>
             <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath="Proposals  Proposal  Budget" />
-            <Box sx={BoxStyle}>
-                <FormItem initialValues={initialValuesHeader} type="invoice" />
-                <FormRowInvoice tableHeaderData={["", "Category", "Notes", "Price", "Quantity", "Total"]} />
-            </Box>
-            {invoiceError && (
-                <>
-                    {Object.entries(invoiceError).map(([key, message]) => (
-                        <CustomizedSnackbars key={key} message={message} severity="error" autoOpen={true} />
-                    ))}
-                </>
-            )}
-        </form>
+            <form onSubmit={handleSaveInvoice}>
+                <Box sx={BoxStyle}>
+                    <FormItem
+                        initialValues={initialValuesHeader}
+                        type="invoice"
+                        errors={invoiceError ? invoiceError : null}
+                        key={invoiceErrorKey}
+                    />
+                </Box>
+                {successMessage && (
+                    <CustomizedSnackbars key="success" message={successMessage} severity="success" autoOpen={true} />
+                )}
+            </form>
+        </>
     )
 }
 

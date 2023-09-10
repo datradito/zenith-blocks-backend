@@ -5,23 +5,10 @@ const initialState = {
             {
 
             },
-        lines: [
-            {
-                action: '-',
-                Category: '',
-                Notes: '',
-                Price: '',
-                Quantity: '',
-                Total: ''
-            }
-        ]
 };
 
 const createBudgetReducer = (state = initialState, action) => {
     switch (action.type) {
-        case ADD_ROW_INVOICE: {
-                state.lines.push(action.payload)
-        }
         case UPDATE_INVOICE_HEADER:
             return {
                 ...state,
@@ -45,7 +32,7 @@ const createBudgetReducer = (state = initialState, action) => {
             };
         case GET_ALL_ROWS_INVOICE:
             return state; // No changes needed here, just return the current state
-        case 'RESET_INVOICE':
+        case RESET_INVOICE:
             return initialState;
         default:
             return state;

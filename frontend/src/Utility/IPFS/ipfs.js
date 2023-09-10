@@ -3,7 +3,7 @@
 // const projectId = "354ff94af0b7439999ea30a8a1dde432";
 // const projectSecret = "413efdfcc91d45a18620b7fb4a93a98a";
 
-// // connect to the default API address http://localhost:5001
+// // // connect to the default API address http://localhost:5001
 // const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
 
 // const client = create({

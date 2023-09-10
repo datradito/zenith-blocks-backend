@@ -1,14 +1,11 @@
-import React, { useEffect } from 'react';
-import useStyles from './index.style';
+import React from 'react';
 import {
     Box,
     Button,
-    TableCell,
-    TableRow,
     TextField,
     FormControl
 } from '@mui/material';
-import TableHeader from '../../atoms/TableHeader/index';
+
 import RemoveCircleOutlineSharpIcon from '@mui/icons-material/RemoveCircleOutlineSharp';
 import { useDispatch, useSelector } from 'react-redux';
 import ButtonAtom from '../../atoms/Button';
@@ -19,7 +16,6 @@ import { categories } from '../../pages/Category/Category';
 function FormRowInvoice({ tableHeaderData }) {
     const dispatch = useDispatch();
     let currentProposal = useSelector(state => state.currentProposal);
-    let classes = useStyles();
     // const [proposalIsSet, setProposalIsSet] = React.useState(false);
     let { header, lines} = useSelector(state => state.createInvoice);
 
@@ -77,13 +73,16 @@ function FormRowInvoice({ tableHeaderData }) {
 
 
     return (
-        <Box className={classes.boxStyle}>
+        <Box sx={{
+            width: '95%',
+            margin: '0 auto',
+            textAlign: "left",
+        }}>
             <Box sx={{
                 display: 'flex',
                 justifyContent: 'flex-start',
                 border: 'none',
                 padding: '0.1rem',
-                color: 'white',
                 backgroundColor: 'rgba(40, 42, 46, 0.5)',
                 fontSize: '0.75rem',
                 color: "gray",
