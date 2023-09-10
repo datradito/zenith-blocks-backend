@@ -2,7 +2,6 @@ import React from 'react'
 import { Box, Stack, Typography, Grid, TextField } from '@mui/material'
 import SubHeader from '../../molecules/SubHeader/SubHeader'
 import ItemCard from '../../atoms/ItemCard/ItemCard';
-import ButtonAtom from '../../atoms/Button';
 import { useAccount } from 'wagmi';
 import { SendTransaction } from './SendTransaction';
 import { Divider } from '@mui/material';

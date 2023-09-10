@@ -20,7 +20,6 @@ import PaymentCreation from './Components/pages/Payments/PaymentCreation';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const TransferHistory = lazy(() => import("./Components/pages/walletDashboard/Components/TransferHistory.jsx"));
 const ProposalDetailView = lazy(() => import("./Components/pages/Proposals/ProposalDetailView"));
 const CreateBudget = lazy(() => import("./Components/pages/Budgets/CreateBudget"));
 const InvoiceListView = lazy(() => import("./Components/pages/Invoices/InvoiceListView"));
