@@ -83,7 +83,6 @@ function FormRowInvoice({ tableHeaderData }) {
                 justifyContent: 'flex-start',
                 border: 'none',
                 padding: '0.1rem',
-                color: 'white',
                 backgroundColor: 'rgba(40, 42, 46, 0.5)',
                 fontSize: '0.75rem',
                 color: "gray",
