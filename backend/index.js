@@ -84,18 +84,20 @@ app.get('/nonce', function (_, res) {
 app.post("/siwe", async (req, res) => {
     const { address, network, nonce } = req.body;
 
-    //check if user exist in db with daoId and address
+        try {
+            const message = createSiweMessage(address, network, nonce);
 
-    const message = createSiweMessage(address, network, nonce);
+            req.session.nonce = nonce;
+            req.session.address = address;
+            req.session.message = message;
+            req.session.save();
 
-    req.session.nonce = nonce;
-    req.session.address = address;
-    req.session.message = message;
-    req.session.save();
+            res.cookie('siwe', message, { httpOnly: true, secure: true, sameSite: 'none' });
 
-    res.cookie('siwe', message, { httpOnly: true, secure: true, sameSite: 'none' });
-
-    return res.status(200).json(message);
+            return res.status(200).json(message);
+        } catch (e) {
+            return res.status(500).json(e);
+        }
     }
 );
 

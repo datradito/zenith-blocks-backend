@@ -15,11 +15,22 @@ import { useError } from '../../../Routes/ErrorRouterProvider';
 import { useSignMessage } from 'wagmi';
 
 
+const BASE_URL = "https://zenith-blocks.vercel.app";
+
 const clearAuthData = () => {
-    sessionStorage.removeItem('authToken');
-    sessionStorage.removeItem('address');
-    sessionStorage.removeItem('daoId');
+  sessionStorage.removeItem("authToken");
+  sessionStorage.removeItem("address");
+  sessionStorage.removeItem("daoId");
 };
+
+function decodeToken(token) {
+    if (!token) {
+    return;
+    }
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace("-", "+").replace("_", "/");
+    return JSON.parse(window.atob(base64));
+}
 
 
 export default function WalletConnect() {
@@ -29,13 +40,13 @@ export default function WalletConnect() {
         onConnect: () => {
             const auth = sessionStorage.getItem('authToken');
             !auth && signInWithEthereum();
-        },
-        onDisconnect() {
-            clearAuthData();
-            localStorage.clear();
-            navigate(`/`);
-            handleError({ error: "success", message: "User disconnected" })
         }
+        // onDisconnect() {
+        //     clearAuthData();
+        //     localStorage.clear();
+        //     navigate(`/`);
+        //     handleError({ error: "success", message: "User disconnected" })
+        // }
     })
     const { data: ensAvatar } = useEnsAvatar({ address })
     const { data: ensName } = useEnsName({ address })
@@ -49,54 +60,79 @@ export default function WalletConnect() {
 
 
     //console.log("WalletConnect", { address, connector, isConnected, ensAvatar, ensName, balance, balanceError, balanceLoading, chain, connectSuccess, status })
-
-    // useEffect(() => {
-    //     const auth = sessionStorage.getItem('authToken');
-    //     if (!auth) {
-    //         disconnectAsync();
-    //         localStorage.clear();
-    //     }
-    // }, [])
+    useEffect(() => {
+      const auth = sessionStorage.getItem("authToken");
+      if (!auth) {
+        disconnectAsync();
+        localStorage.clear();
+      }
+    }, [disconnectAsync]);
 
     const createSiweMessage = async () => {
+      try {
+        const userData = {
+          network: "evm",
+          address: address,
+          chain: chain?.id,
+        };
+        const { data: nonce } = await axios.get(`${BASE_URL}/nonce`);
+        const { data } = await axios.post(
+          `${BASE_URL}/siwe`,
+          {
+            address: userData.address,
+            network: userData.network,
+            nonce,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
 
-        try {
-            const userData = {
-                network: "evm",
-                address: address,  // Make sure 'address' is defined or provided in your code
-                chain: chain?.id
-            };
-
-            const res = await axios.get(`${process.env.REACT_APP_API_URL}/nonce`);
-            const nonce = res.data;
-
-            const { data } = await axios.post(
-              `${process.env.REACT_APP_API_URL}/siwe`,
-              {
-                address: userData.address,
-                network: userData.network,
-                nonce,
-              },
-              {
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                withCredentials: true,
-              }
-            );
-
-            return data;
-        } catch (error) {
-            console.error('Error handling authentication:', error);
-            disconnectAsync();
-            throw error; // Rethrow the error to signal that the function encountered an error
-        }
+        return data;
+      } catch (error) {
+        console.log(error)
+      }
     };
+
+    // const createSiweMessage = async () => {
+    //     try {
+    //         const userData = {
+    //             network: "evm",
+    //             address: address,  // Make sure 'address' is defined or provided in your code
+    //             chain: chain?.id
+    //         };
+    //         const res = await axios.get(`https://zenith-blocks.vercel.app/nonce`);
+    //         const nonce = res.data;
+
+    //         const { data } = await axios.post(
+    //           `https://zenith-blocks.vercel.app/siwe`,
+    //           {
+    //             address: userData.address,
+    //             network: userData.network,
+    //             nonce,
+    //           },
+    //           {
+    //             headers: {
+    //               "Content-Type": "application/json",
+    //             },
+    //             withCredentials: true,
+    //           }
+    //         );
+
+    //         return data;
+    //     } catch (error) {
+    //         console.error('Error handling authentication:', error);
+    //         handleError({error: "error", message: "Error Authenticating"}) // Rethrow the error to signal that the function encountered an error
+    //     }
+    // };
 
     const sendForVerification = async(message, signature) => {
         try {
             const response = await axios.post(
-              `${process.env.REACT_APP_API_URL}/verify`,
+              `https://zenith-blocks.vercel.app/verify`,
               { message, signature },
               {
                 headers: {
@@ -108,8 +144,7 @@ export default function WalletConnect() {
 
             return response.data;
         } catch (error) {
-            console.error('Error during verification:', error.response.data);
-            throw error; // Rethrow the error to signal that the function encountered an error
+            throw error.response.data
         }
     }
 
@@ -137,19 +172,10 @@ export default function WalletConnect() {
             handleError({ error: "success", message: "User successfully connected" });
             navigate(`/`);
         } catch (error) {
-            handleError({ error: "error", message: "Error signing message" });
+            handleError({ error: "error", message: error });
             disconnectAsync();
-            sessionStorage.removeItem('authToken');
+            clearAuthData();
         }
-    }
-
-    function decodeToken(token) {
-        if (!token) {
-            return;
-        }
-        const base64Url = token.split(".")[1];
-        const base64 = base64Url.replace("-", "+").replace("_", "/");
-        return JSON.parse(window.atob(base64));
     }
 
 
