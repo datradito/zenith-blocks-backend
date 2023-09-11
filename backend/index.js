@@ -13,11 +13,6 @@ const { startStandaloneServer } = require('@apollo/server/standalone');
 const server = require('./schema/schema')
 const context = require('./utility/middlewares/context');
 
-// const { GraphQLError } = require('graphql');
-// const context = require('./utility/middlewares/context');
-
-// var { graphqlHTTP } = require('express-graphql');
-
 const Moralis = require("moralis").default;
 const { createSiweMessage, verifySiweMessageHandler } = require('./utility/signMessage');
 const { init } = require('./Database/sequalizeConnection');
@@ -27,10 +22,6 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(cors({
-//     origin: 'http://localhost:3000',
-//     credentials: true,
-// }));
 app.use(cors({ credentials: true, origin: true }));
 
 const hour = 3600000
