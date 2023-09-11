@@ -86,7 +86,6 @@ app.post("/siwe", async (req, res) => {
 
         try {
             const message = createSiweMessage(address, network, nonce);
-
             req.session.nonce = nonce;
             req.session.address = address;
             req.session.message = message;
@@ -127,7 +126,7 @@ app.post('/verify', async function (req, res) {
             
             return res.status(201).json({ authToken: token });
         } catch (e) {
-            return res.status(500).json("User not found");
+            return res.status(500).json(e);
         }
         
 

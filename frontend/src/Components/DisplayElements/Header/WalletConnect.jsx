@@ -40,22 +40,18 @@ export default function WalletConnect() {
         onConnect: () => {
             const auth = sessionStorage.getItem('authToken');
             !auth && signInWithEthereum();
+        },
+        onDisconnect() {
+            clearAuthData();
         }
-        // onDisconnect() {
-        //     clearAuthData();
-        //     localStorage.clear();
-        //     navigate(`/`);
-        //     handleError({ error: "success", message: "User disconnected" })
-        // }
     })
-    const { data: ensAvatar } = useEnsAvatar({ address })
-    const { data: ensName } = useEnsName({ address })
+    // const { data: ensAvatar } = useEnsAvatar({ address })
+    // const { data: ensName } = useEnsName({ address })
     const { data:balance, isError: balanceError, isLoading: balanceLoading } = useBalance({
         address
     })
     const { signMessageAsync } = useSignMessage();
     const { disconnectAsync } = useDisconnect();
-    const { connectAsync , isSuccess:connectSuccess, status } = useConnect();
     const { chain } = useNetwork()
 
 
@@ -97,42 +93,10 @@ export default function WalletConnect() {
       }
     };
 
-    // const createSiweMessage = async () => {
-    //     try {
-    //         const userData = {
-    //             network: "evm",
-    //             address: address,  // Make sure 'address' is defined or provided in your code
-    //             chain: chain?.id
-    //         };
-    //         const res = await axios.get(`https://zenith-blocks.vercel.app/nonce`);
-    //         const nonce = res.data;
-
-    //         const { data } = await axios.post(
-    //           `https://zenith-blocks.vercel.app/siwe`,
-    //           {
-    //             address: userData.address,
-    //             network: userData.network,
-    //             nonce,
-    //           },
-    //           {
-    //             headers: {
-    //               "Content-Type": "application/json",
-    //             },
-    //             withCredentials: true,
-    //           }
-    //         );
-
-    //         return data;
-    //     } catch (error) {
-    //         console.error('Error handling authentication:', error);
-    //         handleError({error: "error", message: "Error Authenticating"}) // Rethrow the error to signal that the function encountered an error
-    //     }
-    // };
-
     const sendForVerification = async(message, signature) => {
         try {
             const response = await axios.post(
-              `https://zenith-blocks.vercel.app/verify`,
+              `${BASE_URL}/verify`,
               { message, signature },
               {
                 headers: {
@@ -177,7 +141,6 @@ export default function WalletConnect() {
             clearAuthData();
         }
     }
-
 
     return (
         <div
