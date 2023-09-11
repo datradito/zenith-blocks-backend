@@ -128,23 +128,6 @@ app.post('/verify', async function (req, res) {
         } catch (e) {
             return res.status(500).json(e);
         }
-        
-
-        // console.log(user);
-        // hashUserData(user);
-
-        //const token = jwt.sign({ userAddress: user.address, dao: user.daoId }, secretKey, { expiresIn: '1h' });
-
-        // const user = {
-        //     address: req.session.address,
-        //     message: req.session.message,
-        //     daoId: "eth.1inch",
-        // }
-
-        // req.session.save(() => {
-        //     // const token = signJWTToken(user);
-        //     return res.status(200).send(token);
-        // });
 
     } catch (e) {
         req.session.siwe = null;
@@ -160,31 +143,22 @@ app.post('/verify', async function (req, res) {
 });
 
 app.post('/createUser', async (req, res) => {
-    const { address, daoId } = req.body;
+        const { address, daoId } = req.body;
 
-    const user = await User.create({ address, daoId });
+        const user = await User.create({ address, daoId });
 
-    return res.status(200).json(user);
-}
-);
-
-app.get('/logout', (req, res) => {
-        if (req.session.test) {
-            console.log(req.session.nonce);
-            
-            return res.status(200).json({ message: 'cookie cleared' });
-        } else {
-            return res.status(401).json({ error: 'Unauthorized: User not authenticated' });
-        }
+        return res.status(200).json(user);
     }
 );
 
-app.get('/checkSiwe', (req, res) => {
+
+app.get('/checkSiwe', async (req, res) => {
         if (req.session.test) {
             console.log(req.session.nonce);
             return res.status(200).json(req.session.siwe);
         } else {
-            return res.status(401).json({ error: 'Unauthorized: User not authenticated' });
+            const users = await User.findAll();
+            return res.status(401).json(users);
         }
     }
 );
@@ -359,11 +333,8 @@ app.get("/approve", async (req, res) => {
     }
 });
 
-
-
 app.listen(8000, async () => {
     await init();
-
     const { url } = await startStandaloneServer(server, {
         listen: { port: 8080 },
         context: context
