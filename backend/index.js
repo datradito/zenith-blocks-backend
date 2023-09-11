@@ -58,6 +58,10 @@ const initializeIpfsNode = async () => {
 
 initializeIpfsNode();
 
+app.get("/", (req, res) => {
+  res.send("Hey this is my API running 🥳");
+});
+
 
 app.get("/tokenPrice", async (req, res) => {
 
@@ -374,3 +378,6 @@ app.listen(8000, async () => {
     });
     console.log('Server is running on port' + url);
 });
+
+
+module.exports = app;
