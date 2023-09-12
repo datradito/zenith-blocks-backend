@@ -102,43 +102,51 @@ app.post("/siwe", async (req, res) => {
 
 app.post('/verify', async function (req, res) {
     try {
-        if (!req.body.message) {
-            res.status(422).json({ message: 'Expected prepareMessage object as body.' });
-            return;
+        if (!req.body.message || !req.body.signature) {
+          return res
+            .status(400)
+            .json({
+              message: "Expected message and signature in the request body.",
+            });
         }
 
-        let SIWEObject = new siwe.SiweMessage(req.body.message);
-        const { data: message } = await SIWEObject.verify({ signature: req.body.signature, nonce: req.session.nonce });
+        const SIWEObject = new siwe.SiweMessage(req.body.message);
+        const { data: message } = await SIWEObject.verify({
+          signature: req.body.signature,
+          nonce: req.session.nonce,
+        });
 
         req.session.siwe = message;
-        req.session.cookie.expires = new Date(Date.now() + hour);
+        req.session.cookie.expires = new Date(Date.now() + 3600000); // Assuming 'hour' is 3600000 milliseconds
 
-        //Todo: once signature is verified find user from database based on address and retrieve daoId
+        const user = await User.findOne({
+          where: { address: req.session.address },
+        });
 
-        try {
-            const user = await User.findOne({ where: { address: req.session.address } });
-
-            if (!user) {
-                return res.status(401).send(false);
-            }
-
-            const token = signJWTToken({ userAddress: user.address, dao: user.daoId });
-            
-            return res.status(201).json({ authToken: token });
-        } catch (e) {
-            return res.status(500).json(e);
+        if (!user) {
+          throw new Error("User not found" + req.session);
         }
+
+        const token = signJWTToken({
+          userAddress: user.address,
+          dao: user.daoId,
+        });
+
+        res.status(201).json({ authToken: token });
 
     } catch (e) {
         req.session.siwe = null;
         req.session.nonce = null;
 
-        switch (e) {
-            default: {
-                req.session.save(() => res.status(500).send(false));
-                break;
-            }
+        if (error.message === "User not found") {
+          return res
+            .status(401)
+            .json({ message: "Unauthorized: User not found." });
         }
+
+        req.session.save(() =>
+          res.status(500).json({ message: "Internal server error" })
+        );
     }
 });
 
