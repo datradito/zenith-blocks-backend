@@ -5,6 +5,11 @@ const session = require('express-session');
 const store = session.MemoryStore()
 const axios = require('axios');
 
+const redis = require("redis");
+const connectRedis = require("connect-redis");
+
+const RedisStore = connectRedis(session);
+
 require("dotenv").config();
 const signJWTToken = require('./utility/middlewares/auth').signJWTToken;
 const User = require('./Database/models/User');
@@ -26,14 +31,32 @@ app.use(cors({ credentials: true, origin: true }));
 
 const hour = 3600000
 
-app.use(session({
-    name: 'siwe',
+const redisClient = redis.createClient({
+  host: "localhost",
+  port: 6379,
+});
+redisClient.on("error", function (err) {
+  console.log("Could not establish a connection with redis. " + err);
+});
+redisClient.on("connect", function (err) {
+  console.log("Connected to redis successfully");
+});
+
+app.use(
+  session({
+    name: "siwe",
+    store: new RedisStore({ client: redisClient }),
     secret: process.env.SESSION_SECRET,
     resave: false,
-    expires: new Date(Date.now() + hour),
     saveUninitialized: false,
-    store
-}));
+    cookie: {
+      secure: false, // if true only transmit cookie over https
+      httpOnly: false, // if true prevent client side JS from reading the cookie
+      maxAge: new Date(Date.now() + hour), // session max age in miliseconds
+    },
+  })
+);
+
 
 let isMoralisInitialized = false;
 
