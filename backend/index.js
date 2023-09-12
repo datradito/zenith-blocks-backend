@@ -110,6 +110,9 @@ app.post('/verify', async function (req, res) {
             });
         }
 
+        if (!req.session.address) { 
+            throw new Error("Issues with session" + req.session);
+        }
         const SIWEObject = new siwe.SiweMessage(req.body.message);
         const { data: message } = await SIWEObject.verify({
           signature: req.body.signature,
@@ -138,14 +141,14 @@ app.post('/verify', async function (req, res) {
         req.session.siwe = null;
         req.session.nonce = null;
 
-        if (error.message === "User not found") {
+        if (e.message === "User not found") {
           return res
             .status(401)
             .json({ message: "Unauthorized: User not found." });
         }
 
         req.session.save(() =>
-          res.status(500).json({ message: "Internal server error" })
+          res.status(500).json({ message: "Internal server error" + e })
         );
     }
 });
