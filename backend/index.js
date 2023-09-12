@@ -2,13 +2,11 @@ const express = require('express');
 const cors = require('cors')
 const siwe = require('siwe');
 const session = require('express-session');
-const store = session.MemoryStore()
+
 const axios = require('axios');
 
 const redis = require("redis");
-const connectRedis = require("connect-redis");
-
-const RedisStore = connectRedis(session);
+const RedisStore = require("connect-redis");
 
 require("dotenv").config();
 const signJWTToken = require('./utility/middlewares/auth').signJWTToken;
@@ -19,7 +17,7 @@ const server = require('./schema/schema')
 const context = require('./utility/middlewares/context');
 
 const Moralis = require("moralis").default;
-const { createSiweMessage, verifySiweMessageHandler } = require('./utility/signMessage');
+const { createSiweMessage } = require('./utility/signMessage');
 const { init } = require('./Database/sequalizeConnection');
 
 const app = express();
@@ -31,13 +29,14 @@ app.use(cors({ credentials: true, origin: true }));
 
 const hour = 3600000
 
-const redisClient = redis.createClient({
-  host: "localhost",
-  port: 6379,
-});
+// Initialize client.
+let redisClient = redis.createClient()
+redisClient.connect().catch(console.error)
+
 redisClient.on("error", function (err) {
   console.log("Could not establish a connection with redis. " + err);
 });
+
 redisClient.on("connect", function (err) {
   console.log("Connected to redis successfully");
 });
