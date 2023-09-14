@@ -24,8 +24,8 @@ function createSiweMessage(address, network, nonce) {
             ...config,
         });
         return siweMessage.prepareMessage();
-    }catch (error) {
-        return(error);
+    } catch (error) {
+        throw error;
     }
 }
 

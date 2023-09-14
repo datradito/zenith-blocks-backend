@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors')
 const siwe = require('siwe');
 const session = require('express-session');
-
+const { redisStore } = require('./utility/redis/redisClient');
 const axios = require('axios');
 
 const redis = require("redis");
@@ -22,12 +22,11 @@ const { init } = require('./Database/sequalizeConnection');
 
 const app = express();
 
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ credentials: true, origin: true }));
 
-const hour = 3600000
+const hour = 3600000;
 
 // Initialize client.
 let redisClient = redis.createClient()
@@ -41,21 +40,14 @@ redisClient.on("connect", function (err) {
   console.log("Connected to redis successfully");
 });
 
-app.use(
-  session({
-    name: "siwe",
-    store: new RedisStore({ client: redisClient }),
+app.use(session({
+    name: 'siwe',
     secret: process.env.SESSION_SECRET,
     resave: false,
+    expires: new Date(Date.now() + hour),
     saveUninitialized: false,
-    cookie: {
-      secure: false, // if true only transmit cookie over https
-      httpOnly: false, // if true prevent client side JS from reading the cookie
-      maxAge: new Date(Date.now() + hour), // session max age in miliseconds
-    },
-  })
-);
-
+    store: redisStore,
+}));
 
 let isMoralisInitialized = false;
 
@@ -123,6 +115,7 @@ app.post("/siwe", async (req, res) => {
 );
 
 app.post('/verify', async function (req, res) {
+    console.log(req.session.nonce);
     try {
         if (!req.body.message || !req.body.signature) {
           return res
