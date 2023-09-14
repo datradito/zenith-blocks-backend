@@ -25,20 +25,20 @@ app.use(cors({ credentials: true, origin: true }));
 
 const hour = 3600000;
 
-
-app.use(session({
-    name: 'siwe',
+app.use(
+  session({
+    name: "siwe",
+    store: redisStore,
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    store: redisStore,
     cookie: {
-        // secure: true,
-        // httpOnly: true,
-        // sameSite: 'none',
-        maxAge: hour,
+      secure: false, // if true only transmit cookie over https
+      httpOnly: false, // if true prevent client side JS from reading the cookie
+      maxAge: new Date(Date.now() + hour), // session max age in miliseconds
     },
-}));
+  })
+);
 
 let isMoralisInitialized = false;
 
@@ -117,36 +117,36 @@ app.post('/verify', async function (req, res) {
             });
         }
 
-        console.log(req.session);
-
         if (!req.session.address) { 
             throw new Error("Issues with session" + req.session);
         }
 
-        console.log("here1")
         const SIWEObject = new siwe.SiweMessage(req.body.message);
-        console.log("here2")
+
         const { data: message } = await SIWEObject.verify({
           signature: req.body.signature,
           nonce: req.session.nonce,
         });
-        console.log("here3")
 
         req.session.siwe = message;
         req.session.cookie.expires = new Date(Date.now() + 3600000); // Assuming 'hour' is 3600000 milliseconds
 
         req.session.save();
 
-        console.log("here4")
         const user = await User.findOne({
           where: { address: req.session.address },
         });
 
-        console.log("here5")
-
         if (!user) {
           throw new Error("User not found" + req.session);
         }
+        
+        const token = signJWTToken({
+          userAddress: user.address,
+          dao: user.daoId,
+        });
+
+        return res.status(201).json({ authToken: token });
 
     } catch (e) {
         req.session.siwe = null;
