@@ -10,7 +10,7 @@ const redisClient = redis.createClient({
 });
 
 redisClient.on("connect", () => {
-  console.log("Connected to Redis12345");
+  console.log(`Connected to Redis on ${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`);
 });
 
 redisClient.on("error", (err) => {
@@ -36,6 +36,5 @@ redisClient
   });
 
 const redisStore = new RedisStore({ client: redisClient });
-
 
 module.exports = { redisClient, redisStore };
