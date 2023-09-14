@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors')
 const siwe = require('siwe');
 const session = require('express-session');
-const store = session.MemoryStore()
+const { redisStore } = require('./utility/redis/redisClient');
 const axios = require('axios');
 
 require("dotenv").config();
@@ -19,12 +19,11 @@ const { init } = require('./Database/sequalizeConnection');
 
 const app = express();
 
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ credentials: true, origin: true }));
 
-const hour = 3600000
+const hour = 3600000;
 
 app.use(session({
     name: 'siwe',
@@ -32,7 +31,7 @@ app.use(session({
     resave: false,
     expires: new Date(Date.now() + hour),
     saveUninitialized: false,
-    store
+    store: redisStore,
 }));
 
 let isMoralisInitialized = false;
@@ -93,6 +92,8 @@ app.post("/siwe", async (req, res) => {
     req.session.message = message;
     req.session.save();
 
+    console.log(req.session.nonce);
+
     res.cookie('siwe', message, { httpOnly: true, secure: true, sameSite: 'none' });
 
     return res.status(200).json(message);
@@ -100,6 +101,7 @@ app.post("/siwe", async (req, res) => {
 );
 
 app.post('/verify', async function (req, res) {
+    console.log(req.session.nonce);
     try {
         if (!req.body.message) {
             res.status(422).json({ message: 'Expected prepareMessage object as body.' });

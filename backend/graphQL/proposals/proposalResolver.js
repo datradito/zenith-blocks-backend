@@ -20,8 +20,6 @@ const proposalResolver = {
     },
     Mutation: {
         setProposalAmount: async (parent, args, context) => {
-            //do some validations here to avoid overwriting amount once its written
-            //check if proposal exists
             //check if proposal has amount
             console.log(args)
             //save proposal to ipfs with jsonData id,amountand daoId
