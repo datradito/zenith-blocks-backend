@@ -5,6 +5,9 @@ const session = require('express-session');
 const { redisStore } = require('./utility/redis/redisClient');
 const axios = require('axios');
 
+const redis = require("redis");
+const RedisStore = require("connect-redis");
+
 require("dotenv").config();
 const signJWTToken = require('./utility/middlewares/auth').signJWTToken;
 const User = require('./Database/models/User');
@@ -14,7 +17,7 @@ const server = require('./schema/schema')
 const context = require('./utility/middlewares/context');
 
 const Moralis = require("moralis").default;
-const { createSiweMessage, verifySiweMessageHandler } = require('./utility/signMessage');
+const { createSiweMessage } = require('./utility/signMessage');
 const { init } = require('./Database/sequalizeConnection');
 
 const app = express();
@@ -24,6 +27,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors({ credentials: true, origin: true }));
 
 const hour = 3600000;
+
+// Initialize client.
+let redisClient = redis.createClient()
+redisClient.connect().catch(console.error)
+
+redisClient.on("error", function (err) {
+  console.log("Could not establish a connection with redis. " + err);
+});
+
+redisClient.on("connect", function (err) {
+  console.log("Connected to redis successfully");
+});
 
 app.use(session({
     name: 'siwe',
@@ -83,92 +98,86 @@ app.get('/nonce', function (_, res) {
 app.post("/siwe", async (req, res) => {
     const { address, network, nonce } = req.body;
 
-    //check if user exist in db with daoId and address
+        try {
+            const message = createSiweMessage(address, network, nonce);
+            req.session.nonce = nonce;
+            req.session.address = address;
+            req.session.message = message;
+            req.session.save();
 
-    const message = createSiweMessage(address, network, nonce);
+            res.cookie('siwe', message, { httpOnly: true, secure: true, sameSite: 'none' });
 
-    req.session.nonce = nonce;
-    req.session.address = address;
-    req.session.message = message;
-    req.session.save();
-
-    console.log(req.session.nonce);
-
-    res.cookie('siwe', message, { httpOnly: true, secure: true, sameSite: 'none' });
-
-    return res.status(200).json(message);
+            return res.status(200).json(message);
+        } catch (e) {
+            return res.status(500).json(e);
+        }
     }
 );
 
 app.post('/verify', async function (req, res) {
     console.log(req.session.nonce);
     try {
-        if (!req.body.message) {
-            res.status(422).json({ message: 'Expected prepareMessage object as body.' });
-            return;
+        if (!req.body.message || !req.body.signature) {
+          return res
+            .status(400)
+            .json({
+              message: "Expected message and signature in the request body.",
+            });
         }
 
-        let SIWEObject = new siwe.SiweMessage(req.body.message);
-        const { data: message } = await SIWEObject.verify({ signature: req.body.signature, nonce: req.session.nonce });
+        if (!req.session.address) { 
+            throw new Error("Issues with session" + req.session);
+        }
+        const SIWEObject = new siwe.SiweMessage(req.body.message);
+        const { data: message } = await SIWEObject.verify({
+          signature: req.body.signature,
+          nonce: req.session.nonce,
+        });
 
         req.session.siwe = message;
-        req.session.cookie.expires = new Date(Date.now() + hour);
+        req.session.cookie.expires = new Date(Date.now() + 3600000); // Assuming 'hour' is 3600000 milliseconds
 
-        //Todo: once signature is verified find user from database based on address and retrieve daoId
+        const user = await User.findOne({
+          where: { address: req.session.address },
+        });
 
-        try {
-            const user = await User.findOne({ where: { address: req.session.address } });
-
-            if (!user) {
-                return res.status(401).send(false);
-            }
-
-            const token = signJWTToken({ userAddress: user.address, dao: user.daoId });
-            
-            return res.status(201).json({ authToken: token });
-        } catch (e) {
-            return res.status(500).json("User not found");
+        if (!user) {
+          throw new Error("User not found" + req.session);
         }
 
     } catch (e) {
         req.session.siwe = null;
         req.session.nonce = null;
 
-        switch (e) {
-            default: {
-                req.session.save(() => res.status(500).send(false));
-                break;
-            }
+        if (e.message === "User not found") {
+          return res
+            .status(401)
+            .json({ message: "Unauthorized: User not found." });
         }
+
+        req.session.save(() =>
+          res.status(500).json({ message: "Internal server error" + e })
+        );
     }
 });
 
 app.post('/createUser', async (req, res) => {
-    const { address, daoId } = req.body;
+        const { address, daoId } = req.body;
 
-    const user = await User.create({ address, daoId });
+        const user = await User.create({ address, daoId });
 
-    return res.status(200).json(user);
-}
-);
-
-app.get('/logout', (req, res) => {
-        if (req.session.test) {
-            console.log(req.session.nonce);
-            
-            return res.status(200).json({ message: 'cookie cleared' });
-        } else {
-            return res.status(401).json({ error: 'Unauthorized: User not authenticated' });
-        }
+        return res.status(200).json(user);
     }
 );
 
-app.get('/checkSiwe', (req, res) => {
+
+app.get('/checkSiwe', async (req, res) => {
         if (req.session.test) {
             console.log(req.session.nonce);
             return res.status(200).json(req.session.siwe);
         } else {
-            return res.status(401).json({ error: 'Unauthorized: User not authenticated' });
+            const users = await User.findAll();
+            return res.status(401).json(users);
         }
     }
 );
@@ -343,11 +352,8 @@ app.get("/approve", async (req, res) => {
     }
 });
 
-
-
 app.listen(8000, async () => {
     await init();
-
     const { url } = await startStandaloneServer(server, {
         listen: { port: 8080 },
         context: context
