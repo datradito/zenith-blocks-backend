@@ -37,5 +37,4 @@ redisClient
 
 const redisStore = new RedisStore({ client: redisClient });
 
-
 module.exports = { redisClient, redisStore };

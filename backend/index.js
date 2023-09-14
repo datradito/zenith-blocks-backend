@@ -5,9 +5,6 @@ const session = require('express-session');
 const { redisStore } = require('./utility/redis/redisClient');
 const axios = require('axios');
 
-const redis = require("redis");
-const RedisStore = require("connect-redis");
-
 require("dotenv").config();
 const signJWTToken = require('./utility/middlewares/auth').signJWTToken;
 const User = require('./Database/models/User');
@@ -28,25 +25,19 @@ app.use(cors({ credentials: true, origin: true }));
 
 const hour = 3600000;
 
-// Initialize client.
-let redisClient = redis.createClient()
-redisClient.connect().catch(console.error)
-
-redisClient.on("error", function (err) {
-  console.log("Could not establish a connection with redis. " + err);
-});
-
-redisClient.on("connect", function (err) {
-  console.log("Connected to redis successfully");
-});
 
 app.use(session({
     name: 'siwe',
     secret: process.env.SESSION_SECRET,
     resave: false,
-    expires: new Date(Date.now() + hour),
     saveUninitialized: false,
     store: redisStore,
+    cookie: {
+        // secure: true,
+        // httpOnly: true,
+        // sameSite: 'none',
+        maxAge: hour,
+    },
 }));
 
 let isMoralisInitialized = false;
@@ -85,8 +76,6 @@ app.get("/tokenPrice", async (req, res) => {
         tokenTwo: responseTwo.raw.usdPrice,
         ratio: responseOne.raw.usdPrice / responseTwo.raw.usdPrice
     }
-
-
     return res.status(200).json(usdPrices);
 });
 
@@ -98,16 +87,19 @@ app.get('/nonce', function (_, res) {
 app.post("/siwe", async (req, res) => {
     const { address, network, nonce } = req.body;
 
-        try {
-            const message = createSiweMessage(address, network, nonce);
-            req.session.nonce = nonce;
-            req.session.address = address;
-            req.session.message = message;
-            req.session.save();
+    try {
+            
+        const message = createSiweMessage(address, network, nonce);
+        req.session.nonce = nonce;
+        req.session.address = address;
+        req.session.message = message;
+        req.session.save();
 
-            res.cookie('siwe', message, { httpOnly: true, secure: true, sameSite: 'none' });
+        console.log(req.session);
 
-            return res.status(200).json(message);
+        res.cookie('siwe', message, { httpOnly: true, secure: true, sameSite: 'none' });
+
+        return res.status(200).json(message);
         } catch (e) {
             return res.status(500).json(e);
         }
@@ -115,7 +107,7 @@ app.post("/siwe", async (req, res) => {
 );
 
 app.post('/verify', async function (req, res) {
-    console.log(req.session.nonce);
+    
     try {
         if (!req.body.message || !req.body.signature) {
           return res
@@ -125,21 +117,32 @@ app.post('/verify', async function (req, res) {
             });
         }
 
+        console.log(req.session);
+
         if (!req.session.address) { 
             throw new Error("Issues with session" + req.session);
         }
+
+        console.log("here1")
         const SIWEObject = new siwe.SiweMessage(req.body.message);
+        console.log("here2")
         const { data: message } = await SIWEObject.verify({
           signature: req.body.signature,
           nonce: req.session.nonce,
         });
+        console.log("here3")
 
         req.session.siwe = message;
         req.session.cookie.expires = new Date(Date.now() + 3600000); // Assuming 'hour' is 3600000 milliseconds
 
+        req.session.save();
+
+        console.log("here4")
         const user = await User.findOne({
           where: { address: req.session.address },
         });
+
+        console.log("here5")
 
         if (!user) {
           throw new Error("User not found" + req.session);
