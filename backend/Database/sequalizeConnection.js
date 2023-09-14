@@ -2,16 +2,21 @@ const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
 
-const sequelize = new Sequelize(process.env.DATABASE_NAME_DEV, process.env.DATABASE_USER_DEV, process.env.DATABASE_PWD_DEV, {
-    host: process.env.DATABASE_HOST_DEV,
-    dialect: 'mysql',
-    dialectModule: require('mysql2'),
+const sequelize = new Sequelize(
+  process.env.PLANETSCALE_DB,
+  process.env.PLANETSCALE_DB_USERNAME,
+  process.env.PLANETSCALE_DB_PASSWORD,
+  {
+    host: process.env.PLANETSCALE_DB_HOST,
+    dialect: "mysql",
+    dialectModule: require("mysql2"),
     dialectOptions: {
-        ssl: {
-            rejectUnauthorized: true,
-        }
-    }
-});
+      ssl: {
+        rejectUnauthorized: true,
+      },
+    },
+  }
+);
 
 const init = async () => {
     // console.log(sequelize.beforeSync())
