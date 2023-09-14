@@ -129,23 +129,6 @@ app.post('/verify', async function (req, res) {
         } catch (e) {
             return res.status(500).json("User not found");
         }
-        
-
-        // console.log(user);
-        // hashUserData(user);
-
-        //const token = jwt.sign({ userAddress: user.address, dao: user.daoId }, secretKey, { expiresIn: '1h' });
-
-        // const user = {
-        //     address: req.session.address,
-        //     message: req.session.message,
-        //     daoId: "eth.1inch",
-        // }
-
-        // req.session.save(() => {
-        //     // const token = signJWTToken(user);
-        //     return res.status(200).send(token);
-        // });
 
     } catch (e) {
         req.session.siwe = null;
