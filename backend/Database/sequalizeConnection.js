@@ -3,12 +3,13 @@ require('dotenv').config();
 
 
 const sequelize = new Sequelize(
-  process.env.DATABASE_NAME_DEV,
-  process.env.DATABASE_USER_DEV,
-  process.env.DATABASE_PWD_DEV,
+  process.env.PLANETSCALE_DB,
+  process.env.PLANETSCALE_DB_USERNAME,
+  process.env.PLANETSCALE_DB_PASSWORD,
   {
-    host: process.env.DATABASE_HOST_DEV,
+    host: process.env.PLANETSCALE_DB_HOST,
     dialect: "mysql",
+    dialectModule: require("mysql2"),
     dialectOptions: {
       ssl: {
         rejectUnauthorized: true,
@@ -18,6 +19,7 @@ const sequelize = new Sequelize(
 );
 
 const init = async () => {
+    // console.log(sequelize.beforeSync())
         await sequelize.sync()
             .then(() => console.log('Connection has been established successfully.'))
             .catch(error => console.error('Unable to connect to the database:', error));

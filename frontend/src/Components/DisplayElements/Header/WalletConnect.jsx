@@ -15,7 +15,7 @@ import { useError } from '../../../Routes/ErrorRouterProvider';
 import { useSignMessage } from 'wagmi';
 
 
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "https://zenith-blocks.vercel.app";
 
 const clearAuthData = () => {
   sessionStorage.removeItem("authToken");
