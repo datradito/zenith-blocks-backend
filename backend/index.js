@@ -34,7 +34,7 @@ app.use(
     saveUninitialized: false,
     cookie: {
       secure: false, // if true only transmit cookie over https
-      httpOnly: false, // if true prevent client side JS from reading the cookie
+      httpOnly: false, 
       maxAge: new Date(Date.now() + hour), // session max age in miliseconds
     },
   })
@@ -129,7 +129,7 @@ app.post('/verify', async function (req, res) {
         });
 
         req.session.siwe = message;
-        req.session.cookie.expires = new Date(Date.now() + 3600000); // Assuming 'hour' is 3600000 milliseconds
+        req.session.cookie.expires = new Date(Date.now() + 3600000); 
 
         req.session.save();
 
