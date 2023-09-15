@@ -118,7 +118,7 @@ app.post('/verify', async function (req, res) {
         }
 
         if (!req.session.address) { 
-            throw new Error("Issues with session" + req.session);
+            throw new Error("Issues with session" + JSON.stringify(req.session));
         }
 
         const SIWEObject = new siwe.SiweMessage(req.body.message);
