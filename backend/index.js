@@ -33,8 +33,8 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false, // if true only transmit cookie over https
-      httpOnly: false, 
+      secure: true, 
+      httpOnly: true,
       maxAge: 3600000, // session max age in miliseconds
     },
   })
