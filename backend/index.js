@@ -35,7 +35,7 @@ app.use(
     cookie: {
       secure: false, // if true only transmit cookie over https
       httpOnly: false, 
-      maxAge: new Date(Date.now() + hour), // session max age in miliseconds
+      maxAge: 3600000, // session max age in miliseconds
     },
   })
 );
