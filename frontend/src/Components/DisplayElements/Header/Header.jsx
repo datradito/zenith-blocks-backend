@@ -4,7 +4,6 @@ import { NavLink } from 'react-router-dom';
 import WalletConnect from './WalletConnect';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import Login from '../../pages/Home/logIn';
 
 import {
     Box,
@@ -88,7 +87,7 @@ const ResponsiveHeaderBar = () => {
                                 <WalletConnect />
                             </Box>   
                         </>
-                    { !walletConnected &&  <Login />  }
+                    {/* { !walletConnected &&  <Login />  } */}
                 </Toolbar>
             </Container>
         </AppBar>

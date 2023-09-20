@@ -5,7 +5,6 @@ import { toast } from 'react-toastify';
 import { RetryLink } from '@apollo/client/link/retry';
 import { onError } from '@apollo/client/link/error';
 import { redirect } from "react-router-dom";
-import { useDisconnect } from 'wagmi';
 
 
 const clearAuthData = () => {
@@ -38,7 +37,7 @@ export const loggerLink = new ApolloLink((operation, forward) => {
     operation.setContext({ start: new Date() });
     return forward(operation).map((response) => {
         const responseTime = new Date() - operation.getContext().start;
-        console.log(`GraphQL Response took: ${responseTime}`);
+        // console.log(`GraphQL Response took: ${responseTime}`);
         return response;
     });
 });

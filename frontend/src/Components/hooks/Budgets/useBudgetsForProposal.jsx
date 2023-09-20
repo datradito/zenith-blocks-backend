@@ -13,7 +13,6 @@ export const useAllBudgetsForProposal = (proposalId) => {
         refetch();
     }, [proposalId]);
 
-
     return {
         budgetList,
         budgetsLoading,

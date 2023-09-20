@@ -13,15 +13,20 @@ export default function Login() {
             display: 'flex',
             backgroundColor: '#303133', // Main color
             padding: '20px',
+            justifyContent: 'center',
             borderRadius: '10px',
             boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
             textAlign: 'center',
-            position: "absolute",
-            top: "350%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
+            width: '50%',
+            margin: '0 auto',
+            marginTop: '10%',
+            // position: "absolute",
+            // top: "350%",
+            // left: "50%",
+            // transform: "translate(-50%, -50%)",
         }}>
-            <CardContent>
+            <CardContent
+            >
                 <Typography sx={{ fontSize: 14, color: 'white' }} variant='subtitle2' gutterBottom>
                     Welcome to ZenithBlocks
                 </Typography>

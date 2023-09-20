@@ -28,7 +28,7 @@ const ErrorProvider = ({ children }) => {
             {
                 showSnackbar && (
                     error.error === "error" ? (
-                        toast.error(error.message)
+                        toast.error(`coming from error router ${error.message}`)
                     ) : (
                         toast.success(error.message)
                     )

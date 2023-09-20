@@ -28,8 +28,6 @@ const PaginationControlled = ({ handleSkip }) => {
         setPage(value);
     };
 
-    console.log(page);
-
     return (
         <Stack
             spacing={2}>

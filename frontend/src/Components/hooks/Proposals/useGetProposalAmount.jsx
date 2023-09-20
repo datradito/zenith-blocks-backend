@@ -24,7 +24,6 @@ const useGetProposalAmount = (proposalid) => {
         };
     }
 
-    // You can extract the proposal Details from the 'data' object based on your GraphQL query structure
     const amount = proposalAmountData?.getProposalDetailsById?.amount || null;
     const status = proposalAmountData?.getProposalDetailsById?.status || null;  // Replace 'amount' with the actual field name from the query result
 

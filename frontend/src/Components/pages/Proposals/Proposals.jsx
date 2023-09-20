@@ -38,6 +38,15 @@ const currentPathConfig = {
   // to: `/proposals/${proposal.id}`
 }
 
+//write a loader funciton for react-router-dom which will load the proposals
+// const proposalLoader = () => useProposals();
+
+
+// const proposalLoader = () => ({
+//     return useProposals();
+//   }
+// );
+
 const Proposals = (props) => {
   const { handleError } = useError();
   const [selectedItemId, setSelectedItemId] = useState(null);

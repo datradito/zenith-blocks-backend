@@ -3,10 +3,13 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from "./App.js"
 
-// import { SafeConnector } from 'wagmi/connectors/safe'
-
 import '@rainbow-me/rainbowkit/styles.css';
-import { getDefaultWallets, RainbowKitProvider, connectorsForWallets } from '@rainbow-me/rainbowkit';
+import {
+  getDefaultWallets,
+  RainbowKitProvider,
+  connectorsForWallets,
+  darkTheme,
+} from "@rainbow-me/rainbowkit";
 import {
         injectedWallet,
         rainbowWallet,
@@ -65,13 +68,7 @@ const connectors = connectorsForWallets([
                 ],
         },
 ]);
-// const connector = new SafeConnector({
-//         chains: [mainnet, optimism],
-//         options: {
-//                 allowedDomains: [/gnosis-safe.io$/, /app.safe.global$/],
-//                 debug: false,
-//         },
-// })
+
 
 const wagmiConfig = createConfig({
         autoConnect: true,
@@ -85,22 +82,27 @@ const root = ReactDOM.createRoot(
         document.getElementById('root')
 );
 
-root.render(    
-        <>
-                <WagmiConfig config={wagmiConfig}>
-                        <RainbowKitProvider
-                                appInfo={{
-                                        appName: 'ZenithBlocks',
-                                }}
-                                coolMode={true}
-                                chains={chains}
-                                showRecentTransactions={true}
-                        >
-                                <App />   
-                        </RainbowKitProvider>
-                </WagmiConfig>
-
-        </>
+root.render(
+  <>
+    <WagmiConfig config={wagmiConfig}>
+      <RainbowKitProvider
+        theme={darkTheme({
+          accentColor: "#7b3fe4",
+          accentColorForeground: "white",
+          borderRadius: "small",
+          overlayBlur: "small",
+        })}
+        appInfo={{
+          appName: "ZenithBlocks",
+        }}
+        coolMode={true}
+        chains={chains}
+        showRecentTransactions={true}
+      >
+        <App />
+      </RainbowKitProvider>
+    </WagmiConfig>
+  </>
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -10,17 +10,13 @@ import { Box, Typography } from "@mui/material";
 
 import {
     useAccount,
-    useConnect,
-    useDisconnect,
     useNetwork,
     useEnsAvatar,
-    useEnsName,
-    useBalance
 } from 'wagmi'
 
 function Dashboard() {
 
-    const { address, connector, onConnect, isConnected } = useAccount();
+    const { address } = useAccount();
     const [activeTab, setActiveTab] = useState('tokens');
     const { chain: networkChain } = useNetwork();
 
@@ -128,7 +124,10 @@ function Dashboard() {
             }}>
                 <Box>
                     {activeTab === "tokens" && (
-                        <Box tabKey={1} tabName={"Tokens"}>
+                        <Box
+                            // tabKey={1}
+                            // tabName={"Tokens"}
+                        >
                             <NativeTokens
                                 wallet={wallet}
                                 chain={chain}
@@ -146,7 +145,10 @@ function Dashboard() {
                         )
                     }
                     {activeTab === "transfers" && (
-                        <Box tabKey={2} tabName={"Transfers"}>
+                        <Box
+                            tabKey={2}
+                            // tabName={"Transfers"}
+                        >
                             <TransferHistory
                                 chain={chain}
                                 wallet={wallet}
