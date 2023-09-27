@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const {sequelize} = require('../sequalizeConnection');
+const sequelize = require("../db");
 
 const Proposal = sequelize.define('proposals', {
     id: {

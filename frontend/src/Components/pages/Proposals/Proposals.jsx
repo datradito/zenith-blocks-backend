@@ -73,7 +73,7 @@ const Proposals = (props) => {
 
   if (networkStatus === NetworkStatus) return <CircularIndeterminate />;
   if (loading) return <CircularIndeterminate />;
-  if (error) return handleError({error: "error", message: "Something went wrong! Please try again later."});
+  if (error) return handleError({type: "error", message: "Something went wrong! Please try again later."});
 
 
   const handleTotalBudgetClick = (itemId, e) => {

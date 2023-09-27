@@ -15,7 +15,7 @@ const context = require('./utility/middlewares/context');
 
 const Moralis = require("moralis").default;
 const { createSiweMessage } = require('./utility/signMessage');
-const { init } = require('./Database/sequalizeConnection');
+const init = require('./Database/sequalizeConnection');
 
 const app = express();
 
@@ -356,6 +356,7 @@ app.get("/approve", async (req, res) => {
 
 app.listen(8000, async () => {
     await init();
+
     const { url } = await startStandaloneServer(server, {
         listen: { port: 8080 },
         context: context

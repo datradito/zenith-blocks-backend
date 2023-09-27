@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, {useState, useEffect} from 'react'
 import { useDebounce } from 'use-debounce'
 import {
     usePrepareSendTransaction,
@@ -8,6 +8,7 @@ import {
 import { parseEther } from 'viem'
 import { Button } from '@mui/material'
 import { TextField, Typography, Box } from '@mui/material'
+import CircularIndeterminate from '../../atoms/Loader/loader'
 
 
 const componentStyles = {
@@ -53,32 +54,43 @@ const componentStyles = {
 }
 
 export function SendTransaction({ handlePaymentCreateOnClick, reciepent }) {
-  const [to, setTo] = React.useState("");
+  const [to, setTo] = useState("");
   const [debouncedTo] = useDebounce(to, 500);
 
-  const [amount, setAmount] = React.useState("");
+  const [amount, setAmount] = useState("");
   const [debouncedAmount] = useDebounce(amount, 500);
 
-  React.useEffect(() => {
-    setTo(reciepent);
-  }, [reciepent]);
-
-  const { config } = usePrepareSendTransaction({
+  const { config, error: prepareTransactinoError } = usePrepareSendTransaction({
     to: debouncedTo,
     value: debouncedAmount ? parseEther(debouncedAmount) : undefined,
   });
   const { data, sendTransaction } = useSendTransaction(config);
 
-  const { isLoading, isSuccess } = useWaitForTransaction({
+  useEffect(() => {
+    setTo(reciepent);
+  }, [reciepent]);
+
+
+  const { isLoading, isSuccess, isError, error } = useWaitForTransaction({
     hash: data?.hash,
     onSuccess(data) {
       handlePaymentCreateOnClick(data?.hash);
+    },
+    onError(error) {
+      console.log(error);
     },
   });
 
   const handlePayment = (e) => {
     e.preventDefault();
     sendTransaction?.();
+  };
+
+  if (isLoading) return <div>Processing…</div>;
+  if (isError) return <div>${error}</div>;
+  if (prepareTransactinoError) {
+    const error = JSON.parse(JSON.stringify(prepareTransactinoError));
+    throw Error(error.shortMessage);
   };
 
   return (
@@ -126,14 +138,16 @@ export function SendTransaction({ handlePaymentCreateOnClick, reciepent }) {
       >
         {isLoading ? "Sending..." : "Pay Invoice"}
       </Button>
-      {isSuccess && (
+      {isLoading ? (
+        <CircularIndeterminate />
+      ) : isSuccess ? (
         <Box>
           Successfully sent {amount} ether to {to}
           <Box>
             <a href={`https://etherscan.io/tx/${data?.hash}`}>Etherscan</a>
           </Box>
         </Box>
-      )}
+      ) : null}
     </form>
   );
 }

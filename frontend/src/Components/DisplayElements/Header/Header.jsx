@@ -1,5 +1,4 @@
 import * as React from 'react';
-import AdbIcon from '@mui/icons-material/Adb';
 import { NavLink } from 'react-router-dom';
 import WalletConnect from './WalletConnect';
 import { useSelector } from 'react-redux';

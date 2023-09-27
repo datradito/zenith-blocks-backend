@@ -51,8 +51,6 @@ export default function WalletConnect() {
     const { disconnectAsync } = useDisconnect();
     const { chain } = useNetwork()
 
-
-    //console.log("WalletConnect", { address, connector, isConnected, ensAvatar, ensName, balance, balanceError, balanceLoading, chain, connectSuccess, status })
     useEffect(() => {
       const auth = sessionStorage.getItem("authToken");
       if (!auth) {
@@ -131,7 +129,7 @@ export default function WalletConnect() {
             dispatch(setIsLoggedIn(true))
             navigate(`/proposals`);
         } catch (error) {
-            handleError({ error: "error", message: error.message });
+            handleError({ type: "error", message: error.message });
             disconnectAsync();
             dispatch(setIsLoggedIn(false));
             clearAuthData();

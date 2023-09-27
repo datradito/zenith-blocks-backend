@@ -1,11 +1,8 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import WalletConnect from '../../DisplayElements/Header/WalletConnect';
-import logo from "../../../Images/logo.png"
 
 export default function Login() {
     return (
@@ -20,10 +17,6 @@ export default function Login() {
             width: '50%',
             margin: '0 auto',
             marginTop: '10%',
-            // position: "absolute",
-            // top: "350%",
-            // left: "50%",
-            // transform: "translate(-50%, -50%)",
         }}>
             <CardContent
             >

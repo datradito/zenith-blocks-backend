@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Outlet } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { useDisconnect } from 'wagmi';
 import Login from '../Components/pages/Home/logIn';
 
 const PrivateRoute = ({ component, ...rest }) => {
-    // const [authError, setAuthError] = useState(null);
     const { isLoggedIn } = useSelector(state => state.auth);
     const token = sessionStorage.getItem("authToken");
     const { disconnectAsync } = useDisconnect();

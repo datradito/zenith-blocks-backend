@@ -39,8 +39,13 @@ function App() {
 
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/" element={<Root />}>
-        <Route path="/" element={<PrivateRoute />}>
+      <Route
+        path="/"
+        element={<Root />}
+      >
+        <Route path="/"
+          element={<PrivateRoute />}
+        >
           <Route
             path="proposals"
             element={<Proposals />}
@@ -63,10 +68,13 @@ function App() {
           <Route
             path="invoice/:invoiceId/payment"
             element={<PaymentCreation />}
+            errorElement={<ErrorPage />}
             loader={({ params }) => {
               return paymentLoader(params.invoiceId);
             }}
-            errorElement={<ErrorPage />}
+            action={({ params, request }) => {
+              console.log(request);
+            }}
           />
 
           <Route path="budgets" element={<InvoiceRoutes />}>

@@ -1,7 +1,5 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require("../sequalizeConnection")
-
-
+const sequelize = require("../db");
 const Invoice = sequelize.define('invoices', {
     id: {
         type: DataTypes.UUID, 

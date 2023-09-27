@@ -1,9 +1,9 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from "./App.js"
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App.js";
 
-import '@rainbow-me/rainbowkit/styles.css';
+import "@rainbow-me/rainbowkit/styles.css";
 import {
   getDefaultWallets,
   RainbowKitProvider,
@@ -11,76 +11,94 @@ import {
   darkTheme,
 } from "@rainbow-me/rainbowkit";
 import {
-        injectedWallet,
-        rainbowWallet,
-        walletConnectWallet,
-        metaMaskWallet,
-        safeWallet,
-        argentWallet,
-        trustWallet,
-        ledgerWallet,
-} from '@rainbow-me/rainbowkit/wallets';
-import { configureChains, createConfig, WagmiConfig } from 'wagmi';
-import { mainnet, polygon, optimism, arbitrum, goerli, zkSync } from 'wagmi/chains';
-import { publicProvider } from 'wagmi/providers/public';
-import { alchemyProvider } from 'wagmi/providers/alchemy';
+  injectedWallet,
+  rainbowWallet,
+  walletConnectWallet,
+  metaMaskWallet,
+  safeWallet,
+  argentWallet,
+  trustWallet,
+  ledgerWallet,
+} from "@rainbow-me/rainbowkit/wallets";
+import { configureChains, createConfig, WagmiConfig } from "wagmi";
+import { mainnet, polygon, optimism, arbitrum, goerli } from "wagmi/chains";
+import { publicProvider } from "wagmi/providers/public";
+import { alchemyProvider } from "wagmi/providers/alchemy";
+import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
+
+// const ganache = {
+//   id: "0x539",
+//   name: "ganache",
+//   network: "ganache",
+//   iconBackground: "#fff",
+//   nativeCurrency: {
+//     decimals: 18,
+//     name: "ETHEREUM",
+//     symbol: "ETH",
+//   },
+//   rpcUrls: {
+//     default: {
+//       http: ["HTTP://127.0.0.1:7545"],
+//     },
+//   },
+//   testnet: true,
+// };
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-        [
-                mainnet,
-                polygon,
-                optimism,
-                zkSync,
-                arbitrum,
-                goerli,
-                ...(process.env.REACT_APP_ENABLE_TESTNETS === 'true' ? [goerli] : []),
-        ],
-        [alchemyProvider({ apiKey: 'AsxwVAm7iKW3SxGD-z9inFZ9FoYeQ4lQ' }) , publicProvider()]
+  [
+    mainnet,
+    polygon,
+    optimism,
+    arbitrum,
+    goerli,
+//     ganache,
+    ...(process.env.REACT_APP_ENABLE_TESTNETS === "true" ? [goerli] : []),
+  ],
+  [
+    (alchemyProvider({ apiKey: "AsxwVAm7iKW3SxGD-z9inFZ9FoYeQ4lQ" }),
+    publicProvider())
+//     jsonRpcProvider({
+//       rpc: (chain) => ({
+//         http: [`HTTP://127.0.0.1:7545`],
+//       }),
+//     })
+          
+  ]
 );
 
-// const { connectors } = getDefaultWallets({
-//         appName: 'RainbowKit demo',
-//         projectId: 'YOUR_PROJECT_ID',
-//         chains,
-// });
-const projectId = '3a74d330e07a405df9ab1a0ff1825a9b';
+const projectId = "3a74d330e07a405df9ab1a0ff1825a9b";
 
 const { wallets } = getDefaultWallets({
-        appName: 'ZenithBlocks',
-        projectId,
-        chains,
+  appName: "ZenithBlocks",
+  projectId,
+  chains,
 });
-
 
 const connectors = connectorsForWallets([
-        ...wallets,
-        {
-                groupName: 'Recommended',
-                wallets: [
-                        injectedWallet({ chains }),
-                        rainbowWallet({ projectId, chains }),
-                        walletConnectWallet({ projectId, chains }),
-                        safeWallet({ chains }),
-                        metaMaskWallet({ chains }),
-                        argentWallet({ projectId, chains }),
-                        trustWallet({ projectId, chains }),
-                        ledgerWallet({ projectId, chains }),
-                ],
-        },
+  ...wallets,
+  {
+    groupName: "Recommended",
+    wallets: [
+      injectedWallet({ chains }),
+      rainbowWallet({ projectId, chains }),
+      walletConnectWallet({ projectId, chains }),
+      safeWallet({ chains }),
+      metaMaskWallet({ chains }),
+      argentWallet({ projectId, chains }),
+      trustWallet({ projectId, chains }),
+      ledgerWallet({ projectId, chains }),
+    ],
+  },
 ]);
 
-
 const wagmiConfig = createConfig({
-        autoConnect: true,
-        connectors,
-        publicClient,
-        webSocketPublicClient,
+  autoConnect: true,
+  connectors,
+  publicClient,
+  webSocketPublicClient,
 });
 
-
-const root = ReactDOM.createRoot(
-        document.getElementById('root')
-);
+const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <>

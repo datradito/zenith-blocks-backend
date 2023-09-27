@@ -11,7 +11,6 @@ import { useLoaderData } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import TransactionInfo from "./TransactionInfo";
 
-
 const BoxStyle = {
     width: '90%',
     margin: '0rem auto',
@@ -104,6 +103,7 @@ function PaymentCreation() {
       Invoice: paymentData?.number,
       Date: new Date(parseInt(paymentData?.date)).toLocaleDateString(),
       Due: new Date(parseInt(paymentData?.duedate)).toLocaleDateString(),
+      Total: paymentData?.total,
     };
 
     const paymentBar = {
@@ -111,12 +111,11 @@ function PaymentCreation() {
         "Currency": paymentData?.currency,
     }
 
-    const handlePaymentCreateOnClick = (paymentData) => {
-        console.log(paymentData)
+    const handlePaymentCreateOnClick = (hash) => {
+        console.log(hash)
     }
 
     const componentButtonConfig = {
-
     };
 
     return (

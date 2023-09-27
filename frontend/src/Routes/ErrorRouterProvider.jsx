@@ -1,5 +1,5 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import { toast } from 'react-toastify';
+import React, { createContext, useState, useContext } from "react";
+import { toast } from "react-toastify";
 
 export const ErrorContext = createContext();
 
@@ -7,35 +7,22 @@ export const useError = () => useContext(ErrorContext);
 
 const ErrorProvider = ({ children }) => {
     const [error, setError] = useState(null);
-    const [showSnackbar, setShowSnackbar] = useState(false);
+    
 
-    const handleError = (errorMessage) => {
-        setError({error: errorMessage.error, message: errorMessage.message});
-        setShowSnackbar(true);
-    };
+  const handleError = (errorMessage) => {
+    setError(errorMessage);
+    if (errorMessage.type === "error") {
+      toast.error(`coming from error router ${errorMessage.message}`);
+    } else {
+      toast.success(errorMessage.message);
+    }
+  };
 
-    useEffect(() => {
-        if (error === null) {
-            setShowSnackbar(false);
-        } else {
-            setShowSnackbar(true);
-        }
-    }, [error]);
-
-    return (
-        <ErrorContext.Provider value={{ handleError }}>
-            {children}
-            {
-                showSnackbar && (
-                    error.error === "error" ? (
-                        toast.error(`coming from error router ${error.message}`)
-                    ) : (
-                        toast.success(error.message)
-                    )
-                )
-            }
-        </ErrorContext.Provider>
-    );
+  return (
+    <ErrorContext.Provider value={{ handleError }}>
+      {children}
+    </ErrorContext.Provider>
+  );
 };
 
 export default ErrorProvider;
