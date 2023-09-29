@@ -10,7 +10,70 @@ import { useDispatch, useSelector } from 'react-redux';
 import UnstyledSelectBasic from '../../atoms/SelectDropdown/SelectDropdown';
 import { categories } from '../../pages/Category/Category';
 import CurrencyDropdown from '../../atoms/CurrencyDropdown/CurrencyDropdown';
+import Divider from '@mui/material/Divider';
 import useFilteredProposalAmount from '../../hooks/Proposals/useFilteredProposalAmount';
+
+const formStyleCustom = {
+    columnWidth: {
+        currency: {
+            width: '15%',
+        },
+        category: {
+            width: '40%',
+        },
+        amount: {
+            width: '15%',
+        },
+        breakdown: {
+            width: 'auto',
+        },
+    },
+  currencyDropdown: {
+    "& .MuiTableCell-root": {
+      color: "white",
+      backgroundColor: "#24292E",
+      fontSize: "0.85rem",
+    },
+    "& .MuiInputBase-root": {
+      fontSize: ".85rem",
+    },
+    "& .MuiSelect-root": {
+      fontSize: ".85rem",
+    },
+    "& .MuiSvgIcon-root": {
+      color: "white",
+    },
+    },
+  textFieldStyle: {
+    "& .MuiInputBase-root": {
+      color: "white",
+      backgroundColor: "#24292E",
+      margin: "0",
+      fontSize: ".85rem",
+    },
+  },
+  default: {
+    color: "white",
+    padding: "0",
+
+    "& .MuiInputBase-input": {
+      padding: "0.5rem",
+      fontSize: ".85rem",
+    }
+  },
+  buttonStyles: {
+    color: "white",
+  },
+  dividerRules: {
+    color: "white",
+    height: 28,
+    m: 1,
+    "& .MuiDivider-root": {
+        backgroundColor: 'white',
+        color: 'white',
+    }
+  },
+};
 
 function FormRow({ tableHeaderData }) {
     const dispatch = useDispatch();
@@ -28,7 +91,7 @@ function FormRow({ tableHeaderData }) {
             dispatch(setInitialState({ ...data, ...proposal, budget: filteredProposalAmount }));
         }
         setProposalData();
-    }, [currentProposal.proposal.id]);
+    }, []);
 
     const handleChange = (index, field, value) => {
         dispatch(updateField(
@@ -38,145 +101,131 @@ function FormRow({ tableHeaderData }) {
         ));
     };
 
-    const formStyleCustom = {
-        currencyDropdown: {
-            '& .MuiTableCell-root': {
-                color: 'white',
-                // backgroundColor: '#2C2C2C',
-                backgroundColor: '#24292E',
-                fontSize: '0.85rem',
-            },
-            '& .MuiInputBase-root': {
-                fontSize: '.85rem',
-            },
-            '& .MuiSelect-root': {
-                fontSize: '.85rem',
-            },
-            '& .MuiSvgIcon-root': {
-                color: 'white',
-            },
-        },
-        textFieldStyle: {
-            '& .MuiInputBase-root': {
-                color: 'white',
-                // border: '2px solid #2C2C2C',
-                backgroundColor: '#24292E',
-                margin: '0',
-                fontSize: '.85rem',
-            }
-        },
-        default: {
-            color: 'white',
-            padding: '0',
-
-            '& .MuiInputBase-input': {
-                padding: '0.5rem',
-                fontSize: '.85rem',
-            },
-            '& .MuiButtonBase-root': {
-                minWidth: 'initial',
-            }
-        },
-        buttonStyles: {
-            color: 'white',
-        },
-    };
-
     return (
-        <Box sx={{
-            width: '98%',
-            marginLeft: '2%',
-        }}>
-            <Box sx={{
-                width: '100%',
-                margin: '2rem auto',
-                display: 'flex',
-                justifyContent: 'flex-start',
-                border: 'none',
-                padding: '0.1rem',
-                color: 'white',
-                backgroundColor: '#24292E',
-                fontSize: '0.75rem',
-                color: "grey",
-            }}>
-                {/* Render the header data */}
-                {tableHeaderData.map((item, index) => (
-                    <FormControl key={index} sx={{
-                        width: index === 0 ? '40%' : index === 1 || index === 2 ? '15%' : 'auto',
-                        padding: '0.5rem'
-                    }}>
-                        {item}
-                    </FormControl>
-                ))}
-            </Box>
-            {items && (
-                <Box>
-                    {items.map((item, index) => (
-                        <Box key={index}>
-                            <FormControl
-                                style={{ width: '40%', border: 'none', padding: '0.5rem' }}
-                                sx={formStyleCustom.default}
-                            >
-                                <UnstyledSelectBasic
-                                    values={categories}
-                                    defaultValue={item.category}
-                                    onChange={(value) => handleChange(index, 'category', value)}
-                                />
-                            </FormControl>
-                            <FormControl
-                                style={{ border: 'none', margin: '0.5rem' }}
-                                sx={formStyleCustom.default}
-                            >
-                                <TextField
-                                    value={item.amount}
-                                    type="number"
-                                    max={filteredProposalAmount}
-                                    onChange={(e) => handleChange(index, 'amount', e.target.value)}
-                                    InputProps={{
-                                        style: {
-                                            color: 'white',
-                                            border: '2px solid #2C2C2C',
-                                            backgroundColor: '#24292E',
-                                            minWidth: '16%',
-                                        },
-                                    }}
-                                    required
-                                />
-                            </FormControl>
-                            <FormControl
-                                style={{ width: '16%', border: 'none', padding: '0.5rem', mr: '0.5rem' }}
-                                sx={formStyleCustom.default}
-                            >
-                                <CurrencyDropdown
-                                    value={item.currency}
-                                    onChange={(e) => handleChange(index, 'currency', e.target.value)}
-                                />
-                            </FormControl>
-                            <FormControl
-                                style={{ border: 'none', padding: '0.5rem', width: '22%' }}
-                                sx={formStyleCustom.default}
-                            >
-                                <TextField
-                                    fullWidth
-                                    value={`${(parseInt(item.amount) / parseInt(filteredProposalAmount)) * 100}%`}
-                                    InputProps={{
-                                        style: {
-                                            color: 'white',
-                                            border: '2px solid #2C2C2C',
-                                            backgroundColor: '#24292E',
-                                        },
-                                        readOnly: true,
-                                    }}
-                                />
-                            </FormControl>
-                        </Box>
-                    ))}
-                </Box>
-            )}
-            {/* <Box>
-                <ButtonAtom config={buttonConfig} />
-            </Box> */}
+      <Box
+        sx={{
+          width: "98%",
+          marginLeft: "2%",
+        }}
+      >
+        <Box
+          sx={{
+            width: "100%",
+            margin: ".5rem auto",
+            display: "flex",
+            justifyContent: "flex-start",
+            border: "none",
+            padding: "0.1rem",
+            fontSize: "0.75rem",
+            marginTop: "2rem",
+            color: "grey",
+          }}
+        >
+          {/* Render the header data */}
+          {tableHeaderData.map((item, index) => (
+            <>
+              <FormControl
+                key={index}
+                sx={{
+                  width: formStyleCustom.columnWidth[item.toLowerCase()],
+                  padding: "0.5rem",
+                  paddingBottom: "0rem",
+                }}
+              >
+                {item}
+              </FormControl>
+              {/* <Divider
+                sx={formStyleCustom.dividerRules}
+                orientation="vertical"
+              /> */}
+            </>
+          ))}
         </Box>
+        {items && (
+          <Box>
+            {items.map((item, index) => (
+              <Box key={index}>
+                <FormControl
+                  style={{ width: "40%", border: "none", padding: "0.5rem" }}
+                  sx={formStyleCustom.default}
+                >
+                  <UnstyledSelectBasic
+                    values={categories}
+                    defaultValue={item.category}
+                    onChange={(value) => handleChange(index, "category", value)}
+                  />
+                </FormControl>
+                <FormControl
+                  style={{
+                    width: "15%",
+                    border: "none",
+                    margin: "0.5rem",
+                  }}
+                  sx={formStyleCustom.default}
+                >
+                  <TextField
+                    value={item.amount}
+                    type="number"
+                    max={filteredProposalAmount}
+                    onChange={(e) =>
+                      handleChange(index, "amount", e.target.value)
+                    }
+                    InputProps={{
+                      style: {
+                        color: "white",
+                        border: "1px solid #2C2C2C",
+                        backgroundColor: "#24292E",
+                      },
+                    }}
+                    required
+                  />
+                </FormControl>
+                <FormControl
+                  style={{
+                    width: '12rem',
+                    border: "none",
+                    padding: "0.5rem",
+                    mr: "0.5rem",
+                  }}
+                  sx={formStyleCustom.default}
+                >
+                <CurrencyDropdown
+                    sx={{width: '100%'}}
+                    value={item.currency}
+                    onChange={(e) =>
+                      handleChange(index, "currency", e.target.value)
+                    }
+                  />
+                </FormControl>
+                <FormControl
+                    style={{
+                    width: `calc(100% - 76% )`,
+                    border: "none",
+                    padding: "0.5rem",
+                  }}
+                  sx={formStyleCustom.default}
+                >
+                  <TextField
+                    sx={formStyleCustom.textFieldStyle}
+                    value={`${
+                      (parseInt(item.amount) /
+                        parseInt(filteredProposalAmount)) *
+                      100
+                    }%`}
+                    InputProps={{
+                      style: {
+                        color: "white",
+                        border: "1px solid #2C2C2C",
+                      },
+                      readOnly: true,
+                    }}
+                  />
+                </FormControl>
+              </Box>
+            ))}
+          </Box>
+        )}
+      </Box>
     );
 }
 

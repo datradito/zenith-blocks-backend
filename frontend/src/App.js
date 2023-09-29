@@ -41,66 +41,66 @@ function App() {
     createRoutesFromElements(
       <Route
         path="/"
-        element={<Root />}
+        element={
+          <PrivateRoute>
+            <Root />
+          </PrivateRoute>
+        }
       >
-        <Route path="/"
-          element={<PrivateRoute />}
-        >
+        <Route
+          path="proposals"
+          element={<Proposals />}
+          errorElement={<ErrorPage />}
+        />
+        <Route
+          path="proposals/:proposalId"
+          element={<ProposalDetailView />}
+          errorElement={<ErrorPage />}
+        />
+        <Route path="proposal" element={<ProposalRoute />}>
+          <Route path="update/:proposalId" element={<CreateBudget />} />
           <Route
-            path="proposals"
-            element={<Proposals />}
+            path=":proposalId/invoices"
+            element={<InvoiceListView />}
             errorElement={<ErrorPage />}
           />
-          <Route
-            path="proposals/:proposalId"
-            element={<ProposalDetailView />}
-            errorElement={<ErrorPage />}
-          />
-          <Route path="proposal" element={<ProposalRoute />}>
-            <Route path="update/:proposalId" element={<CreateBudget />} />
-            <Route
-              path=":proposalId/invoices"
-              element={<InvoiceListView />}
-              errorElement={<ErrorPage />}
-            />
-          </Route>
-
-          <Route
-            path="invoice/:invoiceId/payment"
-            element={<PaymentCreation />}
-            errorElement={<ErrorPage />}
-            loader={({ params }) => {
-              return paymentLoader(params.invoiceId);
-            }}
-            action={({ params, request }) => {
-              console.log(request);
-            }}
-          />
-
-          <Route path="budgets" element={<InvoiceRoutes />}>
-            <Route
-              path=":budgetId/invoices"
-              element={<InvoiceListView />}
-              errorElement={<ErrorPage />}
-            />
-            <Route
-              path=":budgetId/createInvoice"
-              element={<InvoiceCreation />}
-              errorElement={<ErrorPage />}
-            />
-          </Route>
-          <Route
-            path="dashboard"
-            element={<Dashboard />}
-            errorElement={<ErrorPage />}
-          />
-          <Route
-            path="accounts"
-            errorElement={<ErrorPage />}
-            element={<Accounts />}
-          />
-          <Route path="swap" element={<Swap />} errorElement={<ErrorPage />} />
         </Route>
+
+        <Route
+          path="invoice/:invoiceId/payment"
+          element={<PaymentCreation />}
+          errorElement={<ErrorPage />}
+          loader={({ params }) => {
+            return paymentLoader(params.invoiceId);
+          }}
+          action={({ params, request }) => {
+            console.log(request);
+          }}
+        />
+
+        <Route path="budgets" element={<InvoiceRoutes />}>
+          <Route
+            path=":budgetId/invoices"
+            element={<InvoiceListView />}
+            errorElement={<ErrorPage />}
+          />
+          <Route
+            path=":budgetId/createInvoice"
+            element={<InvoiceCreation />}
+            errorElement={<ErrorPage />}
+          />
+        </Route>
+        <Route
+          path="dashboard"
+          element={<Dashboard />}
+          errorElement={<ErrorPage />}
+        />
+        <Route
+          path="accounts"
+          errorElement={<ErrorPage />}
+          element={<Accounts />}
+        />
+        <Route path="swap" element={<Swap />} errorElement={<ErrorPage />} />
       </Route>
     )
   );

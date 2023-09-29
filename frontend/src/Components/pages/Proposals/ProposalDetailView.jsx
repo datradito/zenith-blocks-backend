@@ -98,7 +98,7 @@ function ProposalDetailView() {
         dispatch(setIsLoggedIn(false));
       }
     });
-    return null; // Stop rendering rest of the component
+    return null;
   }
 
   const handleExportCSV = () => {

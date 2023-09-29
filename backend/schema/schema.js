@@ -2,6 +2,7 @@ const { ApolloServer } = require("@apollo/server");
 const proposalResolver = require("../graphQL/proposals/proposalResolver");
 const invoiceResolver = require("../graphQL/invoices/invoiceResolver");
 const budgetResolver = require("../graphQL/budgets/budgetResolver");
+const paymentsResolver = require("../graphQL/payments/paymentsResolver");
 const Invoice = require("../Database/models/Invoice");
 
 const typeDefs = `#graphql
@@ -13,6 +14,7 @@ const typeDefs = `#graphql
         breakdown: Float
         proposalid: String
         rootpath: String
+        remaining: Float
         ipfs: String
         invoices: [Invoice]
     }
@@ -65,6 +67,7 @@ const typeDefs = `#graphql
         getProposalsByDao(daoid: String): [Proposal],
         getPaymentByInvoiceId(invoiceid: String!): Payment
         getAllPayments: [Payment!]!
+        getRemainingBudgetAmount(budgetid: String!): Float
     }
     type Mutation {
         submitBudget(budget: BudgetInput): Budget,
@@ -131,26 +134,25 @@ const resolvers = {
     ...proposalResolver.Query,
     ...budgetResolver.Query,
     ...invoiceResolver.Query,
+    ...paymentsResolver.Query,
   },
   Mutation: {
     ...proposalResolver.Mutation,
     ...budgetResolver.Mutation,
     ...invoiceResolver.Mutation,
+    ...paymentsResolver.Mutation,
   },
   Budget: {
-    invoices(parent) {
+    async invoices(parent) {
       try {
-        Invoice.findAll(
-          {
-            where: { budgetid: parent.id },
-          },
-          {
-            sort: {
-              createdAt: "desc",
-            },
-          }
-        );
+        // Fetch invoices associated with the budget
+        const invoices = await Invoice.findAll({
+          where: { budgetid: parent.id },
+        });
+
+        return invoices;
       } catch (error) {
+        console.log("error: ", error);
         throw new GraphQLError(error.message);
       }
     },

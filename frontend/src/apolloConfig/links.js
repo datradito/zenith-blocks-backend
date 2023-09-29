@@ -54,13 +54,12 @@ export const errorLink = onError(({ graphQLErrors, networkError }) => {
             if (message === 'AUTH_REQUIRED') {
                 clearAuthData();
             }
-
-            toast.error(message);
         });
     
-    if (networkError) console.log(`[Network error]: ${networkError}`);
-
-    // if (networkError.statusCode === 401) redirect('/');
+    if (networkError && networkError.statusCode === 401) {
+        clearAuthData();
+        redirect('/');
+    }
 });
 
 export const httpLink = () => (createHttpLink({
@@ -68,6 +67,8 @@ export const httpLink = () => (createHttpLink({
 }));
 
 const retryIf = (error, operation) => {
+
+    console.log('error: ', error.statusCode);
     if (error.statusCode) {
         const doNotRetryCodes = [400, 401, 403, 500];
         clearAuthData();

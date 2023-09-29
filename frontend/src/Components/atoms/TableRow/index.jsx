@@ -26,7 +26,7 @@ const customTableCellStyles = {
     width: "50px",
     },
     Breakdown: {
-    width: "100px",
+    width: "200px",
     },
     Categories: {
     maxWidth: "300px",
@@ -86,25 +86,97 @@ const TableRow = ({ tableBodyData }) => {
                 Object.keys(tableBodyData).map((key) => {
                     //update budgetId to id
                     if (key !== "id" && key !== "budgetId" && key !== "proposalid" && key !== "InvoiceId")  {
-                        return (
-                            key === "Remaining" ?
-                                <TableCell key={ key} sx={[customTableCellStyles[key] , customTableCellStyles.tableDataCellItem]}><CustomizedProgressBars value={tableBodyData[key]} /></TableCell> :
-                            key === 'Invoices' ?
-                                <TableCell key={key} sx={[customTableCellStyles[key] , customTableCellStyles.tableDataCellItem]}><CustomInvoiceViewIcon budgetId={tableBodyData["id"]} /></TableCell> :
-                            key === 'View' ?
-                                <TableCell key={key}  sx={[customTableCellStyles[key] , customTableCellStyles.tableDataCellItem]}><CustomPDFViewIcon budgetId={tableBodyData["id"]} /></TableCell> :
-                            key === 'Payment' ?
-                                <TableCell key={key}  sx={[ customTableCellStyles[key] , customTableCellStyles.tableDataCellItem ]}><CustomPaymentViewIcon invoiceId={tableBodyData["InvoiceId"]} /></TableCell> :
-                            key === 'Action' ?
-                                <TableCell key={key}  sx={[customTableCellStyles[key] , customTableCellStyles.tableDataCellItem]}><CustomActionIcon budgetId={tableBodyData["id"]} /></TableCell> :
-                            key === 'Status' ?
-                                                    <TableCell key={key} sx={[customTableCellStyles[key], customTableCellStyles.tableDataCellItem]}><StatusChip status={tableBodyData[key]} /></TableCell> :
-                                                    key === 'Logo' ?
-                                                        <TableCell key={key} sx={[customTableCellStyles[key], customTableCellStyles.tableDataCellItem]}><Avatar alt="Currency logo" src={tableBodyData[key]} /></TableCell> :
-                                                    key === 'Breakdown' ?
-                                                        <TableCell key={key} sx={[customTableCellStyles[key] , customTableCellStyles.tableDataCellItem]}>{tableBodyData[key].toFixed(2)} %</TableCell> :
-                                <TableCell key={key} sx={[customTableCellStyles[key], customTableCellStyles.default, customTableCellStyles.tableDataCellItem]}>{tableBodyData[key]}</TableCell>
-                        )
+                        return key === "Breakdown" ? (
+                          <TableCell
+                            key={key}
+                            sx={[
+                              customTableCellStyles[key],
+                              customTableCellStyles.tableDataCellItem,
+                            ]}
+                          >
+                            <CustomizedProgressBars
+                              value={tableBodyData[key]}
+                            />
+                          </TableCell>
+                        ) : key === "Invoices" ? (
+                          <TableCell
+                            key={key}
+                            sx={[
+                              customTableCellStyles[key],
+                              customTableCellStyles.tableDataCellItem,
+                            ]}
+                          >
+                            <CustomInvoiceViewIcon
+                              budgetId={tableBodyData["id"]}
+                            />
+                          </TableCell>
+                        ) : key === "View" ? (
+                          <TableCell
+                            key={key}
+                            sx={[
+                              customTableCellStyles[key],
+                              customTableCellStyles.tableDataCellItem,
+                            ]}
+                          >
+                            <CustomPDFViewIcon budgetId={tableBodyData["id"]} />
+                          </TableCell>
+                        ) : key === "Payment" ? (
+                          <TableCell
+                            key={key}
+                            sx={[
+                              customTableCellStyles[key],
+                              customTableCellStyles.tableDataCellItem,
+                            ]}
+                          >
+                            <CustomPaymentViewIcon
+                              invoiceId={tableBodyData["InvoiceId"]}
+                            />
+                          </TableCell>
+                        ) : key === "Action" ? (
+                          <TableCell
+                            key={key}
+                            sx={[
+                              customTableCellStyles[key],
+                              customTableCellStyles.tableDataCellItem,
+                            ]}
+                          >
+                            <CustomActionIcon budgetId={tableBodyData["id"]} />
+                          </TableCell>
+                        ) : key === "Status" ? (
+                          <TableCell
+                            key={key}
+                            sx={[
+                              customTableCellStyles[key],
+                              customTableCellStyles.tableDataCellItem,
+                            ]}
+                          >
+                            <StatusChip status={tableBodyData[key]} />
+                          </TableCell>
+                        ) : key === "Logo" ? (
+                          <TableCell
+                            key={key}
+                            sx={[
+                              customTableCellStyles[key],
+                              customTableCellStyles.tableDataCellItem,
+                            ]}
+                          >
+                            <Avatar
+                              alt="Currency logo"
+                              src={tableBodyData[key]}
+                            />
+                          </TableCell>
+                        ) :  (
+                          <TableCell
+                            key={key}
+                            sx={[
+                              customTableCellStyles[key],
+                              customTableCellStyles.default,
+                              customTableCellStyles.tableDataCellItem,
+                            ]}
+                          >
+                            {tableBodyData[key]}
+                          </TableCell>
+                        );
                     }
                     return null;
                 })}

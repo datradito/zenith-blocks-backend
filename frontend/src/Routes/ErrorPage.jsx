@@ -4,5 +4,7 @@ import { toast } from "react-toastify";
 export default function ErrorPage() {
     const routerError = useRouteError();
 
-    return toast.error(routerError.message);
+    console.log(routerError);
+
+    return toast.error(routerError.message || "Something went wrong! Please try again later.");
 }

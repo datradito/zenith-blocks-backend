@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require("../db");
+const Budget = require("./Budget");
 
 const Proposal = sequelize.define('proposals', {
     id: {
@@ -30,8 +31,5 @@ const Proposal = sequelize.define('proposals', {
     },
 });
 
-Proposal.associate = (models) => {
-    Proposal.hasMany(models.budgets, { foreignKey: 'proposalid' });
-};
 
 module.exports = Proposal;

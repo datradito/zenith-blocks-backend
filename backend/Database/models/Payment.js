@@ -55,9 +55,6 @@ const Payment = sequelize.define("payments", {
   },
 });
 
-Payment.associate = (models) => {
-  Payment.belongsTo(models.invoices, { foreignKey: "invoiceid" });
-};
 
 
 module.exports = Payment;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import FormItem from "../../atoms/FormItem/FormItem";
@@ -6,7 +6,6 @@ import SubHeader from '../../molecules/SubHeader/SubHeader';
 import useWeb3IpfsContract from '../../hooks/web3IPFS';
 import useFilteredProposalAmount from '../../hooks/Proposals/useFilteredProposalAmount';
 import useSubmitBudget from '../../hooks/Budgets/useSubmitBudget';
-import CustomizedSnackbars from '../../atoms/SnackBar/SnackBar';
 import { Box } from '@mui/material';
 import { toast } from 'react-toastify';
 
@@ -59,11 +58,15 @@ function CreateBudget() {
 
     try {
       const budgetData = { ...items[0], proposalid: proposalId, rootpath: proposalId, amount: parseInt(items[0].amount), breakdown: parseInt(items[0].breakdown) };
-      await submitBudget(budgetData);
-      toast.success("Budget Saved Successfully");
-      navigate(`/proposals`);
+      try {
+        await submitBudget(budgetData);
+        toast.success("Budget Saved Successfully");
+      } catch (error) {
+        throw new Error(error.message);
+      }
+      navigate(`/proposals/${proposalId}`);
     } catch (error) {
-      console.log(error);
+      throw new Error(error.message);
       // toast.error(`Failed to Save Budget: ${error.message}`);
     }
   };

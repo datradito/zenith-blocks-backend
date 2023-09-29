@@ -1,21 +1,32 @@
 const sequelize = require("./db");
 require("dotenv").config();
+const Budget = require("./models/Budget");
+const Invoice = require("./models/Invoice");
+const Proposal = require("./models/Proposal");
+const Payment = require("./models/Payment");
+
 
 sequelize.models = {
-  Budget: require("./models/Budget"),
-  Invoice: require("./models/Invoice"),
-  Proposal: require("./models/Proposal"),
-  User: require("./models/User"),
-  Payment: require("./models/Payment"),
+  budgets: require("./models/Budget"),
+  invoices: require("./models/Invoice"),
+  proposals: require("./models/Proposal"),
+  users: require("./models/User"),
+  payments: require("./models/Payment"),
 };
 
 const init = async () => {
-  await sequelize
-    .sync()
-    .then(() => console.log("Connection has been established successfully."))
-    .catch((error) =>
-      console.error("Unable to connect to the database:", error)
-    );
+  Budget.hasMany(Invoice);
+  Invoice.belongsTo(Budget);
+  Proposal.hasMany(Budget);
+  Budget.belongsTo(Proposal);
+  Invoice.hasMany(Payment);
+  Payment.belongsTo(Invoice);
+  // await sequelize
+  //   .sync({alter: true})
+  //   .then(() => console.log("Connection has been established successfully."))
+  //   .catch((error) =>
+  //     console.error("Unable to connect to the database:", error)
+  //   );
 };
 
 module.exports =  init ;
