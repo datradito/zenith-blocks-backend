@@ -55,7 +55,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     ...(process.env.REACT_APP_ENABLE_TESTNETS === "true" ? [goerli] : []),
   ],
   [
-    (alchemyProvider({ apiKey: process.env.REACT_APP_ALCHEMY_KEY }),
+    (alchemyProvider({ apiKey: "AsxwVAm7iKW3SxGD-z9inFZ9FoYeQ4lQ" }),
     publicProvider())
 //     jsonRpcProvider({
 //       rpc: (chain) => ({
@@ -65,7 +65,6 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
           
   ]
 );
-
 const projectId = "3a74d330e07a405df9ab1a0ff1825a9b";
 
 const { wallets } = getDefaultWallets({
