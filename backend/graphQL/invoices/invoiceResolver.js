@@ -46,9 +46,6 @@ const invoiceResolver = {
                 attributes: ['amount']
             })
 
-            console.log("Budget Amount: ", budgetAmount.get('amount') );
-            console.log("Invoice Amount: ", invoice.total);
-
             if (invoice.total > budgetAmount.get('amount')) {
                 throw new GraphQLError('Invoice amount can not exceed total budget Amount', {
                     extensions: {

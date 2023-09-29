@@ -1,106 +1,125 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from "./App.js"
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App.js";
 
-// import { SafeConnector } from 'wagmi/connectors/safe'
-
-import '@rainbow-me/rainbowkit/styles.css';
-import { getDefaultWallets, RainbowKitProvider, connectorsForWallets } from '@rainbow-me/rainbowkit';
+import "@rainbow-me/rainbowkit/styles.css";
 import {
-        injectedWallet,
-        rainbowWallet,
-        walletConnectWallet,
-        metaMaskWallet,
-        safeWallet,
-        argentWallet,
-        trustWallet,
-        ledgerWallet,
-} from '@rainbow-me/rainbowkit/wallets';
-import { configureChains, createConfig, WagmiConfig } from 'wagmi';
-import { mainnet, polygon, optimism, arbitrum, goerli, zkSync } from 'wagmi/chains';
-import { publicProvider } from 'wagmi/providers/public';
-import { alchemyProvider } from 'wagmi/providers/alchemy';
+  getDefaultWallets,
+  RainbowKitProvider,
+  connectorsForWallets,
+  darkTheme,
+} from "@rainbow-me/rainbowkit";
+import {
+  injectedWallet,
+  rainbowWallet,
+  walletConnectWallet,
+  metaMaskWallet,
+  safeWallet,
+  argentWallet,
+  trustWallet,
+  ledgerWallet,
+} from "@rainbow-me/rainbowkit/wallets";
+import { configureChains, createConfig, WagmiConfig } from "wagmi";
+import { mainnet, polygon, optimism, arbitrum, goerli } from "wagmi/chains";
+import { publicProvider } from "wagmi/providers/public";
+import { alchemyProvider } from "wagmi/providers/alchemy";
+import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
+
+// const ganache = {
+//   id: "0x539",
+//   name: "ganache",
+//   network: "ganache",
+//   iconBackground: "#fff",
+//   nativeCurrency: {
+//     decimals: 18,
+//     name: "ETHEREUM",
+//     symbol: "ETH",
+//   },
+//   rpcUrls: {
+//     default: {
+//       http: ["HTTP://127.0.0.1:7545"],
+//     },
+//   },
+//   testnet: true,
+// };
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-        [
-                mainnet,
-                polygon,
-                optimism,
-                zkSync,
-                arbitrum,
-                goerli,
-                ...(process.env.REACT_APP_ENABLE_TESTNETS === 'true' ? [goerli] : []),
-        ],
-        [alchemyProvider({ apiKey: 'AsxwVAm7iKW3SxGD-z9inFZ9FoYeQ4lQ' }) , publicProvider()]
+  [
+    mainnet,
+    polygon,
+    optimism,
+    arbitrum,
+    goerli,
+//     ganache,
+    ...(process.env.REACT_APP_ENABLE_TESTNETS === "true" ? [goerli] : []),
+  ],
+  [
+    (alchemyProvider({ apiKey: "AsxwVAm7iKW3SxGD-z9inFZ9FoYeQ4lQ" }),
+    publicProvider())
+//     jsonRpcProvider({
+//       rpc: (chain) => ({
+//         http: [`HTTP://127.0.0.1:7545`],
+//       }),
+//     })
+          
+  ]
 );
-
-// const { connectors } = getDefaultWallets({
-//         appName: 'RainbowKit demo',
-//         projectId: 'YOUR_PROJECT_ID',
-//         chains,
-// });
-const projectId = '3a74d330e07a405df9ab1a0ff1825a9b';
+const projectId = "3a74d330e07a405df9ab1a0ff1825a9b";
 
 const { wallets } = getDefaultWallets({
-        appName: 'ZenithBlocks',
-        projectId,
-        chains,
+  appName: "ZenithBlocks",
+  projectId,
+  chains,
 });
-
 
 const connectors = connectorsForWallets([
-        ...wallets,
-        {
-                groupName: 'Recommended',
-                wallets: [
-                        injectedWallet({ chains }),
-                        rainbowWallet({ projectId, chains }),
-                        walletConnectWallet({ projectId, chains }),
-                        safeWallet({ chains }),
-                        metaMaskWallet({ chains }),
-                        argentWallet({ projectId, chains }),
-                        trustWallet({ projectId, chains }),
-                        ledgerWallet({ projectId, chains }),
-                ],
-        },
+  ...wallets,
+  {
+    groupName: "Recommended",
+    wallets: [
+      injectedWallet({ chains }),
+      rainbowWallet({ projectId, chains }),
+      walletConnectWallet({ projectId, chains }),
+      safeWallet({ chains }),
+      metaMaskWallet({ chains }),
+      argentWallet({ projectId, chains }),
+      trustWallet({ projectId, chains }),
+      ledgerWallet({ projectId, chains }),
+    ],
+  },
 ]);
-// const connector = new SafeConnector({
-//         chains: [mainnet, optimism],
-//         options: {
-//                 allowedDomains: [/gnosis-safe.io$/, /app.safe.global$/],
-//                 debug: false,
-//         },
-// })
 
 const wagmiConfig = createConfig({
-        autoConnect: true,
-        connectors,
-        publicClient,
-        webSocketPublicClient,
+  autoConnect: true,
+  connectors,
+  publicClient,
+  webSocketPublicClient,
 });
 
+const root = ReactDOM.createRoot(document.getElementById("root"));
 
-const root = ReactDOM.createRoot(
-        document.getElementById('root')
-);
-
-root.render(    
-        <>
-                <WagmiConfig config={wagmiConfig}>
-                        <RainbowKitProvider
-                                appInfo={{
-                                        appName: 'ZenithBlocks',
-                                }}
-                                coolMode={true}
-                                chains={chains}
-                                showRecentTransactions={true}
-                        >
-                                <App />   
-                        </RainbowKitProvider>
-                </WagmiConfig>
-
-        </>
+root.render(
+  <>
+    <WagmiConfig config={wagmiConfig}>
+      <RainbowKitProvider
+        theme={darkTheme({
+          accentColor: "#7b3fe4",
+          accentColorForeground: "white",
+          borderRadius: "small",
+          overlayBlur: "small",
+        })}
+        appInfo={{
+          appName: "ZenithBlocks",
+        }}
+        coolMode={true}
+        chains={chains}
+        showRecentTransactions={true}
+      >
+        <App />
+      </RainbowKitProvider>
+    </WagmiConfig>
+  </>
 );
 
 // If you want to start measuring performance in your app, pass a function

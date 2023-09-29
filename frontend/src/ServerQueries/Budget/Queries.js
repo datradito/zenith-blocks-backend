@@ -8,6 +8,7 @@ export const GET_ALL_BUDGETS_FOR_PROPOSAL = gql`
       amount
       currency
       breakdown
+      remaining
       proposalid
     }
   }

@@ -3,16 +3,15 @@ import axios from 'axios';
 import {
     useAccount,
     useDisconnect,
-    useEnsAvatar,
-    useEnsName,
-    useBalance,
-    useConnect,
     useNetwork,
 } from 'wagmi'
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useNavigate } from 'react-router-dom';
 import { useError } from '../../../Routes/ErrorRouterProvider';
 import { useSignMessage } from 'wagmi';
+
+import { useDispatch } from 'react-redux';
+import { setIsLoggedIn } from '../../../actions/createAuthAction';
 
 
 const BASE_URL = "http://localhost:8000";
@@ -25,7 +24,7 @@ const clearAuthData = () => {
 
 function decodeToken(token) {
     if (!token) {
-    return;
+      return;
     }
     const base64Url = token.split(".")[1];
     const base64 = base64Url.replace("-", "+").replace("_", "/");
@@ -34,6 +33,7 @@ function decodeToken(token) {
 
 
 export default function WalletConnect() {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const { handleError } = useError();
     const { address } = useAccount({
@@ -42,20 +42,15 @@ export default function WalletConnect() {
             !auth && signInWithEthereum();
         },
         onDisconnect() {
-            clearAuthData();
+          clearAuthData();
+          dispatch(setIsLoggedIn(false));
+          navigate(`/`);
         }
-    })
-    // const { data: ensAvatar } = useEnsAvatar({ address })
-    // const { data: ensName } = useEnsName({ address })
-    const { data:balance, isError: balanceError, isLoading: balanceLoading } = useBalance({
-        address
     })
     const { signMessageAsync } = useSignMessage();
     const { disconnectAsync } = useDisconnect();
     const { chain } = useNetwork()
 
-
-    //console.log("WalletConnect", { address, connector, isConnected, ensAvatar, ensName, balance, balanceError, balanceLoading, chain, connectSuccess, status })
     useEffect(() => {
       const auth = sessionStorage.getItem("authToken");
       if (!auth) {
@@ -86,10 +81,9 @@ export default function WalletConnect() {
             withCredentials: true,
           }
         );
-
         return data;
       } catch (error) {
-        console.log(error)
+        throw error.response.data;
       }
     };
 
@@ -102,7 +96,7 @@ export default function WalletConnect() {
                 headers: {
                   "Content-Type": "application/json",
                 },
-                withCredentials: true, // Moved outside the 'headers' object
+                withCredentials: true, 
               }
             );
 
@@ -116,16 +110,14 @@ export default function WalletConnect() {
         try {
             const message = await createSiweMessage();
 
-            if (!message) {
-                handleError({ error: "error", message: "Error creating message" });
-                return;
+          if (!message) {
+              throw new Error("Error creating message");
             }
 
             const signature = await signMessageAsync({message});
 
-            if (!signature) {
-                handleError({ error: "error", message: "Error signing message" });
-                return;
+          if (!signature) {
+              throw new Error("Error signing message");
             }
             const res = await sendForVerification(message, signature);
             const { daoId, address} = decodeToken(res.authToken);
@@ -133,11 +125,13 @@ export default function WalletConnect() {
             sessionStorage.setItem('authToken', res.authToken);
             sessionStorage.setItem('daoId', daoId);
             sessionStorage.setItem('address', address);
-            handleError({ error: "success", message: "User successfully connected" });
-            navigate(`/`);
+            
+            dispatch(setIsLoggedIn(true))
+            navigate(`/proposals`);
         } catch (error) {
-            handleError({ error: "error", message: error });
+            handleError({ type: "error", message: error.message });
             disconnectAsync();
+            dispatch(setIsLoggedIn(false));
             clearAuthData();
         }
     }

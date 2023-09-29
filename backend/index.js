@@ -15,13 +15,15 @@ const context = require('./utility/middlewares/context');
 
 const Moralis = require("moralis").default;
 const { createSiweMessage } = require('./utility/signMessage');
-const { init } = require('./Database/sequalizeConnection');
+const init = require('./Database/sequalizeConnection');
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ credentials: true, origin: true }));
+app.use(
+  cors({ credentials: true, origin: "http://localhost:3000" })
+);
 
 const hour = 3600000;
 
@@ -33,12 +35,13 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false, // if true only transmit cookie over https
-      httpOnly: false, // if true prevent client side JS from reading the cookie
-      maxAge: new Date(Date.now() + hour), // session max age in miliseconds
+    //   secure: true,
+      httpOnly: true,
+      maxAge: 3600000, // session max age in miliseconds
     },
   })
 );
+
 
 let isMoralisInitialized = false;
 
@@ -87,6 +90,8 @@ app.get('/nonce', function (_, res) {
 app.post("/siwe", async (req, res) => {
     const { address, network, nonce } = req.body;
 
+    console.log(address)
+
     try {
             
         const message = createSiweMessage(address, network, nonce);
@@ -94,11 +99,7 @@ app.post("/siwe", async (req, res) => {
         req.session.address = address;
         req.session.message = message;
         req.session.save();
-
-        console.log(req.session);
-
-        res.cookie('siwe', message, { httpOnly: true, secure: true, sameSite: 'none' });
-
+        // res.cookie('siwe', message);
         return res.status(200).json(message);
         } catch (e) {
             return res.status(500).json(e);
@@ -129,16 +130,14 @@ app.post('/verify', async function (req, res) {
         });
 
         req.session.siwe = message;
-        req.session.cookie.expires = new Date(Date.now() + 3600000); // Assuming 'hour' is 3600000 milliseconds
-
-        req.session.save();
+        req.session.cookie.expires = 3600000; // Assuming 'hour' is 3600000 milliseconds
 
         const user = await User.findOne({
           where: { address: req.session.address },
         });
 
         if (!user) {
-          throw new Error("User not found" + req.session);
+             throw new Error("User not found");
         }
         
         const token = signJWTToken({
@@ -152,23 +151,23 @@ app.post('/verify', async function (req, res) {
         req.session.siwe = null;
         req.session.nonce = null;
 
-        if (e.message === "User not found") {
-          return res
-            .status(401)
-            .json({ message: "Unauthorized: User not found." });
+        if (e.message == "User not found") {
+            console.log(e.message)
+                req.session.save(() => {
+                    res.status(404).json({ message: e.message });
+                }
+            )
+        } else {
+            req.session.save(() =>
+                res.status(500).json({ message: e })
+            );
         }
-
-        req.session.save(() =>
-          res.status(500).json({ message: "Internal server error" + e })
-        );
     }
 });
 
 app.post('/createUser', async (req, res) => {
         const { address, daoId } = req.body;
-
         const user = await User.create({ address, daoId });
-
         return res.status(200).json(user);
     }
 );
@@ -357,6 +356,7 @@ app.get("/approve", async (req, res) => {
 
 app.listen(8000, async () => {
     await init();
+
     const { url } = await startStandaloneServer(server, {
         listen: { port: 8080 },
         context: context

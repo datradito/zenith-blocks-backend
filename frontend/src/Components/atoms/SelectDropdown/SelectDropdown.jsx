@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Select, selectClasses } from '@mui/base/Select';
 import { Option,  optionClasses } from '@mui/base/Option';
-import {Popper} from '@mui/base/Popper';
+import { Popper } from '@mui/base/Popper';
 import { styled } from '@mui/system';
 
 export const CustomSelect = React.forwardRef(function CustomSelect(props, ref) {
@@ -54,8 +54,8 @@ const grey = {
     500: '#6e7781',
     600: '#57606a',
     700: '#424a53',
-  800: '#24292E',
-  900: '#24292E',
+    800: '#24292E',
+    900: '#24292E',
     1000: '#1A1C1E',
     150: '#2c2c2c',
 };

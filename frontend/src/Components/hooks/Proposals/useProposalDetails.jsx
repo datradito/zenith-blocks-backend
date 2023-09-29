@@ -21,3 +21,4 @@ export default function useProposalDetails(id) {
 
     return { loading, error, data };
 }
+

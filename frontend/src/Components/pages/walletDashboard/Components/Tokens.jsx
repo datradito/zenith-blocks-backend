@@ -1,12 +1,13 @@
 import React from "react";
 import axios from "axios";
-import { Typography, Box, Table } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import ButtonAtom from "../../../atoms/Button";
 import TableDisplay from "../../../DisplayElements/TableDisplay";
 
 
 
 function Tokens({ wallet, chain, tokens, setTokens }) {
+    console.log(process.env.REACT_APP_API_URL)
 
     async function getTokenBalances() {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/tokenBalances`, {

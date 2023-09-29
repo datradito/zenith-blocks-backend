@@ -38,6 +38,15 @@ const currentPathConfig = {
   // to: `/proposals/${proposal.id}`
 }
 
+//write a loader funciton for react-router-dom which will load the proposals
+// const proposalLoader = () => useProposals();
+
+
+// const proposalLoader = () => ({
+//     return useProposals();
+//   }
+// );
+
 const Proposals = (props) => {
   const { handleError } = useError();
   const [selectedItemId, setSelectedItemId] = useState(null);
@@ -64,7 +73,7 @@ const Proposals = (props) => {
 
   if (networkStatus === NetworkStatus) return <CircularIndeterminate />;
   if (loading) return <CircularIndeterminate />;
-  if (error) return handleError({error: "error", message: "Something went wrong! Please try again later."});
+  if (error) return handleError({type: "error", message: "Something went wrong! Please try again later."});
 
 
   const handleTotalBudgetClick = (itemId, e) => {

@@ -118,8 +118,6 @@ function Swap() {
                     tokenOneAddress: tokenOne.address,
                 }
             })
-
-            console.log(approve.data)
             setTxDetails((prevTxDetails) => ({
                 ...prevTxDetails,
                 to: approve.data.to,

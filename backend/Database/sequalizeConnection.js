@@ -1,27 +1,32 @@
-const { Sequelize } = require('sequelize');
-require('dotenv').config();
+const sequelize = require("./db");
+require("dotenv").config();
+const Budget = require("./models/Budget");
+const Invoice = require("./models/Invoice");
+const Proposal = require("./models/Proposal");
+const Payment = require("./models/Payment");
 
 
-const sequelize = new Sequelize(
-  process.env.DATABASE_NAME_DEV,
-  process.env.DATABASE_USER_DEV,
-  process.env.DATABASE_PWD_DEV,
-  {
-    host: process.env.DATABASE_HOST_DEV,
-    dialect: "mysql",
-    dialectOptions: {
-      ssl: {
-        rejectUnauthorized: true,
-      },
-    },
-  }
-);
+sequelize.models = {
+  budgets: require("./models/Budget"),
+  invoices: require("./models/Invoice"),
+  proposals: require("./models/Proposal"),
+  users: require("./models/User"),
+  payments: require("./models/Payment"),
+};
 
 const init = async () => {
-        await sequelize.sync()
-            .then(() => console.log('Connection has been established successfully.'))
-            .catch(error => console.error('Unable to connect to the database:', error));
-}
+  Budget.hasMany(Invoice);
+  Invoice.belongsTo(Budget);
+  Proposal.hasMany(Budget);
+  Budget.belongsTo(Proposal);
+  Invoice.hasMany(Payment);
+  Payment.belongsTo(Invoice);
+  // await sequelize
+  //   .sync({alter: true})
+  //   .then(() => console.log("Connection has been established successfully."))
+  //   .catch((error) =>
+  //     console.error("Unable to connect to the database:", error)
+  //   );
+};
 
-
-module.exports = { sequelize , init};
+module.exports =  init ;
