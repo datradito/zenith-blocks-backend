@@ -23,6 +23,7 @@ const currencies = [
 ];
 
 const currencyStyles = {
+    width: "100%",
     backgroundColor: "#24292E",
     border: "1px solid #2C2C2C",
     color: "#24292E",
@@ -56,11 +57,6 @@ const currencyStyles = {
 export default function CurrencyDropdown({ onChange, value, sx }) {
     
     return (
-        <Box
-            sx={{
-                "& .MuiTextField-root": {  color: "white" }
-            }}
-        >
                 <TextField
                     onChange={onChange}
                     select
@@ -68,11 +64,13 @@ export default function CurrencyDropdown({ onChange, value, sx }) {
                     sx={[sx , currencyStyles]}
                 >
                     {currencies.map((option) => (
-                        <MenuItem key={option.value} value={option.value} color="white">
+                        <MenuItem
+                            key={option.value}
+                            value={option.value}
+                            color="white">
                             {option.label}
                         </MenuItem>
                     ))}
                 </TextField>
-            </Box>
     );
 }

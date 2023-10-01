@@ -6,6 +6,7 @@ export const GET_TOKEN_BALANCE = gql`
             name
             symbol
             balance
+            logo
         }
     }
 `;

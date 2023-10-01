@@ -55,7 +55,11 @@ function App() {
           errorElement={<ErrorPage />}
         />
         <Route path="proposal" element={<ProposalRoute />}>
-          <Route path="update/:proposalId" element={<CreateBudget />} />
+          <Route
+            path="update/:proposalId"
+            element={<CreateBudget />}
+            errorElement={<ErrorPage />}
+          />
           <Route
             path=":proposalId/invoices"
             element={<InvoiceListView />}

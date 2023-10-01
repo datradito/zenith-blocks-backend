@@ -47,13 +47,11 @@ function Tokens({ wallet, chain, tokens, setTokens }) {
 
     return (
         <Box sx={{color: "white"}}>
-            <Typography>
                 <ButtonAtom config={buttonConfig} />
                 <br />
                 {tokens.length > 0 && (
                     <Table tableHeaderData={headers} tableBodyData={data} />
                 )}
-            </Typography>
         </Box>
     );
 }

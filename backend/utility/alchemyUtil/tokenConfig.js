@@ -38,12 +38,14 @@ const getTokenBalances = async (requestConfig, metadata) => {
       const tokenData = [];
       
       for (token of nonZeroBalances) {
-            let balance = token.tokenBalance;
+        let balance = token.tokenBalance;
+  
 
     // options for making a request to get the token metadata
           
           try {
-              metadata = await getTokenMetadata(token);
+            metadata = await getTokenMetadata(token);
+            
                   balance =
                     balance / Math.pow(10, metadata["data"]["result"].decimals);
               balance = balance.toFixed(2);

@@ -56,6 +56,8 @@ function FormItem({ initialValues, type, errors }) {
     dispatch(updateHeader(key, value));
   };
 
+  
+
   return (
     <>
       <Box sx={componentStyles.boxStyles}>
@@ -156,7 +158,6 @@ function FormItem({ initialValues, type, errors }) {
           ))}
           {type === "budget" && (
             <FormRow
-              tableHeaderData={["Category", "Amount", "Currency", "Breakdown"]}
             />
           )}
 
