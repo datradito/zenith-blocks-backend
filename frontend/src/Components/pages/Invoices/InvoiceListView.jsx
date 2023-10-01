@@ -1,13 +1,11 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import SubHeader from "../../molecules/SubHeader/SubHeader"
 import { Box, Stack } from '@mui/material';
 import ItemCard from "../../atoms/ItemCard/ItemCard";
-import TableDisplay from "../../DisplayElements/TableDisplay";
+import Table from '../../molecules/Table';
 import { parseInvoiceUrl } from '../../../Utility/parseInvoiceUrl';
 import { useLocation, Link  } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { useState } from 'react';
-import useWeb3IpfsContract from '../../hooks/web3IPFS';
 import ButtonAtom from '../../atoms/Button';
 import { useGetAllInvoicesByBudget } from '../../hooks/Invoices/useGetAllInvoices';
 import CircularIndeterminate from '../../atoms/Loader/loader';
@@ -132,7 +130,7 @@ function InvoiceListView() {
                     </Stack>
                 </Box>
                 <Box sx={BoxStyle}>
-                    <TableDisplay
+                    <Table
                         tableHeaderData={tableHeaderData}
                         tableBodyData={invoices}
                         dataToDisplay={[]}

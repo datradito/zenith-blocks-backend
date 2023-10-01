@@ -17,6 +17,8 @@ import { client } from './apolloConfig/client';
 import PrivateRoute from './Routes/PrivateRoutes';
 import PaymentCreation, { paymentLoader } from './Components/pages/Payments/PaymentCreation';
 
+
+// import { dashboardLoader } from './Components/pages/walletDashboard/Dashboard';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -28,11 +30,6 @@ const Dashboard = lazy(() => import("./Components/pages/walletDashboard/Dashboar
 const Swap = lazy(() => import("./Components/pages/Swap/Swap"));
 const Proposals = lazy(() => import("./Components/pages/Proposals/Proposals"));
 const Accounts = lazy(() => import("./Components/pages/Accounts/Accounts"));
-
-// export const client = new ApolloClient({
-//   link: links,
-//   cache: new InMemoryCache(),
-// });
 
 function App() {
   
@@ -93,6 +90,9 @@ function App() {
         <Route
           path="dashboard"
           element={<Dashboard />}
+          // loader={({ params, request }) => {
+          //   return dashboardLoader();
+          // }}
           errorElement={<ErrorPage />}
         />
         <Route

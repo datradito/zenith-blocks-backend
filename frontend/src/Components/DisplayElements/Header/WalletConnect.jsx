@@ -57,7 +57,7 @@ export default function WalletConnect() {
         disconnectAsync();
         localStorage.clear();
       }
-    }, [disconnectAsync]);
+    }, []);
 
     const createSiweMessage = async () => {
       try {

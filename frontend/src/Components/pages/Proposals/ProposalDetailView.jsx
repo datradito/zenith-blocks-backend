@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Stack } from "@mui/material";
-import TableDisplay from "../../DisplayElements/TableDisplay.jsx";
+import Table from "../../molecules/Table/index.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { setProposal } from "../../../actions/currentProposal/index.js";
 import { refreshState } from "../../../actions/createBudgetAction/index.js";
@@ -159,7 +159,7 @@ function ProposalDetailView() {
           ))}
         </Stack>
         {budgetList && (
-          <TableDisplay tableHeaderData={headers} tableBodyData={budgetList} />
+          <Table tableHeaderData={headers} tableBodyData={budgetList} />
         )}
         {pageWarnings && (
           <SnackbarMessage

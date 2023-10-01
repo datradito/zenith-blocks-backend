@@ -220,42 +220,6 @@ app.get("/nativeBalance", async (req, res) => {
     }
 });
 
-app.get("/tokenBalances", async (req, res) => {
-
-    try {
-        const { address, chain } = req.query;
-
-        const response = await Moralis.EvmApi.token.getWalletTokenBalances({
-            address: address,
-            chain: chain,
-        });
-
-        const tokens = response.toJSON();
-        const legitTokens = [];
-
-        for (const token of tokens) {
-            try {
-                const priceResponse = await Moralis.EvmApi.token.getTokenPrice({
-                    address: token.token_address,
-                    chain: chain,
-                });
-
-                if (priceResponse.jsonResponse.usdPrice > 0.01) {
-                    token.usd = priceResponse.jsonResponse.usdPrice;
-                    legitTokens.push(token);
-                } else {
-                    console.log("💩 coin");
-                }
-            } catch (e) {
-                console.log(e);
-            }
-        }
-        res.send(legitTokens);
-    } catch (e) {
-        res.send(e);
-    }
-});
-
 app.get("/nftBalance", async (req, res) => {
 
     try {

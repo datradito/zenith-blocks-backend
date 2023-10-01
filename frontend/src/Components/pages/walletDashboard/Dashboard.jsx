@@ -13,7 +13,6 @@ import {
     useNetwork,
     useEnsAvatar,
 } from 'wagmi'
-
 function Dashboard() {
 
     const { address } = useAccount();
@@ -95,7 +94,6 @@ function Dashboard() {
                         textTransform: 'capitalize',
                         display: 'block'
                     }}
-                    isActive={() => activeTab === 'tokens'}
                     onClick={() => handleTabClick('tokens')}
                 >
                     Tokens
@@ -108,7 +106,6 @@ function Dashboard() {
                         paddingTop: "1rem",
                     }}
                     sx={{ color: 'white', textTransform: 'capitalize', display: 'block' }}
-                    isActive={() => activeTab === 'transfers'}
                     onClick={() => handleTabClick('transfers')}
                 >
                     Transaction History
@@ -137,7 +134,7 @@ function Dashboard() {
                                 setNativeValue={setNativeValue}
                             />
                             <Tokens
-                                wallet={wallet}
+                                wallet={address}
                                 chain={chain}
                                 tokens={tokens}
                                 setTokens={setTokens} />
