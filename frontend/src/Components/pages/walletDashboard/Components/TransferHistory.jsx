@@ -4,7 +4,7 @@ import { useLazyQuery } from "@apollo/client";
 import { GET_TRANSACTION_HISTORY } from "../../../../ServerQueries/Dashboard/Queries";
 import Table from "../../../molecules/Table";
 import { transformTransactionHistory } from "../../../../Utility/transformItems";
-const BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL;
+import CircularIndeterminate from "../../../atoms/Loader/loader";
 
 function TransferHistory({ chain, wallet, transfers, setTransfers }) {
 
@@ -30,6 +30,8 @@ function TransferHistory({ chain, wallet, transfers, setTransfers }) {
         innerText: "ERC20 Transfers",
         onClick: getTokenTransfers,
     };
+
+    if (loading) return <CircularIndeterminate />;
 
     return (
         <>
