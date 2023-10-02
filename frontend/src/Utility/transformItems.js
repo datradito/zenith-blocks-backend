@@ -39,18 +39,15 @@ export const transformInvoices = (invoices) => {
     return invoices?.length > 0 ? invoices : null;
 }
 
+export const transformTransactionHistory = (transactions) => {
+    transactions = transactions.map(transaction => {
+        const { __typename, Transaction,  ...rest } = transaction;
+        return rest;
+    }
+    );
+    return transactions?.length > 0 ? transactions : null;
+}
 
-
-// function reverseObjectKeys(originalObject) {
-//     const reversedKeys = Object.keys(originalObject).reverse();
-//     const reversedObject = {};
-
-//     for (const key of reversedKeys) {
-//         reversedObject[key] = originalObject[key];
-//     }
-
-//     return reversedObject;
-// }
 
 
 function moveIdToFront(originalObject) {

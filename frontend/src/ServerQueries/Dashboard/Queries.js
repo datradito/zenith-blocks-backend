@@ -10,3 +10,15 @@ export const GET_TOKEN_BALANCE = gql`
         }
     }
 `;
+
+export const GET_TRANSACTION_HISTORY = gql`
+  query GetTransactionHistory($address: String!) {
+    getTokenTransactionHistory(address: $address) {
+      asset
+      value
+      from
+      to
+      blockNum
+    }
+  }
+`;

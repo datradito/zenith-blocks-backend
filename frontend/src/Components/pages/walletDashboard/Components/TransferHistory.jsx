@@ -1,22 +1,29 @@
-import React from "react";
-import axios from "axios";
-import { Table } from "@mui/material";
+import React, { useEffect } from "react";
 import ButtonAtom from "../../../atoms/Button";
+import { useLazyQuery } from "@apollo/client";
+import { GET_TRANSACTION_HISTORY } from "../../../../ServerQueries/Dashboard/Queries";
+import Table from "../../../molecules/Table";
+import { transformTransactionHistory } from "../../../../Utility/transformItems";
+const BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL;
 
 function TransferHistory({ chain, wallet, transfers, setTransfers }) {
 
-    async function getTokenTransfers() {
-            const response = await axios.get(`http://localhost:8000/tokenTransfers`, {
-            params: {
-                address: wallet,
-                chain: chain,
-            },
-            });
-        console.log(response.data);
-
-        if (response.data) {
-            setTransfers(response.data);
+    const [getTransactionHistory, { loading, error, data: transactionHistory }] = useLazyQuery(
+      GET_TRANSACTION_HISTORY,
+      {
+        variables: { address: wallet },
+      }
+    );
+    
+    useEffect(() => {
+        if (transactionHistory) {
+            const history = transformTransactionHistory(transactionHistory.getTokenTransactionHistory);
+            setTransfers(history);
         }
+    }, [transactionHistory]);
+
+    async function getTokenTransfers() {
+        await getTransactionHistory(wallet);
     }
 
     const buttonConfig = {
@@ -26,33 +33,20 @@ function TransferHistory({ chain, wallet, transfers, setTransfers }) {
 
     return (
         <>
-            <div className="tabHeading">
                 <ButtonAtom config={buttonConfig} />
-            </div>
-            <div>
                 {transfers.length > 0 && (
-                    <Table
-                        pageSize={8}
-                        noPagination={false}
-                        style={{ width: "90vw" }}
-                        columnsConfig="16vw 18vw 18vw 18vw 16vw"
-                        data={transfers.map((e) => [
-                            e.symbol,
-                            (Number(e.value) / Number(`1e${e.decimals}`)).toFixed(3),
-                            `${e.from_address.slice(0, 4)}...${e.from_address.slice(38)}`,
-                            `${e.to_address.slice(0, 4)}...${e.to_address.slice(38)}`,
-                            e.block_timestamp.slice(0, 10),
-                        ])}
-                        header={[
-                            <span>Token</span>,
-                            <span>Amount</span>,
-                            <span>From</span>,
-                            <span>To</span>,
-                            <span>Date</span>,
-                        ]}
-                    />
+
+                    <Table tableHeaderData={["Token", "Amount", "From", "To", "Block"]} tableBodyData={transfers} />
+
+                    //     data={transfers.map((e) => [
+                    //         e.asset,
+                    //         (Number(e.value)).toFixed(3),
+                    //         `${e.from.slice(0, 4)}...${e.from.slice(38)}`,
+                    //         `${e.to.slice(0, 4)}...${e.to.slice(38)}`,
+                    //         e.blockNum.slice(0, 10),
+                    //     ])}
+
                 )}
-            </div>
             </>
     );
 }

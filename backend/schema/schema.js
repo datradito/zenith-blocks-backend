@@ -4,7 +4,9 @@ const invoiceResolver = require("../graphQL/invoices/invoiceResolver");
 const budgetResolver = require("../graphQL/budgets/budgetResolver");
 const paymentsResolver = require("../graphQL/payments/paymentsResolver");
 const walletResolvers = require("../graphQL/dashboard/walletResolvers");
+const transactionHistoryResolver = require("../graphQL/dashboard/transactionHistoryResolver");
 const Invoice = require("../Database/models/Invoice");
+
 
 const typeDefs = `#graphql
     type Budget {
@@ -66,6 +68,19 @@ const typeDefs = `#graphql
       logo: String
   }
 
+  type Transaction {
+    blockNum: String
+    uniqueId: String
+    hash: String
+    from: String
+    to: String
+    value: Float
+    tokenId: String
+    asset: String
+    category: String
+  }
+
+
     type Query {
         getBudgetById(id: String): Budget,
         getBudgetsForProposal(proposalid: String): [Budget],
@@ -77,6 +92,7 @@ const typeDefs = `#graphql
         getAllPayments: [Payment!]!
         getRemainingBudgetAmount(budgetid: String!): Float
         getTokenBalances(address: String!): [Token]
+        getTokenTransactionHistory(address: String!): [Transaction]
     }
     type Mutation {
         submitBudget(budget: BudgetInput): Budget,
@@ -145,6 +161,7 @@ const resolvers = {
     ...invoiceResolver.Query,
     ...paymentsResolver.Query,
     ...walletResolvers.Query,
+    ...transactionHistoryResolver.Query,
   },
   Mutation: {
     ...proposalResolver.Mutation,

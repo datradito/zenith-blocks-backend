@@ -1,18 +1,19 @@
 import React, { useEffect } from "react";
-import { Typography, Box } from "@mui/material";
 import ButtonAtom from "../../../atoms/Button";
-import { useQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 import { GET_TOKEN_BALANCE } from "../../../../ServerQueries/Dashboard/Queries";
 import CircularIndeterminate from "../../../atoms/Loader/loader";
 import Table from "../../../molecules/Table";
+import Box from "@mui/material/Box";
 
 function Tokens({ wallet, chain, tokens, setTokens }) {
 
-    const {loading, error, data: tokenList } = useQuery(
-        GET_TOKEN_BALANCE,
-        {
+    const [getTokenBalance, { loading, error, data: tokenList }] = useLazyQuery(
+    GET_TOKEN_BALANCE,
+    {
         variables: { address: wallet },
-    });
+    }
+    );
     
     useEffect(() => {
         if (tokenList) {
@@ -34,6 +35,7 @@ function Tokens({ wallet, chain, tokens, setTokens }) {
 
     const buttonConfig = {
         innerText: 'ERC20 Tokens',
+        onClick: () => getTokenBalance(),
     }
 
     const headers = ["Logo", "Balance", "Value", "Token"]

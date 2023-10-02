@@ -21,7 +21,6 @@ const TableHeader = ({ tableHeaderData }) => {
         tableDataCellItem: {
             color: "white",
             fontSize: '0.75rem',
-            color: "gray",
             border: 'none',
             padding: '0.5rem',
             backgroundColor: 'rgba(40, 42, 46, 0.5)',

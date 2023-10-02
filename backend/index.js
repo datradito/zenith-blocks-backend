@@ -9,7 +9,6 @@ const cors = require('./utility/middlewares/cors');
 const authRouter = require('./routes/authRoutes');
 const axios = require('axios');
 
-require("dotenv").config();
 const User = require('./Database/models/User');
 
 const { startStandaloneServer } = require('@apollo/server/standalone');
@@ -35,7 +34,6 @@ const initializeIpfsNode = async () => {
         await Moralis.start({
             apiKey: process.env.MORALIS_KEY,
         });
-
         isMoralisInitialized = true;
     }
 };
@@ -74,70 +72,6 @@ app.post('/createUser', async (req, res) => {
     }
 );
 
-app.get('/checkSiwe', async (req, res) => {
-        if (req.session.test) {
-            console.log(req.session.nonce);
-            return res.status(200).json(req.session.siwe);
-        } else {
-            const users = await User.findAll();
-            return res.status(401).json(users);
-        }
-    }
-);
-
-app.get("/nativeBalance", async (req, res) => {
-
-    try {
-        const { address, chain } = req.query;
-        const response = await Moralis.EvmApi.balance.getNativeBalance({
-            address: address,
-            chain: chain,
-        });
-
-        const nativeBalance = response.toJSON();
-        
-        let nativeCurrency;
-        if (chain === "0x1") {
-            nativeCurrency = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
-        } else if (chain === "0x89") {
-            nativeCurrency = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270";
-        } else if (chain === "0x4") {
-            nativeCurrency = "0xc778417E063141139Fce010982780140Aa0cD5Ab";
-        } else if (chain === "0x324") {
-            nativeCurrency = "0xaBEA9132b05A70803a4E85094fD0e1800777fBEF";
-        }
-
-        const nativePrice = await Moralis.EvmApi.token.getTokenPrice({
-            address: nativeCurrency, //WETH Contract
-            chain: chain,
-        });
-
-        nativeBalance.usd = nativePrice.jsonResponse.usdPrice;
-        console.log(nativeBalance.usd);
-
-        res.send(nativeBalance);
-    } catch (e) {
-        res.send(e);
-    }
-});
-
-app.get("/nftBalance", async (req, res) => {
-
-    try {
-        const { address, chain } = req.query;
-
-        const response = await Moralis.EvmApi.nft.getWalletNFTs({
-            address: address,
-            chain: chain,
-        });
-
-        const userNFTs = response.data;
-
-        res.send(userNFTs);
-    } catch (e) {
-        res.send(e);
-    }
-});
 
 app.get("/tokenTransfers", async (req, res) => {
 
@@ -179,7 +113,6 @@ app.get("/tokenTransfers", async (req, res) => {
 
 app.get("/allowance", async (req, res) => {
     const { tokenAddress, walletAddress } = req.query;
-
     try {
         const response = await axios.get(
                 `https://api.1inch.dev/swap/v5.2/1/approve/allowance?tokenAddress=${tokenAddress}&walletAddress=${walletAddress}`,
@@ -221,12 +154,11 @@ app.get("/approve", async (req, res) => {
 
 app.listen(8000, async () => {
     await init();
-
     const { url } = await startStandaloneServer(server, {
         listen: { port: 8080 },
         context: context
     });
-    console.log('Server is running on port' + url);
+    console.log('Apollo Server is running on port' + url);
 });
 
 

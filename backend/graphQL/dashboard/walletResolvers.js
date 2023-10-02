@@ -6,7 +6,8 @@ const walletResolvers = {
     getTokenBalances: async (_, { address }) => {
       try {
         const { config } = generateAxiosConfig(address)
-        return await getTokenBalances(config);
+        const data = await getTokenBalances(config);
+        return data;
       } catch (error) {
         throw new GraphQLError(error.message);
       }
