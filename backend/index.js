@@ -23,7 +23,13 @@ app.set('trust proxy', 1);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ credentials: true, origin: 'https://zenithblocksfrontend.vercel.app' }));
+app.use(cors(
+    {
+        credentials: true,
+        origin: process.env.FRONTEND_URL,
+        optionsSuccessStatus: 200
+    }
+));
 
 const hour = 3600000;
 
@@ -62,9 +68,7 @@ app.get("/", (req, res) => {
 
 
 app.get("/tokenPrice", async (req, res) => {
-
     const { query } = req;
-
     const responseOne = await Moralis.EvmApi.token.getTokenPrice({
         address: query.addressOne
     })
