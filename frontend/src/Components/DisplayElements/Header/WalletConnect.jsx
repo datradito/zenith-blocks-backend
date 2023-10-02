@@ -66,7 +66,9 @@ export default function WalletConnect() {
           address: address,
           chain: chain?.id,
         };
-        const { data: nonce } = await axios.get(`${BASE_URL}/nonce`);
+        const { data: nonce } = await axios.get(`${BASE_URL}/nonce`, {
+          withCredentials: true,
+        });
         const { data } = await axios.post(
           `${BASE_URL}/siwe`,
           {

@@ -1,12 +1,15 @@
 const express = require('express');
-const cors = require('cors')
-const siwe = require('siwe');
-const session = require('express-session');
-const { redisStore } = require('./utility/redis/redisClient');
+
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
+const session = require('./utility/middlewares/session');
+const cors = require('./utility/middlewares/cors');
+const authRouter = require('./routes/authRoutes');
 const axios = require('axios');
 
 require("dotenv").config();
-const signJWTToken = require('./utility/middlewares/auth').signJWTToken;
 const User = require('./Database/models/User');
 
 const { startStandaloneServer } = require('@apollo/server/standalone');
@@ -14,34 +17,16 @@ const server = require('./schema/schema')
 const context = require('./utility/middlewares/context');
 
 const Moralis = require("moralis").default;
-const { createSiweMessage } = require('./utility/signMessage');
 const init = require('./Database/sequalizeConnection');
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(
-  cors({ credentials: true, origin: "http://localhost:3000" })
-);
 
-const hour = 3600000;
-
-app.use(
-  session({
-    name: "siwe",
-    store: redisStore,
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-    //   secure: true,
-      httpOnly: true,
-      maxAge: 3600000, // session max age in miliseconds
-    },
-  })
-);
-
+app.use(cors);
+app.use(session);
+app.use(authRouter);
 
 let isMoralisInitialized = false;
 
@@ -82,96 +67,12 @@ app.get("/tokenPrice", async (req, res) => {
     return res.status(200).json(usdPrices);
 });
 
-app.get('/nonce', function (_, res) {
-    res.setHeader('Content-Type', 'text/plain');
-    res.send(siwe.generateNonce());
-});
-
-app.post("/siwe", async (req, res) => {
-    const { address, network, nonce } = req.body;
-
-    console.log(address)
-
-    try {
-            
-        const message = createSiweMessage(address, network, nonce);
-        req.session.nonce = nonce;
-        req.session.address = address;
-        req.session.message = message;
-        req.session.save();
-        // res.cookie('siwe', message);
-        return res.status(200).json(message);
-        } catch (e) {
-            return res.status(500).json(e);
-        }
-    }
-);
-
-app.post('/verify', async function (req, res) {
-    
-    try {
-        if (!req.body.message || !req.body.signature) {
-          return res
-            .status(400)
-            .json({
-              message: "Expected message and signature in the request body.",
-            });
-        }
-
-        if (!req.session.address) { 
-            throw new Error("Issues with session" + req.session);
-        }
-
-        const SIWEObject = new siwe.SiweMessage(req.body.message);
-
-        const { data: message } = await SIWEObject.verify({
-          signature: req.body.signature,
-          nonce: req.session.nonce,
-        });
-
-        req.session.siwe = message;
-        req.session.cookie.expires = 3600000; // Assuming 'hour' is 3600000 milliseconds
-
-        const user = await User.findOne({
-          where: { address: req.session.address },
-        });
-
-        if (!user) {
-             throw new Error("User not found");
-        }
-        
-        const token = signJWTToken({
-          userAddress: user.address,
-          dao: user.daoId,
-        });
-
-        return res.status(201).json({ authToken: token });
-
-    } catch (e) {
-        req.session.siwe = null;
-        req.session.nonce = null;
-
-        if (e.message == "User not found") {
-            console.log(e.message)
-                req.session.save(() => {
-                    res.status(404).json({ message: e.message });
-                }
-            )
-        } else {
-            req.session.save(() =>
-                res.status(500).json({ message: e })
-            );
-        }
-    }
-});
-
 app.post('/createUser', async (req, res) => {
         const { address, daoId } = req.body;
         const user = await User.create({ address, daoId });
         return res.status(200).json(user);
     }
 );
-
 
 app.get('/checkSiwe', async (req, res) => {
         if (req.session.test) {
