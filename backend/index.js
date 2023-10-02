@@ -19,8 +19,6 @@ const { init } = require('./Database/sequalizeConnection');
 
 const app = express();
 
-app.set('trust proxy', 1);
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(
@@ -30,8 +28,6 @@ app.use(cors(
         optionsSuccessStatus: 200
     }
 ));
-
-const hour = 3600000;
 
 app.use(
   session({
@@ -86,7 +82,6 @@ app.get("/tokenPrice", async (req, res) => {
 });
 
 app.get('/nonce', function (_, res) {
-    res.setHeader('Content-Type', 'text/plain');
     res.send(siwe.generateNonce());
 });
 
