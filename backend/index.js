@@ -19,6 +19,8 @@ const { init } = require('./Database/sequalizeConnection');
 
 const app = express();
 
+app.set('trust proxy', 1);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ credentials: true, origin: 'https://zenithblocksfrontend.vercel.app' }));
@@ -34,7 +36,7 @@ app.use(
     saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV === "production" ? true : false,
-      httpOnly: false,
+      httpOnly: true,
       maxAge: 3600000, // session max age in miliseconds
     },
   })
@@ -120,8 +122,6 @@ app.post('/verify', async function (req, res) {
           nonce: req.session.nonce,
         });
 
-        req.session.siwe = message;
-        req.session.cookie.expires = new Date(Date.now() + 3600000); 
         req.session.save();
 
         const user = await User.findOne({
@@ -140,9 +140,7 @@ app.post('/verify', async function (req, res) {
         return res.status(201).json({ authToken: token });
 
     } catch (e) {
-        req.session.siwe = null;
-        req.session.nonce = null;
-
+        req.session.destroy();
         if (e.message === "User not found") {
           return res
             .status(401)
