@@ -85,26 +85,18 @@ app.get('/nonce', function (_, res) {
 });
 
 app.post("/siwe", async (req, res) => {
-    const { address, network, nonce } = req.body;
-
-    try {
-            
-        const message = createSiweMessage(address, network, nonce);
-        req.session.nonce = nonce;
-        req.session.address = address;
-        req.session.message = message;
-        req.session.save();
-
-        console.log(req.session);
-
-        res.cookie('siwe', message, { httpOnly: true, secure: true, sameSite: 'none' });
-
-        return res.status(200).json(message);
-        } catch (e) {
-            return res.status(500).json(e);
-        }
-    }
-);
+  const { address, network, nonce } = req.body;
+  try {
+    const message = createSiweMessage(address, network, nonce);
+    req.session.nonce = nonce;
+    req.session.address = address;
+    req.session.message = message;
+    req.session.save();
+    return res.status(200).json(message);
+  } catch (e) {
+    return res.status(500).json(e);
+  }
+});
 
 app.post('/verify', async function (req, res) {
     
@@ -130,7 +122,6 @@ app.post('/verify', async function (req, res) {
 
         req.session.siwe = message;
         req.session.cookie.expires = new Date(Date.now() + 3600000); 
-
         req.session.save();
 
         const user = await User.findOne({
@@ -138,7 +129,7 @@ app.post('/verify', async function (req, res) {
         });
 
         if (!user) {
-          throw new Error("User not found" + req.session);
+          throw new Error("User not found");
         }
         
         const token = signJWTToken({
