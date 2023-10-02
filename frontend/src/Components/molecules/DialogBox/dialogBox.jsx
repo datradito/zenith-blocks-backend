@@ -8,18 +8,33 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ButtonAtom from "../../atoms/Button";
 import { Link } from 'react-router-dom';
 
+    const modalStyles = {
+      margin: "0 auto",
+      padding: "0",
+      modalIconStyles: {
+        margin: "0 auto",
+        padding: "0",
+        "& .MuiSvgIcon-root": {
+          color: "green",
+          size: "50px",
+          marginTop: "2rem",
+        },
+      },
+      titleStyles: {
+        padding: "0 2rem",
+        "& .MuiDialogContent-root": {},
+      },
+    };
+
+
 export default function ModalDialog({buttonConfig}) {
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
-        console.log("handleClickOpen")
-        buttonConfig.onClick();
         setOpen(true);
-
     };
 
     const handleClose = () => {
-        console.log("handleClose")
         setOpen(false);
     };
 
@@ -32,27 +47,6 @@ export default function ModalDialog({buttonConfig}) {
         ...buttonConfig, // Spread the subButton object
         onClick: handleClickOpen
     }
-
-    const modalStyles = {
-        margin: "0 auto",
-        padding: "0",
-        modalIconStyles: {
-            margin: "0 auto",
-            padding: "0",
-            '& .MuiSvgIcon-root': {
-                color: "green",
-                size: "50px",
-                marginTop: "2rem",
-            },
-        },
-        titleStyles: {
-            padding: "0 2rem",
-            '& .MuiDialogContent-root': {
-            },
-        },
-
-    }
-
 
     return (
         <>

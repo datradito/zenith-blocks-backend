@@ -10,6 +10,7 @@ import CustomPDFViewIcon from '../PdfIcon/padfIcon';
 import CustomPaymentViewIcon from '../PaymentIcon/paymentIcon';
 import CustomActionIcon from '../ActionIcon/CustomActionIcon';
 import Avatar from '@mui/material/Avatar';
+import excludeAttributesFromData from '../../../Services/excludeAttributesFromData';
 
 const customTableCellStyles = {
     default: {
@@ -78,20 +79,13 @@ const customTableCellStyles = {
 };
 
 const TableRow = ({ tableBodyData }) => {
-    //this is where you can introduce filtering for the table data
-
+  console.log(tableBodyData);
     return (
         <TableRowMUI sx={[customTableCellStyles.tableRow, customTableCellStyles.default]}>
             {
                 Object.keys(tableBodyData).map((key) => {
                     //update budgetId to id
-                    if (
-                      key !== "id" &&
-                      key !== "budgetId" &&
-                      key !== "proposalid" &&
-                      key !== "InvoiceId" &&
-                      key !== "Transaction"
-                    ) {
+                    if (!excludeAttributesFromData.tableKeysToExclude.has(key)) {
                       return key === "Breakdown" ? (
                         <TableCell
                           key={key}

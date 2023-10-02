@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { CSVLink, CSVDownload } from "react-csv";
+import { CSVLink } from "react-csv";
+import { sanitizeCsvData } from '../../../Services/exportCsvService';
 
 const ButtonAtom = ({ config }) => {
+  const [data, setData] = React.useState();
 
     const buttonComponentStyles = {
         buttonStyle: {
@@ -26,9 +27,12 @@ const ButtonAtom = ({ config }) => {
 
     }
 
+  useEffect(() => {
+    const csvdata = config.label === "Export CSV" ? sanitizeCsvData(config.data, config.filetype) : null;
+    setData(csvdata);
+  }, []);
 
-    const handleClick = (e) => {
-
+  const handleClick = (e) => {
         if (config.preventDefault) {
             console.log("preventDefault")
             e.preventDefault();
@@ -36,12 +40,13 @@ const ButtonAtom = ({ config }) => {
         if (config.onClick) {
             config.onClick();
         }  
-    };
+  };
+  
     return (
       <>
-        {config.label === "Export CSV" ? (
+        {config.label === "Export CSV" && data ? (
           <CSVLink
-            data={config.data}
+            data={data}
             style={{ textDecoration: "none" }}
             filename={`${config.filetype}.${new Date().toLocaleString()}.csv`}
           >
@@ -49,7 +54,6 @@ const ButtonAtom = ({ config }) => {
               sx={buttonComponentStyles.buttonStyle}
               variant="contained"
               type={config.type ? config.type : "submit"}
-              // onClick={config.onClick}
             >
               {config.innerText}
             </Button>

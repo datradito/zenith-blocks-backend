@@ -11,6 +11,21 @@ import { useGetAllInvoicesByBudget } from '../../hooks/Invoices/useGetAllInvoice
 import CircularIndeterminate from '../../atoms/Loader/loader';
 import { toast } from 'react-toastify';
 
+const buttonConfig = {
+    label: "Create Invoices",
+    variant: "contained",
+    innerText: "Create Invoice",
+};
+
+const BoxStyle = {
+    width: "90%",
+    margin: "0rem auto",
+    textAlign: "center",
+    color: "white",
+    border: ".05rem #2c2c2c solid",
+    marginTop: "1rem",
+    borderRadius: 3,
+};
 
 const tableHeaderData = ["Invoice", "Receipient", "Amount", "Currency", "Status", "Date", "Due","View", "Payment", "Action"]
 
@@ -39,14 +54,6 @@ function InvoiceListView() {
 
     if (loading) return <CircularIndeterminate />;
 
-    const handleExportCSV = () => {
-        console.log("Export CSV");
-    };
-
-    const handleCreateInvoice = () => {
-        console.log("Create Invoice");
-    };
-
     const currentPathConfig = {
         path: "Budgets",
         to: `/proposals/${proposal.id}`
@@ -57,44 +64,21 @@ function InvoiceListView() {
             {
                 label: "Export CSV",
                 variant: "contained",
-                onClick: handleExportCSV,
                 innerText: "Export CSV",
                 backgroundColor: "#282A2E",
                 data: invoices,
-                filetype: "invoices"
+                filetype: "invoice"
             }, {
                 label: "Create Invoice",
                 variant: "contained",
-                onClick: handleCreateInvoice,
                 innerText: "Create Invoice",
                 ml: "0.5rem",
                 type: "link",
-                to: `/budgets/${Budget.id}/createinvoice`,
+                to: `/budgets/${Budget.id}/createinvoice`
             }
         ];
     
     const dataForItemCard = { "Goverance": proposal.space, "Total Budget": `$ ${amount}`, "Proposal": proposal.title };
-
-    const BoxStyle = {
-        width: '90%',
-        margin: '0rem auto',
-        textAlign: "center",
-        color: 'white',
-        border: ".05rem #2c2c2c solid",
-        marginTop: "1rem",
-        borderRadius: 3
-    };
-
-    function handleInvoiceCreateOnClick() {
-
-    }
-    
-    const buttonConfig = {
-        label: "Create Invoices",
-        variant: "contained",
-        onClick: handleInvoiceCreateOnClick,
-        innerText: "Create Invoice"
-    };
 
     if (invoices === [] || invoices === null || invoices === undefined || invoices.length === 0 && parseInvoiceUrl(location.pathname) !== null) {
         return (
@@ -133,7 +117,6 @@ function InvoiceListView() {
                     <Table
                         tableHeaderData={tableHeaderData}
                         tableBodyData={invoices}
-                        dataToDisplay={[]}
                     />
                 </Box>
             </div>

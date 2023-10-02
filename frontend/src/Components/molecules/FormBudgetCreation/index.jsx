@@ -85,13 +85,13 @@ function FormRow() {
         setProposalData();
     }, []);
 
-    const handleChange = (index, field, value) => {
+  const handleChange = (index, field, value) => {
         dispatch(updateField(
             index,
             field,
             value,
         ));
-    };
+  };
 
   return (
     <Grid
@@ -138,7 +138,7 @@ function FormRow() {
                       values={categories}
                       defaultValue={value}
                       onChange={(value) =>
-                        handleChange(index, "category", value)
+                        handleChange(0, "category", value)
                       }
                     />
                   </FormControl>
@@ -152,7 +152,7 @@ function FormRow() {
                     <CurrencyDropdown
                       value={value}
                       onChange={(e) =>
-                        handleChange(index, "currency", e.target.value)
+                        handleChange(0, "currency", e.target.value)
                       }
                       InputProps={{
                         style: {
@@ -171,7 +171,8 @@ function FormRow() {
                     <TextField
                       sx={formStyleCustom.textFieldStyle}
                       value={`${
-                        (parseInt(value) / parseInt(filteredProposalAmount)) *
+                        (parseInt(items[0]["amount"]) /
+                          parseInt(filteredProposalAmount)) *
                         100
                       }%`}
                       InputProps={{
@@ -189,11 +190,11 @@ function FormRow() {
                     sx={formStyleCustom.default}
                   >
                     <TextField
-                      value={value}
+                      value={items[0][index]}
                       type="number"
                       max={filteredProposalAmount}
                       onChange={(e) =>
-                        handleChange(index, "amount", e.target.value)
+                        handleChange(0, "amount", e.target.value)
                       }
                       InputProps={{
                         style: {

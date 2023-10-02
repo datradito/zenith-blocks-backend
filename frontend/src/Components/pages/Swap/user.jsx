@@ -216,77 +216,12 @@ function User({ address, balance, symbol }) {
                         {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
                         <br />
                         <br />
-                        {/* <button onClick={() => signOut({ redirect: "/signin" })}>Sign out</button> */}
                     </Box>
                 </Modal>
             {/* } */}
             
         </>
-        // <div>
-        //     <div>User: {address}</div>
-        //     <div>Your Ethereum Balance: {(balance / 1e18).toFixed(3)}</div>
-        //     <select>
-        //         <option value="0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE">
-        //             MATIC
-        //         </option>
-        //     </select>
-        //     <input
-        //         onChange={(e) => changeValue(e)}
-        //         value={value / 1e18}
-        //         type="number"
-        //         min={0}
-        //         max={balance / 1e18}
-        //     ></input>
-        //     <br />
-        //     <br />
-        //     <select name="toToken" value={toToken} onChange={(e) => changeToToken(e)}>
-        //         <option value="0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619">WETH</option>
-        //         <option value="0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174">USDC</option>
-        //         <option value="0xc2132D05D31c914a87C6611C10748AEb04B58e8F">USDT</option>
-        //     </select>
-        //     <input
-        //         value={
-        //             !valueExchanged
-        //                 ? ""
-        //                 : (valueExchanged / valueExchangedDecimals).toFixed(5)
-        //         }
-        //         disabled={true}
-        //     ></input>
-        //     <br />
-        //     <br />
-        //     <button onClick={get1inchSwap}>Get Conversion</button>
-        //     <button disabled={!valueExchanged} onClick={sendTransaction}>Swap Tokens</button>
-        //     {isLoading && <div>Check Wallet</div>}
-        //     {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
-        //     <br />
-        //     <br />
-        //     {/* <button onClick={() => signOut({ redirect: "/signin" })}>Sign out</button> */}
-        // </div>
     );
 }
-
-// export async function getServerSideProps(context) {
-//     const session = await getSession(context);
-
-//     if (!session) {
-//         return {
-//             redirect: {
-//                 destination: "/signin",
-//                 permanent: false,
-//             },
-//         };
-//     }
-
-//     await Moralis.start({ apiKey: 'QRAJheBLguWplEM7lgkJqWkqRqVmRAWfmexXmxpbDRaQmH5idZ40cmyrNt6V2YTo' });
-
-//     const response = await Moralis.EvmApi.account.getNativeBalance({
-//         address: session.user.address,
-//         chain: 0x89,
-//     });
-
-//     return {
-//         props: { user: session.user, balance: response.raw },
-//     };
-// }
 
 export default User;

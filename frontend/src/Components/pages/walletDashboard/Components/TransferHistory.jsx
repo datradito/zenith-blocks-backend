@@ -5,6 +5,7 @@ import { GET_TRANSACTION_HISTORY } from "../../../../ServerQueries/Dashboard/Que
 import Table from "../../../molecules/Table";
 import { transformTransactionHistory } from "../../../../Utility/transformItems";
 import CircularIndeterminate from "../../../atoms/Loader/loader";
+import { Typography } from "@mui/material";
 
 function TransferHistory({ chain, wallet, transfers, setTransfers }) {
 
@@ -17,7 +18,7 @@ function TransferHistory({ chain, wallet, transfers, setTransfers }) {
     
     useEffect(() => {
         if (transactionHistory) {
-            const history = transformTransactionHistory(transactionHistory.getTokenTransactionHistory);
+            const history = transformTransactionHistory(transactionHistory?.getTokenTransactionHistory);
             setTransfers(history);
         }
     }, [transactionHistory]);
@@ -36,7 +37,7 @@ function TransferHistory({ chain, wallet, transfers, setTransfers }) {
     return (
         <>
                 <ButtonAtom config={buttonConfig} />
-                {transfers.length > 0 && (
+                {transfers.length > 0 ? (
 
                     <Table tableHeaderData={["Token", "Amount", "From", "To", "Block"]} tableBodyData={transfers} />
 
@@ -48,7 +49,11 @@ function TransferHistory({ chain, wallet, transfers, setTransfers }) {
                     //         e.blockNum.slice(0, 10),
                     //     ])}
 
-                )}
+            ) :
+                (
+                    <Typography variant="subtitle2">This wallet does not have any historic transactions!</Typography>
+                )
+                }
             </>
     );
 }

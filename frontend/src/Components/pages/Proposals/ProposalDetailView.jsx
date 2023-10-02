@@ -121,7 +121,7 @@ function ProposalDetailView() {
       innerText: "Export CSV",
       backgroundColor: "#282A2E",
       data: budgetList || [],
-      filetype: "ProposalDetail",
+      filetype: "budget",
     },
     {
       label: "Create Budget",

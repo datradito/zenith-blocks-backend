@@ -4,18 +4,20 @@ import ButtonAtom from '../../atoms/Button';
 import { Box, Grid, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import ModalDialog from '../DialogBox/dialogBox';
+import ButtonGroup from '../ButtonGroup/ButtonGroup';
+
+const componentStyles = {
+    backArrowSvgStyle: {
+    color: "white",
+    fontSize: "large",
+    "& .MuiSvgIcon-root": {
+        mr: "0.5rem",
+    },
+    },
+};
 
 function SubHeader({ buttonConfig, currentPath, previousPath }) {
-    
-    const componentStyles = {
-        backArrowSvgStyle: {
-            color: 'white',
-            fontSize: "large",
-            '& .MuiSvgIcon-root': {
-                mr: '0.5rem',
-            }
-        }
-    }
+
   return (
       <Box style={{
           width: '90%',
@@ -37,23 +39,7 @@ function SubHeader({ buttonConfig, currentPath, previousPath }) {
                   </Link>
               </Grid>
               <Grid>
-                  {
-                      Object.keys(buttonConfig).map((key, index) => {
-                          return buttonConfig[key].type && buttonConfig[key].type === 'link' && buttonConfig[key].to !== "" ? 
-                                <Link to={buttonConfig[key].to} key={index}>
-                                  {/* <ButtonAtom
-                                      config={buttonConfig[key]}
-                                  /> */}
-                                  <ModalDialog buttonConfig={buttonConfig[key]}/>
-                                </Link>
-                              : buttonConfig[key].subButton ?
-                                <ModalDialog key={index} buttonConfig={buttonConfig[key]} /> :
-                                <ButtonAtom
-                                        key={index}
-                                        config={buttonConfig[key]}
-                                />
-                      })
-                  }
+                    <ButtonGroup buttonConfig={buttonConfig} />
               </Grid>
           </Grid>
       </Box>

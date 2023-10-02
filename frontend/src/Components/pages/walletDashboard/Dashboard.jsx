@@ -19,10 +19,10 @@ function Dashboard() {
     const [activeTab, setActiveTab] = useState('tokens');
     const { chain: networkChain } = useNetwork();
 
-    const ensAvatar = useEnsAvatar({
-        address: address,
-        cacheTime: 2_000,
-    })
+   const { data, isError, isLoading } = useEnsAvatar({
+     address: address,
+     cacheTime: 2_000,
+   });
     const [wallet, setWallet] = useState("");
     const [chain, setChain] = useState(networkChain?.id);
     const [nativeBalance, setNativeBalance] = useState(0);
@@ -58,7 +58,7 @@ function Dashboard() {
                     {wallet.length === 42 && (
                         <>
                             <div>
-                            <Avatar sx={{ width: 50, height: 50, marginRight: "1rem" }} src={ensAvatar} />
+                            <Avatar sx={{ width: 50, height: 50, marginRight: "1rem" }} src={data} />
                             <br />
                             <Typography variant="subtitle2">{`${wallet.slice(0, 6)}...${wallet.slice(36)}`}</Typography>
                             </div>
@@ -143,7 +143,7 @@ function Dashboard() {
                     }
                     {activeTab === "transfers" && (
                         <Box
-                            tabKey={2}
+                            // tabKey={2}
                             // tabName={"Transfers"}
                         >
                             <TransferHistory

@@ -1,6 +1,6 @@
 import './App.css';
 import React, { Suspense, lazy } from 'react';
-import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client';
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { storeConfig, persistor } from './store/storeConfigure';
@@ -87,8 +87,8 @@ function App() {
           />
           <Route
             path=":budgetId/createInvoice"
-            element={<InvoiceCreation />}
             errorElement={<ErrorPage />}
+            element={<InvoiceCreation />}
           />
         </Route>
         <Route

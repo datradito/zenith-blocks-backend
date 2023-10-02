@@ -19,11 +19,12 @@ export const transformItems =(items, totalBudget) => {
 export const transformInvoices = (invoices) => {  
     
     invoices = invoices.map(invoice => {
-        const { description, owneraddress, uploadinvoice, category , __typename, ...rest } = invoice;
-        const data = {
+        
+        return {
             InvoiceId: invoice.id,
             Invoice: invoice.number,
             Recipient: `${invoice.recipient.slice(0, 6)}...${invoice.recipient.slice(36)}`,
+            RecipientAddress: invoice.recipient,
             Amount: invoice.total,
             Currency: invoice.currency,
             Status: invoice.status,
@@ -33,7 +34,6 @@ export const transformInvoices = (invoices) => {
             Payment: "PAID",
             Action: "ACTION",
         };
-        return moveIdToFront(data);
     }
     );
     return invoices?.length > 0 ? invoices : null;
@@ -45,12 +45,6 @@ export const transformTransactionHistory = (transactions) => {
         return rest;
     }
     );
-    return transactions?.length > 0 ? transactions : null;
+    return transactions?.length > 0 ? transactions : [];
 }
 
-
-
-function moveIdToFront(originalObject) {
-    const { id, ...rest } = originalObject;
-    return { id, ...rest };
-}
