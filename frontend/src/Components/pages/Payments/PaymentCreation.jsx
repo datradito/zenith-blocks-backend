@@ -115,8 +115,7 @@ function PaymentCreation() {
         console.log(hash)
     }
 
-    const componentButtonConfig = {
-    };
+    const componentButtonConfig = [{}];
 
     return (
       <Box>

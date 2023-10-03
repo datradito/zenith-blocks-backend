@@ -44,8 +44,7 @@ let dialogContainerStyle = {
 function CustomActionIcon({ invoiceId, onClick }) {
 
   const [openInvoiceActionModal, setOpenInvoiceActionModal] = React.useState(false);
-  
-  //move this to parent component so that actions can be controlled through json file like following
+
   const buttonConfig = [
     {
       variant: "outlined",
@@ -55,6 +54,7 @@ function CustomActionIcon({ invoiceId, onClick }) {
       margin: "0.5rem",
       onClick: () => {
         setOpenInvoiceActionModal((prev) => !prev);
+        //send gql request to abckend with invoice for duplication
       },
       subButton: {
         variant: "outlined",
@@ -142,10 +142,7 @@ function CustomActionIcon({ invoiceId, onClick }) {
       return (
         <EditIcon sx={ActionIconStyles} onClick={handleClick} />
       )
-
-
   }
-    
 }
 
   export default CustomActionIcon;
