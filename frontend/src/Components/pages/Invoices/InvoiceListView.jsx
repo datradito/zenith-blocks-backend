@@ -3,7 +3,6 @@ import SubHeader from "../../molecules/SubHeader/SubHeader"
 import { Box, Stack } from '@mui/material';
 import ItemCard from "../../atoms/ItemCard/ItemCard";
 import Table from '../../molecules/Table';
-import { useLocation, Link  } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useGetAllInvoicesByBudget } from '../../hooks/Invoices/useGetAllInvoices';
 import CircularIndeterminate from '../../atoms/Loader/loader';
@@ -24,7 +23,6 @@ const tableHeaderData = ["Invoice", "Receipient", "Amount", "Currency", "Status"
 
 
 function InvoiceListView() {
-    let location = useLocation();
     let { proposal } = useSelector(state => state.currentProposal);
     const { proposals } = useSelector(state => state.currentProposalAmounts);
     const [amount, setProposalAmount] = useState(0);
