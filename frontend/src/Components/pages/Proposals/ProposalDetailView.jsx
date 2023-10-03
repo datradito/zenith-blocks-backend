@@ -15,6 +15,7 @@ import { transformItems } from "../../../Utility/transformItems.js";
 import SnackbarMessage from "../../atoms/SnackBarGql/SnackBarGql.jsx";
 import { toast } from "react-toastify";
 import { setIsLoggedIn } from "../../../actions/createAuthAction/index.js";
+import EmptyIcon from "../../atoms/EmptyIcon/EmptyIcon.jsx";
 
 const BoxStyle = {
   width: "90%",
@@ -158,9 +159,9 @@ function ProposalDetailView() {
             <ItemCard key={key} label={key} value={value} />
           ))}
         </Stack>
-        {budgetList && (
-          <Table tableHeaderData={headers} tableBodyData={budgetList} />
-        )}
+        {budgetList ? 
+          <Table tableHeaderData={headers} tableBodyData={budgetList} /> : <EmptyIcon />
+        }
         {pageWarnings && (
           <SnackbarMessage
             severity="error"

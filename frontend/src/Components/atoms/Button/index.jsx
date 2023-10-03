@@ -34,10 +34,9 @@ const ButtonAtom = ({ config }) => {
 
   const handleClick = (e) => {
         if (config.preventDefault) {
-            console.log("preventDefault")
             e.preventDefault();
         }
-        if (config.onClick) {
+    if (config.onClick) {
             config.onClick();
         }  
   };

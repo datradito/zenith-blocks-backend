@@ -22,7 +22,7 @@ export default  function Amount({ proposalid, onClick }){
 
     return (
         <div>
-            {amount !== null ? amount : <CustomActionIcon onClick={onClick} />}
+            {amount !== null ? amount : <CustomActionIcon onClick={onClick}  />}
         </div>
     )
 }

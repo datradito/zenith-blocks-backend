@@ -56,7 +56,7 @@ function FormItem({ initialValues, type, errors }) {
     dispatch(updateHeader(key, value));
   };
 
-  
+  console.log("initialValues", initialValues);
 
   return (
     <>

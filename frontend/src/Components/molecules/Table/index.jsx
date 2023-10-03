@@ -1,12 +1,12 @@
 import React from 'react'
-import CircularIndeterminate from '../../atoms/Loader/loader';
 import TableRow from "../../atoms/TableRow/index"
-import { TableCell, TableRow as MuiTableRow} from "@mui/material";
-
 import {
-    Table as TableMUI,
-    Box
-} from '@mui/material';
+  TableCell,
+  TableRow as MuiTableRow,
+  Table as TableMUI,
+  Box
+} from "@mui/material";
+import EmptyIcon from '../../atoms/EmptyIcon/EmptyIcon';
 
 const tableHeaderStyles = {
     tableHeaderCell: {
@@ -29,37 +29,26 @@ const tableHeaderStyles = {
 function Table({ tableHeaderData, tableBodyData }) {
 
     const renderTable = () => {
-        return (
+      return (
+        <Box>
           <TableMUI sx={{ border: "none" }}>
             <MuiTableRow>
-              {tableHeaderData.map((item, index) => {
-                return (
-                  <TableCell
-                    key={index}
-                    sx={tableHeaderStyles.tableDataCellItem}
-                  >
-                    {item}
-                  </TableCell>
-                );
-              })}
+              {tableHeaderData.map((item, index) => (
+                <TableCell key={index} sx={tableHeaderStyles.tableDataCellItem}>
+                  {item}
+                </TableCell>
+              ))}
             </MuiTableRow>
-            {tableBodyData.map((item, index) => {
-              return <TableRow key={index} tableBodyData={item} />;
-            })}
+            {tableBodyData !== null &&
+              tableBodyData.map((item, index) => (
+                <TableRow key={index} tableBodyData={item} />
+              ))}
           </TableMUI>
-        );
-    }
-
-    const renderEmptyTable = () => {
-        return (
-            <CircularIndeterminate />
-        )
-    }
-    return (
-        <Box sx={{ margin: '0 1rem' }}>
-            {tableBodyData && tableBodyData.length > 0 ? renderTable() : renderEmptyTable()}
+          {tableBodyData === null && <EmptyIcon />}
         </Box>
-    )
-}
+      );
+    };
 
+    return renderTable();
+}
 export default Table

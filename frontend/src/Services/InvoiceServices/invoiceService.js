@@ -74,7 +74,7 @@ async function prepareInitialHeaderData(proposal, header) {
 }
 
 export default {
-    handleValidation,
+  handleValidation,
   sanitizeInvoiceData,
   prepareInitialHeaderData,
 };

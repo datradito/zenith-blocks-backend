@@ -24,7 +24,6 @@ export default function CustomPDFViewIcon() {
 
     return (
         <Stack direction="row" spacing={1}>
-            {/* <Chip icon={<DescriptionRoundedIcon />} label="With Icon" /> */}
             <Chip icon={<PictureAsPdfIcon />}
                 label="PDF"
                 onClick={handleClick}

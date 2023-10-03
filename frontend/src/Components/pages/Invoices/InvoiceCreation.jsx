@@ -77,7 +77,7 @@ function InvoiceCreation() {
       try {
         await submitInvoice({
           variables: {
-            invoice: await invoiceService.handleInvoiceData(
+            invoice: await invoiceService.sanitizeInvoiceData(
               header,
               Budget,
               proposal
@@ -129,12 +129,16 @@ function InvoiceCreation() {
       />
       <form onSubmit={handleSaveInvoice}>
         <Box sx={BoxStyle}>
-          <FormItem
-            initialValues={initialHeaderData}
-            type="invoice"
-            errors={invoiceError ? invoiceError : null}
-            key={invoiceErrorKey}
-          />
+          {
+            initialHeaderData && (
+              <FormItem
+                initialValues={initialHeaderData}
+                type="invoice"
+                errors={invoiceError ? invoiceError : null}
+                key={invoiceErrorKey}
+              />
+            )
+          }
         </Box>
         {successMessage && (
           <CustomizedSnackbars

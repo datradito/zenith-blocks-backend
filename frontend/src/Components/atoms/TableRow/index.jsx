@@ -11,6 +11,8 @@ import CustomPaymentViewIcon from '../PaymentIcon/paymentIcon';
 import CustomActionIcon from '../ActionIcon/CustomActionIcon';
 import Avatar from '@mui/material/Avatar';
 import excludeAttributesFromData from '../../../Services/excludeAttributesFromData';
+import EmptyIcon from '../EmptyIcon/EmptyIcon';
+import { Box } from '@mui/system';
 
 const customTableCellStyles = {
     default: {
@@ -79,107 +81,58 @@ const customTableCellStyles = {
 };
 
 const TableRow = ({ tableBodyData }) => {
-  console.log(tableBodyData);
-    return (
-        <TableRowMUI sx={[customTableCellStyles.tableRow, customTableCellStyles.default]}>
-            {
-                Object.keys(tableBodyData).map((key) => {
-                    //update budgetId to id
-                    if (!excludeAttributesFromData.tableKeysToExclude.has(key)) {
-                      return key === "Breakdown" ? (
-                        <TableCell
-                          key={key}
-                          sx={[
-                            customTableCellStyles[key],
-                            customTableCellStyles.tableDataCellItem,
-                          ]}
-                        >
-                          <CustomizedProgressBars value={tableBodyData[key]} />
-                        </TableCell>
-                      ) : key === "Invoices" ? (
-                        <TableCell
-                          key={key}
-                          sx={[
-                            customTableCellStyles[key],
-                            customTableCellStyles.tableDataCellItem,
-                          ]}
-                        >
-                          <CustomInvoiceViewIcon
-                            budgetId={tableBodyData["id"]}
-                          />
-                        </TableCell>
-                      ) : key === "View" ? (
-                        <TableCell
-                          key={key}
-                          sx={[
-                            customTableCellStyles[key],
-                            customTableCellStyles.tableDataCellItem,
-                          ]}
-                        >
-                          <CustomPDFViewIcon budgetId={tableBodyData["id"]} />
-                        </TableCell>
-                      ) : key === "Payment" ? (
-                        <TableCell
-                          key={key}
-                          sx={[
-                            customTableCellStyles[key],
-                            customTableCellStyles.tableDataCellItem,
-                          ]}
-                        >
-                          <CustomPaymentViewIcon
-                            invoiceId={tableBodyData["InvoiceId"]}
-                          />
-                        </TableCell>
-                      ) : key === "Action" ? (
-                        <TableCell
-                          key={key}
-                          sx={[
-                            customTableCellStyles[key],
-                            customTableCellStyles.tableDataCellItem,
-                          ]}
-                        >
-                          <CustomActionIcon budgetId={tableBodyData["id"]} />
-                        </TableCell>
-                      ) : key === "Status" ? (
-                        <TableCell
-                          key={key}
-                          sx={[
-                            customTableCellStyles[key],
-                            customTableCellStyles.tableDataCellItem,
-                          ]}
-                        >
-                          <StatusChip status={tableBodyData[key]} />
-                        </TableCell>
-                      ) : key === "Logo" ? (
-                        <TableCell
-                          key={key}
-                          sx={[
-                            customTableCellStyles[key],
-                            customTableCellStyles.tableDataCellItem,
-                          ]}
-                        >
-                          <Avatar
-                            alt="Currency logo"
-                            src={tableBodyData[key]}
-                          />
-                        </TableCell>
-                      ) : (
-                        <TableCell
-                          key={key}
-                          sx={[
-                            customTableCellStyles[key],
-                            customTableCellStyles.default,
-                            customTableCellStyles.tableDataCellItem,
-                          ]}
-                        >
-                          {tableBodyData[key]}
-                        </TableCell>
-                      );
-                    }
-                    return null;
-                })}
-        </TableRowMUI>
-    )
+
+  return tableBodyData.length > 0 || Object.keys(tableBodyData).length > 0 ? (
+    <TableRowMUI
+      sx={[customTableCellStyles.tableRow, customTableCellStyles.default]}
+    >
+      {Object.keys(tableBodyData).map((key) => {
+        if (!excludeAttributesFromData.tableKeysToExclude.has(key)) {
+          return (
+            <TableCell
+              key={key}
+              sx={[
+                customTableCellStyles[key],
+                customTableCellStyles.tableDataCellItem,
+              ]}
+            >
+              {key === "Breakdown" && (
+                <CustomizedProgressBars value={tableBodyData[key]} />
+              )}
+              {key === "Invoices" && (
+                <CustomInvoiceViewIcon budgetId={tableBodyData["id"]} />
+              )}
+              {key === "View" && (
+                <CustomPDFViewIcon budgetId={tableBodyData["id"]} />
+              )}
+              {key === "Payment" && (
+                <CustomPaymentViewIcon invoiceId={tableBodyData["InvoiceId"]} />
+              )}
+              {key === "Action" && (
+                <CustomActionIcon invoiceId={tableBodyData["InvoiceId"]} />
+              )}
+              {key === "Status" && <StatusChip status={tableBodyData[key]} />}
+              {key === "Logo" && (
+                <Avatar alt="Currency logo" src={tableBodyData[key]} />
+              )}
+              {key !== "Breakdown" &&
+                key !== "Invoices" &&
+                key !== "View" &&
+                key !== "Payment" &&
+                key !== "Action" &&
+                key !== "Status" &&
+                key !== "Logo" &&
+                tableBodyData[key]}
+            </TableCell>
+          );
+        }
+        return null;
+      })}
+    </TableRowMUI>
+  ) : (
+      null
+  );
+
 }
 
 export default TableRow

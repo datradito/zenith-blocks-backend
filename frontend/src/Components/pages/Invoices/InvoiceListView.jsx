@@ -3,19 +3,12 @@ import SubHeader from "../../molecules/SubHeader/SubHeader"
 import { Box, Stack } from '@mui/material';
 import ItemCard from "../../atoms/ItemCard/ItemCard";
 import Table from '../../molecules/Table';
-import { parseInvoiceUrl } from '../../../Utility/parseInvoiceUrl';
 import { useLocation, Link  } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import ButtonAtom from '../../atoms/Button';
 import { useGetAllInvoicesByBudget } from '../../hooks/Invoices/useGetAllInvoices';
 import CircularIndeterminate from '../../atoms/Loader/loader';
 import { toast } from 'react-toastify';
 
-const buttonConfig = {
-    label: "Create Invoices",
-    variant: "contained",
-    innerText: "Create Invoice",
-};
 
 const BoxStyle = {
     width: "90%",
@@ -79,49 +72,39 @@ function InvoiceListView() {
         ];
     
     const dataForItemCard = { "Goverance": proposal.space, "Total Budget": `$ ${amount}`, "Proposal": proposal.title };
+return (
+  <div>
+    <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath="Proposals  Proposal  Budget" />
+    <Box
+      sx={BoxStyle}
+    >
+      <Stack
+        padding={1}
+        direction={"row"}
+        justifyContent={'flex-start'}
+        borderBottom={".05rem #2c2c2c solid"}
+      >
+        {Object.entries(dataForItemCard).map(([key, value]) => (
+          <ItemCard
+            key={key}
+            label={key}
+            value={value}
+          />
+        ))}
+      </Stack>
+    </Box>
 
-    if (invoices === [] || invoices === null || invoices === undefined || invoices.length === 0 && parseInvoiceUrl(location.pathname) !== null) {
-        return (
-            <Box sx={BoxStyle}>  
-                <p>Create invoices for budget below. No invoices has been coded for this budget so far.</p>
-                <Link to={`/budgets/${Budget.id}/createInvoice`}>
-                    <ButtonAtom config={buttonConfig} />
-                </Link>
-            </Box>
-        )
-    } else {
-        return (
-            <div>
-                <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath="Proposals  Proposal  Budget" />
-                <Box
-                    sx={BoxStyle}
-                >
-                    <Stack
-                        padding={1}
-                        direction={"row"}
-                        justifyContent={'flex-start'}
-                        borderBottom={".05rem #2c2c2c solid"}
-                    >
-                        {
-                            Object.entries(dataForItemCard).map(([key, value]) => {
-                                return <ItemCard
-                                    key={key}
-                                    label={key}
-                                    value={value}
-                                />
-                            })
-                        }
-                    </Stack>
-                </Box>
-                <Box sx={BoxStyle}>
-                    <Table
-                        tableHeaderData={tableHeaderData}
-                        tableBodyData={invoices}
-                    />
-                </Box>
-            </div>
-        )
-    }
+    <Box sx={BoxStyle}>
+
+        <Table
+          tableHeaderData={tableHeaderData}
+          tableBodyData={invoices}
+        />
+
+    </Box>
+  </div>
+);
 }
+
 
 export default InvoiceListView

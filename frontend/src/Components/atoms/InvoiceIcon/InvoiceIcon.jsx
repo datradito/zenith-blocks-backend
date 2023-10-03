@@ -3,8 +3,8 @@ import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import { useDispatch } from 'react-redux';
 import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
-import { useParams, Link } from 'react-router-dom';
-import { setBudget, getBudget } from '../../../actions/currentBudgetAction';
+import {  Link } from 'react-router-dom';
+import { setBudget } from '../../../actions/currentBudgetAction';
 
 export default function CustomInvoiceViewIcon({budgetId}) {
     const dispatch = useDispatch();

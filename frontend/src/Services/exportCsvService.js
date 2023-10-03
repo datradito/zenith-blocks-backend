@@ -16,7 +16,6 @@ export const sanitizeCsvData = (data, type) => {
             return rest;
         }
         );
-        console.log(csvData);
         return csvData;
     }
 
@@ -35,7 +34,6 @@ export const sanitizeCsvData = (data, type) => {
             
         }
         );
-        console.log(csvData);
         return csvData;
     }
 
