@@ -29,7 +29,6 @@ function InvoiceListView() {
     const { proposals } = useSelector(state => state.currentProposalAmounts);
     const [amount, setProposalAmount] = useState(0);
     let { Budget } = useSelector(state => state.currentBudget);
-    //const { web3, contract } = useWeb3IpfsContract();
     const { loading, invoices, queryError, isFetching } = useGetAllInvoicesByBudget(Budget?.id);
 
     const filteredProposal = useMemo(() => {
