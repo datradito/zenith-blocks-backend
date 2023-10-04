@@ -73,7 +73,7 @@ async function prepareInitialHeaderData(proposal, header) {
     };
 }
 
-export default {
+export const invoiceService = {
   handleValidation,
   sanitizeInvoiceData,
   prepareInitialHeaderData,

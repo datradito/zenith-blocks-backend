@@ -10,13 +10,14 @@ export const transformItems =(items, totalBudget) => {
                     remaining: item.remaining,
                   Invoices: "INVOICE",
                 };
-        return (data);
+        return data;
     }
     );
     return items?.length > 0 ? items : null;
 }
 
 export const transformInvoices = (invoices) => {  
+    if(invoices === []) return null;
     
     invoices = invoices.map(invoice => {
         

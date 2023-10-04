@@ -9,12 +9,8 @@ import ItemCard from "../../atoms/ItemCard/ItemCard.jsx";
 import SubHeader from "../../molecules/SubHeader/SubHeader.jsx";
 import CircularIndeterminate from "../../atoms/Loader/loader.jsx";
 import useProposalDetails from "../../hooks/Proposals/useProposalDetails.jsx";
-import useWeb3IpfsContract from "../../hooks/web3IPFS";
-import { useAllBudgetsForProposal } from "../../hooks/Budgets/useBudgetsForProposal.jsx";
-import { transformItems } from "../../../Utility/transformItems.js";
+import { useGetBudgets } from "../../hooks/Budgets/useGetBudgets.jsx";
 import SnackbarMessage from "../../atoms/SnackBarGql/SnackBarGql.jsx";
-import { toast } from "react-toastify";
-import { setIsLoggedIn } from "../../../actions/createAuthAction/index.js";
 import EmptyIcon from "../../atoms/EmptyIcon/EmptyIcon.jsx";
 
 const BoxStyle = {
@@ -41,15 +37,17 @@ function ProposalDetailView() {
   const { proposalId } = useParams();
   const dispatch = useDispatch();
 
-  const { web3, contract } = useWeb3IpfsContract();
   const { loading, error, data } = useProposalDetails(proposalId);
   const { proposals } = useSelector((state) => state.currentProposalAmounts);
   const [pageWarnings, setPageWarnings] = useState();
   const [amount, setProposalAmount] = useState(0);
   const [status, setStatus] = useState();
-  let { budgetList, budgetsLoading, budgetsError } =
-    useAllBudgetsForProposal(proposalId);
 
+  const {isLoading, budgets} = useGetBudgets(
+    proposalId,
+    amount
+  );
+  
   dispatch(refreshState());
 
   const filteredProposal = useMemo(() => {
@@ -78,11 +76,8 @@ function ProposalDetailView() {
   }, [amount]);
 
   //TOdo: move budget loading to tableDisplay to localize the loading
-  if (loading || budgetsLoading) return <CircularIndeterminate />;
-  if (error) {
-    error.graphQLErrors.map(({ message }, i) => toast.error(message));
-    return null; // or return some JSX to indicate an error state in your UI
-  }
+  if (loading || isLoading) return <CircularIndeterminate />;
+
 
   let dataForItemCard = {
     Goverance: data.proposal.space.name,
@@ -90,38 +85,18 @@ function ProposalDetailView() {
     Proposal: data.proposal.title,
   };
 
-  //TODO: memoize this
-  if (budgetList && budgetList.getBudgetsForProposal) {
-    budgetList = transformItems(budgetList.getBudgetsForProposal, amount);
-  } else if (budgetsError) {
-    budgetsError.graphQLErrors.map(({ message }, error, i) => {
-      if (error.networkError?.statusCode === 401) {
-        dispatch(setIsLoggedIn(false));
-      }
-    });
-    return null;
-  }
-
-  const handleExportCSV = () => {
-    console.log("Export CSV");
-  };
 
   const handleUpdateProposal = async () => {
-    dispatch(setProposal(data.proposal, budgetList));
-  };
-
-  const handleBudgetCreateOnClick = () => {
-    dispatch(setProposal(data.proposal, budgetList));
+    dispatch(setProposal(data.proposal));
   };
 
   const componentButtonConfig = [
     {
       label: "Export CSV",
       variant: "contained",
-      onClick: handleExportCSV,
       innerText: "Export CSV",
       backgroundColor: "#282A2E",
-      data: budgetList || [],
+      data: budgets || [],
       filetype: "budget",
     },
     {
@@ -159,8 +134,8 @@ function ProposalDetailView() {
             <ItemCard key={key} label={key} value={value} />
           ))}
         </Stack>
-        {budgetList ? 
-          <Table tableHeaderData={headers} tableBodyData={budgetList} /> : <EmptyIcon />
+        {!isLoading && !error && budgets?.length>0  ?
+          <Table tableHeaderData={headers} tableBodyData={budgets} /> : <EmptyIcon />
         }
         {pageWarnings && (
           <SnackbarMessage

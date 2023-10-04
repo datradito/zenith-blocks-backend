@@ -4,9 +4,9 @@ import { Box, Stack } from '@mui/material';
 import ItemCard from "../../atoms/ItemCard/ItemCard";
 import Table from '../../molecules/Table';
 import { useSelector } from 'react-redux';
-import { useGetAllInvoicesByBudget } from '../../hooks/Invoices/useGetAllInvoices';
 import CircularIndeterminate from '../../atoms/Loader/loader';
 import { toast } from 'react-toastify';
+import { useGetAllInvoices } from '../../hooks/Invoices/useGetInvoices';
 
 
 const BoxStyle = {
@@ -27,7 +27,8 @@ function InvoiceListView() {
     const { proposals } = useSelector(state => state.currentProposalAmounts);
     const [amount, setProposalAmount] = useState(0);
     let { Budget } = useSelector(state => state.currentBudget);
-    const { loading, invoices, queryError, isFetching } = useGetAllInvoicesByBudget(Budget?.id);
+  const {isLoading, invoices} = useGetAllInvoices(Budget?.id);
+
 
     const filteredProposal = useMemo(() => {
         return proposals.filter((withAmountProposal) => withAmountProposal.id === proposal.id ? withAmountProposal.amount : null);
@@ -38,11 +39,7 @@ function InvoiceListView() {
     }, [filteredProposal]);
 
 
-    if (queryError) {
-        toast.error("Error in fetching invoices");
-    }
-
-    if (loading) return <CircularIndeterminate />;
+    if (isLoading) return <CircularIndeterminate />;
 
     const currentPathConfig = {
         path: "Budgets",
