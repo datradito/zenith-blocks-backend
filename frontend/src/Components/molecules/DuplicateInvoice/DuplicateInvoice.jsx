@@ -1,16 +1,16 @@
 import Button from "../../ui/Button";
-import CreateCabinForm from "./CreateCabinForm";
-import Modal from "../../atoms/Modal/Modal"
+import CreateInvoiceForm from "../../features/invoices/CreateInvoiceForm";
+import Modal from "../Modal/Modal"
 
 function DuplicateInvoice() {
   return (
     <div>
       <Modal>
-        <Modal.Open opens="cabin-form">
+        <Modal.Open opens="invoice-form">
           <Button>Add new cabin</Button>
         </Modal.Open>
-        <Modal.Window name="cabin-form">
-          <CreateCabinForm />
+        <Modal.Window name="invoice-form">
+          <CreateInvoiceForm />
         </Modal.Window>
       </Modal>
     </div>

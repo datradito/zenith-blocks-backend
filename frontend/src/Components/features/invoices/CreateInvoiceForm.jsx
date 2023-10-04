@@ -1,126 +1,163 @@
-import { useForm } from "react-hook-form";
-import Input from "../../ui/Input";
-import Form from "../../ui/Form";
-import Button from "../../ui/Button";
-import FileInput from "../../ui/FileInput";
-import Textarea from "../../ui/Textarea";
-import FormRow from "../../ui/FormRow";
+import React from "react";
+import { useDispatch } from "react-redux";
+import { updateHeader } from "../../../actions/createInvoiceAction";
+import { Box, Grid, TextField, Typography } from "@mui/material";
+import CurrencyDropdown from "../../atoms/CurrencyDropdown/CurrencyDropdown";
+import UnstyledSelectBasic from "../../atoms/SelectDropdown/SelectDropdown";
+import FileUpload from "../../atoms/FileUpload/FileUpload";
+import { FormControl } from "@mui/material";
+import CustomizedSnackbars from "../../atoms/SnackBar/SnackBar";
+import { categories } from "../../pages/Category/Category";
 
-import { useCreateInvoice } from "./useCreateInvoice";
-import { useEditInvoice } from "./useEditInvoice";
+const componentStyles = {
+  formInputFieldStyles: {
+    color: "white",
+    padding: "0",
+    border: ".08rem #2c2c2c solid",
+    borderRadius: "5px",
+    backgroundColor: "#24292E",
 
-function CreateInvoiceForm({ invoiceToEdit = {}, onCloseModal }) {
-  const { isCreating, createInvoice } = useCreateInvoice();
-  const { isEditing, editInvoice } = useEditInvoice();
-  const isWorking = isCreating || isEditing;
+    "& .MuiInputBase-input": {
+      padding: "0.5rem",
+      color: "white",
+      borderRadius: "5px",
+      fontSize: ".85rem",
+      fontWeight: "small",
+    },
 
-  const { id: editId, ...editValues } = invoiceToEdit;
-  const isEditSession = Boolean(editId);
+    "& .MuiInputBase-root": {
+      padding: "0",
+    },
+    "& .MuiSvgIcon-root": {
+      color: "white",
+    },
+  },
+  typographyLabel: {
+    color: "gray",
+    fontSize: ".70rem",
+  },
+  boxStyles: {
+    display: "flex",
+    flexDirection: "column",
+    margin: "0rem auto",
+    textAlign: "left",
+    borderBottom: ".05rem #2C2C2C solid",
+  },
+  containerStyles: {
+    padding: "2rem ",
+  },
+};
 
-  const { register, handleSubmit, reset, getValues, formState } = useForm({
-    defaultValues: isEditSession ? editValues : {},
-  });
-  const { errors } = formState;
+function CreateInvoiceForm({ initialValues, errors }) {
+  const dispatch = useDispatch();
 
-  function onSubmit(data) {
-    const image = typeof data.image === "string" ? data.image : data.image[0];
-
-    if (isEditSession)
-      editInvoice(
-        { newInvoiceData: { ...data, image }, id: editId },
-        {
-          onSuccess: (data) => {
-            reset();
-            onCloseModal?.();
-          },
-        }
-      );
-    else
-      createInvoice(
-        { ...data, image: image },
-        {
-          onSuccess: (data) => {
-            reset();
-            onCloseModal?.();
-          },
-        }
-      );
-  }
-
-  function onError(errors) {
-    // console.log(errors);
-  }
+  const handleChange = (key, value) => {
+    console.log(key, value);
+    dispatch(updateHeader(key, value));
+  };
 
   return (
-    <Form
-      onSubmit={handleSubmit(onSubmit, onError)}
-      type={onCloseModal ? "modal" : "regular"}
-    >
-      <FormRow label="Invoice number" error={errors?.name?.message}>
-        <Input
-          type="text"
-          id="name"
-          disabled={isWorking}
-          {...register("name", {
-            required: "This field is required",
-          })}
-        />
-      </FormRow>
-
-      <FormRow label="Amount" error={errors?.amount?.message}>
-        <Input
-          type="number"
-          id="amount"
-          disabled={isWorking}
-          {...register("amount", {
-            required: "This field is required",
-            min: {
-              value: 1,
-              message: "Amount must be greater than 0",
-            },
-          })}
-        />
-      </FormRow>
-
-      <FormRow
-        label="Description"
-        error={errors?.description?.message}
-      >
-        <Textarea
-          type="number"
-          id="description"
-          defaultValue=""
-          disabled={isWorking}
-          {...register("description", {
-            required: "This field is required",
-          })}
-        />
-      </FormRow>
-
-      <FormRow label="Invoice PDF">
-        <FileInput
-          id="image"
-          accept="image/*"
-          {...register("image", {
-            required: isEditSession ? false : "This field is required",
-          })}
-        />
-      </FormRow>
-
-      <FormRow>
-        {/* type is an HTML attribute! */}
-        <Button
-          variation="secondary"
-          type="reset"
-          onClick={() => onCloseModal?.()}
-        >
-          Cancel
-        </Button>
-        <Button disabled={isWorking}>
-          {isEditSession ? "Edit Invoice" : "Create new Invoice"}
-        </Button>
-      </FormRow>
-    </Form>
+    <>
+      <Box sx={componentStyles.boxStyles}>
+        <Grid container sx={componentStyles.containerStyles} spacing={3}>
+          {Object.entries(initialValues).map(([key, value], index) => (
+            <Grid
+              item
+              xs={
+                index < 2
+                  ? 6
+                  : index === 2
+                  ? 7
+                  : index === 3
+                  ? 3
+                  : index === 4
+                  ? 2
+                  : index > 4 && index < 7
+                  ? 4
+                  : index === 7
+                  ? 4
+                  : 6
+              }
+              key={index}
+            >
+              <Typography variant="h6" sx={componentStyles.typographyLabel}>
+                {key}
+              </Typography>
+              {key === "Currency" ? (
+                <CurrencyDropdown
+                  value={initialValues[key]}
+                  sx={componentStyles.formInputFieldStyles}
+                  onChange={(e) => handleChange(key, e.target.value)}
+                />
+              ) : key === "Due Date" || key === "Invoice Date" ? (
+                <FormControl required fullWidth>
+                  <TextField
+                    required
+                    type="date"
+                    fullWidth
+                    value={initialValues[key]}
+                    sx={componentStyles.formInputFieldStyles}
+                    onChange={(e) => handleChange(key, e.target.value)}
+                  />
+                </FormControl>
+              ) : key === "Category" ? (
+                <UnstyledSelectBasic
+                  defaultValue={initialValues.Category}
+                  values={categories}
+                  onChange={(value) => handleChange(key, value)}
+                />
+              ) : key === "Upload Invoice" ? (
+                <FileUpload handleChange={handleChange} key={key} />
+              ) : key === "Invoice Number" ? (
+                <TextField
+                  required
+                  fullWidth
+                  value={initialValues[key]}
+                  sx={componentStyles.formInputFieldStyles}
+                  onChange={(e) => handleChange(key, e.target.value)}
+                />
+              ) : key === "Total" ? (
+                <TextField
+                  required
+                  type="number"
+                  fullWidth
+                  value={initialValues[key]}
+                  sx={componentStyles.formInputFieldStyles}
+                  onChange={(e) => handleChange(key, e.target.value)}
+                />
+              ) : (
+                <TextField
+                  name={key}
+                  required
+                  value={initialValues[key]}
+                  onChange={(e) => handleChange(key, e.target.value)}
+                  fullWidth
+                  multiline={key === "Description" || key === "Upload Invoice"}
+                  rows={
+                    key === "Description" || key === "Upload Invoice" ? 4 : 1
+                  }
+                  InputProps={{
+                    readOnly:
+                      key === "Proposal" ||
+                      key === "Goverance" ||
+                      key === "Ipfs Link" ||
+                      key === "Total Budget",
+                  }}
+                  sx={componentStyles.formInputFieldStyles}
+                />
+              )}
+            </Grid>
+          ))}
+          {errors && (
+            <CustomizedSnackbars
+              message={errors}
+              severity="error"
+              autoOpen={true}
+            />
+          )}
+        </Grid>
+      </Box>
+    </>
   );
 }
 

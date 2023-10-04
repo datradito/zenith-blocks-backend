@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import SubHeader from "../../molecules/SubHeader/SubHeader";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { Box } from "@mui/material";
-import FormItem from "../../atoms/FormItem/FormItem";
 import CircularIndeterminate from "../../atoms/Loader/loader";
 import generateUUID from "../../../Utility/uniqueId";
-import {invoiceService} from "../../../Services/InvoiceServices/invoiceService";
-import { useInvoiceSubmit } from "../../hooks/Invoices/useInvoiceSubmit";
+import { invoiceService } from "../../../Services/InvoiceServices/invoiceService";
+import { useSubmitInvoice } from "../../hooks/Invoices/useSubmitInvoice";
+import CreateInvoiceForm from "../../features/invoices/CreateInvoiceForm";
 
 const BoxStyle = {
   width: "90%",
@@ -28,7 +28,7 @@ function InvoiceCreation() {
   const [invoiceErrorKey, setInvoiceErrorKey] = useState(0);
   const [initialHeaderData, setInitialHeaderData] = useState(null);
 
-  const { isCreating, createInvoice } = useInvoiceSubmit();
+  const { isCreating, createInvoice } = useSubmitInvoice();
 
   const { proposal, Budget, header } = useSelector((state) => ({
     proposal: state.currentProposal.proposal,
@@ -109,16 +109,14 @@ function InvoiceCreation() {
       />
       <form onSubmit={handleSaveInvoice}>
         <Box sx={BoxStyle}>
-          {
-            initialHeaderData && (
-              <FormItem
-                initialValues={initialHeaderData}
-                type="invoice"
-                errors={invoiceError ? invoiceError : null}
-                key={invoiceErrorKey}
-              />
-            )
-          }
+          {initialHeaderData && (
+            <CreateInvoiceForm
+              initialValues={initialHeaderData}
+              type="invoice"
+              errors={invoiceError ? invoiceError : null}
+              key={invoiceErrorKey}
+            />
+          )}
         </Box>
       </form>
     </>

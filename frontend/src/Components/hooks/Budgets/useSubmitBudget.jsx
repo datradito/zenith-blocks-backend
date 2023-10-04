@@ -1,36 +1,29 @@
 import { useParams } from 'react-router-dom';
 import { SUBMIT_BUDGET_MUTATION } from '../../../ServerQueries/Budget/Mutation';
-import { client, queryClient } from '../../../apolloConfig/client';
+import { client } from '../../../apolloConfig/client';
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from 'react-toastify';
 
 
 const useSubmitBudget = () => {
+    const queryClient = useQueryClient();
     const proposalId = useParams().proposalId;
     const navigate = useNavigate();
-
-    console.log(proposalId);
+    const key = ["budgets", proposalId];
 
     const { mutate: submitBudget, isLoading: isSubmitting } = useMutation({
         mutationFn: async (budgetData) => {
             await client.mutate({
               mutation: SUBMIT_BUDGET_MUTATION,
               variables: {
-                budget: {
-                  category: budgetData.category,
-                  amount: budgetData.amount,
-                  currency: budgetData.currency,
-                  breakdown: budgetData.breakdown,
-                  proposalid: proposalId,
-                  rootpath: budgetData.rootpath,
-                },
+                budget: budgetData,
               },
             });
         },
         onSuccess: () => {
             queryClient.invalidateQueries({
-              queryKey: ["budgets", proposalId],
+              queryKey: key,
             });
             toast.success("Budget created successfully");
             navigate(`/proposals/${proposalId}`);

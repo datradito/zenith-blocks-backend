@@ -37,12 +37,16 @@ export const validateBudget = (item, proposalAmount) => {
 
 export const prepareBudgetDataForSubmission = (item, proposalId) => {
   if (item === null || item === undefined) return null;
+
+  const { id, remaining, ...rest } = item;
   
   return {
-    ...item,
+    ...rest,
     proposalid: proposalId,
     rootpath: proposalId,
-    amount: parseInt(item.amount),
-    breakdown: parseInt(item.breakdown),
+    amount: parseInt(rest.amount),
+    breakdown: parseInt(rest.breakdown),
   };
 };
+
+

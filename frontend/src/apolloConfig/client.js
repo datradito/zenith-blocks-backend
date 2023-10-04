@@ -11,7 +11,7 @@ export const client = new ApolloClient({
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: false,
+      refetchOnWindowFocus: true,
       retry: 1,
       staleTime: 1000 * 60 * 5,
     },

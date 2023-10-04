@@ -11,9 +11,7 @@ import CustomPaymentViewIcon from '../PaymentIcon/paymentIcon';
 import CustomActionIcon from '../ActionIcon/CustomActionIcon';
 import Avatar from '@mui/material/Avatar';
 import excludeAttributesFromData from '../../../Services/excludeAttributesFromData';
-import EmptyIcon from '../EmptyIcon/EmptyIcon';
-import { Box } from '@mui/system';
-
+import Menus from '../../molecules/Menus/Menus';
 const customTableCellStyles = {
     default: {
     padding: "0.5rem",
@@ -109,7 +107,9 @@ const TableRow = ({ tableBodyData }) => {
                 <CustomPaymentViewIcon invoiceId={tableBodyData["InvoiceId"]} />
               )}
               {key === "Action" && (
-                <CustomActionIcon invoiceId={tableBodyData["InvoiceId"]} />
+                <Menus>
+                  <CustomActionIcon invoiceId={tableBodyData["InvoiceId"]} />
+                </Menus>
               )}
               {key === "Status" && <StatusChip status={tableBodyData[key]} />}
               {key === "Logo" && (

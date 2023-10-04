@@ -35,32 +35,14 @@ const pagination = {
 
 const currentPathConfig = {
   path: "Proposals",
-  // to: `/proposals/${proposal.id}`
 }
 
-//write a loader funciton for react-router-dom which will load the proposals
-// const proposalLoader = () => useProposals();
 
-
-// const proposalLoader = () => ({
-//     return useProposals();
-//   }
-// );
-
-const Proposals = (props) => {
+const Proposals = () => {
   const { handleError } = useError();
   const [selectedItemId, setSelectedItemId] = useState(null);
 
-  const {
-    loading,
-    error,
-    data,
-    syncedAt,
-    handleExportCSV,
-    handleSyncProposals,
-    handleSkipValueChange,
-    networkStatus,
-  } = useProposals();
+  const { loading, error, data, syncedAt, handleExportCSV, handleSyncProposals, handleSkipValueChange, networkStatus } = useProposals();
 
   const onClose = () => {
     setSelectedItemId(null);
