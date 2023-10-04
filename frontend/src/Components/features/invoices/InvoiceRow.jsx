@@ -31,10 +31,8 @@ function InvoiceRow({ invoice }) {
     id: InvoiceId,
       Invoice,
       RecipientAddress,
-      Recipient,
       Amount,
       Currency,
-      Status,
       Date,
       Due,
   } = invoice;
@@ -42,7 +40,7 @@ function InvoiceRow({ invoice }) {
   function handleDuplicate() {
     createInvoice({
       ...invoice,
-      number: `${invoice.number} (copy)`,
+      number: `${invoice.Invoice} (copy)`,
       date: new Date(),
       due: new Date(),
     });
@@ -57,16 +55,13 @@ function InvoiceRow({ invoice }) {
         <ScrollContainer><StatusChip /></ScrollContainer>      
         <ScrollContainer>{Date}</ScrollContainer>
       <ScrollContainer>{Due}</ScrollContainer>
-      <div>
-        <CustomPDFViewIcon budgetId={invoice["id"]} />
-      </div>
-      <div>
+      <ScrollContainer>
+        <CustomPDFViewIcon invoiceId={invoice["id"]} />
+      </ScrollContainer>
+      <ScrollContainer>
         <CustomPaymentViewIcon invoiceId={invoice["InvoiceId"]} />
-      </div>
-      <div>
-        <CustomActionIcon />
-      </div>
-      <div>
+      </ScrollContainer>
+   
         <Modal>
           <Menus.Menu>
             <Menus.Toggle id={InvoiceId} />
@@ -77,15 +72,15 @@ function InvoiceRow({ invoice }) {
                 onClick={handleDuplicate}
                 disabled={isCreating}
               >
-                Duplicate
+                
               </Menus.Button>
 
               <Modal.Open opens="edit">
-                <Menus.Button icon={<HiPencil />}>Edit</Menus.Button>
+                <Menus.Button icon={<HiPencil />}></Menus.Button>
               </Modal.Open>
 
               <Modal.Open opens="delete">
-                <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
+                <Menus.Button icon={<HiTrash />}></Menus.Button>
               </Modal.Open>
             </Menus.List>
 
@@ -95,14 +90,14 @@ function InvoiceRow({ invoice }) {
 
             <Modal.Window name="delete">
               <ConfirmDelete
-                resourceName="cabins"
+                resourceName="invoices"
                 disabled={isDeleting}
                 onConfirm={() => deleteInvoice(InvoiceId)}
               />
             </Modal.Window>
           </Menus.Menu>
         </Modal>
-      </div>
+
     </Table.Row>
   );
 }

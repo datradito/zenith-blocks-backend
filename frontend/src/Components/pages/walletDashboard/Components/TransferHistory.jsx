@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import ButtonAtom from "../../../atoms/Button";
 import { useLazyQuery } from "@apollo/client";
 import { GET_TRANSACTION_HISTORY } from "../../../../ServerQueries/Dashboard/Queries";
-import Table from "../../../molecules/Table";
 import { transformTransactionHistory } from "../../../../Utility/transformItems";
 import CircularIndeterminate from "../../../atoms/Loader/loader";
 import { Typography } from "@mui/material";
@@ -39,7 +38,7 @@ function TransferHistory({ chain, wallet, transfers, setTransfers }) {
                 <ButtonAtom config={buttonConfig} />
                 {transfers.length > 0 ? (
 
-                    <Table tableHeaderData={["Token", "Amount", "From", "To", "Block"]} tableBodyData={transfers} />
+                    // <Table tableHeaderData={["Token", "Amount", "From", "To", "Block"]} tableBodyData={transfers} />
 
                     //     data={transfers.map((e) => [
                     //         e.asset,
@@ -48,6 +47,7 @@ function TransferHistory({ chain, wallet, transfers, setTransfers }) {
                     //         `${e.to.slice(0, 4)}...${e.to.slice(38)}`,
                     //         e.blockNum.slice(0, 10),
                     //     ])}
+                "Table"
 
             ) :
                 (

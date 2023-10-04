@@ -1,21 +1,21 @@
 import { createContext, useContext, useState } from "react";
 import { createPortal } from "react-dom";
-import { HiEllipsisVertical } from "react-icons/hi2";
 import styled from "styled-components";
-import { useOutsideClick } from "../../hooks/useOutsideClicks";
+import {useOutsideClick} from "../../hooks/useOutsideClicks.js";
+import CustomActionIcon from "../../atoms/ActionIcon/CustomActionIcon.jsx";
 
 const Menu = styled.div`
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
 `;
 
-const Div = styled.button`
+const StyledToggle = styled.button`
   background: none;
   border: none;
   padding: 0.4rem;
   border-radius: var(--border-radius-sm);
-  transform: translateX(0.8rem);
+  transform: translateX(0rem);
   transition: all 0.2s;
 
   &:hover {
@@ -23,21 +23,23 @@ const Div = styled.button`
   }
 
   & svg {
-    width: 2.4rem;
-    height: 2.4rem;
-    color: var(--color-grey-700);
+    text-align: left;
+    width: 1.4rem;
+    height: 1.4rem;
   }
 `;
 
 const StyledList = styled.ul`
   position: fixed;
-
-  background-color: var(--color-grey-0);
-  box-shadow: var(--shadow-md);
-  border-radius: var(--border-radius-md);
+  background-color: rgba(40, 42, 46, 0.5);
+  list-style: none;
 
   right: ${(props) => props.position.x}px;
   top: ${(props) => props.position.y}px;
+
+  /* Add border-radius and margin-left styles */
+  border-radius: 10px; /* Adjust the radius as needed */
+  padding-left: 0; /* Set the margin-left as needed */
 `;
 
 const StyledButton = styled.button`
@@ -45,13 +47,13 @@ const StyledButton = styled.button`
   text-align: left;
   background: none;
   border: none;
-  padding: 1.2rem 2.4rem;
-  font-size: 1.4rem;
+  font-size: .75rem;
   transition: all 0.2s;
-
+  padding: 1rem;
   display: flex;
   align-items: center;
-  gap: 1.6rem;
+  gap: 1rem;
+  cursor: pointer;
 
   &:hover {
     background-color: var(--color-grey-50);
@@ -60,7 +62,7 @@ const StyledButton = styled.button`
   & svg {
     width: 1.6rem;
     height: 1.6rem;
-    color: var(--color-grey-400);
+    color: "#1A65C0",
     transition: all 0.3s;
   }
 `;
@@ -87,6 +89,8 @@ function Toggle({ id }) {
   const { openId, close, open, setPosition } = useContext(MenusContext);
 
   function handleClick(e) {
+    e.stopPropagation();
+
     const rect = e.target.closest("button").getBoundingClientRect();
     setPosition({
       x: window.innerWidth - rect.width - rect.x,
@@ -97,15 +101,15 @@ function Toggle({ id }) {
   }
 
   return (
-    <div onClick={handleClick}>
-      <HiEllipsisVertical />
-    </div>
+    <StyledToggle onClick={handleClick}>
+      <CustomActionIcon />
+    </StyledToggle>
   );
 }
 
 function List({ id, children }) {
   const { openId, position, close } = useContext(MenusContext);
-  const ref = useOutsideClick(close);
+  const ref = useOutsideClick(close, false);
 
   if (openId !== id) return null;
 
@@ -126,12 +130,10 @@ function Button({ children, icon, onClick }) {
   }
 
   return (
-    <li>
-      <Button onClick={handleClick}>
+      <StyledButton onClick={handleClick}>
         {icon}
-        <span>{children}</span>
-      </Button>
-    </li>
+        {children}
+      </StyledButton>
   );
 }
 

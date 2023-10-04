@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Stack } from "@mui/material";
-import Table from "../../molecules/Table/index.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { setProposal } from "../../../actions/currentProposal/index.js";
 import { refreshState } from "../../../actions/createBudgetAction/index.js";
@@ -12,6 +11,7 @@ import useProposalDetails from "../../hooks/Proposals/useProposalDetails.jsx";
 import { useGetBudgets } from "../../hooks/Budgets/useGetBudgets.jsx";
 import SnackbarMessage from "../../atoms/SnackBarGql/SnackBarGql.jsx";
 import EmptyIcon from "../../atoms/EmptyIcon/EmptyIcon.jsx";
+import BudgetList from "../../features/budgets/BudgetList.jsx";
 
 const BoxStyle = {
   width: "90%",
@@ -134,9 +134,13 @@ function ProposalDetailView() {
             <ItemCard key={key} label={key} value={value} />
           ))}
         </Stack>
-        {!isLoading && !error && budgets?.length>0  ?
-          <Table tableHeaderData={headers} tableBodyData={budgets} /> : <EmptyIcon />
-        }
+      {isLoading ? (
+        <CircularIndeterminate />
+      ) : budgets && budgets.length > 0 ? (
+        <BudgetList isLoading={isLoading} budgets={budgets} />
+      ) : (
+        <EmptyIcon />
+      )}
         {pageWarnings && (
           <SnackbarMessage
             severity="error"

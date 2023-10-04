@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react'
 import SubHeader from "../../molecules/SubHeader/SubHeader"
 import { Box, Stack } from '@mui/material';
 import ItemCard from "../../atoms/ItemCard/ItemCard";
-import Table from '../../molecules/Table';
 import { useSelector } from 'react-redux';
 import CircularIndeterminate from '../../atoms/Loader/loader';
 import { useGetAllInvoices } from '../../hooks/Invoices/useGetInvoices';

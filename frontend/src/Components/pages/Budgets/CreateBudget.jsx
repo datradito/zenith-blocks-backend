@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import FormItem from "../../atoms/FormItem/FormItem";
 import SubHeader from '../../molecules/SubHeader/SubHeader';
 import useFilteredProposalAmount from '../../hooks/Proposals/useFilteredProposalAmount';
-import useSubmitBudget from '../../hooks/Budgets/useSubmitBudget';
+import {useSubmitBudget} from '../../hooks/Budgets/useSubmitBudget';
 import { prepareBudgetDataForSubmission, validateBudget } from '../../../Services/BudgetServices/budgetService';
 import { Box } from '@mui/material';
 import CircularIndeterminate from '../../atoms/Loader/loader';
@@ -29,7 +29,6 @@ function CreateBudget() {
   const handleCreateBudget = async () => {
     let proposalId = proposal.id;
 
-    console.log(!validateBudget(items[0], filteredProposalAmount));
     if (!validateBudget(items[0], filteredProposalAmount)) {
       return;
     }

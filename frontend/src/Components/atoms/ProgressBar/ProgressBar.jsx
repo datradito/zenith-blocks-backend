@@ -21,13 +21,13 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 
 export default function CustomizedProgressBars({ value }) {
 
-    console.log(value)
 
     return (
       <Box
         sx={{
           flexGrow: 1,
           textAlign: "center",
+          width: "80%",
         }}
       >
         <Typography variant="caption">

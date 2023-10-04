@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from 'react-toastify';
 
 
-const useSubmitBudget = () => {
+export const useSubmitBudget = () => {
     const queryClient = useQueryClient();
     const proposalId = useParams().proposalId;
     const navigate = useNavigate();
@@ -36,4 +36,3 @@ const useSubmitBudget = () => {
     return { isSubmitting, submitBudget };
 };
 
-export default useSubmitBudget;

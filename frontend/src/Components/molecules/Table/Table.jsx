@@ -27,8 +27,11 @@ const StyledHeader = styled(CommonRow)`
 
 const StyledRow = styled(CommonRow)`
   padding: 0.45rem 2.4rem;
+  max-width: 100%;
+  overflow-x: auto;
+  text-overflow: ellipsis;
   border-bottom: 0.05rem solid #272a30;
-    font-size: .75rem;
+  font-size: 0.75rem;
   &:not(:last-child) {
     border-bottom: 0.05rem solid #272a30;
   }
