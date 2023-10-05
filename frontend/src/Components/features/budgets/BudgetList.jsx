@@ -26,11 +26,10 @@ function BudgetList({ isLoading, budgets }) {
   //   const sortedbudgets = filteredbudgets.sort(
   //     (a, b) => (a[field] - b[field]) * modifier
   //   );
-  console.log("budgets", budgets);
 
   return (
     <Menus>
-      <Table columns="0.2fr 0.2fr 0.2fr 0.4fr 0.2fr 0.2fr 0.1fr">
+      <Table columns="0.2fr 0.2fr 0.2fr 0.4fr 0.2fr 0.2fr">
         <Table.Header>
           <div>Categories</div>
           <div>Allocated Budget</div>
@@ -38,7 +37,7 @@ function BudgetList({ isLoading, budgets }) {
           <div>Breakdown</div>
           <div>Remaining</div>
                   <div>Invoices</div>
-                  <div>Action</div>
+                  {/* <div>Action</div> */}
         </Table.Header>
 
         <Table.Body

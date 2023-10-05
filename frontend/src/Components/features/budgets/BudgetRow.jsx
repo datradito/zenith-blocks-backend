@@ -18,13 +18,12 @@ const ScrollContainer = styled.div`
 
 function BudgetRow({ budget }) {
   //   const { isDeleting, deleteBudget } = useDeleteBudget();
-console.log("budget", budget);
-  const { isCreating, createBudget } = useSubmitBudget();
+//   const { isCreating, createBudget } = useSubmitBudget();
 
-  const isDeleting = false;
-  const deleteBudget = () => {
-    console.log("deleteBudget");
-  };
+//   const isDeleting = false;
+//   const deleteBudget = () => {
+//     console.log("deleteBudget");
+//   };
   const {
     id,
     category,
@@ -33,12 +32,6 @@ console.log("budget", budget);
     remaining,
 Breakdown,
   } = budget;
-
-  function handleDuplicate() {
-      createBudget(
-        
-    );
-  }
 
   return (
     <Table.Row>
@@ -53,16 +46,11 @@ Breakdown,
         <CustomInvoiceViewIcon budgetId={id} />
       </ScrollContainer>
 
-      <Modal>
+      {/* <Modal>
         <Menus.Menu>
           <Menus.Toggle id={id} />
 
           <Menus.List id={id}>
-            <Menus.Button
-              icon={<HiSquare2Stack />}
-              onClick={handleDuplicate}
-              disabled={isCreating}
-            ></Menus.Button>
 
             <Modal.Open opens="edit">
               <Menus.Button icon={<HiPencil />}></Menus.Button>
@@ -85,7 +73,7 @@ Breakdown,
             />
           </Modal.Window>
         </Menus.Menu>
-      </Modal>
+      </Modal> */}
     </Table.Row>
   );
 }

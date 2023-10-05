@@ -68,7 +68,7 @@ const StyledButton = styled.button`
   align-items: center;
   gap: 1rem;
   cursor: pointer;
-  border-radius: 1rem;
+  border-radius: 5rem;
 
   &:hover {
     background-color: white;
@@ -76,8 +76,8 @@ const StyledButton = styled.button`
   }
 
   & svg {
-    width: 1.6rem;
-    height: 1.6rem;
+    width: 1.2rem;
+    height: 1.2rem;
     transition: all 0.3s;
     color: cornflowerblue;
   }

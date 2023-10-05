@@ -24,14 +24,6 @@ const BoxStyle = {
   paddingBottom: "1rem",
 };
 
-const headers = [
-  "Categories",
-  "Allocated Budget",
-  "Currency",
-  "Breakdown",
-  "Remaining",
-  "Invoices",
-];
 
 function ProposalDetailView() {
   const { proposalId } = useParams();
