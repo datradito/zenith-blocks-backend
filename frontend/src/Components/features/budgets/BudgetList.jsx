@@ -30,14 +30,15 @@ function BudgetList({ isLoading, budgets }) {
 
   return (
     <Menus>
-      <Table columns="0.2fr 0.2fr 0.2fr 0.4fr 0.2fr 0.2fr">
+      <Table columns="0.2fr 0.2fr 0.2fr 0.4fr 0.2fr 0.2fr 0.1fr">
         <Table.Header>
           <div>Categories</div>
           <div>Allocated Budget</div>
           <div>Currency</div>
           <div>Breakdown</div>
           <div>Remaining</div>
-          {/* <div>Action</div> */}
+                  <div>Invoices</div>
+                  <div>Action</div>
         </Table.Header>
 
         <Table.Body

@@ -4,6 +4,20 @@ import styled from "styled-components";
 import {useOutsideClick} from "../../hooks/useOutsideClicks.js";
 import CustomActionIcon from "../../atoms/ActionIcon/CustomActionIcon.jsx";
 
+
+// export const Overlay = styled.div`
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+//   width: 100%;
+//   height: 100vh;
+//   background-color: var(--backdrop-color);
+//   backdrop-filter: blur(4px);
+//   z-index: 1000;
+//   transition: all 0.5s;
+// `;
+
+
 const Menu = styled.div`
   display: flex;
   align-items: center;
@@ -34,8 +48,8 @@ const StyledList = styled.ul`
   background-color: rgba(40, 42, 46, 0.5);
   list-style: none;
 
-  right: ${(props) => props.position.x}px;
-  top: ${(props) => props.position.y}px;
+  right: ${(props) => props.position.x + 50 }px;
+  top: ${(props) => props.position.y - 70}px;
 
   /* Add border-radius and margin-left styles */
   border-radius: 10px; /* Adjust the radius as needed */
@@ -54,16 +68,18 @@ const StyledButton = styled.button`
   align-items: center;
   gap: 1rem;
   cursor: pointer;
+  border-radius: 1rem;
 
   &:hover {
-    background-color: var(--color-grey-50);
+    background-color: white;
+    margin: .05rem;
   }
 
   & svg {
     width: 1.6rem;
     height: 1.6rem;
-    color: "#1A65C0",
     transition: all 0.3s;
+    color: cornflowerblue;
   }
 `;
 

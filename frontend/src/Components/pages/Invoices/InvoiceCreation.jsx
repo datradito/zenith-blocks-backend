@@ -111,8 +111,7 @@ function InvoiceCreation() {
         <Box sx={BoxStyle}>
           {initialHeaderData && (
             <CreateInvoiceForm
-              initialValues={initialHeaderData}
-              type="invoice"
+              invoice={initialHeaderData}
               errors={invoiceError ? invoiceError : null}
               key={invoiceErrorKey}
             />

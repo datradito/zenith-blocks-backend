@@ -1,4 +1,6 @@
-import { SUBMIT_INVOICE_MUTATION } from "../../../ServerQueries/Invoices/Mutations.js";
+import {
+  DUPLICATE_INVOICE_MUTATION,
+} from "../../../ServerQueries/Invoices/Mutations.js";
 import { client } from "../../../apolloConfig/client.js";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
@@ -7,17 +9,18 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { resetInvoice } from "../../../actions/createInvoiceAction/index.js";
 
-export const useSubmitInvoice = () => {
+
+export const useDuplicateInvoice = () => {
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const proposalId = useSelector((state) => state.currentProposal.proposal.id);
+    const proposalId = useSelector((state) => state.currentProposal.proposal.id);
 
-  const { mutate: createInvoice, isLoading: isCreating } = useMutation({
-    mutationFn: async (invoiceData) => {
+  const { mutate: duplicateInvoice, isLoading: isDuplicating } = useMutation({
+    mutationFn: async (invoiceId) => {
       await client.mutate({
-        mutation: SUBMIT_INVOICE_MUTATION,
-        variables: { invoice: invoiceData },
+        mutation: DUPLICATE_INVOICE_MUTATION,
+        variables: { id: invoiceId },
       });
     },
     onSuccess: () => {
@@ -31,7 +34,5 @@ export const useSubmitInvoice = () => {
     },
   });
 
-  return { isCreating, createInvoice };
+  return { isDuplicating, duplicateInvoice };
 };
-
-

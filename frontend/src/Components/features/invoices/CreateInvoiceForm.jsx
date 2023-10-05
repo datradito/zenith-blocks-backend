@@ -48,11 +48,12 @@ const componentStyles = {
   },
 };
 
-function CreateInvoiceForm({ initialValues, errors }) {
+function CreateInvoiceForm({ invoice, errors }) {
   const dispatch = useDispatch();
 
+  console.log("invoice", invoice);
+
   const handleChange = (key, value) => {
-    console.log(key, value);
     dispatch(updateHeader(key, value));
   };
 
@@ -60,7 +61,7 @@ function CreateInvoiceForm({ initialValues, errors }) {
     <>
       <Box sx={componentStyles.boxStyles}>
         <Grid container sx={componentStyles.containerStyles} spacing={3}>
-          {Object.entries(initialValues).map(([key, value], index) => (
+          {Object.entries(invoice).map(([key, value], index) => (
             <Grid
               item
               xs={
@@ -85,7 +86,7 @@ function CreateInvoiceForm({ initialValues, errors }) {
               </Typography>
               {key === "Currency" ? (
                 <CurrencyDropdown
-                  value={initialValues[key]}
+                  value={invoice[key]}
                   sx={componentStyles.formInputFieldStyles}
                   onChange={(e) => handleChange(key, e.target.value)}
                 />
@@ -95,14 +96,14 @@ function CreateInvoiceForm({ initialValues, errors }) {
                     required
                     type="date"
                     fullWidth
-                    value={initialValues[key]}
+                    value={invoice[key]}
                     sx={componentStyles.formInputFieldStyles}
                     onChange={(e) => handleChange(key, e.target.value)}
                   />
                 </FormControl>
               ) : key === "Category" ? (
                 <UnstyledSelectBasic
-                  defaultValue={initialValues.Category}
+                  defaultValue={invoice.Category}
                   values={categories}
                   onChange={(value) => handleChange(key, value)}
                 />
@@ -112,7 +113,7 @@ function CreateInvoiceForm({ initialValues, errors }) {
                 <TextField
                   required
                   fullWidth
-                  value={initialValues[key]}
+                  value={invoice[key]}
                   sx={componentStyles.formInputFieldStyles}
                   onChange={(e) => handleChange(key, e.target.value)}
                 />
@@ -121,7 +122,7 @@ function CreateInvoiceForm({ initialValues, errors }) {
                   required
                   type="number"
                   fullWidth
-                  value={initialValues[key]}
+                  value={invoice[key]}
                   sx={componentStyles.formInputFieldStyles}
                   onChange={(e) => handleChange(key, e.target.value)}
                 />
@@ -129,7 +130,7 @@ function CreateInvoiceForm({ initialValues, errors }) {
                 <TextField
                   name={key}
                   required
-                  value={initialValues[key]}
+                  value={invoice[key]}
                   onChange={(e) => handleChange(key, e.target.value)}
                   fullWidth
                   multiline={key === "Description" || key === "Upload Invoice"}

@@ -18,6 +18,7 @@ function handleValidation(header) {
     return { hasError: true, errorMessage: "Total field cannot be empty" };
   }
 
+  //Todo: update this to check against all invoices for budget - total budget amount
   if (parseInt(header.Total) > parseInt(1000)) {
     return {
       hasError: true,

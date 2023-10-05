@@ -1,7 +1,6 @@
 import Table from "../../molecules/Table/Table";
 import Menus from "../../molecules/Menus/Menus";
 import { useSearchParams } from "react-router-dom";
-import EmptyIcon from "../../atoms/EmptyIcon/EmptyIcon";
 import InvoiceRow from "./InvoiceRow";
 
 

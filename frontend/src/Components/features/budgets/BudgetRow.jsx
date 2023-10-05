@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import CustomPaymentViewIcon from "../../atoms/PaymentIcon/paymentIcon";
 import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2";
 import Modal from "../../molecules/Modal/Modal";
 import CustomizedProgressBars from "../../atoms/ProgressBar/ProgressBar";
@@ -8,6 +7,7 @@ import Menus from "../../molecules/Menus/Menus";
 import CreateBudgetForm from "../../features/budgets/CreateBudgetForm";
 import ConfirmDelete from "../../molecules/ConfirmDelete/ConfirmDelete";
 import { useSubmitBudget } from "../../hooks/Budgets/useSubmitBudget";
+import CustomInvoiceViewIcon from "../../atoms/InvoiceIcon/InvoiceIcon";
 // import { useDeleteBudget } from "../../hooks/Budgets/useDeleteBudget";
 
 const ScrollContainer = styled.div`
@@ -18,7 +18,7 @@ const ScrollContainer = styled.div`
 
 function BudgetRow({ budget }) {
   //   const { isDeleting, deleteBudget } = useDeleteBudget();
-
+console.log("budget", budget);
   const { isCreating, createBudget } = useSubmitBudget();
 
   const isDeleting = false;
@@ -48,12 +48,10 @@ Breakdown,
       <ScrollContainer>
         <CustomizedProgressBars value={Breakdown} />
       </ScrollContainer>
+      <ScrollContainer>{remaining}</ScrollContainer>
       <ScrollContainer>
-       {remaining}
+        <CustomInvoiceViewIcon budgetId={id} />
       </ScrollContainer>
-      {/* <ScrollContainer>
-        <CustomPaymentViewIcon budgetId={id} />
-      </ScrollContainer> */}
 
       <Modal>
         <Menus.Menu>

@@ -1,17 +1,15 @@
 import styled from "styled-components";
 import CustomPDFViewIcon from "../../atoms/PdfIcon/padfIcon";
-import CustomActionIcon from "../../atoms/ActionIcon/CustomActionIcon";
 import CustomPaymentViewIcon from "../../atoms/PaymentIcon/paymentIcon";
 import StatusChip from "../../atoms/StatusChip/StatusChip";
 import CreateInvoiceForm from "../../features/invoices/CreateInvoiceForm";
 import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2";
 import Modal from "../../molecules/Modal/Modal";
-// import { div } from "@mui/material";
 import Table from "../../molecules/Table/Table";
 import Menus from "../../molecules/Menus/Menus"
 import ConfirmDelete from "../../molecules/ConfirmDelete/ConfirmDelete";
 import { useSubmitInvoice } from "../../hooks/Invoices/useSubmitInvoice";
-import { useDeleteInvoice } from "../../hooks/Invoices/useDeleteInvoice";
+import { useDuplicateInvoice } from "../../hooks/Invoices/useDuplicateInvoice";
 
 
 const ScrollContainer = styled.div`
@@ -24,6 +22,7 @@ function InvoiceRow({ invoice }) {
 //   const { isDeleting, deleteInvoice } = useDeleteInvoice();
     
   const { isCreating, createInvoice } = useSubmitInvoice();
+  const { isDuplicating, duplicateInvoice } = useDuplicateInvoice();
 
     const isDeleting = false;
     const deleteInvoice = () => { console.log("deleteInvoice")};
@@ -38,13 +37,10 @@ function InvoiceRow({ invoice }) {
   } = invoice;
 
   function handleDuplicate() {
-    createInvoice({
-      ...invoice,
-      number: `${invoice.Invoice} (copy)`,
-      date: new Date(),
-      due: new Date(),
-    });
+    duplicateInvoice(invoice.InvoiceId);
   }
+
+  console.log("invoice", invoice);
 
   return (
     <Table.Row>
@@ -70,7 +66,7 @@ function InvoiceRow({ invoice }) {
               <Menus.Button
                 icon={<HiSquare2Stack />}
                 onClick={handleDuplicate}
-                disabled={isCreating}
+                disabled={isDuplicating}
               >
                 
               </Menus.Button>
@@ -85,7 +81,7 @@ function InvoiceRow({ invoice }) {
             </Menus.List>
 
             <Modal.Window name="edit">
-              <CreateInvoiceForm cabinToInvoice={invoice} />
+              <CreateInvoiceForm invoice={invoice} />
             </Modal.Window>
 
             <Modal.Window name="delete">
