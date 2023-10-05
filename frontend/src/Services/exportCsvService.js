@@ -1,4 +1,7 @@
 export const sanitizeCsvData = (data, type) => {
+
+    if (data === null) return null;
+    
     if (type.toLowerCase() === "invoice") {
         //modify this csv data to match the invoice schema
         const csvData = data.map((invoice) => {

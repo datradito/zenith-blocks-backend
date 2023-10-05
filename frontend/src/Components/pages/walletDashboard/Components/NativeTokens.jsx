@@ -1,7 +1,6 @@
 import React from "react";
 import axios from "axios";
 import ButtonAtom from "../../../atoms/Button";
-import Table from "../../../molecules/Table";
 
 function NativeTokens({ wallet, chain, nativeBalance, setNativeBalance, nativeValue, setNativeValue }) {
 
@@ -37,7 +36,8 @@ function NativeTokens({ wallet, chain, nativeBalance, setNativeBalance, nativeVa
         <>
             <ButtonAtom config={buttonConfig} />
             {(nativeBalance > 0 && nativeValue > 0) &&
-                <Table tableHeaderData={headers} tableBodyData={data} />
+                "Token table"
+                // <Table tableHeaderData={headers} tableBodyData={data} />
             }
 
         </>

@@ -66,6 +66,24 @@ const invoiceResolver = {
                     throw new GraphQLError(error.message);
                 }
             }
+        },
+        duplicateInvoice: async (parent, { id: invoiceId }, context) => {
+            const invoice = await Invoice.findByPk(invoiceId);
+            const { budgetId ,id, ...rest} = invoice.dataValues;
+            const newInvoice = new Invoice({
+                ...rest,
+                date: new Date().getTime() + 1000 * 60 * 60 * 24 * 30,
+                duedate: new Date().getTime() + 1000 * 60 * 60 * 24 * 60,
+                number: invoice.number + 1,
+                ipfs: "ipfsResponse",
+            });
+
+            try {
+                const savedInvoice = await newInvoice.save();
+                return savedInvoice;
+            } catch (error) {
+                throw new GraphQLError(error.message);
+            }
         }
     }
 }

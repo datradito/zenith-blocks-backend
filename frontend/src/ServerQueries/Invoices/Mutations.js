@@ -20,3 +20,24 @@ export const SUBMIT_INVOICE_MUTATION = gql`
     }
   }
 `;
+
+export const DUPLICATE_INVOICE_MUTATION = gql`
+  mutation DuplicateInvoice(
+    $id: String!
+  ) {
+    duplicateInvoice(
+      id: $id
+    ){
+      category
+      recipient
+      number
+      currency
+      total
+      date
+      duedate
+      uploadinvoice
+      description
+      budgetid
+    }
+  }
+`;

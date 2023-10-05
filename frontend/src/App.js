@@ -1,6 +1,9 @@
 import './App.css';
 import React, { Suspense, lazy } from 'react';
 import { ApolloProvider } from '@apollo/client';
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./apolloConfig/client";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { storeConfig, persistor } from './store/storeConfigure';
@@ -30,6 +33,7 @@ const Dashboard = lazy(() => import("./Components/pages/walletDashboard/Dashboar
 const Swap = lazy(() => import("./Components/pages/Swap/Swap"));
 const Proposals = lazy(() => import("./Components/pages/Proposals/Proposals"));
 const Accounts = lazy(() => import("./Components/pages/Accounts/Accounts"));
+
 
 function App() {
   
@@ -109,23 +113,23 @@ function App() {
     )
   );
 
-    return (
-    <ApolloProvider client={client}>
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false} />
+      <ApolloProvider client={client}>
         <Provider store={storeConfig}>
           <PersistGate loading={null} persistor={persistor}>
             <Suspense fallback={<CircularIndeterminate />}>
               <ErrorProvider>
-                <ToastContainer
-                  limit={2}
-                  position="bottom-left"
-                />
+                <ToastContainer limit={2} position="bottom-left" />
                 <RouterProvider router={router} />
               </ErrorProvider>
             </Suspense>
           </PersistGate>
         </Provider>
-    </ApolloProvider>
-    );
+      </ApolloProvider>
+    </QueryClientProvider>
+  );
 }
 
 export default App;

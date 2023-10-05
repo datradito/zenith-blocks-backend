@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from "react";
 import SubHeader from "../../molecules/SubHeader/SubHeader";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { Box } from "@mui/material";
-import FormItem from "../../atoms/FormItem/FormItem";
-import { SUBMIT_INVOICE_MUTATION } from "../../../ServerQueries/Invoices/Mutations";
-import { useMutation } from "@apollo/client";
-import { useNavigate } from "react-router-dom";
 import CircularIndeterminate from "../../atoms/Loader/loader";
-import { resetInvoice } from "../../../actions/createInvoiceAction";
-import CustomizedSnackbars from "../../atoms/SnackBar/SnackBar";
 import generateUUID from "../../../Utility/uniqueId";
-import { useGetAllInvoicesByBudget } from "../../hooks/Invoices/useGetAllInvoices";
-import invoiceService from "../../../Services/InvoiceServices/invoiceService";
+import { invoiceService } from "../../../Services/InvoiceServices/invoiceService";
+import { useSubmitInvoice } from "../../hooks/Invoices/useSubmitInvoice";
+import CreateInvoiceForm from "../../features/invoices/CreateInvoiceForm";
 
 const BoxStyle = {
   width: "90%",
@@ -29,16 +24,11 @@ const handleDraft = () => {
 
 function InvoiceCreation() {
   const [invoiceError, setInvoiceError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
+
   const [invoiceErrorKey, setInvoiceErrorKey] = useState(0);
   const [initialHeaderData, setInitialHeaderData] = useState(null);
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const [submitInvoice, { loading, error }] = useMutation(
-    SUBMIT_INVOICE_MUTATION
-  );
+  const { isCreating, createInvoice } = useSubmitInvoice();
 
   const { proposal, Budget, header } = useSelector((state) => ({
     proposal: state.currentProposal.proposal,
@@ -57,8 +47,6 @@ function InvoiceCreation() {
     initialHeaderData();
   }, []);
 
-  const { refetch } = useGetAllInvoicesByBudget(Budget?.id);
-
   const currentPathConfig = {
     path: "Invoices",
     to: `/proposal/${proposal.id}/invoices`,
@@ -75,20 +63,12 @@ function InvoiceCreation() {
 
     if (validationResult.hasError === false) {
       try {
-        await submitInvoice({
-          variables: {
-            invoice: await invoiceService.sanitizeInvoiceData(
-              header,
-              Budget,
-              proposal
-            ),
-          },
-        });
-
-        setSuccessMessage("Invoice saved successfully!");
-        dispatch(resetInvoice());
-        navigate(`/proposal/${proposal.id}/invoices`);
-        refetch();
+        const dataToBeSubmitted = await invoiceService.sanitizeInvoiceData(
+          header,
+          Budget,
+          proposal
+        );
+        createInvoice(dataToBeSubmitted);
       } catch (errors) {
         if (errors.message) {
           setInvoiceError(`Error: ${errors.message}`);
@@ -118,7 +98,7 @@ function InvoiceCreation() {
     },
   ];
 
-  if (loading) return <CircularIndeterminate />;
+  if (isCreating) return <CircularIndeterminate />;
 
   return (
     <>
@@ -129,25 +109,14 @@ function InvoiceCreation() {
       />
       <form onSubmit={handleSaveInvoice}>
         <Box sx={BoxStyle}>
-          {
-            initialHeaderData && (
-              <FormItem
-                initialValues={initialHeaderData}
-                type="invoice"
-                errors={invoiceError ? invoiceError : null}
-                key={invoiceErrorKey}
-              />
-            )
-          }
+          {initialHeaderData && (
+            <CreateInvoiceForm
+              invoice={initialHeaderData}
+              errors={invoiceError ? invoiceError : null}
+              key={invoiceErrorKey}
+            />
+          )}
         </Box>
-        {successMessage && (
-          <CustomizedSnackbars
-            key="success"
-            message={successMessage}
-            severity="success"
-            autoOpen={true}
-          />
-        )}
       </form>
     </>
   );

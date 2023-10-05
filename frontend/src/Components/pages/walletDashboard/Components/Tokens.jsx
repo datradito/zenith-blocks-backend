@@ -3,7 +3,6 @@ import ButtonAtom from "../../../atoms/Button";
 import { useLazyQuery } from "@apollo/client";
 import { GET_TOKEN_BALANCE } from "../../../../ServerQueries/Dashboard/Queries";
 import CircularIndeterminate from "../../../atoms/Loader/loader";
-import Table from "../../../molecules/Table";
 import Box from "@mui/material/Box";
 
 function Tokens({ wallet, chain, tokens, setTokens }) {
@@ -52,7 +51,7 @@ function Tokens({ wallet, chain, tokens, setTokens }) {
                 <ButtonAtom config={buttonConfig} />
                 <br />
                 {tokens.length > 0 && (
-                    <Table tableHeaderData={headers} tableBodyData={data} />
+                    "<Table tableHeaderData={headers} tableBodyData={data} />"
                 )}
         </Box>
     );

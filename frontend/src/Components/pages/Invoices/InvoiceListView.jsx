@@ -2,12 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react'
 import SubHeader from "../../molecules/SubHeader/SubHeader"
 import { Box, Stack } from '@mui/material';
 import ItemCard from "../../atoms/ItemCard/ItemCard";
-import Table from '../../molecules/Table';
-import { useLocation, Link  } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { useGetAllInvoicesByBudget } from '../../hooks/Invoices/useGetAllInvoices';
 import CircularIndeterminate from '../../atoms/Loader/loader';
-import { toast } from 'react-toastify';
+import { useGetAllInvoices } from '../../hooks/Invoices/useGetInvoices';
+import InvoiceList from '../../features/invoices/InvoiceList';
+import EmptyIcon from '../../atoms/EmptyIcon/EmptyIcon';
 
 
 const BoxStyle = {
@@ -20,17 +19,14 @@ const BoxStyle = {
     borderRadius: 3,
 };
 
-const tableHeaderData = ["Invoice", "Receipient", "Amount", "Currency", "Status", "Date", "Due","View", "Payment", "Action"]
-
 
 function InvoiceListView() {
-    let location = useLocation();
     let { proposal } = useSelector(state => state.currentProposal);
     const { proposals } = useSelector(state => state.currentProposalAmounts);
     const [amount, setProposalAmount] = useState(0);
     let { Budget } = useSelector(state => state.currentBudget);
-    //const { web3, contract } = useWeb3IpfsContract();
-    const { loading, invoices, queryError, isFetching } = useGetAllInvoicesByBudget(Budget?.id);
+  const { isLoading, invoices } = useGetAllInvoices(Budget?.id);
+
 
     const filteredProposal = useMemo(() => {
         return proposals.filter((withAmountProposal) => withAmountProposal.id === proposal.id ? withAmountProposal.amount : null);
@@ -39,13 +35,6 @@ function InvoiceListView() {
     useEffect(() => {
         setProposalAmount(filteredProposal[0]?.amount);
     }, [filteredProposal]);
-
-
-    if (queryError) {
-        toast.error("Error in fetching invoices");
-    }
-
-    if (loading) return <CircularIndeterminate />;
 
     const currentPathConfig = {
         path: "Budgets",
@@ -74,33 +63,32 @@ function InvoiceListView() {
     const dataForItemCard = { "Goverance": proposal.space, "Total Budget": `$ ${amount}`, "Proposal": proposal.title };
 return (
   <div>
-    <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath="Proposals  Proposal  Budget" />
-    <Box
-      sx={BoxStyle}
-    >
+    <SubHeader
+      buttonConfig={componentButtonConfig}
+      currentPath={currentPathConfig}
+      previousPath="Proposals  Proposal  Budget"
+    />
+    <Box sx={BoxStyle}>
       <Stack
         padding={1}
         direction={"row"}
-        justifyContent={'flex-start'}
+        justifyContent={"flex-start"}
         borderBottom={".05rem #2c2c2c solid"}
       >
         {Object.entries(dataForItemCard).map(([key, value]) => (
-          <ItemCard
-            key={key}
-            label={key}
-            value={value}
-          />
+          <ItemCard key={key} label={key} value={value} />
         ))}
       </Stack>
     </Box>
 
     <Box sx={BoxStyle}>
-
-        <Table
-          tableHeaderData={tableHeaderData}
-          tableBodyData={invoices}
-        />
-
+      {isLoading ? (
+        <CircularIndeterminate />
+      ) : invoices && invoices.length > 0 ? (
+        <InvoiceList isLoading={isLoading} invoices={invoices} />
+      ) : (
+        <EmptyIcon />
+      )}
     </Box>
   </div>
 );

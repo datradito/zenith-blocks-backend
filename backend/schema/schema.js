@@ -9,6 +9,10 @@ const Invoice = require("../Database/models/Invoice");
 
 
 const typeDefs = `#graphql
+
+    type DuplicateInvoice{
+        id: String!
+    }
     type Budget {
         id: String
         category: String
@@ -99,6 +103,7 @@ const typeDefs = `#graphql
         submitInvoice(invoice: InvoiceInput): Invoice,
         setProposalAmount(proposal: ProposalAmountInput): Proposal,
         submitPayment(payment: PaymentInput!): Payment!
+        duplicateInvoice(id: String!): Invoice
     }
 
     
