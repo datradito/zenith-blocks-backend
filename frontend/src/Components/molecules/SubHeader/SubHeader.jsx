@@ -1,21 +1,20 @@
-import React from 'react'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Box, Grid, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
-import ButtonGroup from '../ButtonGroup/ButtonGroup';
+import React from "react";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Box, Grid, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
+import ButtonGroup from "../ButtonGroup/ButtonGroup";
 
 const componentStyles = {
-    backArrowSvgStyle: {
+  backArrowSvgStyle: {
     color: "white",
     fontSize: "large",
     "& .MuiSvgIcon-root": {
-        mr: "0.5rem",
+      mr: "0.5rem",
     },
-    },
+  },
 };
 
 function SubHeader({ buttonConfig, currentPath, previousPath }) {
-
   return (
     <Box
       style={{
@@ -53,4 +52,4 @@ function SubHeader({ buttonConfig, currentPath, previousPath }) {
   );
 }
 
-export default SubHeader
+export default SubHeader;
