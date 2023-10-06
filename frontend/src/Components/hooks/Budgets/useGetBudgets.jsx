@@ -8,12 +8,13 @@ import { toast } from "react-toastify";
 export const useGetBudgets = (proposalId, amount) => {
   const [budgets, setBudgets] = useState([]);
 
-  const { isLoading, error, refetch } = useQuery(
+  const { isLoading, error, refetch } = useQuery( 
     ["budgets", proposalId],
     async () => {
       const response = await client.query({
         query: GET_ALL_BUDGETS_FOR_PROPOSAL,
         variables: { proposalid: proposalId },
+        errorPolicy: "all",
       });
       return response.data;
     },
@@ -25,11 +26,10 @@ export const useGetBudgets = (proposalId, amount) => {
         );
         setBudgets(transformedBudgets);
         },
-        onError: (error) => {
-            //implement apollo service to decode graphql errors and log those
-            toast.error("Failed to fetch budgets");
-        }
-        
+      onError: (error) => {
+          toast.error(error.message);
+      },
+      enabled: true    
     }
   );
 

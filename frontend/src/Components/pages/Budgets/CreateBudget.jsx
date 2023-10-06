@@ -32,13 +32,16 @@ function CreateBudget() {
     if (!validateBudget(items[0], filteredProposalAmount)) {
       return;
     }
-    try {
-        const budgetData = prepareBudgetDataForSubmission(items[0], proposalId);
-        submitBudget(budgetData);
-      } 
-     catch (error) {
-      throw new Error(error.message);
-    }
+      const budgetData = prepareBudgetDataForSubmission(items[0], proposalId);
+    submitBudget(
+      { ...budgetData },
+      {
+        onSuccess: () => {
+          //alternatively we can use queryClient.invalidateQueries() to refetch the data or use refetchQueries
+          console.log("Budget created successfully");
+        }
+      }
+    );
   };
 
 

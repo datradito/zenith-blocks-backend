@@ -10,7 +10,7 @@ import CircularIndeterminate from '../../atoms/Loader/loader.jsx';
 import useProposals from '../../hooks/Proposals/useProposals.jsx';
 import ProposalCard from './ProposalCard.jsx';
 import { useError } from '../../../Routes/ErrorRouterProvider.jsx';
-
+import { toast } from 'react-toastify';
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body1,
@@ -55,7 +55,7 @@ const Proposals = () => {
 
   if (networkStatus === NetworkStatus) return <CircularIndeterminate />;
   if (loading) return <CircularIndeterminate />;
-  if (error) return handleError({type: "error", message: "Something went wrong! Please try again later."});
+  if (error) return handleError(toast.error(error.message));
 
 
   const handleTotalBudgetClick = (itemId, e) => {
