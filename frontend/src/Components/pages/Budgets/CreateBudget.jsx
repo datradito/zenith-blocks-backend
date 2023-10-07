@@ -5,10 +5,12 @@ import SubHeader from '../../molecules/SubHeader/SubHeader';
 import useFilteredProposalAmount from '../../hooks/Proposals/useFilteredProposalAmount';
 import {useSubmitBudget} from '../../hooks/Budgets/useSubmitBudget';
 import { prepareBudgetDataForSubmission, validateBudget } from '../../../Services/BudgetServices/budgetService';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import CircularIndeterminate from '../../atoms/Loader/loader';
 import GoBack from '../../atoms/GoBack/GoBack';
 import Label from '../../atoms/Label/Label';
+import CreateBudgetForm from '../../features/budgets/CreateBudgetForm';
+import Container from '../../atoms/Container/Container';
 
 
 function CreateBudget() {
@@ -85,18 +87,14 @@ function CreateBudget() {
           />
         </SubHeader.List>
       </SubHeader.Container>
-      <Box
+      <Container
         sx={{
-          width: "90%",
-          margin: "0rem auto",
           textAlign: "center",
-          border: `.05rem #2C2C2C solid`,
-          marginTop: "1rem",
           borderRadius: 5,
         }}
       >
         <FormItem initialValues={dataForItemCard} type="budget" />
-      </Box>
+      </Container>
     </Box>
   );
 }

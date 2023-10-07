@@ -27,7 +27,7 @@ const useCurrentProposalDetail = () => {
       };
       setData(updatedDataForItemCard);
     }
-  }, [proposal, filteredProposal, data]);
+  }, [proposal, filteredProposal]);
 
   return { data, loading };
 };
