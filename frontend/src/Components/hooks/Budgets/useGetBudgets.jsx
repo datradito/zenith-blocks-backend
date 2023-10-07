@@ -5,7 +5,7 @@ import { useState } from "react";
 import { transformBudgets } from "../../../Services/BudgetServices/budgetService";
 import { toast } from "react-toastify";
 
-export const useGetBudgets = (proposalId, amount) => {
+export const useGetBudgets = (amount, proposalId) => {
   const [budgets, setBudgets] = useState([]);
 
   const { isLoading, error, refetch } = useQuery( 

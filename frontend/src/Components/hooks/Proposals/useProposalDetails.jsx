@@ -4,6 +4,7 @@ import { snapShotClient } from '../../../SnapShot/client.js';
 import { useDispatch } from 'react-redux';
 import { setProposal } from '../../../actions/currentProposal/index.js';
 import { useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 export default function useProposalDetails(id) {
     const dispatch = useDispatch();
@@ -18,6 +19,8 @@ export default function useProposalDetails(id) {
             dispatch(setProposal(data.proposal));
         }
     }, [loading, error, data, dispatch]);
+
+    if(error) toast.error(error.message);
 
     return { loading, error, data };
 }

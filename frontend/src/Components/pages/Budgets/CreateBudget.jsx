@@ -5,8 +5,10 @@ import SubHeader from '../../molecules/SubHeader/SubHeader';
 import useFilteredProposalAmount from '../../hooks/Proposals/useFilteredProposalAmount';
 import {useSubmitBudget} from '../../hooks/Budgets/useSubmitBudget';
 import { prepareBudgetDataForSubmission, validateBudget } from '../../../Services/BudgetServices/budgetService';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import CircularIndeterminate from '../../atoms/Loader/loader';
+import GoBack from '../../atoms/GoBack/GoBack';
+import Label from '../../atoms/Label/Label';
 
 
 function CreateBudget() {
@@ -45,27 +47,6 @@ function CreateBudget() {
   };
 
 
-  const componentButtonConfig =
-    [
-      {
-        label: "Delete Proposal",
-        variant: "contained",
-        onClick: () => { console.log("Delete Proposal") },
-        innerText: "Delete Proposal",
-        backgroundColor: "#FC4F4F"
-      }, {
-        label: "Save Proposal",
-        variant: "contained",
-        onClick: handleCreateBudget,
-        innerText: "Save Proposal",
-        ml: "0.5rem",
-      }
-    ];
-
-  const currentPathConfig = {
-    path: "Create Budget",
-    to: `/proposals/${proposal.id}`
-  }
 
   if (isSubmitting) {
     <CircularIndeterminate />
@@ -74,22 +55,50 @@ function CreateBudget() {
 
   return (
     <Box>
-      <SubHeader buttonConfig={componentButtonConfig} currentPath={currentPathConfig} previousPath="Proposals  Proposal  Budget" />
-      <Box sx={{
-        width: '90%',
-        margin: '0rem auto',
-        textAlign: "center",
-        border: `.05rem #2C2C2C solid`,
-        marginTop: "1rem",
-        borderRadius: 5
-      }}>
-        <FormItem
-          initialValues={dataForItemCard}
-          type="budget"
-        />
+      <SubHeader.Container>
+        <SubHeader.List
+          sx={{
+            flexDirection: "column",
+            gap: "2.5rem",
+          }}
+        >
+          <Label>
+            Proposals | Budget
+            </Label>
+          <GoBack>
+            <Label>
+              Budgets
+            </Label>
+          </GoBack>
+        </SubHeader.List>
+        <SubHeader.List>
+          <SubHeader.ActionButton
+            label="Delete Proposal"
+            sx={{
+              backgroundColor: "#FC4F4F",
+            }}
+          />
+          <SubHeader.ActionButton
+            label="Save Proposal"
+            onClick={handleCreateBudget}
+            disabled={false}
+          />
+        </SubHeader.List>
+      </SubHeader.Container>
+      <Box
+        sx={{
+          width: "90%",
+          margin: "0rem auto",
+          textAlign: "center",
+          border: `.05rem #2C2C2C solid`,
+          marginTop: "1rem",
+          borderRadius: 5,
+        }}
+      >
+        <FormItem initialValues={dataForItemCard} type="budget" />
       </Box>
     </Box>
-  )
+  );
 }
 
 export default CreateBudget;

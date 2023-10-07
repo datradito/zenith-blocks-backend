@@ -51,8 +51,6 @@ const componentStyles = {
 function CreateInvoiceForm({ invoice, errors }) {
   const dispatch = useDispatch();
 
-  console.log("invoice", invoice);
-
   const handleChange = (key, value) => {
     dispatch(updateHeader(key, value));
   };

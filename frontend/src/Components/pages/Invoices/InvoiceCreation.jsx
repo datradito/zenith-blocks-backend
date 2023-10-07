@@ -7,16 +7,11 @@ import generateUUID from "../../../Utility/uniqueId";
 import { invoiceService } from "../../../Services/InvoiceServices/invoiceService";
 import { useSubmitInvoice } from "../../hooks/Invoices/useSubmitInvoice";
 import CreateInvoiceForm from "../../features/invoices/CreateInvoiceForm";
+import Label from "../../atoms/Label/Label";
+import GoBack from "../../atoms/GoBack/GoBack";
+import Container from "../../atoms/Container/Container";
+import { Form } from "react-router-dom";
 
-const BoxStyle = {
-  width: "90%",
-  margin: "0rem auto",
-  textAlign: "center",
-  color: "white",
-  border: ".05rem #2c2c2c solid",
-  marginTop: "1rem",
-  borderRadius: 3,
-};
 
 const handleDraft = () => {
   console.log("Save Draft");
@@ -47,10 +42,6 @@ function InvoiceCreation() {
     initialHeaderData();
   }, []);
 
-  const currentPathConfig = {
-    path: "Invoices",
-    to: `/proposal/${proposal.id}/invoices`,
-  };
 
   const handleSaveInvoice = async (event) => {
     const validationResult = invoiceService.handleValidation(header);
@@ -77,38 +68,39 @@ function InvoiceCreation() {
     }
   };
 
-  const componentButtonConfig = [
-    {
-      label: "Save Draft",
-      variant: "contained",
-      onClick: handleDraft,
-      innerText: "Save Draft",
-      backgroundColor: "#282A2E",
-      type: "link",
-      to: "/proposal/budgets/export-csv",
-    },
-    {
-      label: "Save Invoice",
-      variant: "contained",
-      onClick: handleSaveInvoice,
-      innerText: "Save Invoice",
-      ml: "0.5rem",
-      type: "Submit",
-      redirectTo: `/proposal/${proposal.id}/invoices`,
-    },
-  ];
 
   if (isCreating) return <CircularIndeterminate />;
 
   return (
     <>
-      <SubHeader
-        buttonConfig={componentButtonConfig}
-        currentPath={currentPathConfig}
-        previousPath="Proposals  Proposal  Budget"
-      />
-      <form onSubmit={handleSaveInvoice}>
-        <Box sx={BoxStyle}>
+      <SubHeader.Container>
+        <SubHeader.List
+          sx={{
+            flexDirection: "column",
+            gap: "2.5rem",
+          }}
+        >
+          <Label>Proposals | Budgets | Invoices | Create Invoice</Label>
+          <GoBack>
+            <Label>Invoices</Label>
+          </GoBack>
+        </SubHeader.List>
+        <SubHeader.List>
+          <SubHeader.ActionButton
+            label="Save Draft"
+            onClick={handleDraft}
+            sx={{
+              backgroundColor: "#282A2E",
+            }}
+          />
+          <SubHeader.ActionButton
+            onClick={handleSaveInvoice}
+            label="Save Invoice"
+          />
+        </SubHeader.List>
+      </SubHeader.Container>
+      <Form onSubmit={handleSaveInvoice}>
+        <Container>
           {initialHeaderData && (
             <CreateInvoiceForm
               invoice={initialHeaderData}
@@ -116,8 +108,8 @@ function InvoiceCreation() {
               key={invoiceErrorKey}
             />
           )}
-        </Box>
-      </form>
+        </Container>
+      </Form>
     </>
   );
 }

@@ -1,87 +1,57 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React from 'react'
 import SubHeader from "../../molecules/SubHeader/SubHeader"
-import { Box, Stack } from '@mui/material';
-import ItemCard from "../../atoms/ItemCard/ItemCard";
+import ItemCardComponent from "../../atoms/ItemCard/ItemCard";
 import { useSelector } from 'react-redux';
 import CircularIndeterminate from '../../atoms/Loader/loader';
 import { useGetAllInvoices } from '../../hooks/Invoices/useGetInvoices';
+import { useNavigate } from 'react-router-dom';
 import InvoiceList from '../../features/invoices/InvoiceList';
 import EmptyIcon from '../../atoms/EmptyIcon/EmptyIcon';
-
-
-const BoxStyle = {
-    width: "90%",
-    margin: "0rem auto",
-    textAlign: "center",
-    color: "white",
-    border: ".05rem #2c2c2c solid",
-    marginTop: "1rem",
-    borderRadius: 3,
-};
+import Label from '../../atoms/Label/Label';
+import GoBack from '../../atoms/GoBack/GoBack';
+import Container from '../../atoms/Container/Container';
 
 
 function InvoiceListView() {
-    let { proposal } = useSelector(state => state.currentProposal);
-    const { proposals } = useSelector(state => state.currentProposalAmounts);
-    const [amount, setProposalAmount] = useState(0);
-    let { Budget } = useSelector(state => state.currentBudget);
+  let { Budget } = useSelector(state => state.currentBudget);
   const { isLoading, invoices } = useGetAllInvoices(Budget?.id);
-
-
-    const filteredProposal = useMemo(() => {
-        return proposals.filter((withAmountProposal) => withAmountProposal.id === proposal.id ? withAmountProposal.amount : null);
-    }, [proposal]);
-
-    useEffect(() => {
-        setProposalAmount(filteredProposal[0]?.amount);
-    }, [filteredProposal]);
-
-    const currentPathConfig = {
-        path: "Budgets",
-        to: `/proposals/${proposal.id}`
-    }
-
-    const componentButtonConfig =
-        [
-            {
-                label: "Export CSV",
-                variant: "contained",
-                innerText: "Export CSV",
-                backgroundColor: "#282A2E",
-                data: invoices,
-                filetype: "invoice"
-            }, {
-                label: "Create Invoice",
-                variant: "contained",
-                innerText: "Create Invoice",
-                ml: "0.5rem",
-                type: "link",
-                to: `/budgets/${Budget.id}/createinvoice`
-            }
-        ];
+  const navigate = useNavigate();
+  
+  const handleCreateInvoice = () => {
+    navigate(`/budgets/${Budget.id}/createinvoice`);
+  };
     
-    const dataForItemCard = { "Goverance": proposal.space, "Total Budget": `$ ${amount}`, "Proposal": proposal.title };
 return (
   <div>
-    <SubHeader
-      buttonConfig={componentButtonConfig}
-      currentPath={currentPathConfig}
-      previousPath="Proposals  Proposal  Budget"
-    />
-    <Box sx={BoxStyle}>
-      <Stack
-        padding={1}
-        direction={"row"}
-        justifyContent={"flex-start"}
-        borderBottom={".05rem #2c2c2c solid"}
+    <SubHeader.Container sx={{ paddingTop: "1rem" }}>
+      <SubHeader.List
+        sx={{
+          flexDirection: "column",
+          gap: "2.5rem",
+        }}
       >
-        {Object.entries(dataForItemCard).map(([key, value]) => (
-          <ItemCard key={key} label={key} value={value} />
-        ))}
-      </Stack>
-    </Box>
+        <Label>Proposals | Budgets | Invoices</Label>
+        <GoBack>
+          <Label>Budgets</Label>
+        </GoBack>
+      </SubHeader.List>
+      <SubHeader.List>
+        <SubHeader.ActionButton
+          label="Export CSV"
+          sx={{
+            backgroundColor: "#282A2E",
+          }}
+        />
+        <SubHeader.ActionButton
+          onClick={handleCreateInvoice}
+          label="Create Invoice"
+        />
+      </SubHeader.List>
+    </SubHeader.Container>
 
-    <Box sx={BoxStyle}>
+    <ItemCardComponent />
+    
+    <Container>
       {isLoading ? (
         <CircularIndeterminate />
       ) : invoices && invoices.length > 0 ? (
@@ -89,7 +59,7 @@ return (
       ) : (
         <EmptyIcon />
       )}
-    </Box>
+    </Container>
   </div>
 );
 }
