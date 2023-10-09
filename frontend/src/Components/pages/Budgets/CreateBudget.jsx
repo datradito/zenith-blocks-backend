@@ -1,62 +1,66 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
-import FormItem from "../../atoms/FormItem/FormItem";
-import SubHeader from '../../molecules/SubHeader/SubHeader';
-import useFilteredProposalAmount from '../../hooks/Proposals/useFilteredProposalAmount';
+import { FormProvider, useForm } from 'react-hook-form';
+
 import {useSubmitBudget} from '../../hooks/Budgets/useSubmitBudget';
-import { prepareBudgetDataForSubmission, validateBudget } from '../../../Services/BudgetServices/budgetService';
-import { Box } from '@mui/material';
+import useFilteredProposalAmount from '../../hooks/Proposals/useFilteredProposalAmount';
+
+import SubHeader from '../../molecules/SubHeader/SubHeader';
+
 import CircularIndeterminate from '../../atoms/Loader/loader';
 import GoBack from '../../atoms/GoBack/GoBack';
 import Label from '../../atoms/Label/Label';
-import CreateBudgetForm from '../../features/budgets/CreateBudgetForm';
 import Container from '../../atoms/Container/Container';
 
+import CreateBudgetForm from '../../features/budgets/CreateBudgetForm';
 
 function CreateBudget() {
-
+  let { proposal } = useSelector(state => state.currentProposal);
   const { proposals } = useSelector(state => state.currentProposalAmounts);
   const { isSubmitting, submitBudget } = useSubmitBudget();
-
-  let { proposal } = useSelector(state => state.currentProposal);
-  let { items } = useSelector(state => state.createBudget);
-
-
   const filteredProposalAmount = useFilteredProposalAmount(proposals, proposal.id);
 
-  let dataForItemCard = {};
+  const methods = useForm({
+    defaultValues: {
+      Goverance: proposal.space,
+      "Total Budget": filteredProposalAmount,
+      Proposal: proposal.title,
+      "Ipfs Link": proposal.ipfs,
+      Breakdown: `${(
+        (parseInt(222) / parseInt(filteredProposalAmount)) *
+        100
+      ).toFixed(2)}%`,
+    },
+  });
 
-  if (proposal) {
-    dataForItemCard = { "Goverance": `${proposal.space}`, "Total Budget": filteredProposalAmount, "Proposal": `${proposal.title}`, "Ipfs Link": `${proposal.ipfs}` }
-  }
 
-  const handleCreateBudget = async () => {
+  const handleCreateBudget = (data) => {
     let proposalId = proposal.id;
 
-    if (!validateBudget(items[0], filteredProposalAmount)) {
-      return;
+    const budgetData = {
+      amount: parseInt(data.amount),
+      currency: data.currency,
+      proposalid: proposalId,
+      category: data.category,
+      breakdown: parseInt(data.amount) / parseInt(filteredProposalAmount) * 100,
+      rootpath: proposalId
     }
-      const budgetData = prepareBudgetDataForSubmission(items[0], proposalId);
+
     submitBudget(
-      { ...budgetData },
-      {
-        onSuccess: () => {
-          //alternatively we can use queryClient.invalidateQueries() to refetch the data or use refetchQueries
-          console.log("Budget created successfully");
-        }
-      }
+      { ...budgetData }
     );
   };
 
-
+  const onError = (errors) => {
+    // console.log(errors);
+  }
 
   if (isSubmitting) {
     <CircularIndeterminate />
   }
 
-
   return (
-    <Box>
+    <FormProvider {...methods}>
       <SubHeader.Container>
         <SubHeader.List
           sx={{
@@ -64,26 +68,26 @@ function CreateBudget() {
             gap: "2.5rem",
           }}
         >
-          <Label>
-            Proposals | Budget
-            </Label>
+          <Label>Proposals | Budget</Label>
           <GoBack>
-            <Label>
-              Budgets
-            </Label>
+            <Label>Budgets</Label>
           </GoBack>
         </SubHeader.List>
         <SubHeader.List>
           <SubHeader.ActionButton
-            label="Delete Proposal"
+            label="Reset Budget"
             sx={{
               backgroundColor: "#FC4F4F",
             }}
+            onClick={() =>
+              methods.reset({ amount: null, description: "", currency: "" })
+            }
           />
           <SubHeader.ActionButton
-            label="Save Proposal"
-            onClick={handleCreateBudget}
-            disabled={false}
+            label="Save Budget"
+            onClick={() =>
+              methods.handleSubmit(handleCreateBudget, onError)()
+            }
           />
         </SubHeader.List>
       </SubHeader.Container>
@@ -93,9 +97,9 @@ function CreateBudget() {
           borderRadius: 5,
         }}
       >
-        <FormItem initialValues={dataForItemCard} type="budget" />
+        <CreateBudgetForm />
       </Container>
-    </Box>
+    </FormProvider>
   );
 }
 

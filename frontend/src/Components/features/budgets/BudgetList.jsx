@@ -7,12 +7,11 @@ import CircularIndeterminate from "../../atoms/Loader/loader";
 
 function BudgetList({ amount, proposalId }) {
 
-  const { loading, error, data: budgets } = useGetBudgets(amount, proposalId);
+  const { isLoading, error, budgets } = useGetBudgets(amount, proposalId);
 
-  if (loading) return <CircularIndeterminate />;
-  if (error || budgets?.length < 0) return <EmptyIcon />;
+  if (isLoading) return <CircularIndeterminate />;
+  if (error) return <EmptyIcon />;
 
-  console.log("getting here" , budgets)
 
   return (
     <Menus>

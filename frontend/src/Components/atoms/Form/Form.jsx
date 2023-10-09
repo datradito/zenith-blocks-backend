@@ -1,10 +1,15 @@
 import styled, { css } from "styled-components";
 
 const Form = styled.form`
+box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  gap: .45rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
   ${(props) =>
     props.type === "regular" &&
     css`
-      padding: 2.4rem 4rem;
 
       /* Box */
       background-color: var(--color-grey-0);

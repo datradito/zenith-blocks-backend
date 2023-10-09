@@ -1,5 +1,4 @@
 import React from 'react'
-import { Box } from '@mui/material';
 import Button from "../../atoms/Button/Button.jsx";
 import List from "../../atoms/List/List.jsx";
 import Container from '../../atoms/Container/Container.jsx';

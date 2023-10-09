@@ -6,7 +6,6 @@ import Stack from '@mui/material/Stack';
 import ButtonAtom from '../Button';
 import CircularIndeterminate from '../Loader/loader';
 import useSaveProposalDetails from '../../hooks/Proposals/useSetAmountProposal';
-import CustomizedSnackBar from '../SnackBar/SnackBar';
 import { useDispatch } from 'react-redux';
 import { addAmount } from '../../../actions/currentProposal/amount';
 import { useNavigate } from 'react-router-dom';
@@ -76,7 +75,6 @@ export default function DetailPanelContent({ row }) {
     };
 
     if (loading) return <CircularIndeterminate />;
-    if (error) return <CustomizedSnackBar message={error.message} severity="error" autoOpen={true} />;
 
     return (
         <Box style={{ ...dialogContainerStyle, display: dialogOpen ? 'flex' : 'none' }}>

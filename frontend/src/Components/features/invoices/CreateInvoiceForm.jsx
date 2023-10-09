@@ -1,162 +1,243 @@
-import React from "react";
-import { useDispatch } from "react-redux";
-import { updateHeader } from "../../../actions/createInvoiceAction";
-import { Box, Grid, TextField, Typography } from "@mui/material";
-import CurrencyDropdown from "../../atoms/CurrencyDropdown/CurrencyDropdown";
-import UnstyledSelectBasic from "../../atoms/SelectDropdown/SelectDropdown";
+import { useFormContext } from "react-hook-form";
+
+import { categories, currencies } from "../../pages/Category/Category";
+
+import TextArea from "../../atoms/TextArea/TextArea";
+import StyledSelect from "../../atoms/SelectDropdown/SelectDropdown";
+import Form from "../../atoms/Form/Form";
+import FormRow from "../../atoms/FormRow/FormRow";
+import Input from "../../atoms/Input/Input";
 import FileUpload from "../../atoms/FileUpload/FileUpload";
-import { FormControl } from "@mui/material";
-import CustomizedSnackbars from "../../atoms/SnackBar/SnackBar";
-import { categories } from "../../pages/Category/Category";
+import Option from "../../atoms/Option/Option";
+import Container from "../../atoms/Container/Container";
+import { Typography } from "@mui/material";
 
-const componentStyles = {
-  formInputFieldStyles: {
-    color: "white",
-    padding: "0",
-    border: ".08rem #2c2c2c solid",
-    borderRadius: "5px",
-    backgroundColor: "#24292E",
-
-    "& .MuiInputBase-input": {
-      padding: "0.5rem",
-      color: "white",
-      borderRadius: "5px",
-      fontSize: ".85rem",
-      fontWeight: "small",
-    },
-
-    "& .MuiInputBase-root": {
-      padding: "0",
-    },
-    "& .MuiSvgIcon-root": {
-      color: "white",
-    },
-  },
-  typographyLabel: {
-    color: "gray",
-    fontSize: ".70rem",
-  },
-  boxStyles: {
-    display: "flex",
-    flexDirection: "column",
-    margin: "0rem auto",
-    textAlign: "left",
-    borderBottom: ".05rem #2C2C2C solid",
-  },
-  containerStyles: {
-    padding: "2rem ",
-  },
-};
-
-function CreateInvoiceForm({ invoice, errors }) {
-  const dispatch = useDispatch();
-
-  const handleChange = (key, value) => {
-    dispatch(updateHeader(key, value));
-  };
+function CreateInvoiceForm() {
+  const methods = useFormContext();
+  const { errors, defaultValues } = methods.formState;
 
   return (
-    <>
-      <Box sx={componentStyles.boxStyles}>
-        <Grid container sx={componentStyles.containerStyles} spacing={3}>
-          {Object.entries(invoice).map(([key, value], index) => (
-            <Grid
-              item
-              xs={
-                index < 2
-                  ? 6
-                  : index === 2
-                  ? 7
-                  : index === 3
-                  ? 3
-                  : index === 4
-                  ? 2
-                  : index > 4 && index < 7
-                  ? 4
-                  : index === 7
-                  ? 4
-                  : 6
-              }
-              key={index}
-            >
-              <Typography variant="h6" sx={componentStyles.typographyLabel}>
-                {key}
-              </Typography>
-              {key === "Currency" ? (
-                <CurrencyDropdown
-                  value={invoice[key]}
-                  sx={componentStyles.formInputFieldStyles}
-                  onChange={(e) => handleChange(key, e.target.value)}
-                />
-              ) : key === "Due Date" || key === "Invoice Date" ? (
-                <FormControl required fullWidth>
-                  <TextField
-                    required
-                    type="date"
-                    fullWidth
-                    value={invoice[key]}
-                    sx={componentStyles.formInputFieldStyles}
-                    onChange={(e) => handleChange(key, e.target.value)}
-                  />
-                </FormControl>
-              ) : key === "Category" ? (
-                <UnstyledSelectBasic
-                  defaultValue={invoice.Category}
-                  values={categories}
-                  onChange={(value) => handleChange(key, value)}
-                />
-              ) : key === "Upload Invoice" ? (
-                <FileUpload handleChange={handleChange} key={key} />
-              ) : key === "Invoice Number" ? (
-                <TextField
-                  required
-                  fullWidth
-                  value={invoice[key]}
-                  sx={componentStyles.formInputFieldStyles}
-                  onChange={(e) => handleChange(key, e.target.value)}
-                />
-              ) : key === "Total" ? (
-                <TextField
-                  required
-                  type="number"
-                  fullWidth
-                  value={invoice[key]}
-                  sx={componentStyles.formInputFieldStyles}
-                  onChange={(e) => handleChange(key, e.target.value)}
-                />
-              ) : (
-                <TextField
-                  name={key}
-                  required
-                  value={invoice[key]}
-                  onChange={(e) => handleChange(key, e.target.value)}
-                  fullWidth
-                  multiline={key === "Description" || key === "Upload Invoice"}
-                  rows={
-                    key === "Description" || key === "Upload Invoice" ? 4 : 1
-                  }
-                  InputProps={{
-                    readOnly:
-                      key === "Proposal" ||
-                      key === "Goverance" ||
-                      key === "Ipfs Link" ||
-                      key === "Total Budget",
-                  }}
-                  sx={componentStyles.formInputFieldStyles}
-                />
-              )}
-            </Grid>
-          ))}
-          {errors && (
-            <CustomizedSnackbars
-              message={errors}
-              severity="error"
-              autoOpen={true}
+    <Container
+      style={{
+        border: "none",
+        // margin: "2rem",
+      }}
+    >
+      <Typography
+        variant="subtitle1"
+        style={{
+          color: "cream",
+          width: "100%",
+          textAlign: "left",
+          marginLeft: "2rem",
+        }}
+      >
+        Invoice #
+      </Typography>
+      <Form
+        style={{
+          border: "none",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "flex-end",
+        }}
+      >
+        <Container
+          style={{
+            border: "none",
+            margin: "2rem",
+            width: "100%",
+            display: "flex",
+            gap: "1rem",
+          }}
+        >
+          <FormRow
+            style={{
+              minWidth: "70%",
+            }}
+            label="Proposal"
+          >
+            <Input
+              type="text"
+              id="proposal"
+              readOnly
+              defaultValue={defaultValues.Proposal}
+              {...methods.register("proposal")}
             />
-          )}
-        </Grid>
-      </Box>
-    </>
+          </FormRow>
+          <FormRow label="Category" error={errors?.category?.message}>
+            <StyledSelect
+              {...methods.register("category", {
+                required: "This field is required",
+              })}
+              onChange={(e) => methods.setValue("category", e.target.value)}
+            >
+              {categories.map((category) => (
+                <Option key={category} value={category}>
+                  {category}
+                </Option>
+              ))}
+            </StyledSelect>
+          </FormRow>
+        </Container>
+
+        <Typography
+          variant="subtitle1"
+          style={{
+            color: "cream",
+            width: "100%",
+            textAlign: "left",
+            marginLeft: "2rem",
+          }}
+        >
+          Invoice Details
+        </Typography>
+        <Container
+          style={{
+            border: "none",
+            display: "flex",
+            margin: "2rem",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+            gap: "1rem",
+          }}
+        >
+          <FormRow
+            style={{
+              minWidth: "57%",
+            }}
+            label="Recipient"
+            error={errors?.recipient?.message}
+          >
+            <Input
+              type="text"
+              id="recipient"
+              {...methods.register("recipient", {
+                required: "Reciepient is required",
+              })}
+            />
+          </FormRow>
+          <FormRow
+            style={{
+              maxWidth: "20%",
+            }}
+            label="Invoice #"
+            error={errors?.invoiceNumber?.message}
+          >
+            <Input
+              type="text"
+              id="invoiceNumber"
+              {...methods.register("invoiceNumber", {
+                required: "Number is required",
+              })}
+            />
+          </FormRow>
+          <FormRow
+            style={{
+              maxWidth: "20%",
+            }}
+            label="Currency"
+            error={errors?.currency?.message}
+          >
+            <StyledSelect
+              {...methods.register("currency", {
+                required: "This field is required",
+              })}
+              onChange={(e) => methods.setValue("currency", e.target.value)}
+            >
+              {currencies.map((currency) => (
+                <option key={currency} value={currency}>
+                  {currency}
+                </option>
+              ))}
+            </StyledSelect>
+          </FormRow>
+
+          <FormRow
+            style={{
+              minWidth: "34%",
+            }}
+            label="Date"
+          >
+            <Input
+              type="date"
+              id="date"
+              value={defaultValues["date"]}
+              {...methods.register("date")}
+            />
+          </FormRow>
+          <FormRow
+            style={{
+              minWidth: "37%",
+            }}
+            label="Due Date"
+            error={errors?.dueDate?.message} // Include the error message
+          >
+            <Input
+              type="date"
+              id="dueDate"
+              {...methods.register("dueDate", {
+                required: "This field is required",
+                validate: (value) => {
+                  const selectedDate = new Date(defaultValues["date"]);
+                  const dueDate = new Date(value);
+
+                  return dueDate <= selectedDate
+                    ? "Due Date must be after the Date"
+                    : undefined;
+                },
+              })}
+            />
+          </FormRow>
+          <FormRow label="Amount" error={errors?.amount?.message}>
+            <Input
+              type="number"
+              id="amount"
+              {...methods.register("amount", {
+                max: {
+                  value: defaultValues["Total Budget"],
+                  message: "Amount cannot be greater than Total Budget",
+                },
+                required: "This field is required",
+              })}
+            />
+          </FormRow>
+          <FormRow
+            style={{
+              minWidth: "50%",
+            }}
+            label="Description"
+            error={errors?.description?.message}
+          >
+            <TextArea
+              type="text"
+              id="description"
+              {...methods.register("description", {
+                required: "This field is required",
+              })}
+            />
+          </FormRow>
+          <FormRow
+            style={{
+              minWidth: "48%",
+              minHeight: "5rem",
+            }}
+            label="File Upload"
+            error={errors?.description?.message}
+          >
+            <FileUpload
+              style={{
+                minHeight: "5rem",
+              }}
+              type="file"
+              id="invoicepdf"
+              {...methods.register("invoicepdf")}
+            >
+              </FileUpload>
+          </FormRow>
+        </Container>
+      </Form>
+    </Container>
   );
 }
 
