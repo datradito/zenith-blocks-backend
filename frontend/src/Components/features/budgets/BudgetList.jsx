@@ -1,31 +1,17 @@
 import Table from "../../molecules/Table/Table";
 import Menus from "../../molecules/Menus/Menus";
-import { useSearchParams } from "react-router-dom";
+import { useGetBudgets } from "../../hooks/Budgets/useGetBudgets";
 import EmptyIcon from "../../atoms/EmptyIcon/EmptyIcon";
 import BudgetRow from "./BudgetRow";
+import CircularIndeterminate from "../../atoms/Loader/loader";
 
-function BudgetList({ isLoading, budgets }) {
-  //   const [searchParams] = useSearchParams();
+function BudgetList({ amount, proposalId }) {
 
-  //   if (!budgets.length) return <EmptyIcon />;
+  const { isLoading, error, budgets } = useGetBudgets(amount, proposalId);
 
-  //   // 1) FILTER
-  //   const filterValue = searchParams.get("discount") || "all";
+  if (isLoading) return <CircularIndeterminate />;
+  if (error) return <EmptyIcon />;
 
-  //   let filteredbudgets;
-  //   if (filterValue === "all") filteredbudgets = budgets;
-  //   if (filterValue === "no-discount")
-  //     filteredbudgets = budgets.filter((budget) => budget.amount === 0);
-  //   if (filterValue === "with-discount")
-  //     filteredbudgets = budgets.filter((budget) => budget.amount > 0);
-
-  //   // 2) SORT
-  //   const sortBy = searchParams.get("sortBy") || "startDate-asc";
-  //   const [field, direction] = sortBy.split("-");
-  //   const modifier = direction === "asc" ? 1 : -1;
-  //   const sortedbudgets = filteredbudgets.sort(
-  //     (a, b) => (a[field] - b[field]) * modifier
-  //   );
 
   return (
     <Menus>
@@ -36,18 +22,15 @@ function BudgetList({ isLoading, budgets }) {
           <div>Currency</div>
           <div>Breakdown</div>
           <div>Remaining</div>
-                  <div>Invoices</div>
-                  {/* <div>Action</div> */}
+          <div>Invoices</div>
+          {/* <div>Action</div> */}
         </Table.Header>
-
-        <Table.Body
-          data={budgets}
-          // data={filteredCabins}
-          //   data={sortedInvoices}
-          render={(budget) => (
-            <BudgetRow budget={budget} key={budget.id} />
-          )}
-        />
+          <Table.Body
+            data={budgets}
+            // data={filteredCabins}
+            //   data={sortedInvoices}
+            render={(budget) => <BudgetRow budget={budget} key={budget.id} />}
+          />
       </Table>
     </Menus>
   );

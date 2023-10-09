@@ -1,33 +1,21 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { useParams } from "react-router-dom";
-import { Box, Stack } from "@mui/material";
+import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setProposal } from "../../../actions/currentProposal/index.js";
 import { refreshState } from "../../../actions/createBudgetAction/index.js";
-import ItemCard from "../../atoms/ItemCard/ItemCard.jsx";
+import ItemCardComponent from "../../atoms/ItemCard/ItemCard.jsx";
 import SubHeader from "../../molecules/SubHeader/SubHeader.jsx";
 import CircularIndeterminate from "../../atoms/Loader/loader.jsx";
+import GoBack from "../../atoms/GoBack/GoBack.jsx";
 import useProposalDetails from "../../hooks/Proposals/useProposalDetails.jsx";
-import { useGetBudgets } from "../../hooks/Budgets/useGetBudgets.jsx";
-import SnackbarMessage from "../../atoms/SnackBarGql/SnackBarGql.jsx";
-import EmptyIcon from "../../atoms/EmptyIcon/EmptyIcon.jsx";
+import Label from "../../atoms/Label/Label.jsx";
 import BudgetList from "../../features/budgets/BudgetList.jsx";
-
-const BoxStyle = {
-  width: "90%",
-  margin: "0rem auto",
-  textAlign: "center",
-  color: "white",
-  border: ".05rem #2c2c2c solid",
-  marginTop: "1rem",
-  borderRadius: 3,
-  paddingBottom: "1rem",
-};
-
+import Container from "../../atoms/Container/Container.jsx";
 
 function ProposalDetailView() {
   const { proposalId } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { loading, error, data } = useProposalDetails(proposalId);
   const { proposals } = useSelector((state) => state.currentProposalAmounts);
@@ -35,11 +23,6 @@ function ProposalDetailView() {
   const [amount, setProposalAmount] = useState(0);
   const [status, setStatus] = useState();
 
-  const {isLoading, budgets} = useGetBudgets(
-    proposalId,
-    amount
-  );
-  
   dispatch(refreshState());
 
   const filteredProposal = useMemo(() => {
@@ -68,80 +51,55 @@ function ProposalDetailView() {
   }, [amount]);
 
   //TOdo: move budget loading to tableDisplay to localize the loading
-  if (loading || isLoading) return <CircularIndeterminate />;
-
-
-  let dataForItemCard = {
-    Goverance: data.proposal.space.name,
-    "Total Budget": amount,
-    Proposal: data.proposal.title,
-  };
+  if (loading ) return <CircularIndeterminate />;
 
 
   const handleUpdateProposal = async () => {
-    dispatch(setProposal(data.proposal));
-  };
-
-  const componentButtonConfig = [
-    {
-      label: "Export CSV",
-      variant: "contained",
-      innerText: "Export CSV",
-      backgroundColor: "#282A2E",
-      data: budgets || [],
-      filetype: "budget",
-    },
-    {
-      label: "Create Budget",
-      variant: "contained",
-      onClick: handlePageValidation || handleUpdateProposal,
-      innerText: "Create Budget",
-      disabled: status || !amount,
-      ml: "0.5rem",
-      type: "link",
-      to: status || !amount ? null : `/proposal/update/${proposalId}`,
-    },
-  ];
-
-  const currentPathConfig = {
-    path: "Proposals",
-    to: `/proposals`,
+    (!amount || status) && handlePageValidation();
+    !status && !pageWarnings && await dispatch(refreshState());
+    navigate(`/proposal/update/${proposalId}`);
   };
 
   return (
-    <div>
-      <SubHeader
-        buttonConfig={componentButtonConfig}
-        currentPath={currentPathConfig}
-        previousPath="Proposals"
-      />
-      <Box sx={BoxStyle}>
-        <Stack
-          padding={1}
-          direction={"row"}
-          justifyContent={"flex-start"}
-          borderBottom={".05rem #2c2c2c solid"}
+    <>
+      <SubHeader.Container>
+        <SubHeader.List
+          sx={{
+            flexDirection: "column",
+            gap: "2.5rem",
+          }}
         >
-          {Object.entries(dataForItemCard).map(([key, value]) => (
-            <ItemCard key={key} label={key} value={value} />
-          ))}
-        </Stack>
-      {isLoading ? (
-        <CircularIndeterminate />
-      ) : budgets && budgets.length > 0 ? (
-        <BudgetList isLoading={isLoading} budgets={budgets} />
-      ) : (
-        <EmptyIcon />
-      )}
-        {pageWarnings && (
-          <SnackbarMessage
-            severity="error"
-            message={pageWarnings}
-            open={pageWarnings ? true : false}
+          <Label>Proposals | Budgets</Label>
+          <GoBack>
+            <Label>Proposals</Label>
+          </GoBack>
+        </SubHeader.List>
+        <SubHeader.List>
+          <SubHeader.ActionButton
+            label="CSV Report"
+            sx={{
+              backgroundColor: "#282A2E",
+            }}
           />
-        )}
-      </Box>
-    </div>
+          <SubHeader.ActionButton
+            label="Create Budget"
+            onClick={handleUpdateProposal}
+            disabled={status || !amount}
+          />
+        </SubHeader.List>
+      </SubHeader.Container>
+
+      <ItemCardComponent />
+      
+      <Container
+        style={{
+          border: "0.05rem #2c2c2c solid",
+          margin:"1rem 0"
+        }}
+      >
+          <BudgetList amount={amount} proposalId={proposalId} />
+      </Container>
+    </>
   );
 }
 

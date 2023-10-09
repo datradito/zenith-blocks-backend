@@ -1,5 +1,4 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 
@@ -23,9 +22,9 @@ const currencies = [
 ];
 
 const currencyStyles = {
+    textAlign: "left",
     width: "100%",
     backgroundColor: "#24292E",
-    border: "1px solid #2C2C2C",
     color: "#24292E",
     "& .MuiTableCell-root": {
     color: "white",
@@ -52,6 +51,11 @@ const currencyStyles = {
     fontSize: ".85rem",
     fontWeight: "small",
     },
+
+      "& ::hover" :{
+    outline: "none",
+    border: "0.08rem #2c2c2c solid"
+  }
 };
 
 export default function CurrencyDropdown({ onChange, value, sx }) {
@@ -61,7 +65,7 @@ export default function CurrencyDropdown({ onChange, value, sx }) {
                     onChange={onChange}
                     select
                     defaultValue={value}
-                    sx={[sx , currencyStyles]}
+                    sx={currencyStyles}
                 >
                     {currencies.map((option) => (
                         <MenuItem

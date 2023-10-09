@@ -1,15 +1,22 @@
 import ResponsiveHeaderBar from "../Components/DisplayElements/Header/Header.jsx";
 import { Outlet } from "react-router-dom";
-import React from "react";
-import { Box } from "@mui/system";
+import React from 'react';
+import Container from "../Components/atoms/Container/Container.jsx";
 
 export default function Root() {
-  return (
-    <>
-      <ResponsiveHeaderBar />
-      <Box style={{ header: "80%" }}>
-        <Outlet />
-      </Box>
-    </>
-  );
+    return (
+      <>
+        <ResponsiveHeaderBar />
+            <Container
+                style={{
+                    width: "90%",
+                    margin: "0 auto",
+                    paddingTop: "1rem",
+                    border: "none"
+                }}
+            >
+          <Outlet />
+        </Container>
+      </>
+    );
 }

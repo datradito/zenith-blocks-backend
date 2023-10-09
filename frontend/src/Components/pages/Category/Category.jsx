@@ -3,7 +3,7 @@
 // import { YOUR_CONTRACT_ABI, YOUR_CONTRACT_ADDRESS } from "./contractConfig"; // import your contract's ABI and address
 
 export const categories = ['Engineering', 'Sales', 'Accounting', 'Miscellaneous'];
-
+export const currencies = ['USD', 'EUR', 'BTC', 'JPY'];
 // function CreateCategoryButton() {
 //     const [isAllowed, setIsAllowed] = useState(false);
 //     const [loading, setLoading] = useState(false);

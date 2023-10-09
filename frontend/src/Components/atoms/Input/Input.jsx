@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const StyledSelect = styled.select`
+const Input = styled.input`
   box-sizing: border-box;
   border: 0.08rem #2c2c2c solid;
   background-color: #24292e;
@@ -15,17 +15,12 @@ const StyledSelect = styled.select`
     box-shadow: var(--shadow-sm);
   }
   &:disabled {
+    color: #24292f;
+  }
+
+  &:read-only {
     color: grey;
   }
 `;
 
-function SelectDropdown({ children, ...rest }) {
-  return (
-    <StyledSelect {...rest}>
-      {children}
-    </StyledSelect>
-  );
-}
-
-export default SelectDropdown;
-  
+export default Input;

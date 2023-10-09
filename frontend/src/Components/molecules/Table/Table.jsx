@@ -79,7 +79,7 @@ function Row({ children }) {
 
 function Body({ data, render }) {
 
-  if (!data.length) return <EmptyIcon />;
+  if (!data?.length) return <EmptyIcon />;
 
   return <>{data.map(render)}</>;
 }

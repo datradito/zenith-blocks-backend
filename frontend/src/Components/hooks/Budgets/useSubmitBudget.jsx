@@ -13,24 +13,22 @@ export const useSubmitBudget = () => {
     const key = ["budgets", proposalId];
 
     const { mutate: submitBudget, isLoading: isSubmitting } = useMutation({
-        mutationFn: async (budgetData) => {
-            await client.mutate({
-              mutation: SUBMIT_BUDGET_MUTATION,
-              variables: {
-                budget: budgetData,
-              },
-            });
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-              queryKey: key,
-            });
-            toast.success("Budget created successfully");
-            navigate(`/proposals/${proposalId}`);
-        },
-        onError: (err) => {
-            toast.error(err.message);
-        },
+      mutationFn: async (budgetData) => {
+        await client.mutate({
+          mutation: SUBMIT_BUDGET_MUTATION,
+          variables: {
+            budget: budgetData,
+          },
+        });
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: key,
+        });
+        toast.success("Budget created successfully");
+        navigate(`/proposals/${proposalId}`);
+      },
+      onError: (err) => toast.error(err.message),
     });
 
     return { isSubmitting, submitBudget };

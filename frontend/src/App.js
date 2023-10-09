@@ -31,21 +31,11 @@ import PaymentCreation, {
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const ProposalDetailView = lazy(() =>
-  import("./Components/pages/Proposals/ProposalDetailView")
-);
-const CreateBudget = lazy(() =>
-  import("./Components/pages/Budgets/CreateBudget")
-);
-const InvoiceListView = lazy(() =>
-  import("./Components/pages/Invoices/InvoiceListView")
-);
-const InvoiceCreation = lazy(() =>
-  import("./Components/pages/Invoices/InvoiceCreation")
-);
-const Dashboard = lazy(() =>
-  import("./Components/pages/walletDashboard/Dashboard")
-);
+const ProposalDetailView = lazy(() => import("./Components/pages/Proposals/ProposalDetailView"));
+const CreateBudget = lazy(() => import("./Components/pages/Budgets/CreateBudget"));
+const InvoiceListView = lazy(() => import("./Components/pages/Invoices/InvoiceListView"));
+const InvoiceCreation = lazy(() => import("./Components/pages/Invoices/CreateInvoice"));
+const Dashboard = lazy(() => import("./Components/pages/walletDashboard/Dashboard"));
 const Swap = lazy(() => import("./Components/pages/Swap/Swap"));
 const Proposals = lazy(() => import("./Components/pages/Proposals/Proposals"));
 const Accounts = lazy(() => import("./Components/pages/Accounts/Accounts"));
