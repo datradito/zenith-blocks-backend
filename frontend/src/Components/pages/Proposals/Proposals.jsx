@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { NetworkStatus } from '@apollo/client';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -8,34 +8,33 @@ import CircularIndeterminate from '../../atoms/Loader/loader.jsx';
 import Label from '../../atoms/Label/Label.jsx';
 import useProposals from '../../hooks/Proposals/useProposals.jsx';
 import ProposalCard from './ProposalCard.jsx';
-import { useError } from '../../../Routes/ErrorRouterProvider.jsx';
 import { toast } from 'react-toastify';
 import { Typography } from '@mui/material';
-
-
-const ProposalListCardStyle = {
-  width: '90%',
-  margin: '0 auto',
-  color: 'white',
-};
+import Container from '../../atoms/Container/Container.jsx';
 
 const pagination = {
-  width: '90%',
-  margin: '1rem',
-  alignItems: 'flex-end',
-  color: "white"
-}
+  width: "90%",
+  margin: "1rem",
+  alignItems: "flex-end",
+  color: "white",
+};
 
 const Proposals = () => {
-  const { handleError } = useError();
 
-  const { loading, error, data, syncedAt, handleExportCSV, handleSyncProposals, handleSkipValueChange, networkStatus } = useProposals();
+  const {
+    loading,
+    error,
+    data,
+    syncedAt,
+    handleSyncProposals,
+    handleSkipValueChange,
+    networkStatus,
+  } = useProposals();
 
 
   if (networkStatus === NetworkStatus) return <CircularIndeterminate />;
   if (loading) return <CircularIndeterminate />;
-  if (error) return handleError(toast.error(error.message));
-
+  if(error) toast.error(error.message);
 
   return (
     <>
@@ -64,7 +63,11 @@ const Proposals = () => {
           />
         </SubHeader.List>
       </SubHeader.Container>
-      <Box sx={ProposalListCardStyle}>
+      <Container
+        style={{
+          border: "none"
+        }}
+      >
         {data.proposals.map((item) => {
           return (
             <Stack
@@ -80,7 +83,7 @@ const Proposals = () => {
             </Stack>
           );
         })}
-      </Box>
+      </Container>
       <Stack sx={pagination}>
         <PaginationControlled handleSkip={handleSkipValueChange} />
       </Stack>

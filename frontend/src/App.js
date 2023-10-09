@@ -1,29 +1,35 @@
-import './App.css';
-import React, { Suspense, lazy } from 'react';
-import { ApolloProvider } from '@apollo/client';
+import "./App.css";
+import React, { Suspense, lazy } from "react";
+import { ApolloProvider } from "@apollo/client";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./apolloConfig/client";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { storeConfig, persistor } from './store/storeConfigure';
-import { PersistGate } from 'redux-persist/integration/react';
+import {
+  Route,
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+} from "react-router-dom";
+import { Provider } from "react-redux";
+import { storeConfig, persistor } from "./store/storeConfigure";
+import { PersistGate } from "redux-persist/integration/react";
 import ErrorPage from "./Routes/ErrorPage";
-import CircularIndeterminate from './Components/atoms/Loader/loader';
-import Root from './Routes/Root';
+import CircularIndeterminate from "./Components/atoms/Loader/loader";
+import Root from "./Routes/Root";
 
-import ErrorProvider from './Routes/ErrorRouterProvider';
-import ProposalRoute from './Routes/ProposalDependentRoutes';
-import InvoiceRoutes from './Routes/InvoiceDependentRoutes';
+import ErrorProvider from "./Routes/ErrorRouterProvider";
+import ProposalRoute from "./Routes/ProposalDependentRoutes";
+import InvoiceRoutes from "./Routes/InvoiceDependentRoutes";
 
-import { client } from './apolloConfig/client'; 
-import PrivateRoute from './Routes/PrivateRoutes';
-import PaymentCreation, { paymentLoader } from './Components/pages/Payments/PaymentCreation';
-
+import { client } from "./apolloConfig/client";
+import PrivateRoute from "./Routes/PrivateRoutes";
+import PaymentCreation, {
+  paymentLoader,
+} from "./Components/pages/Payments/PaymentCreation";
 
 // import { dashboardLoader } from './Components/pages/walletDashboard/Dashboard';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ProposalDetailView = lazy(() => import("./Components/pages/Proposals/ProposalDetailView"));
 const CreateBudget = lazy(() => import("./Components/pages/Budgets/CreateBudget"));
@@ -34,10 +40,7 @@ const Swap = lazy(() => import("./Components/pages/Swap/Swap"));
 const Proposals = lazy(() => import("./Components/pages/Proposals/Proposals"));
 const Accounts = lazy(() => import("./Components/pages/Accounts/Accounts"));
 
-
 function App() {
-  
-
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route
@@ -133,4 +136,3 @@ function App() {
 }
 
 export default App;
-

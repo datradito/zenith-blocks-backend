@@ -3,9 +3,6 @@ import Button from "../../atoms/Button/Button.jsx";
 import List from "../../atoms/List/List.jsx";
 import Container from '../../atoms/Container/Container.jsx';
 
-import { CSVLink } from "react-csv";
-
-  // border: 0.05rem #2c2c2c solid;
 function SubHeader({ children, sx }) {
   return (
     <Container
