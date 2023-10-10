@@ -27,7 +27,6 @@ function InvoiceList({isLoading, invoices}) {
 //   const sortedInvoices = filteredInvoices.sort(
 //     (a, b) => (a[field] - b[field]) * modifier
 //   );
-  console.log("invoices", invoices)
   
   return (
     <Menus>

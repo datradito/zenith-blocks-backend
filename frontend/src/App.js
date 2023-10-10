@@ -57,19 +57,14 @@ function App() {
           errorElement={<ErrorPage />}
         />
         <Route
-          path="proposals/:proposalId"
+          path="proposals/:proposalId/budgets"
           element={<ProposalDetailView />}
           errorElement={<ErrorPage />}
         />
-        <Route path="proposal" element={<ProposalRoute />}>
+        <Route path="budgets" element={<ProposalRoute />}>
           <Route
-            path="update/:proposalId"
+            path=":proposalId/create"
             element={<CreateBudget />}
-            errorElement={<ErrorPage />}
-          />
-          <Route
-            path=":proposalId/invoices"
-            element={<InvoiceListView />}
             errorElement={<ErrorPage />}
           />
         </Route>
@@ -92,12 +87,12 @@ function App() {
             element={<InvoiceListView />}
             errorElement={<ErrorPage />}
           />
-          <Route
-            path=":budgetId/createInvoice"
-            errorElement={<ErrorPage />}
-            element={<InvoiceCreation />}
-          />
         </Route>
+        <Route
+          path="invoices/:budgetId/create"
+          errorElement={<ErrorPage />}
+          element={<InvoiceCreation />}
+        />
         <Route
           path="dashboard"
           element={<Dashboard />}

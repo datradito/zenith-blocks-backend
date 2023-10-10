@@ -36,7 +36,7 @@ const ResponsiveHeaderBar = () => {
         { name: 'Swap', url: '/swap' },
         { name: 'Dashboard', url: '/dashboard' }) : Budget ?
             pages.push(
-                { name: 'Invoices', url: `/proposal/${proposal.id}/invoices` },
+                { name: 'Invoices', url: `/proposals/${proposal.id}/invoices` },
                 { name: 'Proposals', url: '/proposals' },
                 { name: 'Accounts', url: '/accounts' }
             ) : pages.push({ name: 'Proposals', url: '/proposals' },

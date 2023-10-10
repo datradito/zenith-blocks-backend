@@ -10,15 +10,19 @@ import EmptyIcon from '../../atoms/EmptyIcon/EmptyIcon';
 import Label from '../../atoms/Label/Label';
 import GoBack from '../../atoms/GoBack/GoBack';
 import Container from '../../atoms/Container/Container';
+import Breadcrumbs from '../../atoms/BreadCrumbs/BreadCrumbs';
 
 
 function InvoiceListView() {
-  let { Budget } = useSelector(state => state.currentBudget);
+    const { proposal, Budget } = useSelector((state) => ({
+      proposal: state.currentProposal.proposal,
+      Budget: state.currentBudget.Budget,
+    }));
   const { isLoading, invoices } = useGetAllInvoices(Budget?.id);
   const navigate = useNavigate();
   
   const handleCreateInvoice = () => {
-    navigate(`/budgets/${Budget.id}/createinvoice`);
+    navigate(`/invoices/${Budget.id}/create`);
   };
     
 return (
@@ -30,7 +34,9 @@ return (
           gap: "2.5rem",
         }}
       >
-        <Label>Proposals | Budgets | Invoices</Label>
+        <Label>
+          <Breadcrumbs id={proposal.id} />
+        </Label>
         <GoBack>
           <Label>Budgets</Label>
         </GoBack>

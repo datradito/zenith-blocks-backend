@@ -9,6 +9,7 @@ import CircularIndeterminate from "../../atoms/Loader/loader.jsx";
 import GoBack from "../../atoms/GoBack/GoBack.jsx";
 import useProposalDetails from "../../hooks/Proposals/useProposalDetails.jsx";
 import Label from "../../atoms/Label/Label.jsx";
+import Breadcrumbs from "../../atoms/BreadCrumbs/BreadCrumbs.jsx";
 import BudgetList from "../../features/budgets/BudgetList.jsx";
 import Container from "../../atoms/Container/Container.jsx";
 
@@ -42,7 +43,8 @@ function ProposalDetailView() {
 
   useEffect(() => {
     if (data) {
-      dispatch(setProposal(data.proposal));
+      console.log(data);
+      // dispatch(setProposal(data.proposal));
     }
   }, [data]);
 
@@ -56,8 +58,7 @@ function ProposalDetailView() {
 
   const handleUpdateProposal = async () => {
     (!amount || status) && handlePageValidation();
-    !status && !pageWarnings && await dispatch(refreshState());
-    navigate(`/proposal/update/${proposalId}`);
+    !status && !pageWarnings && navigate(`/budgets/${proposalId}/create`);
   };
 
   return (
@@ -69,7 +70,9 @@ function ProposalDetailView() {
             gap: "2.5rem",
           }}
         >
-          <Label>Proposals | Budgets</Label>
+          <Label>
+            <Breadcrumbs />
+          </Label>
           <GoBack>
             <Label>Proposals</Label>
           </GoBack>
@@ -90,14 +93,14 @@ function ProposalDetailView() {
       </SubHeader.Container>
 
       <ItemCardComponent />
-      
+
       <Container
         style={{
           border: "0.05rem #2c2c2c solid",
-          margin:"1rem 0"
+          margin: "1rem 0",
         }}
       >
-          <BudgetList amount={amount} proposalId={proposalId} />
+        <BudgetList amount={amount} proposalId={proposalId} />
       </Container>
     </>
   );
