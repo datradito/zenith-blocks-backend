@@ -70,7 +70,7 @@ function ProposalCard({
         </ColumnItem>
       </SubItem>
       <SubItem>
-        <Link to={`/proposals/${item.id}`} style={{ textDecoration: "none" }}>
+        <Link to={`/proposals/${item.id}/budgets`} style={{ textDecoration: "none" }}>
           <ColumnItem sx={label}>Proposal</ColumnItem>
           <ColumnItem>{item.title}</ColumnItem>
         </Link>

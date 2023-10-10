@@ -13,6 +13,8 @@ import Label from '../../atoms/Label/Label';
 import Container from '../../atoms/Container/Container';
 
 import CreateBudgetForm from '../../features/budgets/CreateBudgetForm';
+import { toast } from 'react-toastify';
+import Breadcrumbs from '../../atoms/BreadCrumbs/BreadCrumbs';
 
 function CreateBudget() {
   let { proposal } = useSelector(state => state.currentProposal);
@@ -35,16 +37,15 @@ function CreateBudget() {
 
 
   const handleCreateBudget = (data) => {
-    let proposalId = proposal.id;
-
     const budgetData = {
       amount: parseInt(data.amount),
       currency: data.currency,
-      proposalid: proposalId,
+      proposalid: proposal.id,
       category: data.category,
-      breakdown: parseInt(data.amount) / parseInt(filteredProposalAmount) * 100,
-      rootpath: proposalId
-    }
+      breakdown:
+        (parseInt(data.amount) / parseInt(filteredProposalAmount)) * 100,
+      rootpath: proposal.id,
+    };
 
     submitBudget(
       { ...budgetData }
@@ -52,7 +53,7 @@ function CreateBudget() {
   };
 
   const onError = (errors) => {
-    // console.log(errors);
+    toast.error(errors.message);
   }
 
   if (isSubmitting) {
@@ -68,7 +69,10 @@ function CreateBudget() {
             gap: "2.5rem",
           }}
         >
-          <Label>Proposals | Budget</Label>
+          <Label>
+            <Breadcrumbs id={proposal.id} />
+          </Label>
+
           <GoBack>
             <Label>Budgets</Label>
           </GoBack>
@@ -85,9 +89,7 @@ function CreateBudget() {
           />
           <SubHeader.ActionButton
             label="Save Budget"
-            onClick={() =>
-              methods.handleSubmit(handleCreateBudget, onError)()
-            }
+            onClick={() => methods.handleSubmit(handleCreateBudget, onError)()}
           />
         </SubHeader.List>
       </SubHeader.Container>

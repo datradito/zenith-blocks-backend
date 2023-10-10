@@ -10,12 +10,11 @@ import GoBack from "../../atoms/GoBack/GoBack";
 import Container from "../../atoms/Container/Container";
 
 import { FormProvider, useForm } from "react-hook-form";
+import Breadcrumbs from "../../atoms/BreadCrumbs/BreadCrumbs";
 
 
 
 function InvoiceCreation() {
-
-
   const { isCreating, createInvoice } = useSubmitInvoice();
 
   const { proposal, Budget } = useSelector((state) => ({
@@ -53,7 +52,7 @@ function InvoiceCreation() {
             gap: "2.5rem",
           }}
         >
-          <Label>Proposals | Budgets | Invoices | Create Invoice</Label>
+          <Label><Breadcrumbs id={Budget.id} /></Label>
           <GoBack>
             <Label>Invoices</Label>
           </GoBack>

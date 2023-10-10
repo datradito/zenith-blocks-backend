@@ -67,7 +67,7 @@ function CreateBudgetForm() {
           <Input
             type="number"
             id="totalBudget"
-            readonly
+            readOnly
             defalutValue={defaultValues["Total Budget"]}
             {...methods.register("totalBudget")}
           />
@@ -103,7 +103,7 @@ function CreateBudgetForm() {
           <Input
             type="text"
             id="breakdown"
-            readonly
+            readOnly
             defaultValue={defaultValues.Breakdown}
             {...methods.register("breakdown")}
           />
