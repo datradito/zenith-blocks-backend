@@ -53,6 +53,8 @@ app.get("/tokenPrice", async (req, res) => {
         address: query.addressOne
     })
 
+    console.log(responseOne)
+
     const responseTwo = await Moralis.EvmApi.token.getTokenPrice({
         address: query.addressTwo
     })

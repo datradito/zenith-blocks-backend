@@ -11,9 +11,6 @@ import { useDispatch } from "react-redux";
 import { setIsLoggedIn } from "../../../actions/createAuthAction";
 import { toast } from "react-toastify";
 
-const BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL;
-// const BASE_URL = "http://localhost:8000";
-
 const clearAuthData = () => {
   sessionStorage.removeItem("authToken");
   sessionStorage.removeItem("address");
@@ -65,11 +62,14 @@ export default function WalletConnect() {
         address: address,
         chain: chain?.id,
       };
-      const { data: nonce } = await axios.get(`${BASE_URL}/nonce`, {
-        withCredentials: true,
-      });
+      const { data: nonce } = await axios.get(
+        `${process.env.REACT_APP_API_URL}/nonce`,
+        {
+          withCredentials: true,
+        }
+      );
       const { data } = await axios.post(
-        `${BASE_URL}/siwe`,
+        `${process.env.REACT_APP_API_URL}/siwe`,
         {
           address: userData.address,
           network: userData.network,
@@ -91,7 +91,7 @@ export default function WalletConnect() {
   const sendForVerification = async (message, signature) => {
     try {
       const response = await axios.post(
-        `${BASE_URL}/verify`,
+        `${process.env.REACT_APP_API_URL}/verify`,
         { message, signature },
         {
           headers: {
