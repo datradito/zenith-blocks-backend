@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import ButtonAtom from "../../../atoms/Button";
+import Button from "../../../atoms/Button/Button";
 import { useLazyQuery } from "@apollo/client";
 import { GET_TRANSACTION_HISTORY } from "../../../../ServerQueries/Dashboard/Queries";
 import { transformTransactionHistory } from "../../../../Utility/transformItems";
 import CircularIndeterminate from "../../../atoms/Loader/loader";
-import { Typography } from "@mui/material";
+import Label from "../../../atoms/Label/Label";
 
 function TransferHistory({ chain, wallet, transfers, setTransfers }) {
 
@@ -26,32 +26,17 @@ function TransferHistory({ chain, wallet, transfers, setTransfers }) {
         await getTransactionHistory(wallet);
     }
 
-    const buttonConfig = {
-        innerText: "ERC20 Transfers",
-        onClick: getTokenTransfers,
-    };
-
     if (loading) return <CircularIndeterminate />;
 
     return (
         <>
-                <ButtonAtom config={buttonConfig} />
+                <Button onClick={getTokenTransfers} />
                 {transfers.length > 0 ? (
-
-                    // <Table tableHeaderData={["Token", "Amount", "From", "To", "Block"]} tableBodyData={transfers} />
-
-                    //     data={transfers.map((e) => [
-                    //         e.asset,
-                    //         (Number(e.value)).toFixed(3),
-                    //         `${e.from.slice(0, 4)}...${e.from.slice(38)}`,
-                    //         `${e.to.slice(0, 4)}...${e.to.slice(38)}`,
-                    //         e.blockNum.slice(0, 10),
-                    //     ])}
                 "Table"
 
             ) :
                 (
-                    <Typography variant="subtitle2">This wallet does not have any historic transactions!</Typography>
+                    <Label variant="subtitle2">This wallet does not have any historic transactions!</Label>
                 )
                 }
             </>

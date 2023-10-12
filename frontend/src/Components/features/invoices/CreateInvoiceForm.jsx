@@ -20,7 +20,6 @@ function CreateInvoiceForm() {
     <Container
       style={{
         border: "none",
-        // margin: "2rem",
       }}
     >
       <Typography

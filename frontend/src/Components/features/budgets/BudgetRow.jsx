@@ -18,20 +18,13 @@ const ScrollContainer = styled.div`
 
 function BudgetRow({ budget }) {
   //   const { isDeleting, deleteBudget } = useDeleteBudget();
-//   const { isCreating, createBudget } = useSubmitBudget();
+  //   const { isCreating, createBudget } = useSubmitBudget();
 
-//   const isDeleting = false;
-//   const deleteBudget = () => {
-//     console.log("deleteBudget");
-//   };
-  const {
-    id,
-    category,
-      amount,
-      currency,
-    remaining,
-Breakdown,
-  } = budget;
+  //   const isDeleting = false;
+  //   const deleteBudget = () => {
+  //     console.log("deleteBudget");
+  //   };
+  const { id, category, amount, currency, remaining, Breakdown } = budget;
 
   return (
     <Table.Row>

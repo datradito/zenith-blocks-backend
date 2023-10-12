@@ -1,13 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import axios from "axios";
+
+import { UserContext } from "../../../Utility/Providers/UserProvider";
 import { useAccount, useDisconnect, useNetwork } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useNavigate } from "react-router-dom";
-import { useError } from "../../../Routes/ErrorRouterProvider";
 import { useSignMessage } from "wagmi";
 
 import { useDispatch } from "react-redux";
 import { setIsLoggedIn } from "../../../actions/createAuthAction";
+import { toast } from "react-toastify";
 
 const BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL;
 // const BASE_URL = "http://localhost:8000";
@@ -28,9 +30,13 @@ function decodeToken(token) {
 }
 
 export default function WalletConnect() {
+  const { signMessageAsync } = useSignMessage();
+  const { disconnectAsync } = useDisconnect();
+  const { chain } = useNetwork();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { handleError } = useError();
+  const { setUser } = useContext(UserContext);  
+
   const { address } = useAccount({
     onConnect: () => {
       const auth = sessionStorage.getItem("authToken");
@@ -42,9 +48,7 @@ export default function WalletConnect() {
       navigate(`/`);
     },
   });
-  const { signMessageAsync } = useSignMessage();
-  const { disconnectAsync } = useDisconnect();
-  const { chain } = useNetwork();
+
 
   useEffect(() => {
     const auth = sessionStorage.getItem("authToken");
@@ -124,9 +128,11 @@ export default function WalletConnect() {
       sessionStorage.setItem("address", address);
 
       dispatch(setIsLoggedIn(true));
+      const user = decodeToken(res.authToken);
+      setUser(user);
       navigate(`/proposals`);
     } catch (error) {
-      handleError({ type: "error", message: error.message });
+      toast.error(error.message);
       disconnectAsync();
       dispatch(setIsLoggedIn(false));
       clearAuthData();

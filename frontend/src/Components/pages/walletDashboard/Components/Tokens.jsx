@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
-import ButtonAtom from "../../../atoms/Button";
 import { useLazyQuery } from "@apollo/client";
 import { GET_TOKEN_BALANCE } from "../../../../ServerQueries/Dashboard/Queries";
 import CircularIndeterminate from "../../../atoms/Loader/loader";
 import Box from "@mui/material/Box";
+import Button from "../../../atoms/Button/Button";
+import Container from "../../../atoms/Container/Container";
 
 function Tokens({ wallet, chain, tokens, setTokens }) {
 
@@ -24,7 +25,6 @@ function Tokens({ wallet, chain, tokens, setTokens }) {
     if (error) return <p>Error :( </p>;
 
     function tokenProcessing(t) {
-        console.log(t);
         for (let i = 0; i < t.length; i++) {
             t[i].id = i;
             t[i].val = ((Number(t[i].balance) / Number(`1E${t[i].decimals}`)) * Number(t[i].usd)).toFixed(2);
@@ -32,10 +32,6 @@ function Tokens({ wallet, chain, tokens, setTokens }) {
         setTokens(t);
     }
 
-    const buttonConfig = {
-        innerText: 'ERC20 Tokens',
-        onClick: () => getTokenBalance(),
-    }
 
     const headers = ["Logo", "Balance", "Value", "Token"]
     const data = tokens.map((e) => ({
@@ -47,13 +43,16 @@ function Tokens({ wallet, chain, tokens, setTokens }) {
 
 
     return (
-        <Box sx={{color: "white"}}>
-                <ButtonAtom config={buttonConfig} />
-                <br />
-                {tokens.length > 0 && (
-                    "<Table tableHeaderData={headers} tableBodyData={data} />"
-                )}
-        </Box>
+      <Container>
+            <Button
+                sx={{
+                    margin: "1rem",
+                }}
+                onClick={getTokenBalance}>ERC20 Tokens</Button>
+        <br />
+        {tokens.length > 0 &&
+          "<Table tableHeaderData={headers} tableBodyData={data} />"}
+      </Container>
     );
 }
 

@@ -1,6 +1,5 @@
 import React from 'react';
 import { NetworkStatus } from '@apollo/client';
-import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import PaginationControlled from '../../DisplayElements/Pagination.jsx';
 import SubHeader from "../../molecules/SubHeader/SubHeader.jsx"
@@ -9,7 +8,6 @@ import Label from '../../atoms/Label/Label.jsx';
 import useProposals from '../../hooks/Proposals/useProposals.jsx';
 import ProposalCard from './ProposalCard.jsx';
 import { toast } from 'react-toastify';
-import { Typography } from '@mui/material';
 import Container from '../../atoms/Container/Container.jsx';
 
 const pagination = {
@@ -46,9 +44,9 @@ const Proposals = () => {
           }}
         >
           <Label>{syncedAt}</Label>
-          <Typography variant="subtitle" style={{ color: "white" }}>
+          <Label variant="subtitle" style={{ color: "white" }}>
             Proposals
-          </Typography>
+          </Label>
         </SubHeader.List>
         <SubHeader.List>
           <SubHeader.ActionButton

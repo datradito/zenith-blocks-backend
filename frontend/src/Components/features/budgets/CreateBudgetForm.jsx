@@ -12,8 +12,7 @@ import Container from "../../atoms/Container/Container";
 
 function CreateBudgetForm() {
   const methods = useFormContext();
-    const { errors , defaultValues} = methods.formState;
-
+  const { errors , defaultValues} = methods.formState;
   return (
     <Container
       style={{
@@ -68,7 +67,7 @@ function CreateBudgetForm() {
             type="number"
             id="totalBudget"
             readOnly
-            defalutValue={defaultValues["Total Budget"]}
+            defaultValue={defaultValues["Total Budget"]}
             {...methods.register("totalBudget")}
           />
         </FormRow>

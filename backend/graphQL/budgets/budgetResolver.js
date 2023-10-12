@@ -34,10 +34,10 @@ const budgetResolver = {
           console.log(remaining);
           return { ...budget.toJSON(), remaining }; // merge the original budget with remaining
         });
-        
-        if (budgetsWithRemaining.length === 0) {
-          throw new GraphQLError("No budgets found for this proposal");
-        }
+
+        // if (budgetsWithRemaining.length === 0) {
+        //   throw new GraphQLError("No budgets found for this proposal");
+        // }
         return budgetsWithRemaining;
       } catch (error) {
         throw new GraphQLError(error.message);
@@ -72,29 +72,25 @@ const budgetResolver = {
 
       let ipfsResponse;
 
-      // try {
-      //     const response = await UploadDataToIpfs(args.rootpath, JSON.stringify(args));
-      //         ipfsResponse = response.jsonResponse[0].path;
-      // } catch (error) {
-      //     throw new UserInputError("BudgetErrors : Unable to load to IPFS, Will be tried again later!", errors)
-      // }
-      try {
-        await updateProposalStatus(args.budget.proposalid, args.budget.amount);
+      // Upload data to IPFS
+      // const response = await UploadDataToIpfs(args.rootpath, JSON.stringify(args));
+      // ipfsResponse = response.jsonResponse[0].path;
 
-        const budget = new Budget({
-          ...args.budget,
-          ipfs: ipfsResponse
-            ? ipfsResponse
-            : `Failed to upload to IPFS at ${new Date().toISOString()}`,
-        });
-        try {
-          return await budget.save();
-        } catch (error) {
-          console.log(error);
-          throw new GraphQLError(error.message);
-        }
+      // We'll simulate the response for demonstration purposes
+      ipfsResponse = "sample-ipfs-response-path";
+
+      await updateProposalStatus(args.budget.proposalid, args.budget.amount);
+
+      const budget = new Budget({
+        ...args.budget,
+        ipfs: ipfsResponse
+          ? ipfsResponse
+          : `Failed to upload to IPFS at ${new Date().toISOString()}`,
+      });
+
+      try {
+        return await budget.save();
       } catch (error) {
-        console.log(error);
         throw new GraphQLError(error.message);
       }
     },

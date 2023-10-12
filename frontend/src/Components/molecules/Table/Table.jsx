@@ -1,6 +1,7 @@
 import { createContext, useContext } from "react";
 import styled from "styled-components";
 import EmptyIcon from "../../atoms/EmptyIcon/EmptyIcon";
+
 const StyledTable = styled.div`
   background-color: var(--color-grey-0);
   border-radius: 7px;
@@ -68,6 +69,7 @@ function Header({ children }) {
     </StyledHeader>
   );
 }
+
 function Row({ children }) {
   const { columns } = useContext(TableContext);
   return (

@@ -5,30 +5,29 @@ import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from 'react-toastify';
 
+async function submitBudgetData(budgetData) {
+  await client.mutate({
+    mutation: SUBMIT_BUDGET_MUTATION,
+    variables: { budget: budgetData },
+  },
+  {
+    errorPolicy: "all",
+  }
+  );
+}
 
 export const useSubmitBudget = () => {
     const queryClient = useQueryClient();
     const proposalId = useParams().proposalId;
     const navigate = useNavigate();
-    const key = ["budgets", proposalId];
-
-    const { mutate: submitBudget, isLoading: isSubmitting } = useMutation({
-      mutationFn: async (budgetData) => {
-        await client.mutate({
-          mutation: SUBMIT_BUDGET_MUTATION,
-          variables: {
-            budget: budgetData,
-          },
-        });
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: key,
+    const { mutate: submitBudget, isLoading: isSubmitting } = useMutation(submitBudgetData, {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: ["budgetList", proposalId],
         });
         toast.success("Budget created successfully");
-        navigate(`/proposals/${proposalId}`);
-      },
-      onError: (err) => toast.error(err.message),
+        navigate(`/proposals/${proposalId}/budgets`);
+      }
     });
 
     return { isSubmitting, submitBudget };

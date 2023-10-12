@@ -2,7 +2,6 @@ import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 import WalletConnect from './WalletConnect';
 import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
 
 import {
     Box,
@@ -21,14 +20,9 @@ const navLinkStyle = {
 }
 
 const ResponsiveHeaderBar = () => {
-    const [walletConnected, setWalletConnected] = useState(false);
     let { proposal } = useSelector(state => state.currentProposal);
     let { Budget } = useSelector(state => state.currentBudget);
     let pages = [];
-
-    useEffect(() => {
-        sessionStorage.getItem('authToken') ? setWalletConnected(true)  : setWalletConnected(false);
-    }, []);
 
     proposal ? pages.push(
         { name: 'Proposals', url: '/proposals' },

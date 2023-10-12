@@ -1,17 +1,14 @@
 import Table from "../../molecules/Table/Table";
 import Menus from "../../molecules/Menus/Menus";
 import { useGetBudgets } from "../../hooks/Budgets/useGetBudgets";
-import EmptyIcon from "../../atoms/EmptyIcon/EmptyIcon";
 import BudgetRow from "./BudgetRow";
 import CircularIndeterminate from "../../atoms/Loader/loader";
 
 function BudgetList({ amount, proposalId }) {
 
-  const { isLoading, error, budgets } = useGetBudgets(amount, proposalId);
+  const { isLoading, budgets } = useGetBudgets(amount, proposalId);
 
   if (isLoading) return <CircularIndeterminate />;
-  if (error) return <EmptyIcon />;
-
 
   return (
     <Menus>

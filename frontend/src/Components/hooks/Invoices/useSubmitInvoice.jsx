@@ -2,14 +2,12 @@ import { SUBMIT_INVOICE_MUTATION } from "../../../ServerQueries/Invoices/Mutatio
 import { client } from "../../../apolloConfig/client.js";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { resetInvoice } from "../../../actions/createInvoiceAction/index.js";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const useSubmitInvoice = () => {
   const queryClient = useQueryClient();
-  const dispatch = useDispatch();
+  const budgetId = useParams().budgetId;
   const navigate = useNavigate();
   const proposalId = useSelector((state) => state.currentProposal.proposal.id);
 
@@ -18,17 +16,19 @@ export const useSubmitInvoice = () => {
       await client.mutate({
         mutation: SUBMIT_INVOICE_MUTATION,
         variables: { invoice: invoiceData },
-      });
+      },
+      {
+        errorPolicy: "all",
+      }
+      );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["invoices"] });
+      queryClient.invalidateQueries({
+        queryKey: ["invoicesList", { budgetId }],
+      });
       toast.success("Invoice created successfully");
       navigate(`/proposal/${proposalId}/invoices`);
-      dispatch(resetInvoice());
-    },
-    onError: (err) => {
-      toast.error(err.message);
-    },
+    }
   });
 
   return { isCreating, createInvoice };

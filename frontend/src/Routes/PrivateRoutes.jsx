@@ -1,35 +1,21 @@
-import { useEffect } from 'react';
-import { Outlet } from "react-router-dom";
-import { useSelector } from 'react-redux';
-import { useDisconnect } from 'wagmi';
-import { useDispatch } from 'react-redux';
-import Login from '../Components/pages/Home/logIn';
-import { setIsLoggedIn } from '../actions/createAuthAction';
+import Login from "../Components/pages/Home/logIn";
 import ResponsiveHeaderBar from "../Components/DisplayElements/Header/Header.jsx";
+import { useContext } from "react";
+import { UserContext } from "../Utility/Providers/UserProvider";
 
 const PrivateRoute = ({ children }) => {
-    const { isLoggedIn } = useSelector(state => state.auth);
-    const token = sessionStorage.getItem("authToken");
-    const dispatch = useDispatch();
-    const { disconnectAsync } = useDisconnect();
-    
-    useEffect(() => {
-        if (isLoggedIn === false || !token) {
-            dispatch(setIsLoggedIn(false));
-            disconnectAsync();
-        } 
-    }, []);
+  const { user } = useContext(UserContext);
 
+  console.log(user)
 
-
-    return isLoggedIn ? (
-      children
-    ) : (
-      <>
-        <ResponsiveHeaderBar />
-        <Login />
-      </>
-    );
+  return user ? (
+    children
+  ) : (
+    <>
+      <ResponsiveHeaderBar />
+      <Login />
+    </>
+  );
 };
 
 export default PrivateRoute;

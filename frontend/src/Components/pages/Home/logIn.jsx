@@ -1,10 +1,19 @@
-import * as React from 'react';
+import React, { useContext } from 'react';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import { UserContext } from '../../../Utility/Providers/UserProvider';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
+    const navigate = useNavigate();
+    const { user } = useContext(UserContext);
+
+    if (user) {
+        navigate('/proposals');
+    }
+
     return (
         <Card sx={{
             display: 'flex',

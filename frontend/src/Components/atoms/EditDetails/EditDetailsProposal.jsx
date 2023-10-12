@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import Stack from '@mui/material/Stack';
-import ButtonAtom from '../Button';
-import CircularIndeterminate from '../Loader/loader';
+import { useForm } from 'react-hook-form';
+import { useDispatch } from "react-redux";
+
 import useSaveProposalDetails from '../../hooks/Proposals/useSetAmountProposal';
-import { useDispatch } from 'react-redux';
 import { addAmount } from '../../../actions/currentProposal/amount';
-import { alpha } from '@mui/material/styles';
-import { toast } from 'react-toastify';
+
+import Input from '../Input/Input';
+import Container from '../Container/Container';
+import FormRow from '../FormRow/FormRow';
+import Button from "../Button/Button";
+import CircularIndeterminate from "../Loader/loader";
 
 let dialogContainerStyle = {
   position: "fixed",
@@ -19,100 +19,65 @@ let dialogContainerStyle = {
   height: "100%",
   display: "flex",
   justifyContent: "center",
-  backgroundColor: alpha("#1a1c1e", 0.9), // Make the dialog modal look darker
+  backgroundColor: ("#1a1c1e", 0.9), // Make the dialog modal look darker
   alignItems: "center",
-  border: "2px solid #2C2C2C",
   zIndex: 9999,
   boxShadow: "0 0 4px rgba(0, 0, 0, 0.3)", // Set a high z-index value to make sure it overlays other content
 };
 
 let dialogContentStyle = {
   width: "400px",
-  backgroundColor: alpha("#0D0E10", 1),
+  backgroundColor: ("#0D0E10", 0.5),
   boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.4)",
-  borderRadius: "8px",
-  fontSize: "1rem",
-  padding: "16px",
-  "& .MuiFormControlRoot": {
-    width: "100%",
-    color: "white",
-  },
-  "& .MuiControlInput-root": {
-    color: "white",
-  },
+  padding: "1.5rem",
+
 };
 
-export default function DetailPanelContent({ row, setIsAmountAdded }) {
+export default function DetailPanelContent({ row, setIsAmountAdded}) {
   const dispatch = useDispatch();
-  const { loading, error, saveProposalDetails } = useSaveProposalDetails();
+  const {handleSubmit, formState: { errors }, register } = useForm();
+  const { loading, saveProposalDetails } = useSaveProposalDetails();
   const [dialogOpen, setDialogOpen] = useState(true);
-  const [amount, setAmount] = useState(row.amount || "");
-
-  const onSubmit = async () => {
+  const onSubmit = async (data) => {
+    console.log(data.amount);
     try {
-      const data = {
-        ...row,
-        amount,
-      };
-      await saveProposalDetails(data);
+      await saveProposalDetails(data.amount, row);
+
       dispatch(
         addAmount({
           amount: data.amount,
-          proposalId: data.proposalid,
+          proposalId: row.id,
           status: "NotFilled",
         })
       );
       setIsAmountAdded(true);
       setDialogOpen(false);
-      toast.success("Proposal Amount Updated Successfully");
     } catch (error) {
       console.error(error);
     }
   };
 
-  const buttonConfig = {
-    variant: "outlined",
-    size: "small",
-    label: "Save",
-    innerText: "Save",
-    onClick: onSubmit,
-  };
-
     if (loading) return <CircularIndeterminate />;
 
   return (
-    <Box
+    <Container
       style={{ ...dialogContainerStyle, display: dialogOpen ? "flex" : "none" }}
     >
-      <div style={dialogContentStyle}>
-        <form onSubmit={onSubmit}>
-          <Stack justifyContent="space-between">
-            <Typography
-              variant="subtitle"
-              sx={{ color: "white", fontWeight: "bold", marginBottom: "1rem" }}
-            >
-              {`#${row.title}`}
-            </Typography>
-            <TextField
-              label="Amount"
+      <Container style={dialogContentStyle}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <FormRow label={`#${row.title}`} error={errors?.amount?.message}>
+            <Input
               type="number"
-              InputProps={{
-                style: {
-                  color: "white",
-                  border: "2px solid #2C2C2C",
-                },
-              }}
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              required
-              fullWidth
+              id="amount"
+              name="amount"
+              {...register("amount", {
+                required: "Amount is required",
+              })}
             />
-            <div>
-              <ButtonAtom config={buttonConfig} />
-            </div>
-          </Stack>
+          </FormRow>
+          <Button>Save</Button>
         </form>
-      </div>
-    </Box>
+      </Container>
+    </Container>
   );
 }

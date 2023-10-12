@@ -5,19 +5,20 @@ import { ADD_OR_UPDATE_PROPOSAL } from '../../../ServerQueries/proposalMutation'
 const useSaveProposalDetails = () => {
     const [SetProposalAmount, { data, loading, error }] = useMutation(ADD_OR_UPDATE_PROPOSAL);
 
-    const saveProposalDetails = async (formData) => {
+    const saveProposalDetails = async (amount, row) => {
         try {
             await SetProposalAmount({
                 variables: {
                     proposalAmountInput: {
-                        id: formData.id,
-                        amount: parseInt(formData.amount),
+                        id: row.id,
+                        amount: parseInt(amount),
                         modifier: '0x9f74662aD05840Ba35d111930501c617920dD68e',
-                        rootpath: formData.space.id,
-                        daoid: formData.space.id,
+                        rootpath: row.id,
+                        daoid: row.space.id,
                     }
                 },
             });
+            toast.success(`Proposal Amount Saved`);
         } catch (error) {
             toast.error(`Failed to Save Proposal Amount: ${error.message}`);
         }

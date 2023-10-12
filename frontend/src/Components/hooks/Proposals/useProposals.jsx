@@ -12,7 +12,7 @@ const fetchProposalData = async (dao, currentPage) => {
       name: dao,
     },
   });
-  return response.data; // Modify this based on the actual structure of your response
+  return response.data;
 };
 
 const useProposals = () => {
@@ -33,21 +33,16 @@ const useProposals = () => {
     setCurrentPage((prevPage) => prevPage + 1);
   };
 
-  const handleExportCSV = () => {
-    console.log("Export CSV");
-  };
-
   const handleSyncProposals = () => {
     refetch();
   };
 
-    let syncedAt = new Date().toLocaleString();
+  let syncedAt = new Date().toLocaleString();
   return {
     loading: isLoading,
-      error,
+    error,
     syncedAt,
     data,
-    handleExportCSV,
     handleSyncProposals,
     handleSkipValueChange,
     networkStatus,

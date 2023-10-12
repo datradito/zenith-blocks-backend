@@ -9,7 +9,7 @@ const BackButton = styled.button`
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.5rem;
 `;
 
 const GoBack = ({children}) => {

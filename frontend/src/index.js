@@ -2,7 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App.js";
-
+import ErrorFallback from "./Components/atoms/ErrorFallback/ErrorFallback";
+import { ErrorBoundary } from "react-error-boundary";
 import "@rainbow-me/rainbowkit/styles.css";
 import {
   getDefaultWallets,
@@ -24,25 +25,7 @@ import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { mainnet, polygon, optimism, arbitrum, goerli } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { alchemyProvider } from "wagmi/providers/alchemy";
-import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 
-// const ganache = {
-//   id: "0x539",
-//   name: "ganache",
-//   network: "ganache",
-//   iconBackground: "#fff",
-//   nativeCurrency: {
-//     decimals: 18,
-//     name: "ETHEREUM",
-//     symbol: "ETH",
-//   },
-//   rpcUrls: {
-//     default: {
-//       http: ["HTTP://127.0.0.1:7545"],
-//     },
-//   },
-//   testnet: true,
-// };
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
@@ -56,13 +39,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   ],
   [
     (alchemyProvider({ apiKey: "AsxwVAm7iKW3SxGD-z9inFZ9FoYeQ4lQ" }),
-    publicProvider())
-//     jsonRpcProvider({
-//       rpc: (chain) => ({
-//         http: [`HTTP://127.0.0.1:7545`],
-//       }),
-//     })
-          
+    publicProvider()) 
   ]
 );
 const projectId = "3a74d330e07a405df9ab1a0ff1825a9b";
@@ -116,7 +93,12 @@ root.render(
         chains={chains}
         showRecentTransactions={true}
       >
-        <App />
+        <ErrorBoundary
+          FallbackComponent={ErrorFallback}
+          onReset={() => window.location.replace("/proposals")}
+        >
+          <App />
+        </ErrorBoundary>
       </RainbowKitProvider>
     </WagmiConfig>
   </>

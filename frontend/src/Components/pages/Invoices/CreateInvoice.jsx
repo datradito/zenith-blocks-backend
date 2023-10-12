@@ -22,7 +22,6 @@ function InvoiceCreation() {
     Budget: state.currentBudget.Budget,
   }));
 
-
   const methods = useForm({
     defaultValues: {
       Category: Budget.category,

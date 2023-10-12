@@ -46,10 +46,12 @@ function CreateBudget() {
         (parseInt(data.amount) / parseInt(filteredProposalAmount)) * 100,
       rootpath: proposal.id,
     };
+    console.log(budgetData);
 
     submitBudget(
       { ...budgetData }
     );
+
   };
 
   const onError = (errors) => {

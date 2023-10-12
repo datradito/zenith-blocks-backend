@@ -40,7 +40,6 @@ function InvoiceRow({ invoice }) {
     duplicateInvoice(invoice.InvoiceId);
   }
 
-  console.log("invoice", invoice);
 
   return (
     <Table.Row>

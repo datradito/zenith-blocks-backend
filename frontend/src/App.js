@@ -2,7 +2,7 @@ import "./App.css";
 import React, { Suspense, lazy } from "react";
 import { ApolloProvider } from "@apollo/client";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "./apolloConfig/client";
+import { queryClient, client } from "./apolloConfig/client";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
   Route,
@@ -17,20 +17,18 @@ import ErrorPage from "./Routes/ErrorPage";
 import CircularIndeterminate from "./Components/atoms/Loader/loader";
 import Root from "./Routes/Root";
 
-import ErrorProvider from "./Routes/ErrorRouterProvider";
 import ProposalRoute from "./Routes/ProposalDependentRoutes";
 import InvoiceRoutes from "./Routes/InvoiceDependentRoutes";
 
-import { client } from "./apolloConfig/client";
 import PrivateRoute from "./Routes/PrivateRoutes";
 import PaymentCreation, {
   paymentLoader,
 } from "./Components/pages/Payments/PaymentCreation";
 
-// import { dashboardLoader } from './Components/pages/walletDashboard/Dashboard';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { UserProvider } from "./Utility/Providers/UserProvider";
+import NotFound from "./Routes/NotFound";
 const ProposalDetailView = lazy(() => import("./Components/pages/Proposals/ProposalDetailView"));
 const CreateBudget = lazy(() => import("./Components/pages/Budgets/CreateBudget"));
 const InvoiceListView = lazy(() => import("./Components/pages/Invoices/InvoiceListView"));
@@ -50,7 +48,9 @@ function App() {
             <Root />
           </PrivateRoute>
         }
+        errorElement={<ErrorPage />}
       >
+        {/* <Route path="/login" element={<Login />} /> */}
         <Route
           path="proposals"
           element={<Proposals />}
@@ -107,6 +107,7 @@ function App() {
           element={<Accounts />}
         />
         <Route path="swap" element={<Swap />} errorElement={<ErrorPage />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
     )
   );
@@ -117,12 +118,12 @@ function App() {
       <ApolloProvider client={client}>
         <Provider store={storeConfig}>
           <PersistGate loading={null} persistor={persistor}>
-            <Suspense fallback={<CircularIndeterminate />}>
-              <ErrorProvider>
-                <ToastContainer limit={2} position="bottom-left" />
-                <RouterProvider router={router} />
-              </ErrorProvider>
-            </Suspense>
+            <UserProvider>
+              <Suspense fallback={<CircularIndeterminate />}>
+                  <ToastContainer limit={2} position="bottom-left" />
+                  <RouterProvider router={router} />
+              </Suspense>
+            </UserProvider>
           </PersistGate>
         </Provider>
       </ApolloProvider>

@@ -58,5 +58,4 @@ SubHeader.List = Items;
 SubHeader.ActionButton = ActionButton;
 SubHeader.Container = SubHeader;
 
-
 export default SubHeader

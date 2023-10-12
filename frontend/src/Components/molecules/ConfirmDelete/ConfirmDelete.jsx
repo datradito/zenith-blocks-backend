@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Button from "../../atoms//Button";
+import Button from "../../atoms/Button/Button";
 import { Typography } from "@mui/material";
 
 const StyledConfirmDelete = styled.div`

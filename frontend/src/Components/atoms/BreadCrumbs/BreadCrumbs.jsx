@@ -33,16 +33,18 @@ const StyledLink = styled(Link)`
 `;
 
 
-
+// http://localhost:3000/proposals/0x974e9568499aaf7b508e9b735192083225040d1ecb679c383e4cd3d6c1f48b2a
 const pages = [
   { name: "Proposals", path: "/proposals" },
   {
     name: "Budgets",
-    path: /\/proposals\/([0-9]+([A-Za-z]+[0-9]+)+)\/budgets/i,
+    path: /\/proposals\/([a-zA-Z0-9]+)\/budgets/i,
+
+    //http://localhost:3000/proposals/0x576e698cd8649dd6a6a2456f06c4648bb0d95e35da000c51c82f243774b7ef9f/budgets
   },
   {
     name: "Create Budget",
-    path: /\/budgets\/([0-9]+([A-Za-z]+[0-9]+)+)\/create/i,
+    path: /\/budgets\/([a-zA-Z0-9]+)\/create/i,
   },
   { name: "Swap", path: "/swap" },
   { name: "Dashboard", path: "/dashboard" },
@@ -60,7 +62,6 @@ const pages = [
 
 const generateBreadcrumbs = (pathname, id) => {
 
-  console.log(id)
   const crumbs = [];
 
   if (pages[1].path.test(pathname)) {

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Label from "../Label/Label";
-import Button from "../Button/Button";
 import CustomPDFViewIcon from "../PdfIcon/padfIcon";
 
 const FileUploadContainer = styled.div`

@@ -34,7 +34,6 @@ const label = {
 function ProposalCard({
   item,
   selectedItemId,
-  handleTotalBudgetClick,
   onClose,
 }) {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -47,7 +46,6 @@ function ProposalCard({
       </SubItem>
       <SubItem
         sx={subItemStyle}
-        // onClick={() => handleTotalBudgetClick(item.id)}
       >
         <ColumnItem sx={label}>Total Budget</ColumnItem>
         <ColumnItem>
@@ -55,6 +53,7 @@ function ProposalCard({
             <FormDetailPanel
               row={item}
               onClose={onClose}
+              proposalId={item.id}
               setIsAmountAdded={setIsAmountAdded}
             />
           )}
