@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Box, IconButton } from "@mui/material";
 import { ArrowDownOutlined, DownOutlined } from "@ant-design/icons";
-import TextFieldAtom from "../../atoms/TextField/TextField";
+import Input from "../../atoms/Input/Input";
+import FormRow from "../../atoms/FormRow/FormRow";
+import Container from "../../atoms/Container/Container";
+import Label from "../../atoms/Label/Label";
 
 const SwitchButton = styled(IconButton)`
   background-color: #3a4157;
@@ -12,9 +15,6 @@ const SwitchButton = styled(IconButton)`
   justify-content: center;
   display: flex;
   border-radius: 8px;
-  position: absolute;
-  top: 65px;
-  left: 180px;
   color: white;
   border: 3px solid #0e111b;
   font-size: 12px;
@@ -24,25 +24,19 @@ const SwitchButton = styled(IconButton)`
   }
 `;
 
-const InputsContainer = styled(Box)`
-  position: relative;
-`;
 
 const AssetIcon = styled("div")({
-  position: "absolute",
-  minWidth: "50px",
-  height: "30px",
-  backgroundColor: "#3a4157",
   borderRadius: "0.8rem",
-  display: "flex",
-  justifyContent: "flex-start",
-  alignItems: "center",
   gap: "5px",
-  fontWeight: "bold",
-  fontSize: "17px",
   paddingRight: "8px",
+  minWidth: "8rem",
+  minHeight: "2.5rem",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
   "&:hover": {
     cursor: "pointer",
+    backgroundColor: "#1f2639",
   },
 });
 
@@ -68,7 +62,7 @@ const tokenFieldConfig = {
       borderWidth: 0,
       height: 40,
       borderRadius: 12,
-      fontSize: 35,
+      fontSize: "35px",
       outline: "none",
       marginBottom: 1,
     },
@@ -96,22 +90,70 @@ const TokenInput = ({
     setHovered(!hovered);
   };
   return (
-    <InputsContainer>
-      <TextFieldAtom
-        config={tokenFieldConfig}
-        value={tokenOneAmount || ""}
-        onChange={onTokenAmountChange}
-        InputProps={{
-          min: "0",
+    <Container
+      style={{
+        border: "none",
+        borderRadius: "0.5rem",
+      }}
+    >
+      <FormRow
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "0.5rem",
+          flexDirection: "row",
+          borderRadius: "0.5rem",
+          border: "none",
+          minHeight: "5rem",
+          minWidth: "15rem",
+          backgroundColor: "#06070A",
         }}
-      />
-      <TextFieldAtom
+      >
+        <Container style={{
+          border: "none",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-start",
+          alignItems: "flex-start",
+        }}>
+          <Label>Test</Label>
+          <Input
+            type="number"
+            placeholder="0"
+            value={tokenOneAmount || ""}
+            onChange={onTokenAmountChange}
+            style={{
+              border: "none",
+              minWidth: "5rem",
+              minHeight: "2rem",
+              background: "transparent",
+            }}
+          />
+          <Label>Test</Label>
+        </Container>
+        <AssetIcon onClick={() => openTokenSelector(1)}>
+          <AssetLogo src={tokenOne.img} alt="assetOneLogo" />
+          {tokenOne.ticker}
+          <DownOutlined />
+        </AssetIcon>
+      </FormRow>
+      {/* <TextFieldAtom
         config={tokenFieldConfig}
         value={tokenTwoAmount || ""}
         InputProps={{
           readOnly: true,
         }}
-      />
+      >
+        <AssetIcon
+          onClick={() => openTokenSelector(2)}
+          style={{ top: "103px", right: "20px" }}
+        >
+          <AssetLogo src={tokenTwo.img} alt="assetTwoLogo" />
+          {tokenTwo.ticker}
+          <DownOutlined />
+        </AssetIcon>
+      </TextFieldAtom> */}
       <SwitchButton
         onMouseEnter={handleHover}
         onMouseLeave={handleHover}
@@ -125,25 +167,36 @@ const TokenInput = ({
           }}
         />
       </SwitchButton>
-
-      <AssetIcon
-        onClick={() => openTokenSelector(1)}
-        style={{ top: "20px", right: "20px" }}
-      >
-        <AssetLogo src={tokenOne.img} alt="assetOneLogo" />
-        {tokenOne.ticker}
-        <DownOutlined />
-      </AssetIcon>
-      <AssetIcon
-        onClick={() => openTokenSelector(2)}
-        style={{ top: "103px", right: "20px" }}
-      >
-        <AssetLogo src={tokenTwo.img} alt="assetTwoLogo" />
-        {tokenTwo.ticker}
-        <DownOutlined />
-      </AssetIcon>
-    </InputsContainer>
+      <FormRow>
+        <Label
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "0.5rem",
+          }}
+        >
+          <Input
+            type="number"
+            placeholder="0"
+            value={tokenOneAmount || ""}
+            onChange={onTokenAmountChange}
+          />
+          <AssetIcon
+            onClick={() => openTokenSelector(1)}
+            style={{ top: "20px", right: "20px" }}
+          >
+            <AssetLogo src={tokenOne.img} alt="assetOneLogo" />
+            {tokenOne.ticker}
+            <DownOutlined />
+          </AssetIcon>
+        </Label>
+      </FormRow>
+    </Container>
   );
 };
 
 export default TokenInput;
+
+
+//atom - smallest unit that can be used

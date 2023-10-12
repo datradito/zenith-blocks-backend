@@ -9,6 +9,7 @@ import TokenInput from "./TokenInput";
 import SwapButton from "./SwapButton";
 import tokenList from "../../../Utility/tokenList";
 import axios from "axios";
+import Label from "../../atoms/Label/Label";
 
 const TradeBox = styled(Box)`
   width: 400px;
@@ -225,7 +226,11 @@ function Swap() {
       />
       <TradeBox>
         <TradeBoxHeader>
-          <Typography variant="h5">Swap</Typography>
+          <Label
+            style={{
+              fontWeight: "bold",
+            }}
+          >SWAP</Label>
           <SettingsPopover settings={settings} />
         </TradeBoxHeader>
         <TokenInput
