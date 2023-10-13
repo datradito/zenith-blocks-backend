@@ -20,7 +20,7 @@ function ProposalDetailView() {
   };
 
   return (
-    <>
+    <div>
       <SubHeader.Container>
         <SubHeader.List
           sx={{
@@ -60,7 +60,7 @@ function ProposalDetailView() {
       >
         <BudgetList amount={amount} proposalId={proposalId} />
       </Container>
-    </>
+    </div>
   );
 }
 

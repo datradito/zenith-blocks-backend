@@ -1,202 +1,192 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Box, IconButton } from "@mui/material";
-import { ArrowDownOutlined, DownOutlined } from "@ant-design/icons";
 import Input from "../../atoms/Input/Input";
-import FormRow from "../../atoms/FormRow/FormRow";
 import Container from "../../atoms/Container/Container";
 import Label from "../../atoms/Label/Label";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import CircularIndeterminate from "../../atoms/Loader/loader";
 
-const SwitchButton = styled(IconButton)`
-  background-color: #3a4157;
-  width: 30px;
-  height: 30px;
-  align-items: center;
-  justify-content: center;
-  display: flex;
-  border-radius: 8px;
-  color: white;
-  border: 3px solid #0e111b;
-  font-size: 12px;
-  transition: 0.3s;
-  &:hover {
-    background-color: #3a4157;
-  }
-`;
-
-
-const AssetIcon = styled("div")({
+const AssetIcon = styled("div")((props) => ({
   borderRadius: "0.8rem",
-  gap: "5px",
-  paddingRight: "8px",
-  minWidth: "8rem",
+  border: "none",
+  gap: "0.4rem",
+  minWidth: "6rem",
   minHeight: "2.5rem",
   display: "flex",
-  justifyContent: "center",
   alignItems: "center",
   "&:hover": {
     cursor: "pointer",
-    backgroundColor: "#1f2639",
+    backgroundColor: props.AssetHoverColor,
   },
-});
+}));
 
 const AssetLogo = styled("img")({
   height: "22px",
   marginLeft: "5px",
 });
 
-const tokenFieldConfig = {
-  id: "outlined-basic",
-  variant: "outlined",
-  sx: {
-    "& .MuiInputBase-root": {
-      border: "none",
-    },
-    "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-      border: "none",
-      borderRadius: "none",
-    },
-    "& .MuiInputBase-input": {
-      color: "white",
-      backgroundColor: "#1f2639",
-      borderWidth: 0,
-      height: 40,
-      borderRadius: 12,
-      fontSize: "35px",
-      outline: "none",
-      marginBottom: 1,
-    },
-    '& input[type="number"]::-webkit-inner-spin-button, & input[type="number"]::-webkit-outer-spin-button':
-      {
-        "-webkit-appearance": "none",
-        margin: 0,
-      },
-  },
-  placeholder: "0",
-  type: "number",
-};
-
 const TokenInput = ({
-  tokenOneAmount,
-  tokenTwoAmount,
-  tokenOne,
-  tokenTwo,
+  tokenAmount,
+  token,
+  validationType,
   onTokenAmountChange,
-  switchTokens,
   openTokenSelector,
+  openTokenSelectorNumber,
+  backgroundColor,
+  tokenType,
+  AssetHoverColor,
+  isRefreshLoading,
+  getUserTokenBalance,
 }) => {
-  const [hovered, setHovered] = useState(false);
-  const handleHover = () => {
-    setHovered(!hovered);
-  };
+  const [tokenBalance, setTokenBalance] = useState(0);
+
+  useEffect(() => {
+    if (getUserTokenBalance) {
+      console.log("token", token);
+      const balance = getUserTokenBalance?.result?.tokenBalances?.filter(
+        (tokenAddress) => {
+          if (tokenAddress?.contractAddress === token?.address) {
+            return tokenAddress?.tokenBalance;
+          }
+        }
+      );
+      console.log("getUserTokenBalance", getUserTokenBalance);
+      console.log("balance", balance);
+      if (balance?.length === 0) {
+        setTokenBalance(0);
+      } else {
+        setTokenBalance(balance?.result?.tokenBalances[0]?.tokenBalance);
+      }
+    }
+  }, [getUserTokenBalance, token?.address]);
   return (
     <Container
       style={{
         border: "none",
         borderRadius: "0.5rem",
+        width: "100%",
       }}
     >
-      <FormRow
+      <Container
         style={{
           display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "0.5rem",
-          flexDirection: "row",
-          borderRadius: "0.5rem",
-          border: "none",
-          minHeight: "5rem",
-          minWidth: "15rem",
-          backgroundColor: "#06070A",
-        }}
-      >
-        <Container style={{
-          border: "none",
-          display: "flex",
           flexDirection: "column",
-          justifyContent: "flex-start",
-          alignItems: "flex-start",
-        }}>
-          <Label>Test</Label>
-          <Input
-            type="number"
-            placeholder="0"
-            value={tokenOneAmount || ""}
-            onChange={onTokenAmountChange}
-            style={{
-              border: "none",
-              minWidth: "5rem",
-              minHeight: "2rem",
-              background: "transparent",
-            }}
-          />
-          <Label>Test</Label>
-        </Container>
-        <AssetIcon onClick={() => openTokenSelector(1)}>
-          <AssetLogo src={tokenOne.img} alt="assetOneLogo" />
-          {tokenOne.ticker}
-          <DownOutlined />
-        </AssetIcon>
-      </FormRow>
-      {/* <TextFieldAtom
-        config={tokenFieldConfig}
-        value={tokenTwoAmount || ""}
-        InputProps={{
-          readOnly: true,
+          backgroundColor: backgroundColor,
+          borderRadius: "0.8rem",
+          padding: "0 0.3rem 0 0",
         }}
       >
-        <AssetIcon
-          onClick={() => openTokenSelector(2)}
-          style={{ top: "103px", right: "20px" }}
-        >
-          <AssetLogo src={tokenTwo.img} alt="assetTwoLogo" />
-          {tokenTwo.ticker}
-          <DownOutlined />
-        </AssetIcon>
-      </TextFieldAtom> */}
-      <SwitchButton
-        onMouseEnter={handleHover}
-        onMouseLeave={handleHover}
-        style={{ transition: "transform 0.2s" }}
-        onClick={switchTokens}
-      >
-        <ArrowDownOutlined
+        <Container
           style={{
-            transform: hovered ? "rotate(180deg)" : "rotate(0deg)",
-            transition: "transform 0.3s",
+            margin: 0,
+            border: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
-        />
-      </SwitchButton>
-      <FormRow>
+        >
+          <Label
+            style={{
+              textAlign: "right",
+              padding: "0.5rem 0 0 0.5rem",
+              color: "grey",
+              fontWeight: "500",
+            }}
+          >
+            Balance: {tokenBalance}
+          </Label>
+          <Label
+            style={{
+              textAlign: "right",
+              padding: "0.5rem 1rem 0 0",
+              color: "grey",
+              fontWeight: "500",
+            }}
+          >
+            You {tokenType}
+          </Label>
+        </Container>
+        <Container
+          style={{
+            border: "none",
+            display: "flex",
+            gap: "0.5rem",
+            alignItems: "center",
+            margin: "0rem",
+            width: "100%",
+          }}
+        >
+          {isRefreshLoading ? (
+            <CircularIndeterminate
+              styleProps={{
+                width: "70%",
+                height: "3rem",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "none",
+                marginTop: 0,
+              }}
+            />
+          ) : (
+            <Input
+              style={{
+                background: "transparent",
+                border: "none",
+                width: "65%",
+                fontSize: "1.5rem",
+                fontWeight: "bold",
+                flexGrow: "1",
+              }}
+              placeholder="0"
+              value={tokenAmount || ""}
+              onChange={onTokenAmountChange}
+              readOnly={validationType === "readOnly" ? true : false}
+            />
+          )}
+          <AssetIcon
+            onClick={() => openTokenSelector(openTokenSelectorNumber)}
+            AssetHoverColor={AssetHoverColor}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.6rem",
+                padding: "0.2rem",
+              }}
+            >
+              <AssetLogo src={token.img} alt="assetTwoLogo" />
+              <Label
+                style={{
+                  fontWeight: "500",
+                  color: "white",
+                  fontSize: "1.2rem",
+                }}
+              >
+                {token.ticker}
+              </Label>
+            </div>
+            <KeyboardArrowDownIcon
+              style={{
+                color: "grey",
+              }}
+            />
+          </AssetIcon>
+        </Container>
         <Label
           style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "0.5rem",
+            textAlign: "right",
+            padding: "0 1rem 0.5rem 0",
+            color: "grey",
+            fontWeight: "500",
           }}
         >
-          <Input
-            type="number"
-            placeholder="0"
-            value={tokenOneAmount || ""}
-            onChange={onTokenAmountChange}
-          />
-          <AssetIcon
-            onClick={() => openTokenSelector(1)}
-            style={{ top: "20px", right: "20px" }}
-          >
-            <AssetLogo src={tokenOne.img} alt="assetOneLogo" />
-            {tokenOne.ticker}
-            <DownOutlined />
-          </AssetIcon>
+          {token.ticker}
         </Label>
-      </FormRow>
+      </Container>
     </Container>
   );
 };
 
 export default TokenInput;
-
-
-//atom - smallest unit that can be used

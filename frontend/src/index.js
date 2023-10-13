@@ -22,10 +22,17 @@ import {
   ledgerWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { mainnet, polygon, optimism, arbitrum, goerli } from "wagmi/chains";
+import {
+  mainnet,
+  polygon,
+  optimism,
+  arbitrum,
+  goerli,
+  base,
+  zkSync,
+} from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { alchemyProvider } from "wagmi/providers/alchemy";
-
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
@@ -34,12 +41,15 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     optimism,
     arbitrum,
     goerli,
-//     ganache,
+    base,
+    zkSync,
+
+    //     ganache,
     ...(process.env.REACT_APP_ENABLE_TESTNETS === "true" ? [goerli] : []),
   ],
   [
     (alchemyProvider({ apiKey: "AsxwVAm7iKW3SxGD-z9inFZ9FoYeQ4lQ" }),
-    publicProvider()) 
+    publicProvider()),
   ]
 );
 const projectId = "3a74d330e07a405df9ab1a0ff1825a9b";

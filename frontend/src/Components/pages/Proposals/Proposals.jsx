@@ -1,24 +1,22 @@
-import React from 'react';
-import { NetworkStatus } from '@apollo/client';
-import Stack from '@mui/material/Stack';
-import PaginationControlled from '../../DisplayElements/Pagination.jsx';
-import SubHeader from "../../molecules/SubHeader/SubHeader.jsx"
-import CircularIndeterminate from '../../atoms/Loader/loader.jsx';
-import Label from '../../atoms/Label/Label.jsx';
-import useProposals from '../../hooks/Proposals/useProposals.jsx';
-import ProposalCard from './ProposalCard.jsx';
-import { toast } from 'react-toastify';
-import Container from '../../atoms/Container/Container.jsx';
+import React from "react";
+import { NetworkStatus } from "@apollo/client";
+import Stack from "@mui/material/Stack";
+import PaginationControlled from "../../DisplayElements/Pagination.jsx";
+import SubHeader from "../../molecules/SubHeader/SubHeader.jsx";
+import CircularIndeterminate from "../../atoms/Loader/loader.jsx";
+import Label from "../../atoms/Label/Label.jsx";
+import useProposals from "../../hooks/Proposals/useProposals.jsx";
+import ProposalCard from "./ProposalCard.jsx";
+import { toast } from "react-toastify";
+import Container from "../../atoms/Container/Container.jsx";
 
 const pagination = {
-  width: "90%",
   margin: "1rem",
   alignItems: "flex-end",
   color: "white",
 };
 
 const Proposals = () => {
-
   const {
     loading,
     error,
@@ -29,13 +27,18 @@ const Proposals = () => {
     networkStatus,
   } = useProposals();
 
-
   if (networkStatus === NetworkStatus) return <CircularIndeterminate />;
   if (loading) return <CircularIndeterminate />;
-  if(error) toast.error(error.message);
+  if (error) toast.error(error.message);
 
   return (
-    <>
+    <Container
+      style={{
+        width: "90%",
+        border: "none",
+        paddingTop: "1rem",
+      }}
+    >
       <SubHeader.Container sx={{ paddingTop: "1rem" }}>
         <SubHeader.List
           sx={{
@@ -63,7 +66,7 @@ const Proposals = () => {
       </SubHeader.Container>
       <Container
         style={{
-          border: "none"
+          border: "none",
         }}
       >
         {data.proposals.map((item) => {
@@ -85,7 +88,7 @@ const Proposals = () => {
       <Stack sx={pagination}>
         <PaginationControlled handleSkip={handleSkipValueChange} />
       </Stack>
-    </>
+    </Container>
   );
 };
 

@@ -1,39 +1,73 @@
 import React, { useState, useEffect } from "react";
-import { Radio, message } from "antd";
+import { message } from "antd";
 import { useAccount, useSendTransaction, useWaitForTransaction } from "wagmi";
+import useTokenBalances from "../../hooks/Swap/useTokenBalances";
 import styled from "styled-components";
-import { Box, Typography } from "@mui/material";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import { Box, IconButton } from "@mui/material";
 import TokenSelectorModal from "./TokenSelectorModal";
 import SettingsPopover from "./SettingsPopOver";
 import TokenInput from "./TokenInput";
 import SwapButton from "./SwapButton";
 import tokenList from "../../../Utility/tokenList";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import axios from "axios";
 import Label from "../../atoms/Label/Label";
+import Container from "../../atoms/Container/Container.jsx";
 
 const TradeBox = styled(Box)`
   width: 400px;
   background-color: #0e111b;
-  border: 2px solid #21273a;
   min-height: 300px;
   border-radius: "0.8rem";
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  padding-left: 30px;
-  padding-right: 30px;
+  padding: 1rem;
   margin: 5rem auto;
   color: white;
+  border-radius: 1rem;
 `;
+
+const SwitchButton = styled(IconButton)`
+  background-color: #3a4157;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  border-radius: 50%;
+  padding: 1rem;
+  color: white;
+  border: 3px solid #0e111b;
+  font-size: 12px;
+  transition: 0.3s;
+  &:hover {
+    background-color: #3a4157;
+  }
+  position: absolute;
+  top: 54%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+
+const StyledRefreshIcon = styled(RefreshIcon)({
+  border: "none",
+  padding: "0.3rem",
+  borderRadius: "0.5rem",
+  "&:hover": {
+    backgroundColor: "#1F2639",
+    cursor: "pointer",
+  },
+});
 
 const TradeBoxHeader = styled(Box)`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
-  margin-top: 10px;
-  width: 98%;
+  width: 100%;
 `;
 
 function Swap() {
@@ -52,6 +86,18 @@ function Swap() {
     data: null,
     value: null,
   });
+  const [isRefreshLoading, setIsRefreshLoading] = useState(false);
+  const [hovered, setHovered] = useState(false);
+
+  const {
+    data: tokenBalance,
+    isLoading: isTokenBalanceLoading,
+    isError,
+  } = useTokenBalances(address);
+
+  const handleHover = () => {
+    setHovered((prev) => !prev);
+  };
 
   const { data, sendTransaction } = useSendTransaction({
     from: address,
@@ -84,17 +130,22 @@ function Swap() {
     }
   }
 
-  function switchTokens() {
-    setPrices(null);
+  async function switchTokens() {
+    setIsRefreshLoading(true);
     const newTokenOneAmount = tokenTwoAmount;
-    const newTokenTwoAmount = tokenTwoAmount;
     setTokenOneAmount(newTokenOneAmount);
     const one = tokenOne;
     const two = tokenTwo;
     setTokenOne(two);
     setTokenTwo(one);
-    fetchPrices(two.address, one.address);
-    setTokenTwoAmount((tokenOneAmount * prices.ratio).toFixed(2));
+    const newPrice = await fetchPrices(two.address, one.address);
+    if (newPrice) {
+      setTokenTwoAmount((newTokenOneAmount * newPrice.ratio).toFixed(2));
+      setIsRefreshLoading(false);
+    } else {
+      console.error("Error");
+      setIsRefreshLoading(false);
+    }
   }
 
   function openModal(asset) {
@@ -121,6 +172,7 @@ function Swap() {
       params: { addressOne: one, addressTwo: two },
     });
     setPrices(res.data);
+    return res.data;
   }
 
   async function checkAllowance() {
@@ -164,6 +216,17 @@ function Swap() {
     setTxDetails(tx.data.tx);
   }
 
+  const handleRefresh = async () => {
+    setIsRefreshLoading(true);
+    const newPrice = await fetchPrices(tokenOne.address, tokenTwo.address);
+    if (newPrice) {
+      setIsRefreshLoading(false);
+    } else {
+      console.error("Error");
+      setIsRefreshLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchPrices(tokenList[0].address, tokenList[1].address);
   }, []);
@@ -202,21 +265,19 @@ function Swap() {
     }
   }, [isSuccess]);
 
-  const settings = (
-    <>
-      <div>Slippage Tolerance</div>
-      <div>
-        <Radio.Group value={slippage} onChange={handleSlippageChange}>
-          <Radio.Button value={0.5}>0.5%</Radio.Button>
-          <Radio.Button value={2.5}>2.5%</Radio.Button>
-          <Radio.Button value={5}>5.0%</Radio.Button>
-        </Radio.Group>
-      </div>
-    </>
-  );
-
   return (
-    <>
+    <div
+      style={{
+        border: "none",
+        width: "100%",
+        height: "100vh",
+        background: "rgb(26,28,30)",
+        background:
+          "linear-gradient(90deg, rgba(26,28,30,1) 0%, rgba(31,38,57,1) 35%, rgba(14,17,27,1) 100%)",
+        margin: "0",
+        paddingTop: "1rem",
+      }}
+    >
       {contextHolder}
       <TokenSelectorModal
         isOpen={isOpen}
@@ -228,27 +289,82 @@ function Swap() {
         <TradeBoxHeader>
           <Label
             style={{
-              fontWeight: "bold",
+              fontSize: "1rem",
+              lineHeight: "20px",
+              fontWeight: "500",
+              paddingBottom: "4px",
+              cursor: "pointer",
+              color: "white",
             }}
-          >SWAP</Label>
-          <SettingsPopover settings={settings} />
+          >
+            Swap
+          </Label>
+          <Container
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "1rem",
+              margin: 0,
+              border: "none",
+            }}
+          >
+            <StyledRefreshIcon onClick={handleRefresh} />
+            <SettingsPopover
+              slippage={slippage}
+              handleSlippageChange={handleSlippageChange}
+            />
+          </Container>
         </TradeBoxHeader>
-        <TokenInput
-          tokenOneAmount={tokenOneAmount}
-          tokenTwoAmount={tokenTwoAmount}
-          tokenOne={tokenOne}
-          tokenTwo={tokenTwo}
-          onTokenAmountChange={changeAmount}
-          switchTokens={switchTokens}
-          openTokenSelector={openModal}
-        />
+        <div
+          style={{
+            position: "relative",
+          }}
+        >
+          <TokenInput
+            tokenAmount={tokenOneAmount}
+            token={tokenOne}
+            validationType="number"
+            onTokenAmountChange={changeAmount}
+            openTokenSelector={openModal}
+            openTokenSelectorNumber={1}
+            backgroundColor="#1f2639"
+            tokenType="Sell"
+            AssetHoverColor="#0E111B"
+            getUserTokenBalance={tokenBalance}
+          />
+          <SwitchButton
+            onMouseEnter={handleHover}
+            onMouseLeave={handleHover}
+            style={{ transition: "transform 0.2s" }}
+            onClick={switchTokens}
+          >
+            <ArrowDownwardIcon
+              style={{
+                transform: hovered ? "rotate(180deg)" : "rotate(0deg)",
+                transition: "transform 0.3s",
+              }}
+            />
+          </SwitchButton>
+          <TokenInput
+            tokenAmount={tokenTwoAmount}
+            token={tokenTwo}
+            validationType="readOnly"
+            openTokenSelector={openModal}
+            openTokenSelectorNumber={2}
+            backgroundColor=""
+            tokenType="Buy"
+            AssetHoverColor="#1f2639"
+            isRefreshLoading={isRefreshLoading}
+            getUserTokenBalance={tokenBalance}
+          />
+        </div>
         <SwapButton
           tokenOneAmount={tokenOneAmount}
           isConnected={isConnected}
           fetchDexSwap={fetchDexSwap}
         />
       </TradeBox>
-    </>
+    </div>
   );
 }
 
