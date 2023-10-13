@@ -16,18 +16,19 @@ const useCurrentProposalDetail = () => {
     return proposals.find((item) => item.id === proposal.id) || null;
   }, [proposals, proposal.id]);
 
+
   useEffect(() => {
-    if (proposal && filteredProposal) {
+    if (proposal) {
       setLoading(false); // Data is ready, stop loading
       const updatedDataForItemCard = {
         ...data,
         Goverance: proposal.space,
         Proposal: proposal.title,
-        "Total Budget": filteredProposal.amount,
+        "Total Budget": filteredProposal?.amount || 0,
       };
       setData(updatedDataForItemCard);
     }
-  }, [proposal, filteredProposal]);
+  }, [filteredProposal, proposal]);
 
   return { data, loading };
 };

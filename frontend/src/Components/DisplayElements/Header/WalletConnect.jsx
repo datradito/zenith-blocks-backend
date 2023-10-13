@@ -11,6 +11,9 @@ import { useDispatch } from "react-redux";
 import { setIsLoggedIn } from "../../../actions/createAuthAction";
 import { toast } from "react-toastify";
 
+const BASE_URL = process.env.REACT_APP_API_URL;
+// const BASE_URL = "http://localhost:8000";
+
 const clearAuthData = () => {
   sessionStorage.removeItem("authToken");
   sessionStorage.removeItem("address");

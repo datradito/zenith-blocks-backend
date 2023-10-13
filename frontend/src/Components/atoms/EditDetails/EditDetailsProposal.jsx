@@ -27,7 +27,7 @@ let dialogContainerStyle = {
 
 let dialogContentStyle = {
   width: "400px",
-  backgroundColor: ("#0D0E10", 0.5),
+  backgroundColor: "#0D0E10",
   boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.4)",
   padding: "1.5rem",
 
@@ -39,7 +39,6 @@ export default function DetailPanelContent({ row, setIsAmountAdded}) {
   const { loading, saveProposalDetails } = useSaveProposalDetails();
   const [dialogOpen, setDialogOpen] = useState(true);
   const onSubmit = async (data) => {
-    console.log(data.amount);
     try {
       await saveProposalDetails(data.amount, row);
 

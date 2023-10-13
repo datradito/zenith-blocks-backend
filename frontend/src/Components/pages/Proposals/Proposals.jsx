@@ -1,15 +1,16 @@
-import React from "react";
-import { NetworkStatus } from "@apollo/client";
-import Stack from "@mui/material/Stack";
-import PaginationControlled from "../../DisplayElements/Pagination.jsx";
-import SubHeader from "../../molecules/SubHeader/SubHeader.jsx";
-import CircularIndeterminate from "../../atoms/Loader/loader.jsx";
-import Label from "../../atoms/Label/Label.jsx";
-import useProposals from "../../hooks/Proposals/useProposals.jsx";
-import ProposalCard from "./ProposalCard.jsx";
-import { toast } from "react-toastify";
-import Container from "../../atoms/Container/Container.jsx";
-
+import React, {useEffect} from 'react';
+import { NetworkStatus } from '@apollo/client';
+import { useDispatch } from "react-redux";
+import Stack from '@mui/material/Stack';
+import PaginationControlled from '../../DisplayElements/Pagination.jsx';
+import SubHeader from "../../molecules/SubHeader/SubHeader.jsx"
+import CircularIndeterminate from '../../atoms/Loader/loader.jsx';
+import Label from '../../atoms/Label/Label.jsx';
+import useProposals from '../../hooks/Proposals/useProposals.jsx';
+import ProposalCard from './ProposalCard.jsx';
+import { toast } from 'react-toastify';
+import Container from '../../atoms/Container/Container.jsx';
+import { refreshState } from '../../../actions/createBudgetAction/index.js';
 const pagination = {
   margin: "1rem",
   alignItems: "flex-end",
@@ -17,6 +18,9 @@ const pagination = {
 };
 
 const Proposals = () => {
+  const dispatch = useDispatch();
+  dispatch(refreshState())
+
   const {
     loading,
     error,

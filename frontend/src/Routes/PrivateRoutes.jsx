@@ -1,12 +1,16 @@
 import Login from "../Components/pages/Home/logIn";
 import ResponsiveHeaderBar from "../Components/DisplayElements/Header/Header.jsx";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { UserContext } from "../Utility/Providers/UserProvider";
 
 const PrivateRoute = ({ children }) => {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
 
-  console.log(user)
+  useEffect(() => {
+    if (!user) {
+     setUser(null)
+    }
+  } ,[user]);
 
   return user ? (
     children

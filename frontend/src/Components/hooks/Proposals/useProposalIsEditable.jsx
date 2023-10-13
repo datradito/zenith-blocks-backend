@@ -1,20 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { refreshState } from "../../../actions/createBudgetAction/index.js";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 
 const useProposalIsEditable = (proposalId) => {
-  const dispatch = useDispatch();
   const { proposals } = useSelector((state) => state.currentProposalAmounts);
   const [amount, setProposalAmount] = useState(null);
   const [status, setStatus] = useState();
 
-  dispatch(refreshState());
+const filteredProposal = useMemo(() => {
+  const foundProposal = proposals.find(
+    (proposal) => proposal.id === proposalId
+  );
+  return foundProposal || null;
+}, [proposalId, proposals]);
 
-  const filteredProposal = useMemo(() => {
-    return proposals.filter((proposal) => proposal.id === proposalId)[0];
-  }, [proposalId, proposals]);
 
   useEffect(() => {
     if (filteredProposal) {
@@ -23,11 +23,16 @@ const useProposalIsEditable = (proposalId) => {
 
       if (filteredProposal.status === "Funded") {
         toast.error("Proposal is fully funded");
-      } else if (!filteredProposal.amount) {
+      } else if (filteredProposal?.amount === null) {
         toast.error("Proposal is missing an amount");
       }
     }
-  }, [filteredProposal]);
+
+    if(!filteredProposal) {
+      setProposalAmount(null);
+      toast.error("Proposal is missing an amount");
+    }
+  }, []);
 
   return { amount, status };
 };

@@ -10,6 +10,7 @@ const initialState = {
 const currentProposalReducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_PROPOSAL:
+            
             return {
                 ...state,
                 proposal: {

@@ -43,6 +43,7 @@ function ItemCard({ label, value }) {
 
 const ItemCardComponent = () => {
   const { loading, data } = useCurrentProposalDetail();
+
     return (
       <Container
         style={{

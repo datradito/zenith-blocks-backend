@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import FormDetailPanel from "../../atoms/EditDetails/EditDetailsProposal.jsx";
 import Amount from "../../molecules/ProposalAmount/Amount.jsx";
 
@@ -35,9 +36,12 @@ function ProposalCard({
   item,
   selectedItemId,
   onClose,
-}) {
+})
+{
   const [selectedItem, setSelectedItem] = useState(null);
   const [isAmountAdded, setIsAmountAdded] = useState(false);
+
+  
   return (
     <>
       <SubItem sx={subItemStyle}>

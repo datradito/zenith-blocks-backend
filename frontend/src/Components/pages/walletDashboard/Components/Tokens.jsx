@@ -3,9 +3,8 @@ import { useLazyQuery } from "@apollo/client";
 import { GET_TOKEN_BALANCE } from "../../../../ServerQueries/Dashboard/Queries";
 import CircularIndeterminate from "../../../atoms/Loader/loader";
 import Box from "@mui/material/Box";
-
-// import Button from "../../../atoms/Button/Button";
-// import Container from "../../../atoms/Container/Container";
+import Button from "../../../atoms/Button/Button";
+import Container from "../../../atoms/Container/Container";
 
 
 function Tokens({ wallet, chain, tokens, setTokens }) {
