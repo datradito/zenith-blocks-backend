@@ -8,18 +8,20 @@ const Button = styled.button`
   width: ${(props) => props?.sx?.width || "10rem"};
   margin-right: ${(props) => props?.sx?.mr || "0"};
   border-radius: 50px;
-  max-width: 10rem;
+  max-width: ${(props) => props?.sx?.width || "10rem"};
   padding: 0.5rem 1rem;
   border: none;
   color: white;
   cursor: pointer;
 
   &:hover {
-    background-color: ${(props) => props?.sx?.hoverBackgroundColor || "#055FFC"};
+    background-color: ${(props) =>
+      props?.sx?.hoverBackgroundColor || "#055FFC"};
   }
 
   &:disabled {
-    background-color: ${(props) => props?.sx?.disabledBackgroundColor || "#9bb8ff"};
+    background-color: ${(props) =>
+      props?.sx?.disabledBackgroundColor || "#9bb8ff"};
   }
 `;
 

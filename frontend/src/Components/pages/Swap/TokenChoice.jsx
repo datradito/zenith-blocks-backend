@@ -1,31 +1,29 @@
 import React from "react";
-import { Box } from "@mui/material";
 import styled from "styled-components";
-import { Typography } from "antd";
+import Label from "../../atoms/Label/Label";
+import Container from "../../atoms/Container/Container";
+import AssetLogo from "../../molecules/Swap/AssetLogo";
 
-const TokenLogo = styled("img")`
+const TokenLogo = styled(AssetLogo)`
   height: 40px;
   width: 40px;
 `;
 
-const TokenName = styled(Typography)`
-  margin-left: 10px;
-  font-size: 16px;
+const TokenName = styled(Label)`
   font-weight: 500;
   width: "100%";
-  color: grey;
 `;
 
-const TokenTicker = styled(Typography)`
+const TokenTicker = styled(Label)`
   margin-left: 10px;
-  font-size: 13px;
   font-weight: 300;
-  color: grey;
+  font-size: 12px;
 `;
-const TokenChoiceContainer = styled(Box)`
+const TokenChoiceContainer = styled(Container)`
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  border: none;
   padding-left: 20px;
   padding-top: 10px;
   padding-bottom: 10px;
@@ -39,12 +37,15 @@ const TokenChoiceContainer = styled(Box)`
   &:hover ${TokenTicker} {
     color: white;
   }
+  outline: none;
 `;
 
 const TokenChoice = ({ token, onClick }) => {
+  console.log(token)
   return (
     <TokenChoiceContainer onClick={onClick}>
       <TokenLogo src={token.img} alt={token.ticker} />
+      sdfsa
       <div>
         <TokenName>{token.name}</TokenName>
         <TokenTicker>{token.ticker}</TokenTicker>

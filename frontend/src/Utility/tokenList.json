@@ -14,12 +14,6 @@
         "decimals": 18
     },
     {
-      "decimals": 6,
-      "img": "https://static.alchemyapi.com/images/assets/825.png",
-      "name": "Tether",
-      "ticker": "USDT"
-    },
-    {
         "ticker": "USDT",
         "img": "https://cdn.moralis.io/eth/0xdac17f958d2ee523a2206206994597c13d831ec7.png",
         "name": "Tether USD",

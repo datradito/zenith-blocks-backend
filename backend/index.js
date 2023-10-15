@@ -45,26 +45,21 @@ app.get("/", (req, res) => {
 });
 
 
-app.get("/tokenPrice", async (req, res) => {
-
-    const { query } = req;
-
-    const responseOne = await Moralis.EvmApi.token.getTokenPrice({
-        address: query.addressOne
-    })
-
-    console.log(responseOne)
-
-    const responseTwo = await Moralis.EvmApi.token.getTokenPrice({
-        address: query.addressTwo
-    })
-
-    const usdPrices = {
-        tokenOne: responseOne.raw.usdPrice,
-        tokenTwo: responseTwo.raw.usdPrice,
-        ratio: responseOne.raw.usdPrice / responseTwo.raw.usdPrice
-    }
-    return res.status(200).json(usdPrices);
+app.post("/tokenPrice", async (req, res) => {
+    const { body } = req;
+        const response = await axios.get(
+          `https://api.1inch.dev/price/v1.1/1/${body.addresses}`,
+          {
+            params: {
+              currency: "USD"
+            },
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${process.env.REACT_APP_1INCH_API_KEY}`,
+            },
+          }
+        );
+        return res.status(200).json(response.data);
 });
 
 app.post('/createUser', async (req, res) => {
@@ -122,7 +117,7 @@ app.get("/allowance", async (req, res) => {
                 headers: {
                     accept: "*/*",
                     "Content-Type": "application/json",
-                    Authorization: `Bearer mkOi8PEitK1DvNUL8kCzHRxBhQ5AtHIB`,
+                    Authorization: `Bearer ${process.env.REACT_APP_1INCH_API_KEY}`,
                 },
                 }
         );
@@ -134,16 +129,16 @@ app.get("/allowance", async (req, res) => {
 });
 
 app.get("/approve", async (req, res) => {
-    const { tokenOneAddress } = req.query;
+    const { tokenOneAddress, amount } = req.query;
 
     try {
         const response = await axios.get(
-          `https://api.1inch.dev/swap/v5.2/1/approve/transaction?tokenAddress=${tokenOneAddress}`,
+          `https://api.1inch.dev/swap/v5.2/1/approve/transaction?tokenAddress=${tokenOneAddress}&amount=${Number(amount)}`,
           {
             headers: {
               accept: "*/*",
               "Content-Type": "application/json",
-              Authorization: `Bearer mkOi8PEitK1DvNUL8kCzHRxBhQ5AtHIB`,
+              Authorization: `Bearer ${process.env.REACT_APP_1INCH_API_KEY}`,
             },
           }
         );

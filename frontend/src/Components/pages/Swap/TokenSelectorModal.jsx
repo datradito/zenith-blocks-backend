@@ -1,4 +1,5 @@
 import React from "react";
+import Label from "../../atoms/Label/Label";
 import { Modal, Paper, Typography, List, Box, IconButton } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import styled from "styled-components";
@@ -8,12 +9,11 @@ const TokenLogo = styled("img")`
   width: 40px;
 `;
 
-const TokenName = styled(Typography)`
+const TokenName = styled(Label)`
   margin-left: 10px;
   font-size: "0.85rem";
   font-weight: 500;
   width: "100%";
-  color: grey;
 `;
 
 const TokenTicker = styled(Typography)`
@@ -52,9 +52,10 @@ const TokenSelectorModal = ({ isOpen, closeModal, tokenList, modifyToken }) => {
           transform: "translate(-50%, -50%)",
           bgcolor: "#0e111b",
           width: 400,
+          outline: "none",
           p: 3,
         }}
-        style={{ height: "500px", overflowY: "scroll" }}
+        style={{ height: "500px", overflowY: "scroll"}}
       >
         <div
           style={{
@@ -63,12 +64,14 @@ const TokenSelectorModal = ({ isOpen, closeModal, tokenList, modifyToken }) => {
             alignItems: "center",
           }}
         >
-          <Typography
-            variant="h5"
-            style={{ color: "white", textAlign: "center" }}
+          <Label
+            style={{
+              color: "white", 
+              fontSize: "1.2rem",
+            }}
           >
             Select a token
-          </Typography>
+          </Label>
           <IconButton onClick={closeModal}>
             <Close
               sx={{
