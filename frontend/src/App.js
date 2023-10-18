@@ -25,8 +25,7 @@ import PaymentCreation, {
   paymentLoader,
 } from "./Components/pages/Payments/PaymentCreation";
 
-import { Toaster, toast } from "react-hot-toast";
-import "react-toastify/dist/ReactToastify.css";
+import { Toaster } from "react-hot-toast";
 import { UserProvider } from "./Utility/Providers/UserProvider";
 import NotFound from "./Routes/NotFound";
 const ProposalDetailView = lazy(() => import("./Components/pages/Proposals/ProposalDetailView"));
