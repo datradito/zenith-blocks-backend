@@ -25,7 +25,7 @@ import PaymentCreation, {
   paymentLoader,
 } from "./Components/pages/Payments/PaymentCreation";
 
-import { ToastContainer } from "react-toastify";
+import { Toaster, toast } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "./Utility/Providers/UserProvider";
 import NotFound from "./Routes/NotFound";
@@ -39,6 +39,7 @@ const Proposals = lazy(() => import("./Components/pages/Proposals/Proposals"));
 const Accounts = lazy(() => import("./Components/pages/Accounts/Accounts"));
 
 function App() {
+
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route
@@ -120,10 +121,29 @@ function App() {
           <PersistGate loading={null} persistor={persistor}>
             <UserProvider>
               <Suspense fallback={<CircularIndeterminate />}>
-                  <ToastContainer limit={2} position="bottom-left" />
-                  <RouterProvider router={router} />
+                <RouterProvider router={router} />
               </Suspense>
             </UserProvider>
+            <Toaster
+              position="top-center"
+              gutter={12}
+              containerStyle={{ margin: "8px" }}
+              toastOptions={{
+                success: {
+                  duration: 3000,
+                },
+                error: {
+                  duration: 5000,
+                },
+                style: {
+                  fontSize: "1rem",
+                  maxWidth: "500px",
+                  padding: "12px 24px",
+                  backgroundColor: "white",
+                  color: "var(--color-grey-700)",
+                },
+              }}
+            />
           </PersistGate>
         </Provider>
       </ApolloProvider>

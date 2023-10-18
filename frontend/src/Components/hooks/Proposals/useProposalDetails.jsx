@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { GET_PROPOSAL_BY_ID } from '../../../SnapShot/Queries.js';
 import { snapShotClient } from '../../../SnapShot/client.js';
-import { toast } from 'react-toastify';
+import { toast } from "react-hot-toast";
 
 export default function useProposalDetails(id) {
 

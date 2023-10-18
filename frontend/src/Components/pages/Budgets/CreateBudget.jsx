@@ -13,7 +13,7 @@ import Label from '../../atoms/Label/Label';
 import Container from '../../atoms/Container/Container';
 
 import CreateBudgetForm from '../../features/budgets/CreateBudgetForm';
-import { toast } from 'react-toastify';
+import { toast } from "react-hot-toast";
 import Breadcrumbs from '../../atoms/BreadCrumbs/BreadCrumbs';
 
 function CreateBudget() {

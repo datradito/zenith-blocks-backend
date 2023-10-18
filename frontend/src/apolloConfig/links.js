@@ -1,7 +1,7 @@
 import { setContext } from "@apollo/client/link/context";
 import { from, ApolloLink } from '@apollo/client';
 import { createHttpLink } from '@apollo/client';
-import { toast } from 'react-toastify';
+import { toast } from "react-hot-toast";
 import { RetryLink } from '@apollo/client/link/retry';
 import { onError } from '@apollo/client/link/error';
 import { redirect } from "react-router-dom";

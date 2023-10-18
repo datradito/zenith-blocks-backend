@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 import WalletConnect from './WalletConnect';
+
 import { useSelector } from 'react-redux';
 
 import {
@@ -37,53 +38,59 @@ const ResponsiveHeaderBar = () => {
         { name: 'Accounts', url: '/accounts' });
 
     return (
-        <AppBar
-            position="static"
-            sx={{
-                backgroundColor: '#1A1C1E',
-                fontFamily: 'Fantasy',
-                padding: '.5rem 2rem',
-            }}
+      <AppBar
+        position="static"
+        sx={{
+          backgroundColor: "#1A1C1E",
+          fontFamily: "Fantasy",
+          padding: ".5rem 2rem",
+        }}
+      >
+        <Container
+            maxWidth="xl"
         >
-            <Container maxWidth="xl">
-                <Toolbar disableGutters>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="a"
-                        href="/"
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'none', md: 'flex' },
-                            color: 'White',
-                            textDecoration: 'none',
-                        }}
+          <Toolbar disableGutters>
+            <Typography
+              variant="h6"
+              noWrap
+              component="a"
+              href="/"
+              sx={{
+                mr: 2,
+                display: { xs: "none", md: "flex" },
+                color: "White",
+                textDecoration: "none",
+              }}
+            >
+              <img style={{ maxWidth: "8rem" }} src={logo} alt="Logo" />
+            </Typography>
+            <>
+              <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "flex" } }}>
+                {pages.map((page, index) => (
+                  <Button key={index}>
+                    <NavLink
+                      style={navLinkStyle}
+                      to={page.url}
+                      key={page.name}
+                      sx={{
+                        color: "white",
+                        textTransform: "capitalize",
+                        display: "block",
+                      }}
                     >
-                        <img style={{ maxWidth: "8rem" }} src={logo} alt="Logo" />
-                    </Typography>
-                        <>
-                        <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                            {pages.map((page, index) => (
-                                <Button key={index}>
-                                    <NavLink
-                                        style={navLinkStyle}
-                                        to={page.url}
-                                        key={page.name}
-                                        sx={{ color: 'white', textTransform: 'capitalize', display: 'block' }}
-                                    >
-                                        {page.name}
-                                    </NavLink>
-                                </Button>
-                            ))}
-                        </Box>
-                            <Box sx={{ flexGrow: 0 }}>
-                                <WalletConnect />
-                            </Box>   
-                        </>
-                    {/* { !walletConnected &&  <Login />  } */}
-                </Toolbar>
-            </Container>
-        </AppBar>
+                      {page.name}
+                    </NavLink>
+                  </Button>
+                ))}
+              </Box>
+              <Box sx={{ flexGrow: 0 }}>
+                <WalletConnect />
+              </Box>
+            </>
+            {/* { !walletConnected &&  <Login />  } */}
+          </Toolbar>
+        </Container>
+      </AppBar>
     );
 }
 

@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { GET_PROPOSAL_BY_SPACE } from "../../../SnapShot/Queries.js";
 import { snapShotClient } from "../../../SnapShot/client.js";
+import { UserContext } from "../../../Utility/Providers/UserProvider.jsx";
 
 const fetchProposalData = async (dao, currentPage) => {
   const response = await snapShotClient.query({
@@ -21,6 +22,12 @@ const useProposals = () => {
     parseInt(localStorage.getItem("currentPage")) || 1
   );
 
+  const user = useContext(UserContext);
+
+  if (!user) {
+    window.location.href = "/";
+  }
+  
   const { data, error, isLoading, refetch, networkStatus } = useQuery(
     ["proposals", dao, currentPage],
     () => fetchProposalData(dao, currentPage),

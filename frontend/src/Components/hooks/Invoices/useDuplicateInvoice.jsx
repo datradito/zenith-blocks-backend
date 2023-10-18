@@ -3,10 +3,9 @@ import {
 } from "../../../ServerQueries/Invoices/Mutations.js";
 import { client } from "../../../apolloConfig/client.js";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { resetInvoice } from "../../../actions/createInvoiceAction/index.js";
 
 

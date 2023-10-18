@@ -1,4 +1,4 @@
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 export const transformBudgets = (items, totalBudget) => {
   if (items === null || items === undefined) return null;
@@ -34,6 +34,3 @@ export const validateBudget = (item, proposalAmount) => {
 
   return true;
 };
-
-
-

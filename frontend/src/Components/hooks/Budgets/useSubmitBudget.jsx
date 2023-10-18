@@ -3,7 +3,7 @@ import { SUBMIT_BUDGET_MUTATION } from '../../../ServerQueries/Budget/Mutation';
 import { client } from '../../../apolloConfig/client';
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from 'react-toastify';
+import { toast } from "react-hot-toast";
 
 async function submitBudgetData(budgetData) {
   await client.mutate({

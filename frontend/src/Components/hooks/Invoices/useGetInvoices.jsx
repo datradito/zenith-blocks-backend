@@ -3,7 +3,7 @@ import { GET_ALL_INVOICES_BY_BUDGET } from "../../../ServerQueries/Invoices/Quer
 import { client } from "../../../apolloConfig/client.js";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 export const useGetAllInvoices = (budgetId) => {
   const [invoices, setInvoices] = useState([]);
 

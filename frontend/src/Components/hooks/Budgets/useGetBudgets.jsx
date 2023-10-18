@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { client } from "../../../apolloConfig/client.js";
 import { useState, useEffect } from "react";
 import { transformBudgets } from "../../../Services/BudgetServices/budgetService";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 export const useGetBudgets = (amount, proposalId) => {
   const [budgets, setBudgets] = useState([]);

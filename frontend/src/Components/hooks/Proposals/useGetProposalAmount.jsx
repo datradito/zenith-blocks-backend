@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { GET_PROPOSAL_DETAILS } from '../../../ServerQueries/proposalQuery'; // Import the GET_PROPOSAL_Details query
 import { useEffect } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from "react-hot-toast";
 
 const useGetProposalAmount = (proposalid) => {
 
