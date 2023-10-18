@@ -1,7 +1,6 @@
 import React from "react";
 import Label from "../../atoms/Label/Label";
-import { Modal, Paper, Typography, List, Box, IconButton } from "@mui/material";
-import { Close } from "@mui/icons-material";
+import { Modal, Paper, Typography, List, Box,} from "@mui/material";
 import styled from "styled-components";
 
 const TokenLogo = styled("img")`
@@ -72,18 +71,6 @@ const TokenSelectorModal = ({ isOpen, closeModal, tokenList, modifyToken }) => {
           >
             Select a token
           </Label>
-          <IconButton onClick={closeModal}>
-            <Close
-              sx={{
-                "&:hover": {
-                  backgroundColor: "#1f2639",
-                },
-                color: "white",
-                padding: "4px",
-                borderRadius: "15px",
-              }}
-            />
-          </IconButton>
         </div>
         <List>
           {tokenList.map((token, i) => (

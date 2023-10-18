@@ -24,7 +24,7 @@ const axiosConfig = (address) => {
 }
         
 
-const baseURL = `https://eth-mainnet.g.alchemy.com/v2/AsxwVAm7iKW3SxGD-z9inFZ9FoYeQ4lQ`;
+const baseURL = `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`;
 const axiosURL = `${baseURL}`;
 
 const transactionHistory = (address) => {

@@ -21,6 +21,10 @@ const Input = styled.input`
   &:read-only {
     color: grey;
   }
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export default Input;

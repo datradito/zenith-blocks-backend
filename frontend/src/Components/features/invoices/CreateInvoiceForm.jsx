@@ -98,6 +98,7 @@ function CreateInvoiceForm() {
             margin: "2rem",
             flexWrap: "wrap",
             justifyContent: "space-between",
+            alignContent: "stretch",
             gap: "1rem",
           }}
         >
@@ -118,7 +119,7 @@ function CreateInvoiceForm() {
           </FormRow>
           <FormRow
             style={{
-              maxWidth: "20%",
+              flex: 1,
             }}
             label="Invoice #"
             error={errors?.invoiceNumber?.message}
@@ -167,7 +168,7 @@ function CreateInvoiceForm() {
           </FormRow>
           <FormRow
             style={{
-              minWidth: "37%",
+             flex: "35% 1 1",
             }}
             label="Due Date"
             error={errors?.dueDate?.message} // Include the error message
@@ -188,7 +189,12 @@ function CreateInvoiceForm() {
               })}
             />
           </FormRow>
-          <FormRow label="Amount" error={errors?.amount?.message}>
+          <FormRow
+            style={{
+              flex: 1,
+            }}
+            label="Amount"
+            error={errors?.amount?.message}>
             <Input
               type="number"
               id="amount"
@@ -203,7 +209,7 @@ function CreateInvoiceForm() {
           </FormRow>
           <FormRow
             style={{
-              minWidth: "50%",
+              flex: "50% 1 1"
             }}
             label="Description"
             error={errors?.description?.message}
@@ -218,7 +224,7 @@ function CreateInvoiceForm() {
           </FormRow>
           <FormRow
             style={{
-              minWidth: "48%",
+              flex: 1,
               minHeight: "5rem",
             }}
             label="File Upload"
@@ -228,11 +234,10 @@ function CreateInvoiceForm() {
               style={{
                 minHeight: "5rem",
               }}
-              type="file"
+              accept="image/*"
               id="invoicepdf"
               {...methods.register("invoicepdf")}
-            >
-              </FileUpload>
+            ></FileUpload>
           </FormRow>
         </Container>
       </Form>

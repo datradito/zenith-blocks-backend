@@ -14,9 +14,6 @@ const TokenInput = styled(Input)`
     border: none;
   }
 
-  &:hover {
-    cursor: pointer;
-  }
 `;
 
 export default TokenInput;

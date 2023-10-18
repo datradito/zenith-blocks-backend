@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { message } from "antd";
 import { useAccount, useSendTransaction, useWaitForTransaction } from "wagmi";
+import useTokenBalances from "../../hooks/Swap/useTokenBalances";
 import styled from "styled-components";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import TokenSelectorModal from "./TokenSelectorModal";
@@ -9,24 +10,12 @@ import SwapButton from "./SwapButton";
 import tokenList from "../../../Utility/tokenList";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import axios from "axios";
-import Label from "../../atoms/Label/Label";
-import Container from "../../atoms/Container/Container.jsx";
 import ToToken from "./ToToken";
 import FromToken from "./FromToken";
+import SwapLayout from "../../molecules/Swap/SwapLayout";
 import Button from "../../atoms/Button/Button";
 import useGetTokensPrices from "../../hooks/Swap/useGetTokensPrices";
-
-
-const TradeBox = styled(Container)`
-  width: 400px;
-  background-color: #0e111b;
-  min-height: 300px;
-  border-radius: 0.8rem;
-  padding: 1.5rem;
-  margin: 5rem auto;
-  gap: 1rem,
-  border-radius: 1rem;
-`;
+import useCheckAllowance from "../../hooks/Swap/useCheckAllowance";
 
 const SwitchButton = styled(Button)`
   background-color: #3a4157;
@@ -42,11 +31,12 @@ const SwitchButton = styled(Button)`
   &:hover {
     background-color: #3a4157;
   }
-  position: absolute;
-  top: 54%;
+  position: relative;
   left: 50%;
+  top: 50%;
   transform: translate(-50%, -50%);
 `;
+
 
 const StyledRefreshIcon = styled(RefreshIcon)({
   border: "none",
@@ -58,12 +48,6 @@ const StyledRefreshIcon = styled(RefreshIcon)({
   },
 });
 
-const TradeBoxHeader = styled(Container)`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: none;
-`;
 
 function Swap() {
   const { address, isConnected } = useAccount();
@@ -84,13 +68,19 @@ function Swap() {
   });
   const [isRefreshLoading, setIsRefreshLoading] = useState(false);
   const [hovered, setHovered] = useState(false);
+  const { tokenBalance } = useTokenBalances(tokenOne);
 
 
   const {
     data: tokenPrices,
     isLoading: isPriceLoading,
-    // isError: isPriceError,
   } = useGetTokensPrices([tokenOne.address, tokenTwo.address], fetchPrice);
+
+  const {
+    data: allowance,
+    isLoading: isAllowanceLoading,
+    checkAllowance
+  } = useCheckAllowance(tokenOne.address, address);
 
   useEffect(() => {
     if (tokenPrices) {
@@ -98,19 +88,26 @@ function Swap() {
         tokenPrices?.[tokenOne.address] / tokenPrices?.[tokenTwo.address]
       );
     }
-  }, [tokenPrices, fetchPrice]);
+  }, [tokenPrices, fetchPrice, tokenOne, tokenTwo, isPriceLoading]);
   
-    function changeAmount(e) {
-      setTokenOneAmount(e.target.value);
-
-      if (e.target.value !== "" && ratio) {
-        setTokenTwoAmount(
-            (e.target.value * ratio).toFixed(2)
-        )
-      } else {
-        setTokenTwoAmount(null);
-      }
+  function changeAmount(e) {
+    setTokenOneAmount(e.target.value);
+    if (isPriceLoading) {
+      messageApi.open({
+        type: "loading",
+        content: "Loading...",
+        duration: 2.5,
+      });
     }
+    if (
+      e.target.value !== "" &&
+      ratio
+    ) {
+      setTokenTwoAmount((e.target.value * ratio).toFixed(2));
+    } else {
+      setTokenTwoAmount(null);
+    }
+  }
 
   const handleHover = () => {
     setHovered((prev) => !prev);
@@ -122,7 +119,11 @@ function Swap() {
     data: txDetails.data,
     value: txDetails.value,
     onError(error) {
-      console.log("Error", error);
+      messageApi.open({
+        type: "error",
+        content: error.message,
+        duration: 1.5,
+      });
     },
   });
 
@@ -181,16 +182,37 @@ function Swap() {
     setIsOpen(false);
   }
 
-
-  async function checkAllowance() {
-    return await axios.get(`${process.env.REACT_APP_API_URL}/allowance`, {
-      params: { tokenAddress: tokenOne.address, walletAddress: address },
-    });
+  async function checkTokenAllowance() {
+    try {
+      const allowance = await checkAllowance();
+      return allowance;
+    } catch (error) {
+      messageApi.open({
+        type: "error",
+        content: error.message,
+        duration: 1.5,
+      });
+    }
   }
 
-  async function fetchDexSwap() {
-    const allowance = await checkAllowance();
+  async function generateSwapTransaction() {
+    try {
+      const swap = await axios.get(`${process.env.REACT_APP_API_URL}/swap`, {
+        params: {
+          tokenOneAddress: tokenOne.address,
+          tokenTwoAddress: tokenTwo.address,
+          tokenOneAmount: tokenOneAmount,
+          slippage: slippage,
+        },
+      });
+      return swap;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
+  async function approveAllowance() {
+    const allowance = await checkTokenAllowance();
     if (allowance.data.allowance === "0") {
       const approve = await axios.get(
         `${process.env.REACT_APP_API_URL}/approve`,
@@ -201,7 +223,6 @@ function Swap() {
           },
         }
       );
-      console.log(approve);
       setTxDetails((prevTxDetails) => ({
         ...prevTxDetails,
         to: approve.data.to,
@@ -210,15 +231,38 @@ function Swap() {
       }));
       return;
     }
+  }
 
-    const tx = await axios.get(
-      `https://api.1inch.io/v5.0/1/swap?fromTokenAddress=${
-        tokenOne.address
-      }&toTokenAddress=${tokenTwo.address}&amount=${tokenOneAmount.padEnd(
-        tokenOne.decimals + tokenOneAmount.length,
-        "0"
-      )}&fromAddress=${address}&slippage=${slippage}`
-    );
+  async function fetchDexSwap() {
+    if (tokenOneAmount === null || tokenOneAmount === 0) {
+      messageApi.open({
+        type: "error",
+        content: "Please enter a valid amount",
+        duration: 1.5,
+      });
+      return;
+    }
+
+    if (tokenOneAmount > tokenBalance) {
+      messageApi.open({
+        type: "error",
+        content: "Insufficient Balance",
+        duration: 1.5,
+      });
+      return;
+    }
+
+    if (tokenOneAmount < 0.01) {
+      messageApi.open({
+        type: "error",
+        content: "Minimum amount is 0.01",
+        duration: 1.5,
+      });
+      return;
+    }
+
+    await approveAllowance();
+    const tx = await generateSwapTransaction();
 
     let decimals = Number(`1E${tokenTwo.decimals}`);
     setTokenTwoAmount((Number(tx.data.toTokenAmount) / decimals).toFixed(2));
@@ -236,7 +280,6 @@ function Swap() {
       setIsRefreshLoading(false);
     }
   };
-
 
   useEffect(() => {
     if (txDetails.to && isConnected) {
@@ -273,16 +316,7 @@ function Swap() {
   }, [isSuccess]);
 
   return (
-    <div
-    // style={{
-    //   border: "none",
-    //   width: "100%",
-    //   height: "100vh",
-    //   background:
-    //     "linear-gradient(90deg, rgba(26,28,30,1) 0%, rgba(31,38,57,1) 35%, rgba(14,17,27,1) 100%)",
-    //   margin: "0",
-    // }}
-    >
+    <SwapLayout>
       {contextHolder}
       <TokenSelectorModal
         isOpen={isOpen}
@@ -290,43 +324,18 @@ function Swap() {
         tokenList={tokenList}
         modifyToken={modifyToken}
       />
-      <TradeBox>
-        <TradeBoxHeader>
-          <Label
-            style={{
-              fontSize: "1rem",
-              lineHeight: "20px",
-              fontWeight: "500",
-              paddingBottom: "4px",
-              cursor: "pointer",
-              color: "white",
-            }}
-          >
-            Swap
-          </Label>
-          <Container
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-              margin: 0,
-              border: "none",
-            }}
-          >
-            <StyledRefreshIcon onClick={handleRefresh} />
-            <SettingsPopover
-              slippage={slippage}
-              handleSlippageChange={handleSlippageChange}
-            />
-          </Container>
-        </TradeBoxHeader>
-        <div
-          style={{
-            position: "relative",
-          }}
-        >
+      <SwapLayout.TradeBox>
+        <SwapLayout.TradeBoxHeader>
+          <StyledRefreshIcon onClick={handleRefresh} />
+          <SettingsPopover
+            slippage={slippage}
+            handleSlippageChange={handleSlippageChange}
+          />
+        </SwapLayout.TradeBoxHeader>
+        <SwapLayout.SwapMain>
           <FromToken
             tokenAmount={tokenOneAmount}
+            setTokenOneAmount={setTokenOneAmount}
             token={tokenOne}
             onTokenAmountChange={changeAmount}
             openTokenSelectorNumber={1}
@@ -353,14 +362,14 @@ function Swap() {
             openTokenSelectorNumber={2}
             isRefreshLoading={isRefreshLoading}
           />
-        </div>
+        </SwapLayout.SwapMain>
         <SwapButton
           tokenOneAmount={tokenOneAmount}
           isConnected={isConnected}
           fetchDexSwap={fetchDexSwap}
         />
-      </TradeBox>
-    </div>
+      </SwapLayout.TradeBox>
+    </SwapLayout>
   );
 }
 

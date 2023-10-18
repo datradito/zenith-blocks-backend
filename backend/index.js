@@ -7,7 +7,7 @@ if (process.env.NODE_ENV !== "production") {
 const session = require('./utility/middlewares/session');
 const cors = require('./utility/middlewares/cors');
 const authRouter = require('./routes/authRoutes');
-const axios = require('axios');
+const swapRouter = require('./routes/1inchSwapRoutes');
 
 const User = require('./Database/models/User');
 
@@ -26,6 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors);
 app.use(session);
 app.use(authRouter);
+app.use(swapRouter);
 
 let isMoralisInitialized = false;
 
@@ -42,24 +43,6 @@ initializeIpfsNode();
 
 app.get("/", (req, res) => {
   res.send("Hey this is my API running 🥳");
-});
-
-
-app.post("/tokenPrice", async (req, res) => {
-    const { body } = req;
-        const response = await axios.get(
-          `https://api.1inch.dev/price/v1.1/1/${body.addresses}`,
-          {
-            params: {
-              currency: "USD"
-            },
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${process.env.REACT_APP_1INCH_API_KEY}`,
-            },
-          }
-        );
-        return res.status(200).json(response.data);
 });
 
 app.post('/createUser', async (req, res) => {
@@ -104,47 +87,6 @@ app.get("/tokenTransfers", async (req, res) => {
         }
         res.send(userTransDetails);
     } catch (e) {
-        res.send(e);
-    }
-});
-
-app.get("/allowance", async (req, res) => {
-    const { tokenAddress, walletAddress } = req.query;
-    try {
-        const response = await axios.get(
-                `https://api.1inch.dev/swap/v5.2/1/approve/allowance?tokenAddress=${tokenAddress}&walletAddress=${walletAddress}`,
-                {
-                headers: {
-                    accept: "*/*",
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.REACT_APP_1INCH_API_KEY}`,
-                },
-                }
-        );
-        res.send(response.data);
-    } catch (e) {
-        res.send(e);
-    }
-
-});
-
-app.get("/approve", async (req, res) => {
-    const { tokenOneAddress, amount } = req.query;
-
-    try {
-        const response = await axios.get(
-          `https://api.1inch.dev/swap/v5.2/1/approve/transaction?tokenAddress=${tokenOneAddress}&amount=${Number(amount)}`,
-          {
-            headers: {
-              accept: "*/*",
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${process.env.REACT_APP_1INCH_API_KEY}`,
-            },
-          }
-        );
-        res.send(response.data);
-    }   
-    catch (e) {
         res.send(e);
     }
 });

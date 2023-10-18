@@ -18,7 +18,11 @@ const ToToken = ({
 
 
   return (
-    <TokenCardLayout>
+    <TokenCardLayout
+      sx={{
+        marginTop: "-2rem",
+      }}
+    >
       <TokenCardLayout.TokenRow>
         <p></p>
         <Label>
@@ -35,7 +39,10 @@ const ToToken = ({
         ) : (
           <TokenInput defaultValue="0" value={tokenAmount || ""} readOnly />
         )}
-        <StyledIcon onClick={() => openTokenSelector(openTokenSelectorNumber)}>
+        <StyledIcon
+          onClick={() => openTokenSelector(openTokenSelectorNumber)}
+          backgroundColor="#2D5AF4"
+        >
             <AssetLogo src={token.img} alt="assetTwoLogo" />
             <Label
               style={{
