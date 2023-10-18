@@ -1,27 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { Outlet } from "react-router-dom";
-import { toast } from 'react-toastify';
-import { useDisconnect } from 'wagmi';
+import Login from "../Components/pages/Home/logIn";
+import ResponsiveHeaderBar from "../Components/DisplayElements/Header/Header.jsx";
+import { useContext, useEffect } from "react";
+import { UserContext } from "../Utility/Providers/UserProvider";
 
-const PrivateRoute = ({ component, ...rest }) => {
-    const [authError, setAuthError] = useState(null);
-    const token = sessionStorage.getItem("authToken");
-    const { disconnectAsync } = useDisconnect();
-    
+const PrivateRoute = ({ children }) => {
+  const { user, setUser } = useContext(UserContext);
 
-    useEffect(() => {
-        if (token === null) {
-            disconnectAsync();
-            setAuthError("User is not Authenticated. Please connect wallet!");
-        } else {
-            setAuthError(null);
-        }
-    }, [token, disconnectAsync]);
+  useEffect(() => {
+    if (!user) {
+     setUser(null)
+    }
+  } ,[user]);
 
-
-    return token ? <Outlet /> : (
-        toast.error(authError)
-    );
+  return user ? (
+    children
+  ) : (
+    <>
+      <ResponsiveHeaderBar />
+      <Login />
+    </>
+  );
 };
 
 export default PrivateRoute;

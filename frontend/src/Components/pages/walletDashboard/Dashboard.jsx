@@ -10,24 +10,19 @@ import { Box, Typography } from "@mui/material";
 
 import {
     useAccount,
-    useConnect,
-    useDisconnect,
     useNetwork,
     useEnsAvatar,
-    useEnsName,
-    useBalance
 } from 'wagmi'
-
 function Dashboard() {
 
-    const { address, connector, onConnect, isConnected } = useAccount();
+    const { address } = useAccount();
     const [activeTab, setActiveTab] = useState('tokens');
     const { chain: networkChain } = useNetwork();
 
-    const ensAvatar = useEnsAvatar({
-        address: address,
-        cacheTime: 2_000,
-    })
+   const { data, isError, isLoading } = useEnsAvatar({
+     address: address,
+     cacheTime: 2_000,
+   });
     const [wallet, setWallet] = useState("");
     const [chain, setChain] = useState(networkChain?.id);
     const [nativeBalance, setNativeBalance] = useState(0);
@@ -63,7 +58,7 @@ function Dashboard() {
                     {wallet.length === 42 && (
                         <>
                             <div>
-                            <Avatar sx={{ width: 50, height: 50, marginRight: "1rem" }} src={ensAvatar} />
+                            <Avatar sx={{ width: 50, height: 50, marginRight: "1rem" }} src={data} />
                             <br />
                             <Typography variant="subtitle2">{`${wallet.slice(0, 6)}...${wallet.slice(36)}`}</Typography>
                             </div>
@@ -99,7 +94,6 @@ function Dashboard() {
                         textTransform: 'capitalize',
                         display: 'block'
                     }}
-                    isActive={() => activeTab === 'tokens'}
                     onClick={() => handleTabClick('tokens')}
                 >
                     Tokens
@@ -112,7 +106,6 @@ function Dashboard() {
                         paddingTop: "1rem",
                     }}
                     sx={{ color: 'white', textTransform: 'capitalize', display: 'block' }}
-                    isActive={() => activeTab === 'transfers'}
                     onClick={() => handleTabClick('transfers')}
                 >
                     Transaction History
@@ -128,7 +121,10 @@ function Dashboard() {
             }}>
                 <Box>
                     {activeTab === "tokens" && (
-                        <Box tabKey={1} tabName={"Tokens"}>
+                        <Box
+                            // tabKey={1}
+                            // tabName={"Tokens"}
+                        >
                             <NativeTokens
                                 wallet={wallet}
                                 chain={chain}
@@ -138,7 +134,7 @@ function Dashboard() {
                                 setNativeValue={setNativeValue}
                             />
                             <Tokens
-                                wallet={wallet}
+                                wallet={address}
                                 chain={chain}
                                 tokens={tokens}
                                 setTokens={setTokens} />
@@ -146,7 +142,10 @@ function Dashboard() {
                         )
                     }
                     {activeTab === "transfers" && (
-                        <Box tabKey={2} tabName={"Transfers"}>
+                        <Box
+                            // tabKey={2}
+                            // tabName={"Transfers"}
+                        >
                             <TransferHistory
                                 chain={chain}
                                 wallet={wallet}

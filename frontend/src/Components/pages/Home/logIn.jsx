@@ -1,27 +1,34 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
+import React, { useContext } from 'react';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import WalletConnect from '../../DisplayElements/Header/WalletConnect';
-import logo from "../../../Images/logo.png"
+import { UserContext } from '../../../Utility/Providers/UserProvider';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
+    const navigate = useNavigate();
+    const { user } = useContext(UserContext);
+
+    if (user) {
+        navigate('/proposals');
+    }
+
     return (
         <Card sx={{
             display: 'flex',
             backgroundColor: '#303133', // Main color
             padding: '20px',
+            justifyContent: 'center',
             borderRadius: '10px',
             boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
             textAlign: 'center',
-            position: "absolute",
-            top: "350%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
+            width: '50%',
+            margin: '0 auto',
+            marginTop: '10%',
         }}>
-            <CardContent>
+            <CardContent
+            >
                 <Typography sx={{ fontSize: 14, color: 'white' }} variant='subtitle2' gutterBottom>
                     Welcome to ZenithBlocks
                 </Typography>

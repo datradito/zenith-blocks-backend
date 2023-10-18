@@ -1,29 +1,26 @@
-const { Sequelize } = require('sequelize');
-require('dotenv').config();
+const sequelize = require("./db");
+
+const Budget = require("./models/Budget");
+const Invoice = require("./models/Invoice");
+const Proposal = require("./models/Proposal");
+const Payment = require("./models/Payment");
 
 
-const sequelize = new Sequelize(
-  process.env.PLANETSCALE_DB,
-  process.env.PLANETSCALE_DB_USERNAME,
-  process.env.PLANETSCALE_DB_PASSWORD,
-  {
-    host: process.env.PLANETSCALE_DB_HOST,
-    dialect: "mysql",
-    dialectModule: require("mysql2"),
-    dialectOptions: {
-      ssl: {
-        rejectUnauthorized: true,
-      },
-    },
-  }
-);
+sequelize.models = {
+  budgets: require("./models/Budget"),
+  invoices: require("./models/Invoice"),
+  proposals: require("./models/Proposal"),
+  users: require("./models/User"),
+  payments: require("./models/Payment"),
+};
 
 const init = async () => {
-    // console.log(sequelize.beforeSync())
-        await sequelize.sync()
-            .then(() => console.log('Connection has been established successfully.'))
-            .catch(error => console.error('Unable to connect to the database:', error));
-}
+  Budget.hasMany(Invoice);
+  Invoice.belongsTo(Budget);
+  Proposal.hasMany(Budget);
+  Budget.belongsTo(Proposal);
+  Invoice.hasMany(Payment);
+  Payment.belongsTo(Invoice);
+};
 
-
-module.exports = { sequelize , init};
+module.exports =  init ;

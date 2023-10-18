@@ -1,12 +1,14 @@
 const express = require('express');
-const cors = require('cors')
-const siwe = require('siwe');
-const session = require('express-session');
-const { redisStore } = require('./utility/redis/redisClient');
-const axios = require('axios');
 
-require("dotenv").config();
-const signJWTToken = require('./utility/middlewares/auth').signJWTToken;
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
+const session = require('./utility/middlewares/session');
+const cors = require('./utility/middlewares/cors');
+const authRouter = require('./routes/authRoutes');
+const swapRouter = require('./routes/1inchSwapRoutes');
+
 const User = require('./Database/models/User');
 
 const { startStandaloneServer } = require('@apollo/server/standalone');
@@ -14,35 +16,17 @@ const server = require('./schema/schema')
 const context = require('./utility/middlewares/context');
 
 const Moralis = require("moralis").default;
-const { createSiweMessage } = require('./utility/signMessage');
-const { init } = require('./Database/sequalizeConnection');
+const init = require('./Database/sequalizeConnection');
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors(
-    {
-        credentials: true,
-        origin: process.env.FRONTEND_URL,
-        optionsSuccessStatus: 200
-    }
-));
 
-app.use(
-  session({
-    name: "siwe",
-    store: redisStore,
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: process.env.NODE_ENV === "production" ? true : false,
-      httpOnly: true,
-      maxAge: 3600000, // session max age in miliseconds
-    },
-  })
-);
+app.use(cors);
+app.use(session);
+app.use(authRouter);
+app.use(swapRouter);
 
 let isMoralisInitialized = false;
 
@@ -51,7 +35,6 @@ const initializeIpfsNode = async () => {
         await Moralis.start({
             apiKey: process.env.MORALIS_KEY,
         });
-
         isMoralisInitialized = true;
     }
 };
@@ -62,206 +45,13 @@ app.get("/", (req, res) => {
   res.send("Hey this is my API running 🥳");
 });
 
-
-app.get("/tokenPrice", async (req, res) => {
-    const { query } = req;
-    const responseOne = await Moralis.EvmApi.token.getTokenPrice({
-        address: query.addressOne
-    })
-
-    const responseTwo = await Moralis.EvmApi.token.getTokenPrice({
-        address: query.addressTwo
-    })
-
-    const usdPrices = {
-        tokenOne: responseOne.raw.usdPrice,
-        tokenTwo: responseTwo.raw.usdPrice,
-        ratio: responseOne.raw.usdPrice / responseTwo.raw.usdPrice
-    }
-    return res.status(200).json(usdPrices);
-});
-
-app.get('/nonce', function (_, res) {
-    res.send(siwe.generateNonce());
-});
-
-app.post("/siwe", async (req, res) => {
-  const { address, network, nonce } = req.body;
-  try {
-    const message = createSiweMessage(address, network, nonce);
-    req.session.nonce = nonce;
-    req.session.address = address;
-    req.session.message = message;
-    req.session.save();
-    return res.status(200).json(message);
-  } catch (e) {
-    return res.status(500).json(e);
-  }
-});
-
-app.post('/verify', async function (req, res) {
-    
-    try {
-        if (!req.body.message || !req.body.signature) {
-          return res
-            .status(400)
-            .json({
-              message: "Expected message and signature in the request body.",
-            });
-        }
-
-        if (!req.session.address) { 
-            throw new Error("Issues with session" + JSON.stringify(req.session));
-        }
-
-        const SIWEObject = new siwe.SiweMessage(req.body.message);
-
-        const { data: message } = await SIWEObject.verify({
-          signature: req.body.signature,
-          nonce: req.session.nonce,
-        });
-
-        req.session.save();
-
-        const user = await User.findOne({
-          where: { address: req.session.address },
-        });
-
-        if (!user) {
-          throw new Error("User not found");
-        }
-        
-        const token = signJWTToken({
-          userAddress: user.address,
-          dao: user.daoId,
-        });
-
-        return res.status(201).json({ authToken: token });
-
-    } catch (e) {
-        req.session.destroy();
-        if (e.message === "User not found") {
-          return res
-            .status(401)
-            .json({ message: "Unauthorized: User not found." });
-        }
-
-        req.session.save(() =>
-          res.status(500).json({ message: "Internal server error" + e })
-        );
-    }
-});
-
 app.post('/createUser', async (req, res) => {
         const { address, daoId } = req.body;
-
         const user = await User.create({ address, daoId });
-
         return res.status(200).json(user);
     }
 );
 
-
-app.get('/checkSiwe', async (req, res) => {
-        if (req.session.test) {
-            console.log(req.session.nonce);
-            return res.status(200).json(req.session.siwe);
-        } else {
-            const users = await User.findAll();
-            return res.status(401).json(users);
-        }
-    }
-);
-
-app.get("/nativeBalance", async (req, res) => {
-
-    try {
-        const { address, chain } = req.query;
-        const response = await Moralis.EvmApi.balance.getNativeBalance({
-            address: address,
-            chain: chain,
-        });
-
-        const nativeBalance = response.toJSON();
-        
-        let nativeCurrency;
-        if (chain === "0x1") {
-            nativeCurrency = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
-        } else if (chain === "0x89") {
-            nativeCurrency = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270";
-        } else if (chain === "0x4") {
-            nativeCurrency = "0xc778417E063141139Fce010982780140Aa0cD5Ab";
-        } else if (chain === "0x324") {
-            nativeCurrency = "0xaBEA9132b05A70803a4E85094fD0e1800777fBEF";
-        }
-
-        const nativePrice = await Moralis.EvmApi.token.getTokenPrice({
-            address: nativeCurrency, //WETH Contract
-            chain: chain,
-        });
-
-        nativeBalance.usd = nativePrice.jsonResponse.usdPrice;
-        console.log(nativeBalance.usd);
-
-        res.send(nativeBalance);
-    } catch (e) {
-        res.send(e);
-    }
-});
-
-app.get("/tokenBalances", async (req, res) => {
-
-    try {
-        const { address, chain } = req.query;
-
-        const response = await Moralis.EvmApi.token.getWalletTokenBalances({
-            address: address,
-            chain: chain,
-        });
-
-        const tokens = response.toJSON();
-        const legitTokens = [];
-
-        for (const token of tokens) {
-            try {
-                const priceResponse = await Moralis.EvmApi.token.getTokenPrice({
-                    address: token.token_address,
-                    chain: chain,
-                });
-
-                if (priceResponse.jsonResponse.usdPrice > 0.01) {
-                    token.usd = priceResponse.jsonResponse.usdPrice;
-                    legitTokens.push(token);
-                } else {
-                    console.log("💩 coin");
-                }
-            } catch (e) {
-                console.log(e);
-            }
-        }
-        res.send(legitTokens);
-    } catch (e) {
-        res.send(e);
-    }
-});
-
-app.get("/nftBalance", async (req, res) => {
-
-    try {
-        const { address, chain } = req.query;
-
-        const response = await Moralis.EvmApi.nft.getWalletNFTs({
-            address: address,
-            chain: chain,
-        });
-
-        const userNFTs = response.data;
-
-        res.send(userNFTs);
-    } catch (e) {
-        res.send(e);
-    }
-});
 
 app.get("/tokenTransfers", async (req, res) => {
 
@@ -301,55 +91,13 @@ app.get("/tokenTransfers", async (req, res) => {
     }
 });
 
-app.get("/allowance", async (req, res) => {
-    const { tokenAddress, walletAddress } = req.query;
-
-    try {
-        const response = await axios.get(
-                `https://api.1inch.dev/swap/v5.2/1/approve/allowance?tokenAddress=${tokenAddress}&walletAddress=${walletAddress}`,
-                {
-                headers: {
-                    accept: "*/*",
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer mkOi8PEitK1DvNUL8kCzHRxBhQ5AtHIB`,
-                },
-                }
-        );
-        res.send(response.data);
-    } catch (e) {
-        res.send(e);
-    }
-
-});
-
-app.get("/approve", async (req, res) => {
-    const { tokenOneAddress } = req.query;
-
-    try {
-        const response = await axios.get(
-          `https://api.1inch.dev/swap/v5.2/1/approve/transaction?tokenAddress=${tokenOneAddress}`,
-          {
-            headers: {
-              accept: "*/*",
-              "Content-Type": "application/json",
-              Authorization: `Bearer mkOi8PEitK1DvNUL8kCzHRxBhQ5AtHIB`,
-            },
-          }
-        );
-        res.send(response.data);
-    }   
-    catch (e) {
-        res.send(e);
-    }
-});
-
 app.listen(8000, async () => {
     await init();
     const { url } = await startStandaloneServer(server, {
         listen: { port: 8080 },
         context: context
     });
-    console.log('Server is running on port' + url);
+    console.log('Apollo Server is running on port' + url);
 });
 
 

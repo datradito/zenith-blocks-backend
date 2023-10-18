@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require("../sequalizeConnection")
-
+const sequelize = require("../db");
+const Budget = require("./Budget");
 
 const Invoice = sequelize.define('invoices', {
     id: {
@@ -64,9 +64,5 @@ const Invoice = sequelize.define('invoices', {
     },
 });
 
-
-Invoice.associate = (models) => {
-    Invoice.belongsTo(models.budgets, { foreignKey: 'budgetid' });
-};
 
 module.exports = Invoice;

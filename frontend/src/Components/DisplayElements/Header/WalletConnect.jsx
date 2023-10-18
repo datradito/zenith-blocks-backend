@@ -1,21 +1,16 @@
-import React, { useEffect} from 'react'
-import axios from 'axios';
-import {
-    useAccount,
-    useDisconnect,
-    useEnsAvatar,
-    useEnsName,
-    useBalance,
-    useConnect,
-    useNetwork,
-} from 'wagmi'
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useNavigate } from 'react-router-dom';
-import { useError } from '../../../Routes/ErrorRouterProvider';
-import { useSignMessage } from 'wagmi';
 
+import React, { useEffect, useContext } from "react";
+import axios from "axios";
 
-const BASE_URL = "https://zenith-blocks.vercel.app";
+import { UserContext } from "../../../Utility/Providers/UserProvider";
+import { useAccount, useDisconnect, useNetwork } from "wagmi";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useNavigate } from "react-router-dom";
+import { useSignMessage } from "wagmi";
+
+import { useDispatch } from "react-redux";
+import { setIsLoggedIn } from "../../../actions/createAuthAction";
+import { toast } from "react-hot-toast";
 
 const clearAuthData = () => {
   sessionStorage.removeItem("authToken");
@@ -24,148 +19,151 @@ const clearAuthData = () => {
 };
 
 function decodeToken(token) {
-    if (!token) {
+  if (!token) {
     return;
-    }
-    const base64Url = token.split(".")[1];
-    const base64 = base64Url.replace("-", "+").replace("_", "/");
-    return JSON.parse(window.atob(base64));
+  }
+  const base64Url = token.split(".")[1];
+  const base64 = base64Url.replace("-", "+").replace("_", "/");
+  return JSON.parse(window.atob(base64));
 }
 
-
 export default function WalletConnect() {
-    const navigate = useNavigate();
-    const { handleError } = useError();
-    const { address } = useAccount({
-        onConnect: () => {
-            const auth = sessionStorage.getItem('authToken');
-            !auth && signInWithEthereum();
-        },
-        onDisconnect() {
-            clearAuthData();
-        }
-    })
-    // const { data: ensAvatar } = useEnsAvatar({ address })
-    // const { data: ensName } = useEnsName({ address })
-    const { data:balance, isError: balanceError, isLoading: balanceLoading } = useBalance({
-        address
-    })
-    const { signMessageAsync } = useSignMessage();
-    const { disconnectAsync } = useDisconnect();
-    const { chain } = useNetwork()
+  const { signMessageAsync } = useSignMessage();
+  const { disconnectAsync } = useDisconnect();
+  const { chain } = useNetwork();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { setUser } = useContext(UserContext);  
 
-
-    //console.log("WalletConnect", { address, connector, isConnected, ensAvatar, ensName, balance, balanceError, balanceLoading, chain, connectSuccess, status })
-    useEffect(() => {
+  const { address } = useAccount({
+    onConnect: () => {
       const auth = sessionStorage.getItem("authToken");
-      if (!auth) {
-        disconnectAsync();
-        localStorage.clear();
-      }
-    }, [disconnectAsync]);
+      !auth && signInWithEthereum();
+    },
+    onDisconnect() {
+      clearAuthData();
+      dispatch(setIsLoggedIn(false));
+      navigate(`/`);
+    },
+  });
 
-    const createSiweMessage = async () => {
-      try {
-        const userData = {
-          network: "evm",
-          address: address,
-          chain: chain?.id,
-        };
-        const { data: nonce } = await axios.get(`${BASE_URL}/nonce`);
-        const { data } = await axios.post(
-          `${BASE_URL}/siwe`,
-          {
-            address: userData.address,
-            network: userData.network,
-            nonce,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            withCredentials: true,
-          }
-        );
 
-        return data;
-      } catch (error) {
-        console.log(error)
-      }
-    };
-
-    const sendForVerification = async(message, signature) => {
-        try {
-            const response = await axios.post(
-              `${BASE_URL}/verify`,
-              { message, signature },
-              {
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                withCredentials: true, // Moved outside the 'headers' object
-              }
-            );
-
-            return response.data;
-        } catch (error) {
-            throw error.response.data
-        }
+  useEffect(() => {
+    const auth = sessionStorage.getItem("authToken");
+    if (!auth) {
+      disconnectAsync();
+      localStorage.clear();
     }
+  }, []);
 
-    async function signInWithEthereum() {
-        try {
-            const message = await createSiweMessage();
-
-            if (!message) {
-                handleError({ error: "error", message: "Error creating message" });
-                return;
-            }
-
-            const signature = await signMessageAsync({message});
-
-            if (!signature) {
-                handleError({ error: "error", message: "Error signing message" });
-                return;
-            }
-            const res = await sendForVerification(message, signature);
-            const { daoId, address} = decodeToken(res.authToken);
-
-            sessionStorage.setItem('authToken', res.authToken);
-            sessionStorage.setItem('daoId', daoId);
-            sessionStorage.setItem('address', address);
-            handleError({ error: "success", message: "User successfully connected" });
-            navigate(`/`);
-        } catch (error) {
-            handleError({ error: "error", message: error });
-            disconnectAsync();
-            clearAuthData();
-        }
-    }
-
-    return (
-        <div
-            style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                padding: 12,
-            }}
-        >
+  const createSiweMessage = async () => {
+    try {
+      const userData = {
+        network: "evm",
+        address: address,
+        chain: chain?.id,
+      };
+      const { data: nonce } = await axios.get(
+        `${process.env.REACT_APP_API_URL}/nonce`,
         {
-            <ConnectButton
-                accountStatus={{
-                    smallScreen: 'avatar',
-                    largeScreen: 'full',
-                }}
-                showBalance={{
-                    smallScreen: false,
-                    largeScreen: true,
-                }}
-                chainStatus={{
-                    smallScreen: "icon",
-                    largeScreen: "full",
-                }}
-            />
-            }
-        </div>
-    );
+          withCredentials: true,
+        }
+      );
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_API_URL}/siwe`,
+        {
+          address: userData.address,
+          network: userData.network,
+          nonce,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      return data;
+    } catch (error) {
+      throw error.response.data;
+    }
+  };
+
+  const sendForVerification = async (message, signature) => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/verify`,
+        { message, signature },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      throw error.response.data;
+    }
+  };
+
+  async function signInWithEthereum() {
+    try {
+      const message = await createSiweMessage();
+
+      if (!message) {
+        throw new Error("Error creating message");
+      }
+
+      const signature = await signMessageAsync({ message });
+
+      if (!signature) {
+        throw new Error("Error signing message");
+      }
+      const res = await sendForVerification(message, signature);
+      const { daoId, address } = decodeToken(res.authToken);
+
+      sessionStorage.setItem("authToken", res.authToken);
+      sessionStorage.setItem("daoId", daoId);
+      sessionStorage.setItem("address", address);
+
+      dispatch(setIsLoggedIn(true));
+      const user = decodeToken(res.authToken);
+      setUser(user);
+      navigate(`/proposals`);
+    } catch (error) {
+      toast.error(error.message);
+      disconnectAsync();
+      dispatch(setIsLoggedIn(false));
+      clearAuthData();
+    }
+  }
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "flex-end",
+        padding: 12,
+      }}
+    >
+      {
+        <ConnectButton
+          accountStatus={{
+            smallScreen: "avatar",
+            largeScreen: "full",
+          }}
+          showBalance={{
+            smallScreen: false,
+            largeScreen: true,
+          }}
+          chainStatus={{
+            smallScreen: "icon",
+            largeScreen: "full",
+          }}
+        />
+      }
+    </div>
+  );
 }

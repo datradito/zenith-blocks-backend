@@ -1,25 +1,16 @@
-import { useSelector } from 'react-redux';
-import React, { useState, useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
-import { useError } from './ErrorRouterProvider';
+import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { Outlet } from "react-router-dom";
 
-const ProposalRoute = ({ children }) => {
-    const { handleError } = useError();
-    const [showSnackbar, setShowSnackbar] = useState(false);
-    let { proposal } = useSelector(state => state.currentProposal);
+const ProposalRoute = () => {
+  const { proposal } = useSelector((state) => state.currentProposal);
 
-    useEffect(() => {
-        if (proposal === null) {
-            setShowSnackbar(true);
-            handleError({ error: 'error', message: 'Please select a proposal' });
-        } else {
-            setShowSnackbar(false);
-        }
-    }, [handleError, proposal]);
-
-    return !showSnackbar ? <Outlet /> : (
-        handleError({ error: 'error', message: 'Please select a proposal and budget' })
-    );
+  useEffect(() => {
+    if (proposal === null) {
+      throw new Error("Proposal not found");
+    }
+  }, [proposal]);
+  return proposal ? <Outlet /> : null;
 };
 
 export default ProposalRoute;

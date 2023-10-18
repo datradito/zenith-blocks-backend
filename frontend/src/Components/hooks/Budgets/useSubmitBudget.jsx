@@ -1,75 +1,35 @@
+import { useParams } from 'react-router-dom';
 import { SUBMIT_BUDGET_MUTATION } from '../../../ServerQueries/Budget/Mutation';
-import { useCallback, useMemo } from 'react';
-import { useMutation } from '@apollo/client';
-import { toast } from 'react-toastify';
+import { client } from '../../../apolloConfig/client';
+import { useNavigate } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-hot-toast";
 
+async function submitBudgetData(budgetData) {
+  await client.mutate({
+    mutation: SUBMIT_BUDGET_MUTATION,
+    variables: { budget: budgetData },
+  },
+  {
+    errorPolicy: "all",
+  }
+  );
+}
 
-const useSubmitBudget = () => {
-    const [submitBudgetMutation, { loading, error }] = useMutation(SUBMIT_BUDGET_MUTATION,
-        {
-            update(cache, { data: { submitBudget } }) {
-                // cache.modify({
-                //     fields: {
-                //         getAllBudgetsForProposal(existingBudgets = []) {
-                //             const newBudgetRef = cache.writeFragment({
-                //                 data: submitBudget,
-                //                 fragment: gql`
-                //                     fragment NewBudget on Budget {
-                //                         id
-                //                         category
-                //                         amount
-                //                         currency
-                //                     }
-                //                 `,
-                //             });
-                //             return [...existingBudgets, newBudgetRef];
-                //         },
-                //     },
-                // });
-            },
-            // refetchQueries: [
-            //     getAllBudgetsForProposal,
-            //     {
-            //         variables: { proposalid: budget.proposalid },
-            //     },
-            // ],
-        }
-    );
+export const useSubmitBudget = () => {
+    const queryClient = useQueryClient();
+    const proposalId = useParams().proposalId;
+    const navigate = useNavigate();
+    const { mutate: submitBudget, isLoading: isSubmitting } = useMutation(submitBudgetData, {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: ["budgetList", proposalId],
+        });
+        toast.success("Budget created successfully");
+        navigate(`/proposals/${proposalId}/budgets`);
+      }
+    });
 
-    
-    // Function to handle budget submission
-    const submitBudget = useCallback(
-        async (budget) => {
-           
-            try {
-                const { data } = await submitBudgetMutation({
-                    variables: {
-                        budget: {
-                            category: budget.category,
-                            amount: budget.amount,
-                            currency: budget.currency,
-                            breakdown: budget.breakdown,
-                            proposalid: budget.proposalid,
-                            rootpath: budget.rootpath
-                        }
-                    }
-                });
-                return data.submitBudget;
-            } catch (error) {
-                throw error;
-            }
-        },
-        [submitBudgetMutation]
-    );
-
-    // Cache the submitBudget function using useMemo to avoid recreating it on each render
-    useMemo(() => submitBudget, [submitBudget]);
-
-    return {
-        submitBudget,
-        loading,
-        error,
-    };
+    return { isSubmitting, submitBudget };
 };
 
-export default useSubmitBudget;

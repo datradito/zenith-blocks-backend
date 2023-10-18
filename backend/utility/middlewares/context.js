@@ -17,7 +17,6 @@ const getUser = async (token) => {
 
 const context = async ({ req, res }) => {
     if (req.body.operationName === 'IntrospectionQuery') {
-        // console.log('blocking introspection query..');
         return {};
     }
 

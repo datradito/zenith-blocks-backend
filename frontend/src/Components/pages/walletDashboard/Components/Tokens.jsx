@@ -1,61 +1,66 @@
-import React from "react";
-import axios from "axios";
-import { Typography, Box, Table } from "@mui/material";
-import ButtonAtom from "../../../atoms/Button";
-import TableDisplay from "../../../DisplayElements/TableDisplay";
-
+import React, { useEffect } from "react";
+import { useLazyQuery } from "@apollo/client";
+import { GET_TOKEN_BALANCE } from "../../../../ServerQueries/Dashboard/Queries";
+import CircularIndeterminate from "../../../atoms/Loader/loader";
+import Box from "@mui/material/Box";
+import Button from "../../../atoms/Button/Button";
+import Container from "../../../atoms/Container/Container";
 
 
 function Tokens({ wallet, chain, tokens, setTokens }) {
-
-    async function getTokenBalances() {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/tokenBalances`, {
-            params: {
-                address: wallet,
-                chain: chain,
-            },
-        });
-
-        if (response.data) {
-            tokenProcessing(response.data);
-        }
+  const [getTokenBalance, { loading, error, data: tokenList }] = useLazyQuery(
+    GET_TOKEN_BALANCE,
+    {
+      variables: { address: wallet },
     }
+  );
 
-    function tokenProcessing(t) {
-        for (let i = 0; i < t.length; i++) {
-            t[i].id=i;
-            t[i].bal = (Number(t[i].balance) / Number(`1E${t[i].decimals}`)).toFixed(3);  //1E18
-            t[i].val = ((Number(t[i].balance) / Number(`1E${t[i].decimals}`)) * Number(t[i].usd)).toFixed(2);
-        }
-        setTokens(t);
+  useEffect(() => {
+    if (tokenList) {
+      tokenProcessing(tokenList.getTokenBalances);
     }
+  }, [tokenList]);
 
-    const buttonConfig = {
-        innerText: 'ERC20 Tokens',
-        onClick: getTokenBalances,
+  if (loading) return <CircularIndeterminate />;
+  if (error) return <p>Error :( </p>;
 
+  function tokenProcessing(t) {
+    for (let i = 0; i < t.length; i++) {
+      t[i].id = i;
+      t[i].val = (
+        (Number(t[i].balance) / Number(`1E${t[i].decimals}`)) *
+        Number(t[i].usd)
+      ).toFixed(2);
     }
+    setTokens(t);
+  }
 
-    const headers = ["Currency", "Balance", "Value"]
-    const data = tokens.map((e) => ({
-        Logo: e.logo,
-        Balance: e.bal,
-        Value: `$${e.val}`,
-    }));
+  const headers = ["Logo", "Balance", "Value", "Token"];
+  const data = tokens.map((e) => ({
+    Logo: e.logo,
+    Balance: e.balance,
+    Value: `$${e.val}`,
+    Token: e.symbol,
+  }));
 
+    
 
-
-    return (
-        <Box sx={{color: "white"}}>
-            <Typography>
-                <ButtonAtom config={buttonConfig} />
-                <br />
-                {tokens.length > 0 && (
-                    <TableDisplay tableHeaderData={headers} tableBodyData={data} />
-                )}
-            </Typography>
-        </Box>
-    );
+  return (
+    <Box>
+      <button
+        sx={{
+          margin: "1rem",
+        }}
+        onClick={getTokenBalance}
+      >
+        ERC20 Tokens
+      </button>
+      <br />
+          {tokens.length > 0 &&
+              JSON.stringify(tokens)
+          }
+    </Box>
+  );
 }
 
 export default Tokens;

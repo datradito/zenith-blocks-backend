@@ -1,13 +1,18 @@
-const { ApolloServer } = require('@apollo/server');
-const proposalResolver  = require('../graphQL/proposals/proposalResolver');
-const invoiceResolver  = require('../graphQL/invoices/invoiceResolver');
-const budgetResolver = require('../graphQL/budgets/budgetResolver');
-const Invoice = require('../Database/models/Invoice');
-// const context = require('../utility/middlewares/context.js'); 
-
+const { ApolloServer } = require("@apollo/server");
+const proposalResolver = require("../graphQL/proposals/proposalResolver");
+const invoiceResolver = require("../graphQL/invoices/invoiceResolver");
+const budgetResolver = require("../graphQL/budgets/budgetResolver");
+const paymentsResolver = require("../graphQL/payments/paymentsResolver");
+const walletResolvers = require("../graphQL/dashboard/walletResolvers");
+const transactionHistoryResolver = require("../graphQL/dashboard/transactionHistoryResolver");
+const Invoice = require("../Database/models/Invoice");
 
 
 const typeDefs = `#graphql
+
+    type DuplicateInvoice{
+        id: String!
+    }
     type Budget {
         id: String
         category: String
@@ -16,6 +21,7 @@ const typeDefs = `#graphql
         breakdown: Float
         proposalid: String
         rootpath: String
+        remaining: Float
         ipfs: String
         invoices: [Invoice]
     }
@@ -46,6 +52,38 @@ const typeDefs = `#graphql
         budgetid: String
         status: String
     }
+    type Payment {
+        id: String!
+        recipient: String!
+        owneraddress: String!
+        invoiceid: String!
+        proposalid: String
+        currency: String!
+        total: Float!
+        status: String!
+        transactionHash: String
+        budgetid: String!
+    }
+
+    type Token {
+      name: String
+      symbol: String
+      balance: Float
+      logo: String
+  }
+
+  type Transaction {
+    blockNum: String
+    uniqueId: String
+    hash: String
+    from: String
+    to: String
+    value: Float
+    tokenId: String
+    asset: String
+    category: String
+  }
+
 
     type Query {
         getBudgetById(id: String): Budget,
@@ -54,12 +92,32 @@ const typeDefs = `#graphql
         getInvoicesByBudget(budgetid: String): [Invoice],
         getProposalDetailsById(id: String): Proposal,
         getProposalsByDao(daoid: String): [Proposal],
+        getPaymentByInvoiceId(invoiceid: String!): Payment
+        getAllPayments: [Payment!]!
+        getRemainingBudgetAmount(budgetid: String!): Float
+        getTokenBalances(address: String!): [Token]
+        getTokenTransactionHistory(address: String!): [Transaction]
     }
     type Mutation {
         submitBudget(budget: BudgetInput): Budget,
         submitInvoice(invoice: InvoiceInput): Invoice,
         setProposalAmount(proposal: ProposalAmountInput): Proposal,
+        submitPayment(payment: PaymentInput!): Payment!
+        duplicateInvoice(id: String!): Invoice
     }
+
+    
+    input PaymentInput {
+        recipient: String!
+        invoiceid: String!
+        proposalid: String
+        currency: String!
+        total: Float!
+        status: String!
+        transactionHash: String
+        budgetid: String!
+    }
+    
     
     input BudgetInput {
         category: String
@@ -100,39 +158,42 @@ const typeDefs = `#graphql
         rootpath: String
         daoid: String
     }
-`
+`;
 const resolvers = {
-    Query: {
-        ...proposalResolver.Query,
-        ...budgetResolver.Query,
-        ...invoiceResolver.Query,
+  Query: {
+    ...proposalResolver.Query,
+    ...budgetResolver.Query,
+    ...invoiceResolver.Query,
+    ...paymentsResolver.Query,
+    ...walletResolvers.Query,
+    ...transactionHistoryResolver.Query,
+  },
+  Mutation: {
+    ...proposalResolver.Mutation,
+    ...budgetResolver.Mutation,
+    ...invoiceResolver.Mutation,
+    ...paymentsResolver.Mutation,
+  },
+  Budget: {
+    async invoices(parent) {
+      try {
+        // Fetch invoices associated with the budget
+        const invoices = await Invoice.findAll({
+          where: { budgetid: parent.id },
+        });
+
+        return invoices;
+      } catch (error) {
+        throw new GraphQLError(error.message);
+      }
     },
-    Mutation: {
-        ...proposalResolver.Mutation,
-        ...budgetResolver.Mutation,
-        ...invoiceResolver.Mutation,
-    },
-    Budget: {
-        invoices(parent) {
-            try {
-                Invoice.findAll({
-                    where: { budgetid: parent.id }
-                }, {
-                    sort: {
-                        createdAt: 'desc'
-                    },
-                })
-            } catch (error) {
-                throw new GraphQLError(error.message);
-            }
-        }
-    }
+  },
 };
 
 const server = new ApolloServer({
-    typeDefs,
-    resolvers: resolvers,
-    introspection: true,
+  typeDefs,
+  resolvers: resolvers,
+  introspection: true,
 });
 
 module.exports = server;

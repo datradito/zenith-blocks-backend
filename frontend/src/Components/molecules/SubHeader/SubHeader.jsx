@@ -1,63 +1,61 @@
 import React from 'react'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ButtonAtom from '../../atoms/Button';
-import { Box, Grid, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
-import ModalDialog from '../DialogBox/dialogBox';
+import Button from "../../atoms/Button/Button.jsx";
+import List from "../../atoms/List/List.jsx";
+import Container from '../../atoms/Container/Container.jsx';
 
-function SubHeader({ buttonConfig, currentPath, previousPath }) {
-    
-    const componentStyles = {
-        backArrowSvgStyle: {
-            color: 'white',
-            fontSize: "large",
-            '& .MuiSvgIcon-root': {
-                mr: '0.5rem',
-            }
-        }
+function SubHeader({ children, sx }) {
+  return (
+    <Container
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "flex-end",
+        border: "none",
+        ...sx
+      }}
+    >
+      {children}
+    </Container>
+  );
+}
+
+function Items({ id, children, sx }) {
+  return (
+    <List
+      key={id}
+      style={{
+        display: "flex",
+        alignItems: "flex-start",
+        gap: "0.5rem",
+        padding: "0",
+        ...sx,
+      }}
+    >
+      {children}
+    </List>
+  );
+}
+
+function ActionButton({ onClick, label, disabled, sx }) {
+  function handleClick() {
+      onClick?.();
     }
   return (
-      <Box style={{
-          width: '90%',
-          margin: '1rem auto',
-      }}>
-          <Typography variant='caption' style={{ color: 'white'}}>
-              {previousPath}
-          </Typography>
-          <Grid
-              container
-              style={{ justifyContent: 'space-between', alignItems: 'center', width: "100%", marginTop: "1rem" }}
-          >
-              <Grid>
-                  <Link to={currentPath.to} style={{ textDecoration: 'none' }}>
-                      <Typography variant="h5" style={{ color: 'white' }}>
-                          <ArrowBackIcon sx={componentStyles.backArrowSvgStyle} />
-                          {currentPath.path}
-                      </Typography>
-                  </Link>
-              </Grid>
-              <Grid>
-                  {
-                      Object.keys(buttonConfig).map((key, index) => {
-                          return buttonConfig[key].type && buttonConfig[key].type === 'link' && buttonConfig[key].to !== "" ? 
-                                <Link to={buttonConfig[key].to} key={index}>
-                                  {/* <ButtonAtom
-                                      config={buttonConfig[key]}
-                                  /> */}
-                                  <ModalDialog buttonConfig={buttonConfig[key]}/>
-                                </Link>
-                              : buttonConfig[key].subButton ?
-                                <ModalDialog key={index} buttonConfig={buttonConfig[key]} /> :
-                                <ButtonAtom
-                                        key={index}
-                                        config={buttonConfig[key]}
-                                />
-                      })
-                  }
-              </Grid>
-          </Grid>
-      </Box>
-  )
+    <Button
+      disabled={disabled}
+      sx={{
+        backgroundColor: disabled ? "#9bb8ff" : "#055FFC",
+        ...sx
+      }}
+      onClick={handleClick}
+    >
+      {label}
+    </Button>
+  );
 }
+  
+SubHeader.List = Items;
+SubHeader.ActionButton = ActionButton;
+SubHeader.Container = SubHeader;
 
 export default SubHeader

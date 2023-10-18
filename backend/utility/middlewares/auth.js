@@ -1,18 +1,18 @@
 const jwt = require('jsonwebtoken');
 const { AuthenticationError } = require('apollo-server')
-require('dotenv').config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
 
 const signJWTToken = ({ userAddress, dao }) => {
 
-    const token = jwt.sign({
+    const token = jwt.sign(
+      {
         daoId: dao,
         address: userAddress,
-    },
-        JWT_SECRET,
-        { expiresIn: '3600000' }
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "3600000" }
     );
 
     return token;
@@ -41,7 +41,7 @@ const checkAuth = (context) => {
                 throw new AuthenticationError('Invalid/Expired Token')
             }
         }
-        throw new Error('AUthentication error is not formatted as Bearer [token]')
+        throw new Error('Authentication error is not formatted as Bearer [token]')
     }
     throw new Error('Authorization header is not provided')
 }
