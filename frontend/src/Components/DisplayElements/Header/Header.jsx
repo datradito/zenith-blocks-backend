@@ -47,7 +47,6 @@ const ResponsiveHeaderBar = () => {
         }}
       >
         <Container
-            maxWidth="xl"
         >
           <Toolbar disableGutters>
             <Typography
@@ -65,7 +64,7 @@ const ResponsiveHeaderBar = () => {
               <img style={{ maxWidth: "8rem" }} src={logo} alt="Logo" />
             </Typography>
             <>
-              <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "flex" } }}>
+              <Box sx={{ flexGrow: 1 }}>
                 {pages.map((page, index) => (
                   <Button key={index}>
                     <NavLink

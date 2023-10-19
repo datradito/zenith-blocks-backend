@@ -23,11 +23,11 @@ function ProposalDetailView() {
   const { loading, data } = useProposalDetails(proposalId);
   const { amount, status } = useProposalIsEditable(proposalId);
 
-  useEffect(() => {
-    if (data) {
-      dispatch(setProposal(data.proposal));
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data) {
+  //     dispatch(setProposal(data.proposal));
+  //   }
+  // }, []);
 
   const handleUpdateProposal = async () => {
     !status && navigate(`/budgets/${proposalId}/create`);

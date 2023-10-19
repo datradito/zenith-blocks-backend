@@ -80,7 +80,45 @@ function App() {
             console.log(request);
           }}
         />
+        <Route
+          path="invoice/:invoiceId/payment"
+          element={<PaymentCreation />}
+          errorElement={<ErrorPage />}
+          loader={({ params }) => {
+            return paymentLoader(params.invoiceId);
+          }}
+          action={({ params, request }) => {
+            console.log(request);
+          }}
+        />
 
+        <Route path="budgets" element={<InvoiceRoutes />}>
+          <Route
+            path=":budgetId/invoices"
+            element={<InvoiceListView />}
+            errorElement={<ErrorPage />}
+          />
+        </Route>
+        <Route
+          path="invoices/:budgetId/create"
+          errorElement={<ErrorPage />}
+          element={<InvoiceCreation />}
+        />
+        <Route
+          path="dashboard"
+          element={<Dashboard />}
+          // loader={({ params, request }) => {
+          //   return dashboardLoader();
+          // }}
+          errorElement={<ErrorPage />}
+        />
+        <Route
+          path="accounts"
+          errorElement={<ErrorPage />}
+          element={<Accounts />}
+        />
+        <Route path="swap" element={<Swap />} errorElement={<ErrorPage />} />
+        <Route path="*" element={<NotFound />} />
         <Route path="budgets" element={<InvoiceRoutes />}>
           <Route
             path=":budgetId/invoices"
@@ -151,3 +189,4 @@ function App() {
 }
 
 export default App;
+
