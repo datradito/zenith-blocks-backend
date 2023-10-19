@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import { NetworkStatus } from '@apollo/client';
 import { useDispatch } from "react-redux";
 import Stack from '@mui/material/Stack';
@@ -38,7 +38,6 @@ const Proposals = () => {
   return (
     <Container
       style={{
-        width: "90%",
         border: "none",
         paddingTop: "1rem",
       }}
