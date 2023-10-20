@@ -42,7 +42,9 @@ async function verifyController(req, res) {
     });
 
     if (!user) {
-      throw new Error("User not found");
+      return res.status(404).json({
+        message: "User not found",
+      });
     }
 
     const token = signJWTToken({
@@ -51,14 +53,15 @@ async function verifyController(req, res) {
     });
 
     return res.status(201).json({ authToken: token });
-  } catch (e) {
-    if (e.message == "User not found") {
-      req.session.destroy(() => {
-        res.status(404).json({ message: e.message });
-      });
-    } else {
-      req.session.destroy(() => res.status(500).json({ message: e }));
-    }
+    } catch (e) {
+      res.status(500).json(e);
+    // if (e.message == "User not found") {
+    //   req.session.destroy(() => {
+    //     res.status(404).json({ message: e.message });
+    //   });
+    // } else {
+    //   req.session.destroy((e) => res.status(500).json({ message: e }));
+    // }
   }
 }
 
