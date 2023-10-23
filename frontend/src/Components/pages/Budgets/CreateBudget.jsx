@@ -4,6 +4,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 import {useSubmitBudget} from '../../hooks/Budgets/useSubmitBudget';
 import useFilteredProposalAmount from '../../hooks/Proposals/useFilteredProposalAmount';
+import useGetRemainingProposalAmount from "../../hooks/Proposals/useGetRemainingProposalAmount";
 
 import SubHeader from '../../molecules/SubHeader/SubHeader';
 
@@ -16,11 +17,14 @@ import CreateBudgetForm from '../../features/budgets/CreateBudgetForm';
 import { toast } from "react-hot-toast";
 import Breadcrumbs from '../../atoms/BreadCrumbs/BreadCrumbs';
 
+
 function CreateBudget() {
   let { proposal } = useSelector(state => state.currentProposal);
   const { proposals } = useSelector(state => state.currentProposalAmounts);
-  const { isSubmitting, submitBudget } = useSubmitBudget();
+  const { isSubmitting, submitBudgetMutation } = useSubmitBudget();
   const filteredProposalAmount = useFilteredProposalAmount(proposals, proposal.id);
+  const { data } = useGetRemainingProposalAmount(proposal.id);
+
 
   const methods = useForm({
     defaultValues: {
@@ -29,7 +33,7 @@ function CreateBudget() {
       Proposal: proposal.title,
       "Ipfs Link": proposal.ipfs,
       Breakdown: `${(
-        (parseInt(222) / parseInt(filteredProposalAmount)) *
+        (parseInt(400) / parseInt(filteredProposalAmount)) *
         100
       ).toFixed(2)}%`,
     },
@@ -46,10 +50,9 @@ function CreateBudget() {
         (parseInt(data.amount) / parseInt(filteredProposalAmount)) * 100,
       rootpath: proposal.id,
     };
-    console.log(budgetData);
 
-    submitBudget(
-      { ...budgetData }
+    submitBudgetMutation(
+      { variables: {budget: budgetData }}
     );
 
   };

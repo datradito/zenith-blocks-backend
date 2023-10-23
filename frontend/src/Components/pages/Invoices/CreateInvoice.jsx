@@ -15,7 +15,7 @@ import Breadcrumbs from "../../atoms/BreadCrumbs/BreadCrumbs";
 
 
 function InvoiceCreation() {
-  const { isCreating, createInvoice } = useSubmitInvoice();
+  const { loading: isCreating, createInvoice } = useSubmitInvoice();
 
   const { proposal, Budget } = useSelector((state) => ({
     proposal: state.currentProposal.proposal,
@@ -36,7 +36,12 @@ function InvoiceCreation() {
           Budget,
           proposal
         );
-        createInvoice(dataToBeSubmitted);
+    createInvoice(
+      {
+        variables: {
+          invoice: dataToBeSubmitted,
+        }
+      });
   };
 
 

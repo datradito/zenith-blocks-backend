@@ -8,7 +8,11 @@ function BudgetList({ amount, proposalId }) {
 
   const { isLoading, budgets } = useGetBudgets(amount, proposalId);
 
-  if (isLoading) return <CircularIndeterminate />;
+  if (isLoading) return (
+    <>
+      <CircularIndeterminate />
+    </>
+  );
 
   return (
     <Menus>

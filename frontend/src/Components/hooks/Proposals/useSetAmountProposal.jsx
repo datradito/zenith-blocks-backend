@@ -1,9 +1,11 @@
 import { toast } from "react-hot-toast";
 import { useMutation } from "@apollo/client";
 import { ADD_OR_UPDATE_PROPOSAL } from "../../../ServerQueries/proposalMutation"; // Import the ADD_OR_UPDATE_PROPOSAL mutation
+import { useAccount } from "wagmi";
 
 const useSaveProposalDetails = () => {
-  const [SetProposalAmount, { data, loading, error }] = useMutation(
+  const { address } = useAccount();
+  const [SetProposalAmount, { loading, error }] = useMutation(
     ADD_OR_UPDATE_PROPOSAL
   );
 
@@ -14,7 +16,7 @@ const useSaveProposalDetails = () => {
           proposalAmountInput: {
             id: row.id,
             amount: parseInt(amount),
-            modifier: "0x9f74662aD05840Ba35d111930501c617920dD68e",
+            modifier: address,
             rootpath: row.id,
             daoid: row.space.id,
           },
