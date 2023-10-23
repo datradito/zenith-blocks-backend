@@ -5,7 +5,6 @@ import { useMutation, gql} from '@apollo/client';
 import { toast } from "react-hot-toast";
 
 
-
 export const useSubmitBudget = () => {
   const proposalId = useParams().proposalId;
   const navigate = useNavigate();

@@ -10,11 +10,6 @@ const Invoice = require("../Database/models/Invoice");
 
 const typeDefs = `#graphql
 
-    type Amount {
-        amount: Float
-        name: String
-    }
-
     type DuplicateInvoice{
         id: String!
     }
@@ -96,11 +91,11 @@ const typeDefs = `#graphql
         getInvoiceById(id: String): Invoice,
         getInvoicesByBudget(budgetid: String): [Invoice],
         getProposalDetailsById(id: String): Proposal,
-        getRemainingProposalAmount(id: String!): Amount!,
+        getRemainingProposalAmount(id: String!): Float!,
         getProposalsByDao(daoid: String): [Proposal],
         getPaymentByInvoiceId(invoiceid: String!): Payment
         getAllPayments: [Payment!]!
-        getRemainingBudgetAmount(budgetid: String!): Amount!
+        getRemainingBudgetAmount(budgetid: String!): Float!
         getTokenBalances(address: String!): [Token]
         getTokenTransactionHistory(address: String!): [Transaction]
     }

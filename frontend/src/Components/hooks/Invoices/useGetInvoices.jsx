@@ -16,7 +16,6 @@ export const useGetAllInvoices = (budgetId) => {
 
   console.log(budgetData)
 
-
   const { isLoading, error, data } = useQuery(
     GET_ALL_INVOICES_BY_BUDGET,
     {variables: { budgetid: budgetId },

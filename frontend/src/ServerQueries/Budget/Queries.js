@@ -28,8 +28,6 @@ export const GET_BUDGET_BY_ID = gql`
 
 export const GET_REMAINING_BUDGET_AMOUNT = gql`
   query GetRemainingBudgetAmount($budgetid: String!) {
-    getRemainingBudgetAmount(budgetid: $budgetid) {
-      amount
-    }
+    getRemainingBudgetAmount(budgetid: $budgetid)
   }
 `;

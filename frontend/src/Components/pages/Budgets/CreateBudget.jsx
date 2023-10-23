@@ -2,9 +2,9 @@ import React from 'react'
 import { useSelector } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import {useSubmitBudget} from '../../hooks/Budgets/useSubmitBudget';
+import { useSubmitBudget } from '../../hooks/Budgets/useSubmitBudget';
+import useGetRemainingProposalAmount from '../../hooks/Proposals/useGetRemainingProposalAmount';
 import useFilteredProposalAmount from '../../hooks/Proposals/useFilteredProposalAmount';
-import useGetRemainingProposalAmount from "../../hooks/Proposals/useGetRemainingProposalAmount";
 
 import SubHeader from '../../molecules/SubHeader/SubHeader';
 
@@ -22,9 +22,8 @@ function CreateBudget() {
   let { proposal } = useSelector(state => state.currentProposal);
   const { proposals } = useSelector(state => state.currentProposalAmounts);
   const { isSubmitting, submitBudgetMutation } = useSubmitBudget();
+  const { remainingProposalAmount } = useGetRemainingProposalAmount(proposal.id);
   const filteredProposalAmount = useFilteredProposalAmount(proposals, proposal.id);
-  const { data } = useGetRemainingProposalAmount(proposal.id);
-
 
   const methods = useForm({
     defaultValues: {
@@ -35,7 +34,7 @@ function CreateBudget() {
       Breakdown: `${(
         (parseInt(400) / parseInt(filteredProposalAmount)) *
         100
-      ).toFixed(2)}%`,
+      ).toFixed(2)}%`
     },
   });
 
@@ -104,7 +103,7 @@ function CreateBudget() {
           borderRadius: 5,
         }}
       >
-        <CreateBudgetForm />
+        <CreateBudgetForm remainingProposalAmount={remainingProposalAmount} />
       </Container>
     </FormProvider>
   );

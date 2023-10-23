@@ -34,7 +34,6 @@ const proposalResolver = {
                     console.log("proposal.amount", proposal.amount)
                     return proposal.amount;
                 }
-
                 return parseInt(proposal.amount) - parseInt(budget);
             } catch (error) {
                 throw new GraphQLError(error.message);
