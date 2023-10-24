@@ -24,7 +24,6 @@ async function siweController(req, res) {
 //second request to backend - verify the signature, find the adress from previous request that was store din session 
 async function verifyController(req, res) {
 
-  console.log(req.session)
     try {
         if (!req.body.message || !req.body.signature) {
         return res.status(400).json({
