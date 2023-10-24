@@ -4,6 +4,7 @@ const siwe = require("siwe");
 const { createSiweMessage } = require("../utility/signMessage");
 
 
+//first request to backend - initiate session and store the address to session from frontend
 async function siweController(req, res) {
   const { address, network, nonce } = req.body;
   try {
@@ -13,13 +14,17 @@ async function siweController(req, res) {
     req.session.address = address;
     req.session.save();
 
+    console.log(req.session)
     res.status(200).json(message);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
+//second request to backend - verify the signature, find the adress from previous request that was store din session 
 async function verifyController(req, res) {
+
+  console.log(req.session)
     try {
         if (!req.body.message || !req.body.signature) {
         return res.status(400).json({

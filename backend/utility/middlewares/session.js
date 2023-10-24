@@ -5,7 +5,7 @@ module.exports = session({
   name: "siwe",
   store: redisStore,
   secret: process.env.SESSION_SECRET,
-  resave: false,
+  resave: true,
   saveUninitialized: false,
   cookie: {
     //   secure: true,

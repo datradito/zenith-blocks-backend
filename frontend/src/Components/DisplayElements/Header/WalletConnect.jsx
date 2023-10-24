@@ -79,6 +79,7 @@ export default function WalletConnect() {
         {
           headers: {
             "Content-Type": "application/json",
+            credentials: "include",
           },
           withCredentials: true,
         }
@@ -97,6 +98,7 @@ export default function WalletConnect() {
         {
           headers: {
             "Content-Type": "application/json",
+            credentials: "include",
           },
           withCredentials: true,
         }
