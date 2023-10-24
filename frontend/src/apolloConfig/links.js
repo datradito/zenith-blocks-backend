@@ -13,11 +13,31 @@ const clearAuthData = () => {
     sessionStorage.removeItem('daoId');
 };
 
+const isTokenExpired = (decodedToken) => {
+    if (!decodedToken || !decodedToken.exp) {
+      return true; 
+    }
+    const currentTime = Math.floor(Date.now() / 1000);
+    console.log("currentTime", currentTime)
+    console.log("decodedToken.exp", decodedToken.exp)
+    return decodedToken.exp < currentTime;
+  };
+
+function decodeToken(token) {
+    if (!token) {
+      return null;
+    }
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace("-", "+").replace("_", "/");
+    return JSON.parse(window.atob(base64));
+  }
 
 export const authLink = () => (setContext(async (_, { headers }) => {
     const token = sessionStorage.getItem('authToken');
+    const decodedUser = decodeToken(token);
 
-    if (token) {
+
+    if (token && !isTokenExpired(decodedUser)) {
         return {
             headers: {
                 ...headers,
@@ -26,7 +46,6 @@ export const authLink = () => (setContext(async (_, { headers }) => {
         };
     } else {
         clearAuthData();
-
         redirect('/');
     }
 }));
@@ -72,11 +91,8 @@ const retryIf = (error) => {
       }
     }
   }
-
   return true;
 };
-
-
 
 export const retryLink = new RetryLink({
     delay: {
