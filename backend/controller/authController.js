@@ -28,7 +28,9 @@ async function verifyController(req, res) {
         }
 
         if (!req.session.address) {
-        throw new Error("Issues with session" + req.session);
+          return res.status(400).json({
+              message: "Expected address in the session.",
+          });
         }
 
     const SIWEObject = new siwe.SiweMessage(req.body.message);
