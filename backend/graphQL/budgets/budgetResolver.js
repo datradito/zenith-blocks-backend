@@ -31,7 +31,6 @@ const budgetResolver = {
 
         const budgetsWithRemaining = budgets.map((budget) => {
           const remaining = budget.remaining;
-          console.log(remaining);
           return { ...budget.toJSON(), remaining }; // merge the original budget with remaining
         });
 
@@ -51,6 +50,11 @@ const budgetResolver = {
           where: { budgetid: args.budgetid },
         });
         let totalInvoiceAmount = 0;
+
+        if (invoices.length === 0) {
+          return budget.amount;
+        }
+        
         invoices.forEach((invoice) => {
           totalInvoiceAmount += invoice.total;
         });

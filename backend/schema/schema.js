@@ -91,10 +91,11 @@ const typeDefs = `#graphql
         getInvoiceById(id: String): Invoice,
         getInvoicesByBudget(budgetid: String): [Invoice],
         getProposalDetailsById(id: String): Proposal,
+        getRemainingProposalAmount(id: String!): Float!,
         getProposalsByDao(daoid: String): [Proposal],
         getPaymentByInvoiceId(invoiceid: String!): Payment
         getAllPayments: [Payment!]!
-        getRemainingBudgetAmount(budgetid: String!): Float
+        getRemainingBudgetAmount(budgetid: String!): Float!
         getTokenBalances(address: String!): [Token]
         getTokenTransactionHistory(address: String!): [Transaction]
     }
