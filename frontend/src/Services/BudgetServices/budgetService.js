@@ -1,7 +1,7 @@
 import { toast } from "react-hot-toast";
 
 export const transformBudgets = (items, totalBudget) => {
-  if (items === null || items === undefined) return null;
+  if (items === null || items === undefined || items === [null]) return null;
 
   items = items.map((item) => {
     const { action, breakdown, remaining, __typename, ...rest } = item;

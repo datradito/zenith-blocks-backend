@@ -13,9 +13,6 @@ import Container from "../../atoms/Container/Container";
 function CreateBudgetForm({remainingProposalAmount}) {
   const methods = useFormContext();
   const { errors, defaultValues } = methods.formState;
-  console.log(remainingProposalAmount)
-  
-  console.log(defaultValues)
   return (
     <Container
       style={{

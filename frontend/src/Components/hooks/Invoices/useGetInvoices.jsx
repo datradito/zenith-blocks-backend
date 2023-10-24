@@ -3,18 +3,9 @@ import { GET_ALL_INVOICES_BY_BUDGET } from "../../../ServerQueries/Invoices/Quer
 import { useQuery } from "@apollo/client";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
-import { GET_REMAINING_BUDGET_AMOUNT } from "../../../ServerQueries/Budget/Queries.js";
+
 export const useGetAllInvoices = (budgetId) => {
   const [invoices, setInvoices] = useState([]);
-  const budgetData = useQuery(
-    GET_REMAINING_BUDGET_AMOUNT,
-    {
-      variables: { budgetid: budgetId },
-      errorPolicy: "all",
-    }
-  );
-
-  console.log(budgetData)
 
   const { isLoading, error, data } = useQuery(
     GET_ALL_INVOICES_BY_BUDGET,

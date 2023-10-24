@@ -1,6 +1,7 @@
 const Proposal = require('../../Database/models/Proposal');
 const Budget = require('../../Database/models/Budget');
 const { GraphQLError } = require('graphql');
+const { getRemainingProposalAmount } = require('../../Services/Proposals');
 
 const proposalResolver = {
     Query: {
@@ -20,21 +21,8 @@ const proposalResolver = {
         },
         getRemainingProposalAmount: async (parent, args, context) => {
             const { id } = args;
-            //get sum of all budgeted amounts for this proposal
             try {
-                const budget = await Budget.sum('amount', {
-                    where: {
-                        proposalid: id
-                    }
-                });
-
-                const proposal = await Proposal.findByPk(id);
-
-                if (budget === null) {
-                    console.log("proposal.amount", proposal.amount)
-                    return proposal.amount;
-                }
-                return parseInt(proposal.amount) - parseInt(budget);
+                return await getRemainingProposalAmount(id);
             } catch (error) {
                 throw new GraphQLError(error.message);
             }
