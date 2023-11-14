@@ -8,19 +8,9 @@ import "@rainbow-me/rainbowkit/styles.css";
 import {
   getDefaultWallets,
   RainbowKitProvider,
-  connectorsForWallets,
   darkTheme,
 } from "@rainbow-me/rainbowkit";
-import {
-  injectedWallet,
-  rainbowWallet,
-  walletConnectWallet,
-  metaMaskWallet,
-  safeWallet,
-  argentWallet,
-  trustWallet,
-  ledgerWallet,
-} from "@rainbow-me/rainbowkit/wallets";
+
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import {
   mainnet,
@@ -43,8 +33,6 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     goerli,
     base,
     zkSync,
-
-    //     ganache,
     ...(process.env.REACT_APP_ENABLE_TESTNETS === "true" ? [goerli] : []),
   ],
   [
@@ -54,28 +42,11 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
 );
 const projectId = "3a74d330e07a405df9ab1a0ff1825a9b";
 
-const { wallets } = getDefaultWallets({
+const { connectors } = getDefaultWallets({
   appName: "ZenithBlocks",
   projectId,
   chains,
 });
-
-const connectors = connectorsForWallets([
-  ...wallets,
-  {
-    groupName: "Recommended",
-    wallets: [
-      injectedWallet({ chains }),
-      rainbowWallet({ projectId, chains }),
-      walletConnectWallet({ projectId, chains }),
-      safeWallet({ chains }),
-      metaMaskWallet({ chains }),
-      argentWallet({ projectId, chains }),
-      trustWallet({ projectId, chains }),
-      ledgerWallet({ projectId, chains }),
-    ],
-  },
-]);
 
 const wagmiConfig = createConfig({
   autoConnect: true,
