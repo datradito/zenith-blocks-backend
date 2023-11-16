@@ -3,6 +3,8 @@ const Invoice = require("../../Database/models/Invoice");
 const Budget = require("../../Database/models/Budget");
 const validateBudget = require("../../validators/validateBudget");
 const updateProposalStatus = require("../../utility/budgetHelpers/updateProposalStatus");
+const { getRemainingBudgetAmount } = require("../../Services/Budgets");
+
 const {
   throwCustomError,
   ErrorTypes,
@@ -29,8 +31,9 @@ const budgetResolver = {
           ],
         });
 
-        const budgetsWithRemaining = budgets.map((budget) => {
-          const remaining = budget.remaining;
+        const budgetsWithRemaining = budgets.map(async (budget) => {
+          
+          const remaining = await getRemainingBudgetAmount(budget.id);
           return { ...budget.toJSON(), remaining }; // merge the original budget with remaining
         });
 
@@ -45,20 +48,7 @@ const budgetResolver = {
     getRemainingBudgetAmount: async (parent, args) => {
       //using the budgetid, get the remaining budget amount by budgetTotal - all invoice total for this budget based on args.budgetid
       try {
-        const budget = await Budget.findByPk(args.budgetid);
-        const invoices = await Invoice.findAll({
-          where: { budgetid: args.budgetid },
-        });
-        let totalInvoiceAmount = 0;
-
-        if (invoices.length === 0) {
-          return budget.amount;
-        }
-        
-        invoices.forEach((invoice) => {
-          totalInvoiceAmount += invoice.total;
-        });
-        return budget.amount - totalInvoiceAmount;
+        return await getRemainingBudgetAmount(args.budgetid);
       } catch (error) {
         throw new GraphQLError(error.message);
       }

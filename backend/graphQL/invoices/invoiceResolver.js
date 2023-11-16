@@ -1,7 +1,12 @@
 const { GraphQLError } = require('graphql');
 const Invoice = require('../../Database/models/Invoice');
 const Budget = require('../../Database/models/Budget');
-const { validateInvoice } = require('../../validators/validateInvoice');
+const { validateInvoice, validateInvoiceAmount } = require('../../validators/validateInvoice');
+
+const {
+  throwCustomError,
+  ErrorTypes,
+} = require("../../utility//errorHandlerHelpers/errorHandlerHelper");
 
 const invoiceResolver = {
     Query: {
@@ -29,43 +34,30 @@ const invoiceResolver = {
     Mutation: {
         submitInvoice: async (parent, { invoice }, context) => {
 
-            // const invoicedAmount = Invoice.findAll({
-            //     where: {
-            //         budgetid: invoice.budgetid
-            //     }
-            // }).then((invoices) => {
-            //     let totalAmount = 0;
-            //     invoices.forEach((invoice) => {
-            //         totalAmount += invoice.total;
-            //     });
-            //     console.log("Total Amount: ", totalAmount);
-            // });
+            // const { valid, errors } = validateInvoice(
+            //     invoice);
+            
+            // if (!valid) {
+            //     throw new GraphQLError(errors);
+            // }
 
-            //ensure to check amount against all invoices for budget
-            const budgetAmount = await Budget.findByPk(invoice.budgetid, {
-                attributes: ['amount']
-            })
+            const { errors, valid } = await validateInvoiceAmount(invoice.budgetid, invoice.total);
 
-            if (invoice.total > budgetAmount.get('amount')) {
-                throw new GraphQLError('Invoice amount can not exceed total budget Amount', {
-                    extensions: {
-                        code: 'BAD_USER_INPUT',
-                        argumentName: 'total',
-                    },
-                })
-            } else {
-                const newInvoice = new Invoice({
-                    ...invoice,
-                    ipfs: "ipfsResponse",
-                });
+                  if (!valid) {
+                    throwCustomError(errors.total || errors.budget, ErrorTypes.BAD_USER_INPUT);
+                  } else {
+                    const newInvoice = new Invoice({
+                      ...invoice,
+                      ipfs: "ipfsResponse",
+                    });
 
-                try {
-                    const savedInvoice = await newInvoice.save();
-                    return savedInvoice;
-                } catch (error) {
-                    throw new GraphQLError(error.message);
-                }
-            }
+                    try {
+                      const savedInvoice = await newInvoice.save();
+                      return savedInvoice;
+                    } catch (error) {
+                      throw new GraphQLError(error.message);
+                    }
+                  }
         },
         duplicateInvoice: async (parent, { id: invoiceId }, context) => {
             const invoice = await Invoice.findByPk(invoiceId);

@@ -2,8 +2,11 @@ import React from "react";
 import SubHeader from "../../molecules/SubHeader/SubHeader";
 import { useSelector } from "react-redux";
 import CircularIndeterminate from "../../atoms/Loader/loader";
+
 import { invoiceService } from "../../../Services/InvoiceServices/invoiceService";
 import { useSubmitInvoice } from "../../hooks/Invoices/useSubmitInvoice";
+import {useGetRemainingBudgetAmount } from "../../hooks/Budgets/useGetRemainingBudgetAmount";
+
 import CreateInvoiceForm from "../../features/invoices/CreateInvoiceForm";
 import Label from "../../atoms/Label/Label";
 import GoBack from "../../atoms/GoBack/GoBack";
@@ -21,6 +24,9 @@ function InvoiceCreation() {
     proposal: state.currentProposal.proposal,
     Budget: state.currentBudget.Budget,
   }));
+
+  const { data : remainingBudgetAmount, loading, error } = useGetRemainingBudgetAmount(Budget.id);
+
 
   const methods = useForm({
     defaultValues: {
@@ -76,7 +82,7 @@ function InvoiceCreation() {
         </SubHeader.List>
       </SubHeader.Container>
         <Container>
-          <CreateInvoiceForm />
+          <CreateInvoiceForm remainingBudgetAmount={remainingBudgetAmount?.getRemainingBudgetAmount} />
         </Container>
     </FormProvider>
   );
