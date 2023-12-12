@@ -13,7 +13,7 @@ async function siweController(req, res) {
     req.session.nonce = nonce;
     req.session.address = address;
     req.session.save();
-
+    console.log(req.sessionID);
     res.status(200).json(message);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -22,8 +22,7 @@ async function siweController(req, res) {
 
 //second request to backend - verify the signature, find the adress from previous request that was store din session 
 async function verifyController(req, res) {
-
-
+  console.log(req.sessionID);
     try {
         if (!req.body.message || !req.body.signature) {
         return res.status(400).json({

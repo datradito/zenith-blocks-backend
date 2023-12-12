@@ -1,4 +1,5 @@
 const express = require('express');
+const cookieParser = require("cookie-parser");
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -20,9 +21,14 @@ const init = require('./Database/sequalizeConnection');
 
 const app = express();
 
+if (app.get("env") === "production") {
+  app.set("trust proxy", 1); // trust first proxy
+  session.cookie.secure = true; // serve secure cookies
+}
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(cookieParser());
 app.use(cors);
 app.use(session);
 app.use(authRouter);
