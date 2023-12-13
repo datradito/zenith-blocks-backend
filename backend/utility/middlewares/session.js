@@ -10,7 +10,8 @@ module.exports = session({
   cookie: {
     secure: process.env.NODE_ENV === "production",
     httpOnly: true,
-    maxAge: 3600000, // session max age in miliseconds
+    sameSite: "none",
+    maxAge: 3600000,
   },
 });
 
