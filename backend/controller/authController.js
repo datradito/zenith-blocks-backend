@@ -21,7 +21,7 @@ async function siweController(req, res) {
 
 // second request to backend - verify the signature, find the address from the previous request that was stored in session 
 async function verifyController(req, res) {
-  const { message, signature, address } = req.body;
+  const { message, signature } = req.body;
   try {
     if (!message || !signature) {
       return res.status(400).json({
@@ -40,6 +40,9 @@ async function verifyController(req, res) {
         message: "Signature verification failed.",
       });
     }
+
+
+    const address = verified.data.address;
 
       if (!address) {
         return res.status(400).json({
