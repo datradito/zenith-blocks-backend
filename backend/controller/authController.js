@@ -23,18 +23,20 @@ async function siweController(req, res) {
 //second request to backend - verify the signature, find the adress from previous request that was store din session 
 async function verifyController(req, res) {
   console.log(req.sessionID);
-    try {
-        if (!req.body.message || !req.body.signature) {
-        return res.status(400).json({
-            message: "Expected message and signature in the request body.",
-        });
-        }
+  try {
+    if (!req.body.message || !req.body.signature) {
+      return res.status(400).json({
+        error: "BadRequest",
+        message: "Expected message and signature in the request body.",
+      });
+    }
 
-        if (!req.session.address) {
-          return res.status(400).json({
-              message: "Expected address in the session.",
-          });
-        }
+    if (!req.session.address) {
+      return res.status(400).json({
+        error: "BadRequest",
+        message: "Expected address in the session.",
+      });
+    }
 
     const SIWEObject = new siwe.SiweMessage(req.body.message);
     const { data: message } = await SIWEObject.verify({
@@ -47,7 +49,10 @@ async function verifyController(req, res) {
     });
 
     if (!user) {
-      res.status(404).json("User not found");
+      return res.status(404).json({
+        error: "NotFound",
+        message: "User not found",
+      });
     }
 
     const token = signJWTToken({
@@ -56,10 +61,15 @@ async function verifyController(req, res) {
     });
 
     return res.status(201).json({ authToken: token });
-    } catch (e) {
-      res.status(500).json(e);
+  } catch (e) {
+    console.error("Error in verifyController:", e);
+    return res.status(500).json({
+      error: "ServerError",
+      message: "An unexpected error occurred.",
+    });
   }
 }
+
 
 module.exports = {
     siweController,
