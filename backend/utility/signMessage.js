@@ -28,7 +28,7 @@ function createSiweMessage(address, network, nonce) {
   }
 }
 
-const verifySiweMessageHandler = async (message, signature, nonce) => {
+const verifySiweMessageHandler = async (req) => {
     try {
         let SIWEObject = new SiweMessage(req.body.message);
         const { data: message } = await SIWEObject.verify({
@@ -38,7 +38,7 @@ const verifySiweMessageHandler = async (message, signature, nonce) => {
 
         req.session.siwe = message;
         req.session.cookie.expires = new Date(message.expirationTime);
-        req.session.save(() => res.status(200).send(true));
+        req.session.save();
     }
     catch (e) {
         throw e;

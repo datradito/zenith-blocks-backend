@@ -48,9 +48,7 @@ async function verifyController(req, res) {
     }
 
     await verifySiweMessageHandler(
-      message,
-      signature,
-      req.session.nonce
+      req
     );
 
     const user = await User.findOne({
@@ -69,9 +67,7 @@ async function verifyController(req, res) {
       dao: user.daoId,
     });
 
-    req.session.siwe = message;
-    req.session.cookie.expires = new Date(message.expirationTime);
-    req.session.save(() => res.status(201).json({ authToken: token }));
+     res.status(201).json({ authToken: token });
 
   } catch (e) {
     console.error("Error in verifyController:", e);
