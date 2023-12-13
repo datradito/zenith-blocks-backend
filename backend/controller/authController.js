@@ -48,7 +48,9 @@ async function verifyController(req, res) {
     }
 
     await verifySiweMessageHandler(
-      req
+      message,
+      signature,
+      req.session.nonce,
     );
 
     const user = await User.findOne({

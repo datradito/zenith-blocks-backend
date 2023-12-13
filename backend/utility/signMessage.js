@@ -28,12 +28,12 @@ function createSiweMessage(address, network, nonce) {
   }
 }
 
-const verifySiweMessageHandler = async (req) => {
+const verifySiweMessageHandler = async (message, signature, nonce) => {
     try {
-        let SIWEObject = new SiweMessage(req.body.message);
+        let SIWEObject = new SiweMessage(message);
         const { data: message } = await SIWEObject.verify({
-            signature: req.body.signature,
-            nonce: req.session.nonce,
+            signature: signature,
+            nonce: nonce,
         });
 
         req.session.siwe = message;
