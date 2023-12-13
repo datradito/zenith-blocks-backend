@@ -1,5 +1,6 @@
 const User = require("../Database/models/User");
 const { signJWTToken } = require("../utility/middlewares/auth");
+
 const { createSiweMessage, verifySiweMessageHandler } = require("../utility/signMessage");
 
 
@@ -22,15 +23,7 @@ async function siweController(req, res) {
 //second request to backend - verify the signature, find the adress from previous request that was store din session 
 async function verifyController(req, res) {
   const { message, signature } = req.body;
-
   try {
-    if (!req.body.message) {
-      res
-        .status(422)
-        .json({ message: "Expected prepareMessage object as body." });
-      return;
-    }
-
     if (!req.body.message || !req.body.signature) {
       return res.status(400).json({
         error: "BadRequest",
@@ -48,7 +41,7 @@ async function verifyController(req, res) {
     await verifySiweMessageHandler(
       message,
       signature,
-      req.session.nonce,
+      req.session.nonce
     );
 
     const user = await User.findOne({
@@ -67,31 +60,13 @@ async function verifyController(req, res) {
       dao: user.daoId,
     });
 
-    res.setHeader(
-      "Access-Control-Allow-Origin",
-      process.env.FRONTEND_URL,
-    );
-     res.status(201).json({ authToken: token });
-
+    return res.status(201).json({ authToken: token });
   } catch (e) {
-    console.error("Error in verifyController:", e.message);
-    req.session.siwe = null;
-    req.session.nonce = null;
-
-    switch (e) {
-      case ErrorTypes.EXPIRED_MESSAGE: {
-        req.session.save(() => res.status(440).json({ message: e.message }));
-        break;
-      }
-      case ErrorTypes.INVALID_SIGNATURE: {
-        req.session.save(() => res.status(422).json({ message: e.message }));
-        break;
-      }
-      default: {
-        req.session.save(() => res.status(500).json({ message: e.message }));
-        break;
-      }
-    }
+    console.error("Error in verifyController:", e);
+    return res.status(500).json({
+      error: "ServerError",
+      message: `An unexpected error occurred. ${e.message}`,
+    });
   }
 }
 

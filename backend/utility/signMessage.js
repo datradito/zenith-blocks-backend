@@ -29,20 +29,21 @@ function createSiweMessage(address, network, nonce) {
 }
 
 const verifySiweMessageHandler = async (message, signature, nonce) => {
-    try {
-        let SIWEObject = new SiweMessage(message);
-        const { data: message } = await SIWEObject.verify({
-            signature: signature,
-            nonce: nonce,
-        });
+  let SIWEObject = new SiweMessage(message);
 
-        req.session.siwe = message;
-        req.session.cookie.expires = new Date(message.expirationTime);
-        req.session.save();
-    }
-    catch (e) {
-        throw e;
-    }
+  return SIWEObject.verify({ signature: signature, nonce: nonce })
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => {
+      if (error instanceof SiweError) {
+        console.log(error.code);
+        console.log(error.message);
+        console.log(error.data);
+      }
+      // Handle other errors if needed
+      throw error; // Rethrow the error so that the caller can handle it
+    });
 };
 
 module.exports = { createSiweMessage, verifySiweMessageHandler };
