@@ -1,10 +1,9 @@
 const User = require("../Database/models/User");
 const { signJWTToken } = require("../utility/middlewares/auth");
-
+const { SiweMessage, SiweError } = require("siwe");
 const { createSiweMessage, verifySiweMessageHandler } = require("../utility/signMessage");
 
-
-//first request to backend - initiate session and store the address to session from frontend
+// first request to backend - initiate session and store the address to session from frontend
 async function siweController(req, res) {
   const { address, network, nonce } = req.body;
   try {
@@ -20,11 +19,11 @@ async function siweController(req, res) {
   }
 };
 
-//second request to backend - verify the signature, find the adress from previous request that was store din session 
+// second request to backend - verify the signature, find the address from the previous request that was stored in session 
 async function verifyController(req, res) {
   const { message, signature } = req.body;
   try {
-    if (!req.body.message || !req.body.signature) {
+    if (!message || !signature) {
       return res.status(400).json({
         error: "BadRequest",
         message: "Expected message and signature in the request body.",
@@ -38,11 +37,17 @@ async function verifyController(req, res) {
       });
     }
 
-    await verifySiweMessageHandler(
-      message,
-      signature,
-      req.session.nonce
-    );
+    // await verifySiweMessageHandler(message, signature, req.session.nonce);
+    const SIWEObject = new SiweMessage(message);
+    const verified = await SIWEObject.verify({ signature: signature });
+
+    if (!verified) {
+      return res.status(400).json({
+        error: "BadRequest",
+        message: "Signature verification failed.",
+      });
+    }
+
 
     const user = await User.findOne({
       where: { address: req.session.address },
@@ -60,18 +65,19 @@ async function verifyController(req, res) {
       dao: user.daoId,
     });
 
+    req.session.siwe = verified;
+
     return res.status(201).json({ authToken: token });
-  } catch (e) {
-    console.error("Error in verifyController:", e);
+  } catch (error) {
+    console.error("Error in verifyController:", error);
     return res.status(500).json({
       error: "ServerError",
-      message: `An unexpected error occurred. ${e.message}`,
+      message: `An unexpected error occurred. ${error.message}`,
     });
   }
 }
 
-
 module.exports = {
-    siweController,
-    verifyController
-}
+  siweController,
+  verifyController,
+};
