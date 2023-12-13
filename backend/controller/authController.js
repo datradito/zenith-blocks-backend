@@ -23,8 +23,6 @@ async function siweController(req, res) {
 async function verifyController(req, res) {
   const { message, signature } = req.body;
 
-  console.log("message", message);
-  console.log("signature", signature);
   try {
     if (!req.body.message) {
       res
@@ -69,10 +67,14 @@ async function verifyController(req, res) {
       dao: user.daoId,
     });
 
+    res.setHeader(
+      "Access-Control-Allow-Origin",
+      process.env.FRONTEND_URL,
+    );
      res.status(201).json({ authToken: token });
 
   } catch (e) {
-    console.error("Error in verifyController:", e);
+    console.error("Error in verifyController:", e.message);
     req.session.siwe = null;
     req.session.nonce = null;
 
