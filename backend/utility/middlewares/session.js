@@ -2,7 +2,7 @@ const session = require("express-session");
 const {redisStore} = require("../redis/redisClient");
 
 module.exports = session({
-  name: "Zenith",
+  name: "zenith",
   store: redisStore,
   secret: process.env.SESSION_SECRET,
   resave: false,

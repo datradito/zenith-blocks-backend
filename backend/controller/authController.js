@@ -22,7 +22,17 @@ async function siweController(req, res) {
 //second request to backend - verify the signature, find the adress from previous request that was store din session 
 async function verifyController(req, res) {
   const { message, signature } = req.body;
+
+  console.log("message", message);
+  console.log("signature", signature);
   try {
+    if (!req.body.message) {
+      res
+        .status(422)
+        .json({ message: "Expected prepareMessage object as body." });
+      return;
+    }
+
     if (!req.body.message || !req.body.signature) {
       return res.status(400).json({
         error: "BadRequest",
@@ -59,13 +69,29 @@ async function verifyController(req, res) {
       dao: user.daoId,
     });
 
-    return res.status(201).json({ authToken: token });
+    req.session.siwe = message;
+    req.session.cookie.expires = new Date(message.expirationTime);
+    req.session.save(() => res.status(201).json({ authToken: token }));
+
   } catch (e) {
     console.error("Error in verifyController:", e);
-    return res.status(500).json({
-      error: "ServerError",
-      message: "An unexpected error occurred.",
-    });
+    req.session.siwe = null;
+    req.session.nonce = null;
+
+    switch (e) {
+      case ErrorTypes.EXPIRED_MESSAGE: {
+        req.session.save(() => res.status(440).json({ message: e.message }));
+        break;
+      }
+      case ErrorTypes.INVALID_SIGNATURE: {
+        req.session.save(() => res.status(422).json({ message: e.message }));
+        break;
+      }
+      default: {
+        req.session.save(() => res.status(500).json({ message: e.message }));
+        break;
+      }
+    }
   }
 }
 
