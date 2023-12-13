@@ -65,22 +65,11 @@ const ResponsiveHeaderBar = () => {
         <Container
         >
           <Toolbar disableGutters>
-            <Typography
-              variant="h6"
-              noWrap
-              component="a"
-              href="/"
-              sx={{
-                mr: 2,
-                display: { xs: "none", md: "flex" },
-                color: "White",
-                textDecoration: "none",
-              }}
-            >
               <img style={{ maxWidth: "8rem" }} src={logo} alt="Logo" />
-            </Typography>
             <>
-              <Box sx={{ flexGrow: 1 }}>
+              <Box sx={{
+                flexGrow: 1
+              }}>
                 {pages.map((page, index) => (
                   <Button key={index}>
                     <NavLink

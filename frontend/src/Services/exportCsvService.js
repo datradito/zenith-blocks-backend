@@ -32,9 +32,7 @@ export const sanitizeCsvData = (data, type) => {
                 __typename,
                 ...rest
             } = budget;
-
             return { ...rest, invoiced: budget.remaining };
-            
         }
         );
         return csvData;

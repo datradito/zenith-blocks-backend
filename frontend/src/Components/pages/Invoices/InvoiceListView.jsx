@@ -14,12 +14,19 @@ import Breadcrumbs from '../../atoms/BreadCrumbs/BreadCrumbs';
 
 
 function InvoiceListView() {
+  const navigate = useNavigate();
     const { proposal, Budget } = useSelector((state) => ({
       proposal: state.currentProposal.proposal,
       Budget: state.currentBudget.Budget,
     }));
   const { isLoading, invoices } = useGetAllInvoices(Budget?.id);
-  const navigate = useNavigate();
+
+  if (isLoading) return (
+    <>
+      <CircularIndeterminate />
+    </>
+  );
+
   
   const handleCreateInvoice = () => {
     navigate(`/invoices/${Budget.id}/create`);

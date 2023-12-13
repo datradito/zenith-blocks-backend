@@ -12,7 +12,7 @@ import Option from "../../atoms/Option/Option";
 import Container from "../../atoms/Container/Container";
 import { Typography } from "@mui/material";
 
-function CreateInvoiceForm() {
+function CreateInvoiceForm({remainingBudgetAmount}) {
   const methods = useFormContext();
   const { errors, defaultValues } = methods.formState;
 
@@ -200,8 +200,12 @@ function CreateInvoiceForm() {
               id="amount"
               {...methods.register("amount", {
                 max: {
-                  value: defaultValues["Total Budget"],
-                  message: "Amount cannot be greater than Total Budget",
+                  value: remainingBudgetAmount || defaultValues["amount"],
+                  message: `Amount cannot be greater than ${remainingBudgetAmount} remaining in budget`,
+                },
+                min: {
+                  value: 0,
+                  message: "Amount cannot be negative",
                 },
                 required: "This field is required",
               })}

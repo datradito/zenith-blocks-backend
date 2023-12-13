@@ -1,5 +1,7 @@
 const Proposal = require('../../Database/models/Proposal');
+const Budget = require('../../Database/models/Budget');
 const { GraphQLError } = require('graphql');
+const { getRemainingProposalAmount } = require('../../Services/Proposals');
 
 const proposalResolver = {
     Query: {
@@ -16,6 +18,14 @@ const proposalResolver = {
             const { daoid } = args;
             const proposals = await Proposal.findAll({ where: { daoid } });
             return proposals;
+        },
+        getRemainingProposalAmount: async (parent, args, context) => {
+            const { id } = args;
+            try {
+                return await getRemainingProposalAmount(id);
+            } catch (error) {
+                throw new GraphQLError(error.message);
+            }
         }
     },
     Mutation: {

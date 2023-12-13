@@ -1,3 +1,8 @@
+const Budget = require("../Database/models/Budget");
+const Invoice = require("../Database/models/Invoice");
+const { GraphQLError } = require('graphql');
+
+
 const validateInvoice = (
     Category,
     Recipient,
@@ -33,5 +38,42 @@ const validateInvoice = (
     }
 }
 
+//invoice takes an id of budget - calculates total of all invoices for budget and compares to budget amount - only allow invoice creation if amount is less than budget amount
+//if invoice amount is greater than budget amount, throw error
+//if invoice amount is less than budget amount, create invoice  
+const validateInvoiceAmount = async (budgetid, total) => {
 
-module.exports = validateInvoice;
+    const errors = {};
+
+    const budget = await Budget.findByPk(budgetid);
+    if (!budget) {
+        errors.budget = "Budget not found";
+    }
+
+    const invoices = await Invoice.findAll({
+        where: { budgetid: budgetid },
+    });
+
+    let totalInvoiceAmount = 0;
+
+    if (invoices.length !== 0) {
+        invoices.forEach((invoice) => {
+            totalInvoiceAmount += invoice.total;
+        });
+    }
+
+    if (totalInvoiceAmount + total > budget.amount) {
+        errors.total = "Invoice amount exceeds remaining budget amount";
+    }
+
+    return {
+        errors,
+        valid: Object.keys(errors).length < 1,
+    };
+
+};
+
+    module.exports = {
+        validateInvoice,
+        validateInvoiceAmount
+    };

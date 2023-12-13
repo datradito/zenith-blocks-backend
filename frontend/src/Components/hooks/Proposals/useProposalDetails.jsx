@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { GET_PROPOSAL_BY_ID } from '../../../SnapShot/Queries.js';
-import { snapShotClient } from '../../../SnapShot/client.js';
+import { snapShotClient } from '../../../apolloConfig/client.js';
 import { toast } from "react-hot-toast";
 import { useDispatch } from 'react-redux';
 import { setProposal } from '../../../actions/currentProposal/index.js';

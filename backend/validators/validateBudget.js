@@ -22,7 +22,7 @@ const validateBudget = async (
     const proposalAmount = proposal.get('amount');
 
     if (parseInt(amount) > parseInt(proposalAmount) - parseInt(totalBudgetedAmount)) {
-        errors.amount = "Combined total of budgets can not exceed total proposal amount"
+        errors.amount = `Amount exceeds remaining proposal amount of ${parseInt(proposalAmount) - parseInt(totalBudgetedAmount)}`
     }
 
     return {

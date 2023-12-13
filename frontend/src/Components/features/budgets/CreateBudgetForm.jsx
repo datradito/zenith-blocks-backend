@@ -10,9 +10,9 @@ import Input from "../../atoms/Input/Input";
 import Option from "../../atoms/Option/Option";
 import Container from "../../atoms/Container/Container";
 
-function CreateBudgetForm() {
+function CreateBudgetForm({remainingProposalAmount}) {
   const methods = useFormContext();
-  const { errors , defaultValues} = methods.formState;
+  const { errors, defaultValues } = methods.formState;
   return (
     <Container
       style={{
@@ -77,8 +77,12 @@ function CreateBudgetForm() {
             id="amount"
             {...methods.register("amount", {
               max: {
-                value: defaultValues["Total Budget"],
-                message: "Amount cannot be greater than Total Budget",
+                value: remainingProposalAmount,
+                message: `Amount cannot be greater than ${remainingProposalAmount} remaining in proposal`,
+              },
+              min: {
+                value: 0,
+                message: "Amount cannot be negative",
               },
               required: "This field is required",
             })}
