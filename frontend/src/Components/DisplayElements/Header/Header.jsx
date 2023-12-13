@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 import WalletConnect from './WalletConnect';
+import axios from 'axios';
 
 import { useSelector } from 'react-redux';
 
@@ -20,6 +21,21 @@ const navLinkStyle = {
     color: "white"
 }
 
+
+//test function to create a user
+const createUser = () => {  
+  axios
+    .post(`${process.env.REACT_APP_API_URL}/createUser`, {
+      address: "0x1234",
+      daoId: "eth.balancer",
+    })
+    .then(function (response) {
+      console.log(response.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
 const ResponsiveHeaderBar = () => {
     let { proposal } = useSelector(state => state.currentProposal);
     let { Budget } = useSelector(state => state.currentBudget);
@@ -74,6 +90,7 @@ const ResponsiveHeaderBar = () => {
               <Box sx={{ flexGrow: 0 }}>
                 <WalletConnect />
               </Box>
+              <Button onClick={createUser}>Create User</Button>
             </>
             {/* { !walletConnected &&  <Login />  } */}
           </Toolbar>

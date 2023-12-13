@@ -1,9 +1,9 @@
 const User = require("../Database/models/User");
 const { signJWTToken } = require("../utility/middlewares/auth");
-const siwe = require("siwe");
-const { createSiweMessage } = require("../utility/signMessage");
+const { SiweMessage, SiweError } = require("siwe");
+const { createSiweMessage, verifySiweMessageHandler } = require("../utility/signMessage");
 
-
+// first request to backend - initiate session and store the address to session from frontend
 async function siweController(req, res) {
   const { address, network, nonce } = req.body;
   try {
@@ -19,30 +19,45 @@ async function siweController(req, res) {
   }
 };
 
+// second request to backend - verify the signature, find the address from the previous request that was stored in session 
 async function verifyController(req, res) {
-    try {
-        if (!req.body.message || !req.body.signature) {
-        return res.status(400).json({
-            message: "Expected message and signature in the request body.",
-        });
-        }
+  const { message, signature } = req.body;
+  try {
+    if (!message || !signature) {
+      return res.status(400).json({
+        error: "BadRequest",
+        message: "Expected message and signature in the request body.",
+      });
+    }
 
-        if (!req.session.address) {
-        throw new Error("Issues with session" + req.session);
-        }
+    if (!req.session.address) {
+      return res.status(400).json({
+        error: "BadRequest",
+        message: "Expected address in the session.",
+      });
+    }
 
-    const SIWEObject = new siwe.SiweMessage(req.body.message);
-    const { data: message } = await SIWEObject.verify({
-      signature: req.body.signature,
-      nonce: req.session.nonce,
-    });
+    // await verifySiweMessageHandler(message, signature, req.session.nonce);
+    const SIWEObject = new SiweMessage(message);
+    const verified = await SIWEObject.verify({ signature: signature });
+
+    if (!verified) {
+      return res.status(400).json({
+        error: "BadRequest",
+        message: "Signature verification failed.",
+      });
+    }
+
 
     const user = await User.findOne({
       where: { address: req.session.address },
     });
 
     if (!user) {
-      res.status(404).json("User not found");
+      return res.status(404).json({
+        error: "NotFound",
+        message: "User not found",
+      });
     }
 
     const token = signJWTToken({
@@ -50,13 +65,19 @@ async function verifyController(req, res) {
       dao: user.daoId,
     });
 
+    req.session.siwe = verified;
+
     return res.status(201).json({ authToken: token });
-    } catch (e) {
-      res.status(500).json(e);
+  } catch (error) {
+    console.error("Error in verifyController:", error);
+    return res.status(500).json({
+      error: "ServerError",
+      message: `An unexpected error occurred. ${error.message}`,
+    });
   }
 }
 
 module.exports = {
-    siweController,
-    verifyController
-}
+  siweController,
+  verifyController,
+};

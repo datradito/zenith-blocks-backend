@@ -93,7 +93,7 @@ export default function WalletConnect() {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/verify`,
-        { message, signature },
+        JSON.stringify({ message, signature }),
         {
           headers: {
             "Content-Type": "application/json",

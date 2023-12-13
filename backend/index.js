@@ -1,4 +1,5 @@
 const express = require('express');
+const cookieParser = require("cookie-parser");
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -20,9 +21,13 @@ const init = require('./Database/sequalizeConnection');
 
 const app = express();
 
+if (app.get("env") === "production") {
+  app.set("trust proxy", 1); // trust first proxy
+}
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(cookieParser());
 app.use(cors);
 app.use(session);
 app.use(authRouter);
@@ -46,11 +51,16 @@ app.get("/", (req, res) => {
 });
 
 app.post('/createUser', async (req, res) => {
+
+    try {
         const { address, daoId } = req.body;
         const user = await User.create({ address, daoId });
         return res.status(200).json(user);
+    } catch (e) {
+        res.status(500).json(e);
     }
-);
+
+});
 
 
 app.get("/tokenTransfers", async (req, res) => {
