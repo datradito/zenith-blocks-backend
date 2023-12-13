@@ -1,6 +1,5 @@
 const User = require("../Database/models/User");
 const { signJWTToken } = require("../utility/middlewares/auth");
-import { generateNonce, SiweMessage } from "siwe";
 const { createSiweMessage, verifySiweMessageHandler } = require("../utility/signMessage");
 
 
