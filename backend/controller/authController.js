@@ -21,19 +21,12 @@ async function siweController(req, res) {
 
 // second request to backend - verify the signature, find the address from the previous request that was stored in session 
 async function verifyController(req, res) {
-  const { message, signature } = req.body;
+  const { message, signature, address } = req.body;
   try {
     if (!message || !signature) {
       return res.status(400).json({
         error: "BadRequest",
         message: "Expected message and signature in the request body.",
-      });
-    }
-
-    if (!req.session.address) {
-      return res.status(400).json({
-        error: "BadRequest",
-        message: "Expected address in the session.",
       });
     }
 
@@ -48,9 +41,15 @@ async function verifyController(req, res) {
       });
     }
 
+      if (!address) {
+        return res.status(400).json({
+          error: "BadRequest",
+          message: "Expected address",
+        });
+      }
 
     const user = await User.findOne({
-      where: { address: req.session.address },
+      where: { address: address },
     });
 
     if (!user) {

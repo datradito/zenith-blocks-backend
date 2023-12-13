@@ -81,11 +81,11 @@ export default function WalletConnect() {
     }
   };
 
-  const sendForVerification = async (message, signature) => {
+  const sendForVerification = async (message, signature, address) => {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/verify`,
-        JSON.stringify({ message, signature }),
+        JSON.stringify({ message, signature, address }),
         {
           headers: {
             "Content-Type": "application/json",
@@ -108,14 +108,12 @@ export default function WalletConnect() {
         throw new Error("Error creating message");
       }
 
-      console.log(message);
-
       const signature = await signMessageAsync({ message : message.prepareMessage() });
 
       if (!signature) {
         throw new Error("Error signing message");
       }
-      const res = await sendForVerification(message, signature);
+      const res = await sendForVerification(message, signature, address);
       const { daoId, address } = decodeToken(res.authToken);
 
       sessionStorage.setItem("authToken", res.authToken);
