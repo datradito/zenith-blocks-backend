@@ -8,6 +8,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useNavigate } from "react-router-dom";
 import { useSignMessage } from "wagmi";
 
+import { SiweMessage } from "siwe";
 import { useDispatch } from "react-redux";
 import { setIsLoggedIn } from "../../../actions/createAuthAction";
 import { toast } from "react-hot-toast";
@@ -58,34 +59,25 @@ export default function WalletConnect() {
 
   const createSiweMessage = async () => {
     try {
-      const userData = {
-        network: "evm",
-        address: address,
-        chain: chain?.id,
-      };
       const { data: nonce } = await axios.get(
         `${process.env.REACT_APP_API_URL}/nonce`,
         {
           withCredentials: true,
         }
       );
-      const { data } = await axios.post(
-        `${process.env.REACT_APP_API_URL}/siwe`,
-        {
-          address: userData.address,
-          network: userData.network,
-          nonce,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
+      const data = new SiweMessage({
+        domain: window.location.host,
+        address,
+        statement: "Sign in with Ethereum to the app.",
+        uri: window.location.origin,
+        version: "1",
+        chainId: chain?.id,
+        nonce: nonce,
+      });
+
       return data;
     } catch (error) {
-      throw error.response.data;
+      throw error;
     }
   };
 
@@ -116,7 +108,9 @@ export default function WalletConnect() {
         throw new Error("Error creating message");
       }
 
-      const signature = await signMessageAsync({ message });
+      console.log(message);
+
+      const signature = await signMessageAsync({ message : message.prepareMessage() });
 
       if (!signature) {
         throw new Error("Error signing message");
