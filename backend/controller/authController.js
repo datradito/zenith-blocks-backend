@@ -1,7 +1,7 @@
 const User = require("../Database/models/User");
 const { signJWTToken } = require("../utility/middlewares/auth");
-const siwe = require("siwe");
-const { createSiweMessage } = require("../utility/signMessage");
+import { generateNonce, SiweMessage } from "siwe";
+const { createSiweMessage, verifySiweMessageHandler } = require("../utility/signMessage");
 
 
 //first request to backend - initiate session and store the address to session from frontend
@@ -13,7 +13,7 @@ async function siweController(req, res) {
     req.session.nonce = nonce;
     req.session.address = address;
     req.session.save();
-    console.log(req.sessionID);
+
     res.status(200).json(message);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -22,7 +22,7 @@ async function siweController(req, res) {
 
 //second request to backend - verify the signature, find the adress from previous request that was store din session 
 async function verifyController(req, res) {
-  console.log(req.sessionID);
+  const { message, signature } = req.body;
   try {
     if (!req.body.message || !req.body.signature) {
       return res.status(400).json({
@@ -38,11 +38,11 @@ async function verifyController(req, res) {
       });
     }
 
-    const SIWEObject = new siwe.SiweMessage(req.body.message);
-    const { data: message } = await SIWEObject.verify({
-      signature: req.body.signature,
-      nonce: req.session.nonce,
-    });
+    await verifySiweMessageHandler(
+      message,
+      signature,
+      req.session.nonce
+    );
 
     const user = await User.findOne({
       where: { address: req.session.address },
