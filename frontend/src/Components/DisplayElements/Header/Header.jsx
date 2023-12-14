@@ -90,6 +90,7 @@ const ResponsiveHeaderBar = () => {
               <Box sx={{ flexGrow: 0 }}>
                 <WalletConnect />
               </Box>
+              <Button onClick={createUser}>Create User</Button>
             </>
             {/* { !walletConnected &&  <Login />  } */}
           </Toolbar>

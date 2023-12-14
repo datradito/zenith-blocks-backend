@@ -41,7 +41,6 @@ async function verifyController(req, res) {
       });
     }
 
-
     const address = verified.data.address;
 
       if (!address) {
