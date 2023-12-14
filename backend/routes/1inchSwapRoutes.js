@@ -2,7 +2,9 @@ const router = require("express").Router();
 const axios = require("axios");
 
 router.post("/tokenPrice", async (req, res) => {
-    const { body } = req;
+  const { body } = req;
+  
+  try {
     const response = await axios.get(
       `https://api.1inch.dev/price/v1.1/1/${body.addresses}`,
       {
@@ -16,8 +18,11 @@ router.post("/tokenPrice", async (req, res) => {
       }
     );
     return res.status(200).json(response.data);
-}
-);
+  }
+  catch (e) {
+    return res.status(500).json(e);
+  }
+});
 
 router.get("/allowance", async (req, res) => {
     const { tokenAddress, walletAddress } = req.query;
