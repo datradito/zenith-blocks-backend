@@ -62,6 +62,5 @@ async function verifyController(req, res) {
 }
 
 module.exports = {
-  siweController,
   verifyController,
 };
