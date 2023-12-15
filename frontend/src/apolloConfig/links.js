@@ -51,7 +51,7 @@ export const authLink = () => (setContext(async (_, { headers }) => {
 }));
 
 export const loggerLink = new ApolloLink((operation, forward) => {
-    console.log(`GraphQL Request: ${operation.operationName}`);
+    // console.log(`GraphQL Request: ${operation.operationName}`);
     operation.setContext({ start: new Date() });
     return forward(operation).map((response) => {
         const responseTime = new Date() - operation.getContext().start;
@@ -71,9 +71,10 @@ export const errorLink = onError(({ graphQLErrors, networkError }) => {
         });
 });
 
-export const httpLink = () => (createHttpLink({
-    uri: 'http://localhost:8080/graphql',
-}));
+export const httpLink = () =>
+  createHttpLink({
+    uri: `${process.env.REACT_APP_BACKEND_GRAPHQL_URL}/graphql`,
+  });
 
 const retryIf = (error) => {
   if (error.statusCode) {
