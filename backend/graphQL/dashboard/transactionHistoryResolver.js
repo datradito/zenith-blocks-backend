@@ -1,6 +1,5 @@
-const { GraphQLError } = require("graphql");
-const { transactionHistory } = require("../../utility/alchemyUtil/transferHistory");
-
+import { GraphQLError } from "graphql";
+import { transactionHistory } from "../../utility/alchemyUtil/transferHistory.js";
 const transactionHistoryResolver = {
     Query: {
         getTokenTransactionHistory: async (_, { address }) => {
@@ -15,4 +14,4 @@ const transactionHistoryResolver = {
     }
 };
 
-module.exports = transactionHistoryResolver;
+export default transactionHistoryResolver;

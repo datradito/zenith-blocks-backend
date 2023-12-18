@@ -73,7 +73,7 @@ export const errorLink = onError(({ graphQLErrors, networkError }) => {
 
 export const httpLink = () =>
   createHttpLink({
-    uri: `${process.env.REACT_APP_BACKEND_GRAPHQL_URL}/graphql`,
+    uri: `${process.env.REACT_APP_API_URL}/graphql`,
   });
 
 const retryIf = (error) => {

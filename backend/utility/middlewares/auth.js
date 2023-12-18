@@ -1,12 +1,16 @@
-const jwt = require('jsonwebtoken');
-const { AuthenticationError } = require('apollo-server')
+// const jwt = require('jsonwebtoken');
+// const { AuthenticationError } = require('apollo-server')
+
+import jwt from 'jsonwebtoken';
+import { AuthenticationError } from 'apollo-server';
+import exp from 'constants';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
 
-const signJWTToken = ({ userAddress, dao }) => {
+const signJWTToken = async ({ userAddress, dao }) => {
 
-    const token = jwt.sign(
+    const token = await jwt.sign(
       {
         daoId: dao,
         address: userAddress,
@@ -46,4 +50,4 @@ const checkAuth = (context) => {
     throw new Error('Authorization header is not provided')
 }
 
-module.exports = { signJWTToken, checkAuth, hashUserData };
+export { signJWTToken, hashUserData, checkAuth };

@@ -1,7 +1,7 @@
-const Proposal = require('../../Database/models/Proposal');
-const Budget = require('../../Database/models/Budget');
-const { GraphQLError } = require('graphql');
-const { getRemainingProposalAmount } = require('../../Services/Proposals');
+import Proposal from '../../Database/models/Proposal.js';
+import Budget from '../../Database/models/Budget.js';
+import { GraphQLError } from 'graphql';
+import { getRemainingProposalAmount } from '../../Services/Proposals.js';
 
 const proposalResolver = {
     Query: {
@@ -70,4 +70,4 @@ const proposalResolver = {
 };
 
 
-module.exports = proposalResolver;
+export default proposalResolver;

@@ -1,6 +1,6 @@
 
-const Budget = require("../Database/models/Budget");
-const Proposal = require("../Database/models/Proposal");
+import Budget from "../Database/models/Budget.js";
+import Proposal from "../Database/models/Proposal.js";
 
 const getRemainingProposalAmount = async (id) => {
   const budget = await Budget.sum("amount", {
@@ -21,7 +21,4 @@ const getRemainingProposalAmount = async (id) => {
   return parseInt(proposal.amount) - parseInt(budget);
 };
 
-module.exports = {
-  getRemainingProposalAmount,
-};
-
+export { getRemainingProposalAmount };

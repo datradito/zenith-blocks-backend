@@ -1,5 +1,5 @@
-const { GraphQLError } = require("graphql");
-const { generateAxiosConfig, getTokenBalances } = require("../../utility/alchemyUtil/tokenConfig");
+import { GraphQLError } from "graphql";
+// const { generateAxiosConfig, getTokenBalances } = require("../../utility/alchemyUtil/tokenConfig");
 
 const walletResolvers = {
   Query: {
@@ -15,4 +15,4 @@ const walletResolvers = {
   }
 };
 
-module.exports = walletResolvers;
+export default walletResolvers;

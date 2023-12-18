@@ -1,6 +1,7 @@
-const { AuthenticationError, UserInputError } = require('apollo-server')
-const Budget = require("../Database/models/Budget");
-const Proposal = require("../Database/models/Proposal");
+// const { AuthenticationError, UserInputError } = require('apollo-server')
+import { AuthenticationError, UserInputError } from 'apollo-server';
+import Budget from "../Database/models/Budget.js";
+import Proposal from "../Database/models/Proposal.js";
 
 const validateBudget = async (
         amount,
@@ -32,4 +33,4 @@ const validateBudget = async (
 }
 
 
-module.exports = validateBudget;
+export { validateBudget };

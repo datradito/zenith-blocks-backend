@@ -1,5 +1,7 @@
-const redis = require("redis");
-const RedisStore = require("connect-redis").default;
+import redis from "redis";
+import RedisStore from "connect-redis";
+import dotenv from "dotenv";
+dotenv.config();
 
 const redisClient = redis.createClient({
   password: process.env.REDIS_PASSWORD,
@@ -37,4 +39,4 @@ redisClient
 
 const redisStore = new RedisStore({ client: redisClient });
 
-module.exports = { redisClient, redisStore };
+export { redisClient, redisStore };

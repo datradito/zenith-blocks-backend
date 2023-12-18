@@ -1,5 +1,5 @@
-const Proposal = require('../../Database/models/Proposal');
-const Budget = require('../../Database/models/Budget');
+import Budget from "../../Database/models/Budget.js";
+import Proposal from "../../Database/models/Proposal.js";
 
 const updateProposalStatus = async (proposalId, currentBudgetAmount) => {
 
@@ -29,4 +29,4 @@ const updateProposalStatus = async (proposalId, currentBudgetAmount) => {
     }
 }
 
-module.exports = updateProposalStatus;
+export default updateProposalStatus;

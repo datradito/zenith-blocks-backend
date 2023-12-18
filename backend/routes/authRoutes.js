@@ -1,7 +1,8 @@
-const router= require("express").Router();
-const siwe = require("siwe");
+import siwe from "siwe";
+import express from "express";
+import { verifyController } from "../controller/authController.js";
 
-const { verifyController} = require('../controller/authController');
+const router = express.Router();
 
 router.get("/nonce", function (_, res) {
   res.send(siwe.generateNonce());
@@ -9,4 +10,4 @@ router.get("/nonce", function (_, res) {
 
 router.post("/verify", verifyController);
 
-module.exports = router;
+export const authRouter = router;

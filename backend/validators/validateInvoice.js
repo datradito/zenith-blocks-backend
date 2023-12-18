@@ -1,7 +1,6 @@
-const Budget = require("../Database/models/Budget");
-const Invoice = require("../Database/models/Invoice");
-const { GraphQLError } = require('graphql');
-
+import Budget from '../Database/models/Budget.js';
+import Invoice from '../Database/models/Invoice.js';
+import { GraphQLError } from 'graphql';
 
 const validateInvoice = (
     Category,
@@ -73,7 +72,4 @@ const validateInvoiceAmount = async (budgetid, total) => {
 
 };
 
-    module.exports = {
-        validateInvoice,
-        validateInvoiceAmount
-    };
+export { validateInvoice, validateInvoiceAmount };

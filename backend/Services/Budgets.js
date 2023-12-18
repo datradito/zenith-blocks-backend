@@ -1,6 +1,6 @@
-const Budget = require("../Database/models/Budget");
-const Proposal = require("../Database/models/Proposal");
-const Invoice = require("../Database/models/Invoice");
+import Budget from "../Database/models/Budget.js";
+import Invoice from "../Database/models/Invoice.js";
+import Proposal from "../Database/models/Proposal.js";
 
 const getRemainingBudgetAmount = async (budgetid) => {
   const budget = await Budget.findByPk(budgetid);
@@ -25,6 +25,4 @@ const getRemainingBudgetAmount = async (budgetid) => {
   return parseInt(budget.amount) - parseInt(totalInvoiceAmount);
 };
 
-module.exports = {
-  getRemainingBudgetAmount,
-};
+export { getRemainingBudgetAmount };

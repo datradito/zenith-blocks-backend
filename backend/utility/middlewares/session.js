@@ -1,7 +1,7 @@
-const session = require("express-session");
-const {redisStore} = require("../redis/redisClient");
+import session from "express-session";
+import { redisStore } from "../redis/redisClient.js";
 
-module.exports = session({
+export default session({
   name: "zenith",
   store: redisStore,
   secret: process.env.SESSION_SECRET,
@@ -14,4 +14,7 @@ module.exports = session({
     maxAge: 3600000,
   },
 });
+
+
+
 

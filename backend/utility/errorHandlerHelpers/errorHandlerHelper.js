@@ -1,5 +1,8 @@
-const { ApolloServerErrorCode } = require('@apollo/server/errors');
-const  { GraphQLError } =require('graphql');
+// const { ApolloServerErrorCode } = require('@apollo/server/errors');
+// const  { GraphQLError } =require('graphql');
+
+import { ApolloServerErrorCode } from '@apollo/server/errors';
+import { GraphQLError } from 'graphql';
 
 const ErrorTypes = {
     BAD_USER_INPUT: {
@@ -42,7 +45,4 @@ const throwCustomError =  (errorMessage, errorType) => {
     });
 };
 
-module.exports = {
-    ErrorTypes,
-    throwCustomError,
-};
+export { throwCustomError, ErrorTypes };

@@ -1,6 +1,5 @@
-const jwt = require('jsonwebtoken');
-
-const { throwCustomError, ErrorTypes } = require('../errorHandlerHelpers/errorHandlerHelper');
+import jwt from 'jsonwebtoken';
+import { throwCustomError, ErrorTypes } from '../errorHandlerHelpers/errorHandlerHelper.js';
 
 const getUser = async (token) => {
     try {
@@ -30,4 +29,4 @@ const context = async ({ req, res }) => {
     return { user };
 };
 
-module.exports = context;
+export default context;

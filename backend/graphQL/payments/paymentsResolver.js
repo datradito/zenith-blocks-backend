@@ -1,6 +1,7 @@
-const { GraphQLError } = require("graphql");
-const Payment = require("../../Database/models/Payment");
-const Invoice = require("../../Database/models/Invoice");
+import { GraphQLError } from "graphql";
+import Invoice from "../../Database/models/Invoice.js";
+import Budget from "../../Database/models/Budget.js";
+
 
 const paymentsResolver = {
   Query: {
@@ -59,4 +60,4 @@ const paymentsResolver = {
   },
 };
 
-module.exports = paymentsResolver;
+export default paymentsResolver;

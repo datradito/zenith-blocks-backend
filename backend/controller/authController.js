@@ -1,8 +1,6 @@
-const User = require("../Database/models/User");
-const { signJWTToken } = require("../utility/middlewares/auth");
-const { SiweMessage } = require("siwe");
-const { createSiweMessage } = require("../utility/signMessage");
-
+import  User  from "../Database/models/User.js";
+import { signJWTToken } from "../utility/middlewares/auth.js";
+import { SiweMessage } from "siwe";
 
 // second request to backend - verify the signature, find the address from the previous request that was stored in session 
 async function verifyController(req, res) {
@@ -46,7 +44,7 @@ async function verifyController(req, res) {
       });
     }
 
-    const token = signJWTToken({
+    const token = await signJWTToken({
       userAddress: user.address,
       dao: user.daoId,
     });
@@ -61,6 +59,4 @@ async function verifyController(req, res) {
   }
 }
 
-module.exports = {
-  verifyController,
-};
+export { verifyController };

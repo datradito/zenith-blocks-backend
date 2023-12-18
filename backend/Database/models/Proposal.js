@@ -1,6 +1,6 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require("../db");
-const Budget = require("./Budget");
+import { DataTypes } from "sequelize";
+import sequelize from "../db.js";
+import Budget from "./Budget.js";
 
 const Proposal = sequelize.define('proposals', {
     id: {
@@ -32,4 +32,4 @@ const Proposal = sequelize.define('proposals', {
 });
 
 
-module.exports = Proposal;
+export default Proposal;

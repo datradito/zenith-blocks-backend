@@ -1,5 +1,6 @@
-const axios = require("axios");
-require("dotenv").config();
+import axios from "axios";
+import dotenv from "dotenv";
+dotenv.config();
 
 const axiosConfig = (address) => {
     const data = JSON.stringify({
@@ -39,4 +40,4 @@ const transactionHistory = (address) => {
     });
 };
 
-module.exports = { transactionHistory };
+export { transactionHistory };

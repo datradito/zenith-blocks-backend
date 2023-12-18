@@ -1,5 +1,7 @@
-const router = require("express").Router();
-const axios = require("axios");
+import express from "express";
+import axios from "axios";
+
+const router = express.Router();
 
 router.post("/tokenPrice", async (req, res) => {
   const { body } = req;
@@ -91,4 +93,4 @@ router.get("/swap", async (req, res) => {
   }
 });
 
-module.exports = router;
+export const swapRouter = router;

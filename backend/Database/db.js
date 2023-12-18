@@ -1,4 +1,4 @@
-const { Sequelize } = require("sequelize");
+import { Sequelize } from 'sequelize';
 
 const config = {
   host: process.env.NODE_ENV === 'production' ? process.env.DATABASE_HOST_PROD : process.env.DATABASE_HOST_DEV,
@@ -24,4 +24,4 @@ const sequelize = new Sequelize(
 );
 
 
-module.exports = sequelize;
+export default sequelize;

@@ -1,14 +1,13 @@
-const { ApolloServer } = require("@apollo/server");
-const proposalResolver = require("../graphQL/proposals/proposalResolver");
-const invoiceResolver = require("../graphQL/invoices/invoiceResolver");
-const budgetResolver = require("../graphQL/budgets/budgetResolver");
-const paymentsResolver = require("../graphQL/payments/paymentsResolver");
-const walletResolvers = require("../graphQL/dashboard/walletResolvers");
-const transactionHistoryResolver = require("../graphQL/dashboard/transactionHistoryResolver");
-const Invoice = require("../Database/models/Invoice");
+import { ApolloServer } from "@apollo/server";
+import proposalResolver from "../graphQL/proposals/proposalResolver.js";
+import invoiceResolver from "../graphQL/invoices/invoiceResolver.js";
+import budgetResolver from "../graphQL/budgets/budgetResolver.js";
+import paymentsResolver from "../graphQL/payments/paymentsResolver.js";
+import walletResolvers from "../graphQL/dashboard/walletResolvers.js";
+import transactionHistoryResolver from "../graphQL/dashboard/transactionHistoryResolver.js";
+import Invoice from "../Database/models/Invoice.js";
 
-
-const typeDefs = `#graphql
+export const typeDefs = `#graphql
 
     type DuplicateInvoice{
         id: String!
@@ -160,7 +159,7 @@ const typeDefs = `#graphql
         daoid: String
     }
 `;
-const resolvers = {
+export const resolvers = {
   Query: {
     ...proposalResolver.Query,
     ...budgetResolver.Query,
@@ -191,10 +190,10 @@ const resolvers = {
   },
 };
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers: resolvers,
-  introspection: true,
-});
+// const server = new ApolloServer({
+//   typeDefs,
+//   resolvers: resolvers,
+//   introspection: true,
+// });
 
-module.exports = server;
+

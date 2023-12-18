@@ -1,14 +1,21 @@
-const { GraphQLError } = require("graphql");
-const Invoice = require("../../Database/models/Invoice");
-const Budget = require("../../Database/models/Budget");
-const validateBudget = require("../../validators/validateBudget");
-const updateProposalStatus = require("../../utility/budgetHelpers/updateProposalStatus");
-const { getRemainingBudgetAmount } = require("../../Services/Budgets");
+import { GraphQLError } from "graphql";
+import Budget from "../../Database/models/Budget.js";
+import Invoice from "../../Database/models/Invoice.js";
 
-const {
+import {
+  validateBudget,
+} from "../../validators/validateBudget.js";
+import  updateProposalStatus  from "../../utility/budgetHelpers/updateProposalStatus.js";
+import { getRemainingBudgetAmount } from "../../Services/Budgets.js";
+
+// const {
+//   throwCustomError,
+//   ErrorTypes,
+// } = require("../../utility//errorHandlerHelpers/errorHandlerHelper");
+import {
   throwCustomError,
   ErrorTypes,
-} = require("../../utility//errorHandlerHelpers/errorHandlerHelper");
+} from "../../utility/errorHandlerHelpers/errorHandlerHelper.js";
 
 const budgetResolver = {
   Query: {
@@ -91,4 +98,4 @@ const budgetResolver = {
   },
 };
 
-module.exports = budgetResolver;
+export default budgetResolver;
