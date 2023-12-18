@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize';
-
+import mysql2 from "mysql2";
 const config = {
   host: process.env.NODE_ENV === 'production' ? process.env.DATABASE_HOST_PROD : process.env.DATABASE_HOST_DEV,
   dialect: 'mysql',
@@ -11,8 +11,8 @@ const config = {
 };
 
 // Set the dialectModule based on the environment
-if (process.env.NODE_ENV === 'production') {
-  config.dialectModule = require('mysql2');
+if (process.env.NODE_ENV === "production") {
+  config.dialectModule = mysql2;
 }
 
 
