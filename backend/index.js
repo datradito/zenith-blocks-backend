@@ -15,6 +15,8 @@ import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import http from "http";
 
+import init from "./Database/sequalizeConnection.js";
+
 const app = express();
 
 app.use(express.json());
@@ -65,9 +67,6 @@ app.get("/", (req, res) => {
   res.send("Hey this is my API running 🥳");
 });
 
-app.get("/", (req, res) => {
-  res.send("Hey this is my API running 🥳");
-});
 
 app.post("/createUser", async (req, res) => {
   const { address, daoId } = req.body;
@@ -113,6 +112,7 @@ app.get("/tokenTransfers", async (req, res) => {
 
 
 httpServer.listen(8000, async () => {
+  await init();
   console.log("Server running on port 8000");
 });
 

@@ -9,6 +9,10 @@ import { parseEther } from 'viem'
 import { Button } from '@mui/material'
 import { TextField, Typography, Box } from '@mui/material'
 import CircularIndeterminate from '../../atoms/Loader/loader'
+import SubHeader from '../../molecules/SubHeader/SubHeader'
+import Label from '../../atoms/Label/Label'
+import Input from '../../atoms/Input/Input'
+import { Divider } from "@mui/material";
 
 
 const componentStyles = {
@@ -53,7 +57,7 @@ const componentStyles = {
 
 }
 
-export function SendTransaction({ handlePaymentCreateOnClick, reciepent }) {
+export function SendTransaction({ handlePaymentCreateOnClick, reciepent, paymentData }) {
   const [to, setTo] = useState("");
   const [debouncedTo] = useDebounce(to, 500);
 
@@ -99,45 +103,73 @@ export function SendTransaction({ handlePaymentCreateOnClick, reciepent }) {
         handlePayment(e);
       }}
     >
-      <Typography variant="h6" sx={componentStyles.typographyLabel}>
-        Recipient
-      </Typography>
-      <TextField
-        name="Recipient"
-        required
-        value={to}
+      <Label>Payee</Label>
+      <Input
         type="text"
-        onChange={(e) => setTo(e.target.value)}
-        fullWidth
-        sx={componentStyles.formInputFieldStyles}
+        id="payee"
+        defaultValue={paymentData?.owneraddress}
+        readOnly
+        // {...methods.register("payee", {
+        //   required: "Payee is required",
+        // })}
       />
-      <Typography variant="h6" sx={componentStyles.typographyLabel}>
-        Amount
-      </Typography>
-      <TextField
-        name="Amount"
-        required
-        value={amount}
-        type="number"
-        onChange={(e) => setAmount(e.target.value)}
-        fullWidth
-        sx={componentStyles.formInputFieldStyles}
+
+      <Label> Currency</Label>
+      <Input
+        type="text"
+        id="currency"
+        defaultValue={paymentData?.currency}
+        readOnly
+        // {...methods.register("currency", {
+        //   required: "Currency is required",
+        // })}
       />
-      <Button
+
+      <Divider
         sx={{
-          backgroundColor: "#055FFC",
-          margin: "1rem 0",
-          borderRadius: "50px",
-          fontSize: ".85rem",
-          textTransform: "none",
-          maxWidth: "10rem",
+          height: 28,
+          m: 1,
           color: "white",
         }}
-        onClick={handlePayment}
-        disabled={isLoading || !sendTransaction || !to || !amount}
-      >
-        {isLoading ? "Sending..." : "Pay Invoice"}
-      </Button>
+        orientation="horizontal"
+      />
+      <Label>Recipient</Label>
+      <Input
+        type="text"
+        id="recipient"
+        defaultValue={paymentData?.recipient}
+        // {...methods.register("recipient", {
+        //   required: "Reciepient is required",
+        // })}
+      />
+      <Label>Amount</Label>
+      <Input
+        type="number"
+        id="amount"
+        defaultValue={paymentData?.amount}
+        readOnly
+        // {...methods.register("amount", {
+        //   required: "Amount is required",
+        // })}
+      />
+
+      <Divider
+        sx={{
+          height: 28,
+          m: 1,
+          color: "white",
+        }}
+        orientation="horizontal"
+      />
+
+      <>
+        <SubHeader.ActionButton
+          onClick={handlePayment}
+          disabled={isLoading || !sendTransaction || !to || !amount}
+          label={isLoading ? "Sending..." : "Pay Invoice"}
+        />
+      </>
+
       {isLoading ? (
         <CircularIndeterminate />
       ) : isSuccess ? (

@@ -11,7 +11,8 @@ function TransactionInfo() {
       if (isError) return <div>Transaction error</div>;
   
     const serializedData = bigIntToString(data);
-    return <div>Transaction: {JSON.stringify(serializedData)}</div>;
+  // return <div>Transaction: {JSON.stringify(serializedData)}</div>;
+   return <div>Transaction</div>;
 }
 
 export default TransactionInfo

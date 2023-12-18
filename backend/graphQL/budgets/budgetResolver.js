@@ -7,11 +7,6 @@ import {
 } from "../../validators/validateBudget.js";
 import  updateProposalStatus  from "../../utility/budgetHelpers/updateProposalStatus.js";
 import { getRemainingBudgetAmount } from "../../Services/Budgets.js";
-
-// const {
-//   throwCustomError,
-//   ErrorTypes,
-// } = require("../../utility//errorHandlerHelpers/errorHandlerHelper");
 import {
   throwCustomError,
   ErrorTypes,
@@ -44,9 +39,6 @@ const budgetResolver = {
           return { ...budget.toJSON(), remaining }; // merge the original budget with remaining
         });
 
-        // if (budgetsWithRemaining.length === 0) {
-        //   throw new GraphQLError("No budgets found for this proposal");
-        // }
         return budgetsWithRemaining;
       } catch (error) {
         throw new GraphQLError(error.message);

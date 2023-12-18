@@ -64,5 +64,7 @@ const ItemCardComponent = () => {
     );
 }
 
+ItemCardComponent.ItemCard = ItemCard;
+
 
 export default ItemCardComponent

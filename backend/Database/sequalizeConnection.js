@@ -1,17 +1,17 @@
-const sequelize = require("./db");
+import { Sequelize } from "sequelize";
 
-const Budget = require("./models/Budget");
-const Invoice = require("./models/Invoice");
-const Proposal = require("./models/Proposal");
-const Payment = require("./models/Payment");
+import Budget from "./models/Budget.js";
+import Invoice from "./models/Invoice.js";
+import Proposal from "./models/Proposal.js";
+import Payment from "./models/Payment.js";
+import User from "./models/User.js";
 
-
-sequelize.models = {
-  budgets: require("./models/Budget"),
-  invoices: require("./models/Invoice"),
-  proposals: require("./models/Proposal"),
-  users: require("./models/User"),
-  payments: require("./models/Payment"),
+Sequelize.models = {
+  budgets: import("./models/Budget.js"),
+  invoices: import("./models/Invoice.js"),
+  proposals: import ("./models/Proposal.js"),
+  users: import ("./models/User.js"),
+  payments: import ("./models/Payment.js"),
 };
 
 const init = async () => {
@@ -23,4 +23,4 @@ const init = async () => {
   Payment.belongsTo(Invoice);
 };
 
-module.exports =  init ;
+export default init;
