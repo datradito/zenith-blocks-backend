@@ -25,12 +25,7 @@ const budgetResolver = {
     getBudgetsForProposal: async (parent, args) => {
       try {
         const budgets = await Budget.findAll({
-          where: { proposalid: args.proposalid },
-          include: [
-            {
-              model: Invoice,
-            },
-          ],
+          where: { proposalid: args.proposalid }
         });
 
         const budgetsWithRemaining = budgets.map(async (budget) => {
