@@ -1,101 +1,72 @@
-import React from 'react'
+import React from "react";
 import List from "../../atoms/List/List.jsx";
 import ListItem from "../../atoms/ListItem/ListItem.jsx";
 import Label from "../../atoms/Label/Label.jsx";
 import { Avatar } from "@mui/material";
+import styled from "styled-components";
+import GetEnsName from "../../molecules/GetEnsName/GetEnsName.jsx";
+import ScrollContainer from "../../atoms/Scroll/ScrollContainer.jsx";
 
-function PaymentBillingBanner( {paymentData}) {
+// Define the styled component
+const StyledList = styled(List)`
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 1rem;
+  padding-top: 1rem;
+  width: 100%;
+`;
+
+
+const UserBanner = styled(ListItem)`
+  flex-direction: row;
+  gap: 1rem;
+  background-color: rgba(40, 42, 46, 0.2);
+  padding-left: 0;
+  margin-top: 0.5rem;
+`;
+
+function PaymentBillingBanner({ paymentData }) {
+
   return (
-    <List
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "flex-start",
-        gap: "1rem",
-        padding: "0",
-        marginTop: "1rem",
-        marginBottom: "1rem",
-        backgroundColor: "rgba(40, 42, 46, 0.2)",
-      }}
-    >
+    <StyledList>
+      <div>
+        <Label>Bill To</Label>
+        <UserBanner>
+          <Avatar />
           <ListItem
-              
-          >
-              <Label
-              >Bill To
-              </Label>
-
-        <List
-          style={{
-            padding: "0",
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-                      justifyContent: "center",
-            gap: "1rem",
-          }}
-        >
-          <Avatar
-          />
-          <List
             style={{
-              display: "flex",
-              flexDirection: "column",
               padding: "0",
             }}
           >
-            <Label
-              style={{
-                fontSize: ".95rem",
-                padding: ".25rem 0",
-                color: "white",
-              }}
-            >
-              sdfsdfs
-            </Label>
-            <Label>dgdsfghsd</Label>
-            {/* </ListItem> */}
-          </List>
-        </List>
-      </ListItem>
-      <ListItem>
+            <GetEnsName address={paymentData.owneraddress} />
+            <ScrollContainer>
+              <Label >{paymentData.owneraddress}</Label>
+            </ScrollContainer>
+          </ListItem>
+        </UserBanner>
+      </div>
+      <div>
         <Label>Bill From</Label>
 
-        <List
-          style={{
-            padding: "0",
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-                      justifyContent: "center",
-            gap: "1rem",
-          }}
-        >
-          <Avatar
-          />
-          <List
+        <UserBanner>
+          <Avatar />
+          <ListItem
             style={{
-              display: "flex",
-              flexDirection: "column",
               padding: "0",
             }}
           >
-            <Label
-              style={{
-                fontSize: ".85rem",
-                padding: ".25rem 0",
-                color: "white",
-              }}
-            >
-              sdfsdfs
-            </Label>
-            <Label>dgdsfghsd</Label>
-            {/* </ListItem> */}
-          </List>
-        </List>
-      </ListItem>
-    </List>
+            <GetEnsName
+              address={"0xa0cf798816d4b9b9866b5330eea46a18382f251e"}
+            />
+            <ScrollContainer>
+              <Label>{paymentData.recipient}</Label>
+            </ScrollContainer>
+          </ListItem>
+        </UserBanner>
+      </div>
+    </StyledList>
   );
 }
 
-export default PaymentBillingBanner
+export default PaymentBillingBanner;
+

@@ -1,63 +1,37 @@
-import React, {useState, useEffect} from 'react'
-import { useDebounce } from 'use-debounce'
+import React, { useState, useEffect } from "react";
+ 
+
+import { FormProvider, useForm } from "react-hook-form";
+import { useDebounce } from "use-debounce";
 import {
-    usePrepareSendTransaction,
-    useSendTransaction,
-    useWaitForTransaction,
-} from 'wagmi'
-import { parseEther } from 'viem'
-import { Button } from '@mui/material'
-import { TextField, Typography, Box } from '@mui/material'
-import CircularIndeterminate from '../../atoms/Loader/loader'
-import SubHeader from '../../molecules/SubHeader/SubHeader'
-import Label from '../../atoms/Label/Label'
-import Input from '../../atoms/Input/Input'
+  usePrepareSendTransaction,
+  useSendTransaction,
+  useWaitForTransaction,
+} from "wagmi";
+import { parseEther } from "viem";
+import CircularIndeterminate from "../../atoms/Loader/loader";
+import SubHeader from "../../molecules/SubHeader/SubHeader";
+import Input from "../../atoms/Input/Input";
 import { Divider } from "@mui/material";
+import Container from "../../atoms/Container/Container";
+import Form from "../../atoms/Form/Form";
+import FormRow from "../../atoms/FormRow/FormRow";
+import { message } from "antd";
+
+export function SendTransaction({ reciepent, paymentData }) {
 
 
-const componentStyles = {
-    formInputFieldStyles: {
-        color: 'white',
-        padding: '0',
-        border: ".08rem #2c2c2c solid",
-        borderRadius: '5px',
-        backgroundColor: "rgba(40, 42, 46, 0.2)",
-        margin: '0 0 1rem 0',
-
-        '& .MuiInputBase-input': {
-            padding: '0.5rem',
-            color: 'white',
-            borderRadius: '5px',
-            fontSize: '.85rem',
-            fontWeight: 'small',
-        },
-
-        '& .MuiInputBase-root': {
-            padding: '0',
-        },
-        '& .MuiSvgIcon-root': {
-            color: 'white',
-        },
+  const [messageApi, contextHolder] = message.useMessage();
+  const methods = useForm({
+    defaultValues: {
+      owneraddress: paymentData.owneraddress,
+      currency: paymentData.currency,
+      amount: 0,
+      recipient: paymentData.recipient,
     },
-    typographyLabel: {
-        color: 'gray',
-        fontSize: ".80rem",
-        marginBottom: ".5rem",
-    },
-    boxStyles: {
-        display: "flex",
-        flexDirection: "column",
-        margin: "0rem auto",
-        textAlign: 'left',
-        borderBottom: '.05rem #2C2C2C solid',
-    },
-    containerStyles: {
-        padding: '2rem ',
-    },
+  });
+  const { errors, defaultValues } = methods.formState;
 
-}
-
-export function SendTransaction({ handlePaymentCreateOnClick, reciepent, paymentData }) {
   const [to, setTo] = useState("");
   const [debouncedTo] = useDebounce(to, 500);
 
@@ -68,12 +42,17 @@ export function SendTransaction({ handlePaymentCreateOnClick, reciepent, payment
     to: debouncedTo,
     value: debouncedAmount ? parseEther(debouncedAmount) : undefined,
   });
+
+  // prepareTransactinoError || (error && toast.error(prepareTransactinoError.message));
   const { data, sendTransaction } = useSendTransaction(config);
 
   useEffect(() => {
     setTo(reciepent);
   }, [reciepent]);
 
+  const handlePaymentCreateOnClick = (hash) => {
+    console.log(hash);
+  };
 
   const { isLoading, isSuccess, isError, error } = useWaitForTransaction({
     hash: data?.hash,
@@ -81,7 +60,11 @@ export function SendTransaction({ handlePaymentCreateOnClick, reciepent, payment
       handlePaymentCreateOnClick(data?.hash);
     },
     onError(error) {
-      console.log(error);
+      messageApi.open({
+        type: "error",
+        content: error.message,
+        duration: 1.5,
+      });
     },
   });
 
@@ -90,96 +73,153 @@ export function SendTransaction({ handlePaymentCreateOnClick, reciepent, payment
     sendTransaction?.();
   };
 
-  if (isLoading) return <div>Processing…</div>;
-  if (isError) return <div>${error}</div>;
+  if (isLoading) {
+    messageApi.open({
+      type: "loading",
+      content: "Waiting transaction...",
+      duration: 1.5,
+    });
+  };
+  if (isError || error) return messageApi.open({
+    type: "error",
+    content: `Error: ${error.message || isError.message}`,
+    duration: 1.5,
+  });
   if (prepareTransactinoError) {
     const error = JSON.parse(JSON.stringify(prepareTransactinoError));
-    throw Error(error.shortMessage);
-  };
+    messageApi.open({
+      type: "error",
+      content: error.shortMessage,
+      duration: 1.5,
+    });
+  }
 
   return (
-    <form
-      onSubmit={(e) => {
-        handlePayment(e);
-      }}
-    >
-      <Label>Payee</Label>
-      <Input
-        type="text"
-        id="payee"
-        defaultValue={paymentData?.owneraddress}
-        readOnly
-        // {...methods.register("payee", {
-        //   required: "Payee is required",
-        // })}
-      />
-
-      <Label> Currency</Label>
-      <Input
-        type="text"
-        id="currency"
-        defaultValue={paymentData?.currency}
-        readOnly
-        // {...methods.register("currency", {
-        //   required: "Currency is required",
-        // })}
-      />
-
-      <Divider
-        sx={{
-          height: 28,
-          m: 1,
-          color: "white",
+    <FormProvider {...methods}>
+      {contextHolder}
+      <Form
+        onSubmit={(e) => {
+          handlePayment(e);
         }}
-        orientation="horizontal"
-      />
-      <Label>Recipient</Label>
-      <Input
-        type="text"
-        id="recipient"
-        defaultValue={paymentData?.recipient}
-        // {...methods.register("recipient", {
-        //   required: "Reciepient is required",
-        // })}
-      />
-      <Label>Amount</Label>
-      <Input
-        type="number"
-        id="amount"
-        defaultValue={paymentData?.amount}
-        readOnly
-        // {...methods.register("amount", {
-        //   required: "Amount is required",
-        // })}
-      />
+      >
+        <FormRow
+          style={{
+            minWidth: "100%",
+          }}
+          label="Payee"
+          error={errors?.payee?.message}
+        >
+          {/* <Label>Payee</Label> */}
+          <Input
+            type="text"
+            id="payee"
+            defaultValue={defaultValues.owneraddress}
+            readOnly
+            {...methods.register("payee", {
+              //necessary payee validation
+            })}
+          />
+        </FormRow>
 
-      <Divider
-        sx={{
-          height: 28,
-          m: 1,
-          color: "white",
-        }}
-        orientation="horizontal"
-      />
+        {/* <Label> Currency</Label> */}
+        <FormRow
+          style={{
+            minWidth: "100%",
+          }}
+          label="Currency"
+          error={errors?.currency?.message}
+        >
+          <Input
+            type="text"
+            id="currency"
+            defaultValue={defaultValues.currency}
+            readOnly
+            {...methods.register("currency", {
+              //write a method to check if currency is same as one mentioned on invoice
+            })}
+          />
+        </FormRow>
 
-      <>
-        <SubHeader.ActionButton
-          onClick={handlePayment}
-          disabled={isLoading || !sendTransaction || !to || !amount}
-          label={isLoading ? "Sending..." : "Pay Invoice"}
+        <Divider
+          sx={{
+            height: 28,
+            m: 1,
+            color: "white",
+          }}
+          orientation="horizontal"
         />
-      </>
+        <FormRow
+          style={{
+            minWidth: "100%",
+          }}
+          label="Recipient"
+          error={errors?.recipient?.message}
+        >
+          <Input
+            type="text"
+            id="recipient"
+            defaultValue={defaultValues.recipient}
+            readOnly
+            {...methods.register("recipient", {
+              //write method here to check if recipient is valid and same on invoice being paid
+            })}
+          />
+        </FormRow>
+        <FormRow
+          style={{
+            minWidth: "100%",
+          }}
+          label="Amount"
+          error={errors?.amount?.message}
+        >
+          <Input
+            type="number"
+            id="amount"
+            defaultValue={paymentData?.amount}
+            {...methods.register("amount", {
+              required: "Amount is required",
+              max: {
+                value: paymentData?.amount,
+                message: `Amount cannot be greater than ${paymentData?.amount} remaining in proposal`,
+              },
+              min: {
+                value: 0,
+                message: "Amount cannot be negative",
+              },
+              //
+            })}
+            onChange={(e) => setAmount(e.target.value)}
+          />
+        </FormRow>
 
-      {isLoading ? (
-        <CircularIndeterminate />
-      ) : isSuccess ? (
-        <Box>
-          Successfully sent {amount} ether to {to}
-          <Box>
+        <Divider
+          sx={{
+            height: 28,
+            m: 1,
+            color: "white",
+          }}
+          orientation="horizontal"
+        />
+
+        <>
+          <SubHeader.ActionButton
+            onClick={handlePayment}
+            disabled={isLoading || !sendTransaction || !to || !amount}
+            label={isLoading ? "Sending..." : "Pay Invoice"}
+          />
+        </>
+
+        {isLoading ? (
+          <CircularIndeterminate />
+        ) : isSuccess ? (
+          <Container>
+            Successfully sent {amount} ether to {to}
+            {/* <Container> */}
             <a href={`https://etherscan.io/tx/${data?.hash}`}>Etherscan</a>
-          </Box>
-        </Box>
-      ) : null}
-    </form>
+            {/* </Container> */}
+          </Container>
+        ) : null}
+      </Form>
+    </FormProvider>
   );
 }

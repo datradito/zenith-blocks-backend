@@ -82,6 +82,14 @@ function Swap() {
     checkAllowance
   } = useCheckAllowance(tokenOne.address, address);
 
+  if (isAllowanceLoading) {
+    messageApi.open({
+      type: "loading",
+      content: "Loading Allowance...",
+      duration: 2.5,
+    });
+  }
+
   useEffect(() => {
     if (tokenPrices) {
       setRatio(
@@ -131,6 +139,21 @@ function Swap() {
     hash: data?.hash,
   });
 
+  if (isLoading) {
+    messageApi.open({
+      type: "loading",
+      content: "Transaction is Pending...",
+      duration: 0,
+    });
+  }
+
+  if (isSuccess) {
+    messageApi.open({
+      type: "success",
+      content: "Transaction Successful",
+      duration: 1.5,
+    });
+  }
   const handleCloseModal = () => {
     setIsOpen(false);
   };

@@ -4,7 +4,7 @@ import Stack from '@mui/material/Stack';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 
-export default function CustomPDFViewIcon() {
+export default function CustomPDFViewIcon({label = "PDF" }) {
 
     const pdfIconStyles = {
         chipStyle: {
@@ -25,7 +25,7 @@ export default function CustomPDFViewIcon() {
     return (
         <Stack direction="row" spacing={1}>
             <Chip icon={<PictureAsPdfIcon />}
-                label="PDF"
+                label={label}
                 onClick={handleClick}
                 sx={pdfIconStyles.chipStyle}
             />

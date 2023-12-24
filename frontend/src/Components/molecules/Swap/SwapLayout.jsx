@@ -2,7 +2,6 @@ import React from 'react'
 import styled from 'styled-components'
 import Container from '../../atoms/Container/Container';
 import Label from '../../atoms/Label/Label';
-import Button from '../../atoms/Button/Button';
 
 function SwapLayout({ children}) {
   return (

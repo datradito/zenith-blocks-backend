@@ -18,7 +18,7 @@ const CommonRow = styled.div`
 `;
 
 const StyledHeader = styled(CommonRow)`
-  padding: 1.6rem 2.4rem;
+  padding: 1rem 2.4rem;
   background-color: rgba(40, 42, 46, 0.5);
   border-bottom: 0.05rem solid #272a30;
   text-transform: uppercase;
@@ -27,7 +27,7 @@ const StyledHeader = styled(CommonRow)`
 `;
 
 const StyledRow = styled(CommonRow)`
-  padding: 0.45rem 2.4rem;
+  padding: 0.75rem 2.4rem;
   max-width: 100%;
   overflow-x: auto;
   text-overflow: ellipsis;

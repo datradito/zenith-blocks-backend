@@ -41,11 +41,9 @@ const TokenChoiceContainer = styled(Container)`
 `;
 
 const TokenChoice = ({ token, onClick }) => {
-  console.log(token)
   return (
     <TokenChoiceContainer onClick={onClick}>
       <TokenLogo src={token.img} alt={token.ticker} />
-      sdfsa
       <div>
         <TokenName>{token.name}</TokenName>
         <TokenTicker>{token.ticker}</TokenTicker>

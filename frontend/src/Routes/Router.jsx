@@ -97,21 +97,6 @@ export const router = createBrowserRouter(
         }}
       />
       <Route
-        path="invoice/:invoiceId/payment"
-        element={
-          <ProtectedRoute path="/*">
-            <PaymentCreation />
-          </ProtectedRoute>
-        }
-        errorElement={<ErrorPage />}
-        loader={({ params }) => {
-          return paymentLoader(params.invoiceId);
-        }}
-        action={({ params, request }) => {
-          console.log(request);
-        }}
-      />
-      <Route
         path="budgets"
         element={
           <ProtectedRoute path="/*">

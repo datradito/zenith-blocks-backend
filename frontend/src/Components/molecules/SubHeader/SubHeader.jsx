@@ -26,6 +26,7 @@ function Items({ id, children, sx }) {
       style={{
         display: "flex",
         alignItems: "flex-start",
+        justifyContent: "flex-end",
         gap: "0.5rem",
         padding: "0",
         ...sx,

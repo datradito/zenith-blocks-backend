@@ -14,7 +14,7 @@ async function verifyController(req, res) {
     }
 
     // await verifySiweMessageHandler(message, signature, req.session.nonce);
-    const SIWEObject = new SiweMessage(message);
+    const SIWEObject = await new SiweMessage(message);
     const verified = await SIWEObject.verify({ signature: signature });
 
     if (!verified) {

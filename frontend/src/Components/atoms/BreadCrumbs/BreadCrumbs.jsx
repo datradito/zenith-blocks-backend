@@ -57,10 +57,14 @@ const pages = [
     path: /\/invoices\/[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}\/create/i,
   },
   { name: "Accounts", path: "/accounts" },
+  {
+    name: "Pay Invoice",
+    path: /\/invoice\/[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}\/payment/i,
+  },
 ];
 
 
-const generateBreadcrumbs = (pathname, id) => {
+const generateBreadcrumbs = (pathname, id, secondaryId) => {
 
   const crumbs = [];
 
@@ -95,14 +99,25 @@ const generateBreadcrumbs = (pathname, id) => {
     );
   }
 
+  if (pages[8].path.test(pathname) && secondaryId) {
+    crumbs.push(
+      { path: "/proposals", name: "Proposals" },
+      //proposal id
+      { path: `/proposals/${id}/budgets`, name: "Budgets" },
+      //budget id
+      { path: `/budgets/${secondaryId}/invoices`, name: "Invoices" },
+      { path: pathname, name: "Pay Invoice" }
+    );
+  }
+
   return crumbs;
 };
 
 
-const Breadcrumbs = ({id}) => {
+const Breadcrumbs = ({id, secondaryId = null}) => {
   const location = useLocation();
 
-  const breadcrumbs = generateBreadcrumbs(location.pathname, id);
+  const breadcrumbs = generateBreadcrumbs(location.pathname, id, secondaryId);
 
   return (
     <BreadcrumbsContainer className="breadcrumbs">

@@ -1,6 +1,8 @@
 import { useFormContext } from "react-hook-form";
 
-import { categories, currencies } from "../../pages/Category/Category";
+import { categories } from "../../pages/Category/Category";
+
+import tokenList from "../../../Utility/tokenList.json";
 
 import TextArea from "../../atoms/TextArea/TextArea";
 import StyledSelect from "../../atoms/SelectDropdown/SelectDropdown";
@@ -145,9 +147,9 @@ function CreateInvoiceForm({remainingBudgetAmount}) {
               })}
               onChange={(e) => methods.setValue("currency", e.target.value)}
             >
-              {currencies.map((currency) => (
-                <option key={currency} value={currency}>
-                  {currency}
+              {tokenList.map((currency, i) => (
+                <option key={i} value={currency.ticker}>
+                  {currency.ticker}
                 </option>
               ))}
             </StyledSelect>
