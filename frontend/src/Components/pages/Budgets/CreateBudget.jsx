@@ -31,10 +31,7 @@ function CreateBudget() {
       "Total Budget": filteredProposalAmount,
       Proposal: proposal.title,
       "Ipfs Link": proposal.ipfs,
-      Breakdown: `${(
-        (parseInt(400) / parseInt(filteredProposalAmount)) *
-        100
-      ).toFixed(2)}%`
+      Breakdown: 0,
     },
   });
 
@@ -103,7 +100,7 @@ function CreateBudget() {
           borderRadius: 5,
         }}
       >
-        <CreateBudgetForm remainingProposalAmount={remainingProposalAmount} />
+        <CreateBudgetForm remainingProposalAmount={remainingProposalAmount}  />
       </Container>
     </FormProvider>
   );

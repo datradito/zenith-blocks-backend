@@ -1,21 +1,15 @@
 import { useFormContext } from "react-hook-form";
-
-import { categories } from "../../pages/Category/Category";
-
-import tokenList from "../../../Utility/tokenList.json";
-
 import TextArea from "../../atoms/TextArea/TextArea";
-import StyledSelect from "../../atoms/SelectDropdown/SelectDropdown";
 import Form from "../../atoms/Form/Form";
 import FormRow from "../../atoms/FormRow/FormRow";
 import Input from "../../atoms/Input/Input";
 import FileUpload from "../../atoms/FileUpload/FileUpload";
-import Option from "../../atoms/Option/Option";
 import Container from "../../atoms/Container/Container";
 import { Typography } from "@mui/material";
 
-function CreateInvoiceForm({remainingBudgetAmount}) {
+function CreateInvoiceForm({ remainingBudgetAmount }) {
   const methods = useFormContext();
+
   const { errors, defaultValues } = methods.formState;
 
   return (
@@ -67,18 +61,15 @@ function CreateInvoiceForm({remainingBudgetAmount}) {
             />
           </FormRow>
           <FormRow label="Category" error={errors?.category?.message}>
-            <StyledSelect
+            <Input
+              type="text"
+              id="category"
+              readOnly
+              value={defaultValues.Category}
               {...methods.register("category", {
-                required: "This field is required",
+                required: "Category is required",
               })}
-              onChange={(e) => methods.setValue("category", e.target.value)}
-            >
-              {categories.map((category) => (
-                <Option key={category} value={category}>
-                  {category}
-                </Option>
-              ))}
-            </StyledSelect>
+            />
           </FormRow>
         </Container>
 
@@ -141,18 +132,15 @@ function CreateInvoiceForm({remainingBudgetAmount}) {
             label="Currency"
             error={errors?.currency?.message}
           >
-            <StyledSelect
+            <Input
+              type="text"
+              id="currency"
+              readOnly
+              value={defaultValues.Currency}
               {...methods.register("currency", {
-                required: "This field is required",
+                required: "Currency is required",
               })}
-              onChange={(e) => methods.setValue("currency", e.target.value)}
-            >
-              {tokenList.map((currency, i) => (
-                <option key={i} value={currency.ticker}>
-                  {currency.ticker}
-                </option>
-              ))}
-            </StyledSelect>
+            />
           </FormRow>
 
           <FormRow
@@ -170,7 +158,7 @@ function CreateInvoiceForm({remainingBudgetAmount}) {
           </FormRow>
           <FormRow
             style={{
-             flex: "35% 1 1",
+              flex: "35% 1 1",
             }}
             label="Due Date"
             error={errors?.dueDate?.message} // Include the error message
@@ -196,7 +184,8 @@ function CreateInvoiceForm({remainingBudgetAmount}) {
               flex: 1,
             }}
             label="Amount"
-            error={errors?.amount?.message}>
+            error={errors?.amount?.message}
+          >
             <Input
               type="number"
               id="amount"
@@ -215,7 +204,7 @@ function CreateInvoiceForm({remainingBudgetAmount}) {
           </FormRow>
           <FormRow
             style={{
-              flex: "50% 1 1"
+              flex: "50% 1 1",
             }}
             label="Description"
             error={errors?.description?.message}

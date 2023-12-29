@@ -9,23 +9,28 @@ const StyledSelect = styled.select`
   padding: 0.5rem;
   width: 100%;
   color: white;
+
   &:focus {
     outline: none;
     border: 0.08rem #2c2c2c solid;
     box-shadow: var(--shadow-sm);
   }
+
   &:disabled {
     color: grey;
+  }
+
+  /* Style the options within the select */
+  option {
+    font-size: 1.4rem;
+    font-weight: 200;
+    color: grey;
+    /* Add any other option styles here */
   }
 `;
 
 function SelectDropdown({ children, ...rest }) {
-  return (
-    <StyledSelect {...rest}>
-      {children}
-    </StyledSelect>
-  );
+  return <StyledSelect {...rest}>{children}</StyledSelect>;
 }
 
 export default SelectDropdown;
-  

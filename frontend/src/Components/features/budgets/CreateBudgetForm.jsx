@@ -1,6 +1,8 @@
 import { useFormContext } from "react-hook-form";
 
-import { categories, currencies } from "../../pages/Category/Category";
+import { categories } from "../../pages/Category/Category";
+
+import currencies from "../../../Utility/CurrencyList.json"
 
 import TextArea from "../../atoms/TextArea/TextArea";
 import StyledSelect from "../../atoms/SelectDropdown/SelectDropdown";
@@ -9,6 +11,7 @@ import FormRow from "../../atoms/FormRow/FormRow";
 import Input from "../../atoms/Input/Input";
 import Option from "../../atoms/Option/Option";
 import Container from "../../atoms/Container/Container";
+import SelectDropdown from "../../atoms/SelectDropdown/SelectDropdown";
 
 function CreateBudgetForm({remainingProposalAmount}) {
   const methods = useFormContext();
@@ -49,7 +52,7 @@ function CreateBudgetForm({remainingProposalAmount}) {
           />
         </FormRow>
         <FormRow label="Category" error={errors?.category?.message}>
-          <StyledSelect
+          <SelectDropdown
             {...methods.register("category", {
               required: "This field is required",
             })}
@@ -60,7 +63,7 @@ function CreateBudgetForm({remainingProposalAmount}) {
                 {category}
               </Option>
             ))}
-          </StyledSelect>
+          </SelectDropdown>
         </FormRow>
         <FormRow label="Total Budget">
           <Input
@@ -85,6 +88,12 @@ function CreateBudgetForm({remainingProposalAmount}) {
                 message: "Amount cannot be negative",
               },
               required: "This field is required",
+              onChange: (e) => {
+                methods.setValue("breakdown", `${(
+                  (parseInt(e.target.value) / parseInt(defaultValues["Total Budget"])) *
+                  100
+                ).toFixed(2)}%`);
+              }
             })}
           />
         </FormRow>
@@ -96,8 +105,8 @@ function CreateBudgetForm({remainingProposalAmount}) {
             onChange={(e) => methods.setValue("currency", e.target.value)}
           >
             {currencies.map((currency) => (
-              <option key={currency} value={currency}>
-                {currency}
+              <option key={currency.ticker} value={currency.ticker}>
+                {currency.ticker}
               </option>
             ))}
           </StyledSelect>
@@ -108,7 +117,11 @@ function CreateBudgetForm({remainingProposalAmount}) {
             id="breakdown"
             readOnly
             defaultValue={defaultValues.Breakdown}
-            {...methods.register("breakdown")}
+            {...methods.register("breakdown",
+              {
+                required: "This field is required",
+              },
+            )}
           />
         </FormRow>
         <FormRow label="Description" error={errors?.description?.message}>

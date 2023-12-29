@@ -18,8 +18,8 @@ const isTokenExpired = (decodedToken) => {
       return true; 
     }
     const currentTime = Math.floor(Date.now() / 1000);
-    console.log("currentTime", currentTime)
-    console.log("decodedToken.exp", decodedToken.exp)
+    // console.log("currentTime", currentTime)
+    // console.log("decodedToken.exp", decodedToken.exp)
     return decodedToken.exp < currentTime;
   };
 
