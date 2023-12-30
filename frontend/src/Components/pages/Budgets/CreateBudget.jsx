@@ -1,5 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { useSubmitBudget } from '../../hooks/Budgets/useSubmitBudget';
@@ -19,11 +20,19 @@ import Breadcrumbs from '../../atoms/BreadCrumbs/BreadCrumbs';
 
 
 function CreateBudget() {
+  const  navigate  = useNavigate();
   let { proposal } = useSelector(state => state.currentProposal);
   const { proposals } = useSelector(state => state.currentProposalAmounts);
   const { isSubmitting, submitBudgetMutation } = useSubmitBudget();
   const { remainingProposalAmount } = useGetRemainingProposalAmount(proposal.id);
   const filteredProposalAmount = useFilteredProposalAmount(proposals, proposal.id);
+
+  if (remainingProposalAmount === 0) {
+    toast.error("Proposal is fully budgeted");
+    //redirect to previous page
+    navigate(`/proposals/${proposal.id}/budgets`);
+    
+  }
 
   const methods = useForm({
     defaultValues: {
@@ -34,6 +43,8 @@ function CreateBudget() {
       Breakdown: 0,
     },
   });
+
+  
 
 
   const handleCreateBudget = (data) => {
@@ -91,6 +102,7 @@ function CreateBudget() {
           <SubHeader.ActionButton
             label="Save Budget"
             onClick={() => methods.handleSubmit(handleCreateBudget, onError)()}
+            disabled={isSubmitting || remainingProposalAmount === 0}
           />
         </SubHeader.List>
       </SubHeader.Container>

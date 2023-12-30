@@ -189,6 +189,7 @@ function CreateInvoiceForm({ remainingBudgetAmount }) {
             <Input
               type="number"
               id="amount"
+              defaultValue={defaultValues.Amount}
               {...methods.register("amount", {
                 max: {
                   value: remainingBudgetAmount || defaultValues["amount"],

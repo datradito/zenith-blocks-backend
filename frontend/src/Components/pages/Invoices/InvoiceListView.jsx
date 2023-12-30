@@ -32,6 +32,7 @@ function InvoiceListView() {
     }));
   const { isLoading, invoices } = useGetAllInvoices(Budget?.id);
   const { budget } = useGetBudgetById(Budget.id);
+  
 
   if (isLoading) return (
     <>
@@ -79,7 +80,7 @@ return (
     <BudgetInfo>
       <ItemCardComponent.ItemCard label="Category" value={budget?.category} />
       <ItemCardComponent.ItemCard label="Amount" value={budget?.amount} />
-      {/* <ItemCardComponent.ItemCard label="Category" value={budget?.category} /> */}
+      <ItemCardComponent.ItemCard label="Currency" value={budget?.currency} />
     </BudgetInfo>
 
     <Container>

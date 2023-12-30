@@ -20,8 +20,6 @@ const fetchTokenPrices = async (addresses) => {
 
 const useGetTokensPrices = (addresses, fetchPrice) => {
 
-  console.log(fetchPrice)
-
         const { data, isLoading, isError, refetch } = useQuery(
             ["tokenPrices", addresses],
           () => fetchTokenPrices(addresses),

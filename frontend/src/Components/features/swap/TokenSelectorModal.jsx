@@ -1,6 +1,8 @@
 import React from "react";
 import Label from "../../atoms/Label/Label";
-import { Modal, Paper, Typography, List, Box,} from "@mui/material";
+import { Modal, Paper, Typography, List, Box, } from "@mui/material";
+import { useContext } from "react";
+import { SwapContext } from "../../../Utility/Providers/SwapProvider";
 import styled from "styled-components";
 
 const TokenLogo = styled("img")`
@@ -40,7 +42,9 @@ const TokenChoice = styled(Box)`
   }
 `;
 
-const TokenSelectorModal = ({ isOpen, closeModal, tokenList, modifyToken }) => {
+const TokenSelectorModal = () => {
+  const { isOpen, modifyToken, closeModal, tokens, setTokens, tokenList } =
+    useContext(SwapContext);
   return (
     <Modal open={isOpen} onClose={closeModal}>
       <Paper

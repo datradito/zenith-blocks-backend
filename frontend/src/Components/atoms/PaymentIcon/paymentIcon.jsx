@@ -1,7 +1,7 @@
 import React from 'react'
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
 

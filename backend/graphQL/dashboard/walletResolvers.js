@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
 // const { generateAxiosConfig, getTokenBalances } = require("../../utility/alchemyUtil/tokenConfig");
-
+import { generateAxiosConfig, getTokenBalances } from "../../utility/alchemyUtil/tokenConfig.js";
 const walletResolvers = {
   Query: {
     getTokenBalances: async (_, { address }) => {

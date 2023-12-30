@@ -1,19 +1,19 @@
 import React, { useEffect } from "react";
 import { Typography } from "@mui/material";
 import { useAccount, useEnsName } from "wagmi";
-import { SendTransaction } from "./SendTransaction";
+import { SendTransaction } from "../../features/payments/SendTransaction";
 import { client } from "../../../apolloConfig/client";
 import { GET_INVOICE_BY_ID } from "../../../ServerQueries/Invoices/Queries";
 import { useLoaderData } from "react-router-dom";
 import { useSelector } from "react-redux";
-import TransactionInfo from "./TransactionInfo";
+import TransactionInfo from "../../features/payments/TransactionInfo";
 import Container from "../../atoms/Container/Container";
 import styled from "styled-components";
 
 import Label from "../../atoms/Label/Label";
-import PaymentBillingBanner from "./PaymentBillingBanner";
+import PaymentBillingBanner from "../../features/payments/PaymentBillingBanner";
 import BillList from "../../features/payments/BillList";
-import PaymentSubHeader from "./PaymentSubHeader";
+import PaymentSubHeader from "../../features/payments/PaymentSubHeader";
 
 const PanelContainer = styled(Container)`
   display: flex;

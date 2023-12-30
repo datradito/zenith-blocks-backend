@@ -5,25 +5,22 @@ import SubHeader from "../../molecules/SubHeader/SubHeader.jsx";
 import GoBack from "../../atoms/GoBack/GoBack.jsx";
 import Label from "../../atoms/Label/Label.jsx";
 import Breadcrumbs from "../../atoms/BreadCrumbs/BreadCrumbs.jsx";
-import BudgetList from "../../features/budgets/BudgetList.jsx";
+import BudgetList from "../budgets/BudgetList.jsx";
 import Container from "../../atoms/Container/Container.jsx";
 import useProposalIsEditable from "../../hooks/Proposals/useProposalIsEditable.jsx";
 import useProposalDetails from "../../hooks/Proposals/useProposalDetails.jsx";
 import CircularIndeterminate from "../../atoms/Loader/loader.jsx";
 
-
 function ProposalDetailView() {
   const navigate = useNavigate();
-  
+
   const { proposalId } = useParams();
   const { loading, data } = useProposalDetails(proposalId);
   const { amount, status } = useProposalIsEditable(proposalId);
 
-
   const handleUpdateProposal = async () => {
     !status && navigate(`/budgets/${proposalId}/create`);
   };
-
 
   return (
     <div>
@@ -57,10 +54,11 @@ function ProposalDetailView() {
         </SubHeader.List>
       </SubHeader.Container>
 
-      {loading ?
-        <CircularIndeterminate /> : data?.proposal &&
-        <ItemCardComponent  />
-      }
+      {loading ? (
+        <CircularIndeterminate />
+      ) : (
+        data?.proposal && <ItemCardComponent />
+      )}
       <Container
         style={{
           border: "0.05rem #2c2c2c solid",

@@ -6,17 +6,12 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import CircularIndeterminate from "../../atoms/Loader/loader";
 import StyledIcon from "../../atoms/StyledIcon/StyledIcon";
 import TokenCardLayout from "../../molecules/Swap/TokenCardLayout";
+import { useContext } from "react";
+import { SwapContext } from "../../../Utility/Providers/SwapProvider";
 
-
-const ToToken = ({
-  tokenAmount,
-  token,
-  openTokenSelector,
-  openTokenSelectorNumber,
-  isRefreshLoading,
-}) => {
-
-
+const ToToken = () => {
+  const { tokenTwoAmount, tokenTwo, isRefreshLoading, openModal } =
+    useContext(SwapContext);
   return (
     <TokenCardLayout
       sx={{
@@ -25,34 +20,29 @@ const ToToken = ({
     >
       <TokenCardLayout.TokenRow>
         <p></p>
-        <Label>
-          You Buy
-        </Label>
+        <Label>You Buy</Label>
       </TokenCardLayout.TokenRow>
       <TokenCardLayout.TokenRow>
         {isRefreshLoading ? (
           <CircularIndeterminate
-            styleProps={{
+            styleprops={{
               border: "none",
             }}
           />
         ) : (
-          <TokenInput defaultValue="0" value={tokenAmount || ""} readOnly />
+          <TokenInput defaultValue="0" value={tokenTwoAmount || ""} readOnly />
         )}
-        <StyledIcon
-          onClick={() => openTokenSelector(openTokenSelectorNumber)}
-          backgroundColor="#2D5AF4"
-        >
-            <AssetLogo src={token.img} alt="assetTwoLogo" />
-            <Label
-              style={{
-                fontWeight: "500",
-                color: "white",
-                fontSize: "1.2rem",
-              }}
-            >
-              {token.ticker}
-            </Label>
+        <StyledIcon onClick={() => openModal(2)} backgroundcolor="#2D5AF4">
+          <AssetLogo src={tokenTwo?.img} alt="assetTwoLogo" />
+          <Label
+            style={{
+              fontWeight: "500",
+              color: "white",
+              fontSize: "1.2rem",
+            }}
+          >
+            {tokenTwo?.ticker}
+          </Label>
           <KeyboardArrowDownIcon
             style={{
               color: "grey",
@@ -60,7 +50,9 @@ const ToToken = ({
           />
         </StyledIcon>
       </TokenCardLayout.TokenRow>
-      <TokenCardLayout.TickerLabel>{token.ticker}</TokenCardLayout.TickerLabel>
+      <TokenCardLayout.TickerLabel>
+        {tokenTwo?.ticker}
+      </TokenCardLayout.TickerLabel>
     </TokenCardLayout>
   );
 };

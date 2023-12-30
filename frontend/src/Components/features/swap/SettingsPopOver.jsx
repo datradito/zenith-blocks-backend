@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FormControlLabel, Popover, Radio, RadioGroup } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { FormControl } from "@mui/base";
 import { styled } from "@mui/system";
 import Label from "../../atoms/Label/Label";
+import { SwapContext } from "../../../Utility/Providers/SwapProvider";
 
 const StyledRefreshIcon = styled(SettingsIcon)({
   border: "none",
@@ -15,8 +16,13 @@ const StyledRefreshIcon = styled(SettingsIcon)({
   },
 });
 
-const SettingsPopover = ({ slippage, handleSlippageChange }) => {
+const SettingsPopover = () => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const { slippage, setSlippage } = useContext(SwapContext);
+
+  function handleSlippageChange(e) {
+    setSlippage(e.target.value);
+  }
 
   const handleIconClick = (event) => {
     setAnchorEl(event.currentTarget);

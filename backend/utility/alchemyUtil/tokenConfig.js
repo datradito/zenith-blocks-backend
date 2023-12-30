@@ -1,6 +1,5 @@
-const axios = require("axios");
-
-const generateAxiosConfig = (address) => {
+import axios from "axios";
+export const generateAxiosConfig = (address) => {
   const data = JSON.stringify({
     jsonrpc: "2.0",
     method: "alchemy_getTokenBalances",
@@ -22,7 +21,7 @@ const generateAxiosConfig = (address) => {
 
   return { config };
 };
-const getTokenBalances = async (requestConfig, metadata) => {
+export const getTokenBalances = async (requestConfig, metadata) => {
   try {
     let response = await axios(requestConfig);
     response = response["data"];
@@ -57,7 +56,7 @@ const getTokenBalances = async (requestConfig, metadata) => {
   }
 };
 
-const getTokenMetadata = (token) => {
+export const getTokenMetadata = (token) => {
   const options = {
     method: "POST",
     url: `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
@@ -75,7 +74,4 @@ const getTokenMetadata = (token) => {
   return axios.request(options);
 };
 
-module.exports = {
-  generateAxiosConfig,
-  getTokenBalances,
-};
+

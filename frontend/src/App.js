@@ -12,6 +12,7 @@ import CircularIndeterminate from "./Components/atoms/Loader/loader";
 import { Toaster } from "react-hot-toast";
 import { UserProvider } from "./Utility/Providers/UserProvider";
 import { router } from "./Routes/Router";
+import SwapProvider from "./Utility/Providers/SwapProvider";
 
 function App() {
   return (
@@ -20,11 +21,13 @@ function App() {
       <ApolloProvider client={client}>
         <Provider store={storeConfig}>
           <PersistGate loading={null} persistor={persistor}>
+            <SwapProvider>
             <UserProvider>
               <Suspense fallback={<CircularIndeterminate />}>
                 <RouterProvider router={router} />
               </Suspense>
-            </UserProvider>
+              </UserProvider>
+            </SwapProvider>
             <Toaster
               position="top-center"
               gutter={12}

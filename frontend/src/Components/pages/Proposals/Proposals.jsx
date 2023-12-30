@@ -7,7 +7,7 @@ import SubHeader from "../../molecules/SubHeader/SubHeader.jsx";
 import CircularIndeterminate from "../../atoms/Loader/loader.jsx";
 import Label from "../../atoms/Label/Label.jsx";
 import useProposals from "../../hooks/Proposals/useProposals.jsx";
-import ProposalCard from "./ProposalCard.jsx";
+import ProposalCard from "../../features/proposals/ProposalCard.jsx";
 import { toast } from "react-hot-toast";
 import Container from "../../atoms/Container/Container.jsx";
 import { refreshState } from "../../../actions/createBudgetAction/index.js";

@@ -16,7 +16,7 @@ import InvoiceRoutes from "./InvoiceDependentRoutes";
 import NotFound from "./NotFound";
 const Swap = lazy(() => import("../Components/pages/Swap/Swap"));
 const ProposalDetailView = lazy(() =>
-  import("../Components/pages/Proposals/ProposalDetailView")
+  import("../Components/features/proposals/ProposalDetailView")
 );
 const CreateBudget = lazy(() =>
   import("../Components/pages/Budgets/CreateBudget")
@@ -25,7 +25,7 @@ const InvoiceListView = lazy(() =>
   import("../Components/pages/Invoices/InvoiceListView")
 );
 const InvoiceCreation = lazy(() =>
-  import("../Components/pages/Invoices/CreateInvoice")
+  import("../Components/features/invoices/CreateInvoice")
 );
 const Dashboard = lazy(() =>
   import("../Components/pages/walletDashboard/Dashboard")

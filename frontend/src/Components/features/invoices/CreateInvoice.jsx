@@ -8,7 +8,7 @@ import { useSubmitInvoice } from "../../hooks/Invoices/useSubmitInvoice";
 import { useGetRemainingBudgetAmount } from "../../hooks/Budgets/useGetRemainingBudgetAmount";
 import { useGetBudgetById } from "../../hooks/Budgets/useGetBudgetById"; // Import the useGetBudgetById hook
 
-import CreateInvoiceForm from "../../features/invoices/CreateInvoiceForm";
+import CreateInvoiceForm from "./CreateInvoiceForm";
 import Label from "../../atoms/Label/Label";
 import GoBack from "../../atoms/GoBack/GoBack";
 import Container from "../../atoms/Container/Container";
@@ -24,35 +24,45 @@ function InvoiceCreation() {
     Budget: state.currentBudget.Budget,
   }));
 
-  const { data: remainingBudgetAmount } = useGetRemainingBudgetAmount(Budget.id);
+  const { data: remainingBudgetAmount } = useGetRemainingBudgetAmount(
+    Budget.id
+  );
 
   // Use the useGetBudgetById hook to get category and currency values
   const { budget } = useGetBudgetById(Budget.id);
 
-const methods = useForm({
-  defaultValues: useMemo(() => {
-    // Set default values in case budget is null or undefined
-    const defaultCategory = budget ? budget.category : "";
-    const defaultCurrency = budget ? budget.currency : "";
-    const defaultProposal = proposal ? proposal.title : "";
+  const methods = useForm({
+    defaultValues: useMemo(() => {
+      // Set default values in case budget is null or undefined
+      const defaultCategory = budget ? budget.category : "";
+      const defaultCurrency = budget ? budget.currency : "";
+      const defaultProposal = proposal ? proposal.title : "";
+      const defaultAmount = remainingBudgetAmount ? remainingBudgetAmount : 0;
 
-    return {
-      Category: defaultCategory,
-      Currency: defaultCurrency,
-      Proposal: defaultProposal,
-    };
-  }, [budget, proposal]),
-});
+      return {
+        Category: defaultCategory,
+        Currency: defaultCurrency,
+        Proposal: defaultProposal,
+        Amount: defaultAmount,
+      };
+    }, [budget, proposal]),
+  });
 
-
-  const handleSaveInvoice = useCallback(async (data) => {
-    const dataToBeSubmitted = await invoiceService.sanitizeInvoiceData(data, Budget, proposal);
-    createInvoice({
-      variables: {
-        invoice: dataToBeSubmitted,
-      },
-    });
-  }, [Budget, createInvoice, proposal]);
+  const handleSaveInvoice = useCallback(
+    async (data) => {
+      const dataToBeSubmitted = await invoiceService.sanitizeInvoiceData(
+        data,
+        Budget,
+        proposal
+      );
+      createInvoice({
+        variables: {
+          invoice: dataToBeSubmitted,
+        },
+      });
+    },
+    [Budget, createInvoice, proposal]
+  );
 
   if (isCreating) return <CircularIndeterminate />;
 
@@ -87,7 +97,11 @@ const methods = useForm({
         </SubHeader.List>
       </SubHeader.Container>
       <Container>
-        <CreateInvoiceForm remainingBudgetAmount={remainingBudgetAmount?.getRemainingBudgetAmount} />
+        <CreateInvoiceForm
+          remainingBudgetAmount={
+            remainingBudgetAmount?.getRemainingBudgetAmount
+          }
+        />
       </Container>
     </FormProvider>
   );
