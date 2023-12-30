@@ -52,6 +52,7 @@ function ProposalDetailView() {
             label="Create Budget"
             onClick={handleUpdateProposal}
             disabled={status || !amount}
+            info={status ? "Proposal is fully budgeted" : ""}
           />
         </SubHeader.List>
       </SubHeader.Container>

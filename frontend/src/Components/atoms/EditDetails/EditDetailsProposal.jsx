@@ -8,8 +8,13 @@ import { addAmount } from '../../../actions/currentProposal/amount';
 import Input from '../Input/Input';
 import Container from '../Container/Container';
 import FormRow from '../FormRow/FormRow';
+import Form from '../Form/Form';
 import Button from "../Button/Button";
 import CircularIndeterminate from "../Loader/loader";
+
+import currencies from "../../../Utility/CurrencyList.json";
+import StyledSelect from "../SelectDropdown/SelectDropdown";
+
 
 let dialogContainerStyle = {
   position: "fixed",
@@ -26,7 +31,7 @@ let dialogContainerStyle = {
 };
 
 let dialogContentStyle = {
-  width: "400px",
+  // width: "400px",
   backgroundColor: "#0D0E10",
   boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.4)",
   padding: "1.5rem",
@@ -38,6 +43,9 @@ export default function DetailPanelContent({ row, setIsAmountAdded}) {
   const {handleSubmit, formState: { errors }, register } = useForm();
   const { loading, saveProposalDetails } = useSaveProposalDetails();
   const [dialogOpen, setDialogOpen] = useState(true);
+
+  const methods = useForm();
+
   const onSubmit = async (data) => {
     try {
       await saveProposalDetails(data.amount, row);
@@ -63,7 +71,7 @@ export default function DetailPanelContent({ row, setIsAmountAdded}) {
       style={{ ...dialogContainerStyle, display: dialogOpen ? "flex" : "none" }}
     >
       <Container style={dialogContentStyle}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <Form onSubmit={handleSubmit(onSubmit)}>
           <FormRow label={`#${row.title}`} error={errors?.amount?.message}>
             <Input
               type="number"
@@ -74,8 +82,22 @@ export default function DetailPanelContent({ row, setIsAmountAdded}) {
               })}
             />
           </FormRow>
+          <FormRow label="Currency" error={errors?.currency?.message}>
+            <StyledSelect
+              {...methods.register("currency", {
+                required: "This field is required",
+              })}
+              onChange={(e) => methods.setValue("currency", e.target.value)}
+            >
+              {currencies.map((currency) => (
+                <option key={currency.ticker} value={currency.ticker}>
+                  {currency.ticker}
+                </option>
+              ))}
+            </StyledSelect>
+          </FormRow>
           <Button>Save</Button>
-        </form>
+        </Form>
       </Container>
     </Container>
   );

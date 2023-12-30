@@ -4,6 +4,7 @@ import ItemCardComponent from "../../atoms/ItemCard/ItemCard";
 import { useSelector } from 'react-redux';
 import CircularIndeterminate from '../../atoms/Loader/loader';
 import { useGetAllInvoices } from '../../hooks/Invoices/useGetInvoices';
+import { useGetBudgetById } from '../../hooks/Budgets/useGetBudgetById';
 import { useNavigate } from 'react-router-dom';
 import InvoiceList from '../../features/invoices/InvoiceList';
 import EmptyIcon from '../../atoms/EmptyIcon/EmptyIcon';
@@ -11,6 +12,16 @@ import Label from '../../atoms/Label/Label';
 import GoBack from '../../atoms/GoBack/GoBack';
 import Container from '../../atoms/Container/Container';
 import Breadcrumbs from '../../atoms/BreadCrumbs/BreadCrumbs';
+import List from '../../atoms/List/List';
+import styled from "styled-components";
+
+const BudgetInfo = styled(List)`
+  gap: 0.5rem;
+  padding: 1rem;
+  margin: 0rem;
+  justify-content: flex-start;
+  `;
+
 
 
 function InvoiceListView() {
@@ -20,6 +31,7 @@ function InvoiceListView() {
       Budget: state.currentBudget.Budget,
     }));
   const { isLoading, invoices } = useGetAllInvoices(Budget?.id);
+  const { budget } = useGetBudgetById(Budget.id);
 
   if (isLoading) return (
     <>
@@ -63,7 +75,13 @@ return (
     </SubHeader.Container>
 
     <ItemCardComponent />
-    
+
+    <BudgetInfo>
+      <ItemCardComponent.ItemCard label="Category" value={budget?.category} />
+      <ItemCardComponent.ItemCard label="Amount" value={budget?.amount} />
+      {/* <ItemCardComponent.ItemCard label="Category" value={budget?.category} /> */}
+    </BudgetInfo>
+
     <Container>
       {isLoading ? (
         <CircularIndeterminate />

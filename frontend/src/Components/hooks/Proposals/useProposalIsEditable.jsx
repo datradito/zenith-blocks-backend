@@ -23,9 +23,9 @@ const filteredProposal = useMemo(() => {
 
       if (filteredProposal.status === "Funded") {
         //move this to atom as custom warning toast
-        toast.custom(
-          <p style={{ color: "warning" , padding: "1rem", background: "white", borderRadius: "0.5rem"}}>⚠️ Proposal is fully funded</p>
-        );
+        // toast.custom(
+        //   <p style={{ color: "warning" , padding: "1rem", background: "white", borderRadius: "0.5rem"}}>⚠️ Proposal is fully funded</p>
+        // );
       } else if (filteredProposal?.amount === null) {
         toast.error("Proposal is missing an amount");
       }

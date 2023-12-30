@@ -10,6 +10,7 @@ import {
   RainbowKitProvider,
   darkTheme,
 } from "@rainbow-me/rainbowkit";
+import { connectorsForWallets } from "@rainbow-me/rainbowkit";
 
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import {
@@ -23,6 +24,7 @@ import {
 } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { alchemyProvider } from "wagmi/providers/alchemy";
+import { safeWallet } from '@rainbow-me/rainbowkit/wallets';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
@@ -42,11 +44,24 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
 );
 const projectId = "3a74d330e07a405df9ab1a0ff1825a9b";
 
-const { connectors } = getDefaultWallets({
+const { wallets } = getDefaultWallets({
   appName: "ZenithBlocks",
   projectId,
   chains,
 });
+
+const connectors = connectorsForWallets([
+  ...wallets,
+  {
+    groupName: "Other",
+    wallets: [
+      safeWallet({
+        chains: chains,
+      }),
+    ],
+  },
+]);
+
 
 const wagmiConfig = createConfig({
   autoConnect: true,
@@ -54,6 +69,7 @@ const wagmiConfig = createConfig({
   publicClient,
   webSocketPublicClient,
 });
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

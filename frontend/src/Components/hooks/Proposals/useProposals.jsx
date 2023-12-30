@@ -38,10 +38,6 @@ const useProposals = () => {
         setError(error);
         setNetworkStatus(networkStatus);
 
-        console.log("error ==>", error);
-        console.log("data ==>", data);
-        console.log("networkStatus ==>", networkStatus);
-        console.log("loading ==>", loading);
       } catch (err) {
         setError(err);
         setNetworkStatus(8);

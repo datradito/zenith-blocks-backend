@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import FormDetailPanel from "../../atoms/EditDetails/EditDetailsProposal.jsx";
 import Amount from "../../molecules/ProposalAmount/Amount.jsx";
 
