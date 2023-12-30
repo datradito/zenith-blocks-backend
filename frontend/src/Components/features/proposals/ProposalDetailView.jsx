@@ -9,6 +9,7 @@ import BudgetList from "../budgets/BudgetList.jsx";
 import Container from "../../atoms/Container/Container.jsx";
 import useProposalIsEditable from "../../hooks/Proposals/useProposalIsEditable.jsx";
 import useProposalDetails from "../../hooks/Proposals/useProposalDetails.jsx";
+import {useGetBudgets} from "../../hooks/Budgets/useGetBudgets.jsx";
 import CircularIndeterminate from "../../atoms/Loader/loader.jsx";
 
 function ProposalDetailView() {
@@ -17,6 +18,8 @@ function ProposalDetailView() {
   const { proposalId } = useParams();
   const { loading, data } = useProposalDetails(proposalId);
   const { amount, status } = useProposalIsEditable(proposalId);
+
+   const { isLoading, budgets } = useGetBudgets(amount, proposalId);
 
   const handleUpdateProposal = async () => {
     !status && navigate(`/budgets/${proposalId}/create`);
@@ -39,8 +42,10 @@ function ProposalDetailView() {
           </GoBack>
         </SubHeader.List>
         <SubHeader.List>
-          <SubHeader.ActionButton
+          <SubHeader.ExportCSVButton
             label="CSV Report"
+            data={budgets}
+            filename="Budgets"
             sx={{
               backgroundColor: "#282A2E",
             }}
@@ -65,7 +70,7 @@ function ProposalDetailView() {
           margin: "1rem 0",
         }}
       >
-        <BudgetList amount={amount} proposalId={proposalId} />
+        <BudgetList isLoading={isLoading} budgetList={budgets} />
       </Container>
     </div>
   );

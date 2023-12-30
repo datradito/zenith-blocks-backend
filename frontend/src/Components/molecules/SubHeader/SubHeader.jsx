@@ -2,7 +2,7 @@ import React from 'react'
 import Button from "../../atoms/Button/Button.jsx";
 import List from "../../atoms/List/List.jsx";
 import Container from '../../atoms/Container/Container.jsx';
-// import { Tooltip } from '@mui/material';
+import { CSVLink } from "react-csv";
 import ToolTip from '../../atoms/ToolTip/ToolTip.jsx';
 
 function SubHeader({ children, sx }) {
@@ -58,9 +58,33 @@ function ActionButton({ onClick, label, disabled, sx, info = "" }) {
     </ToolTip>
   );
 }
+
+function ExportCSVButton({ onClick, label, disabled, sx, info = "", data = [], filename = "Transactions" }) {
+  function handleClick() {
+    onClick?.();
+  }
+  return (
+    <CSVLink
+      data={data}
+      filename={filename}
+      target="_blank"
+    >
+        <Button
+          sx={{
+            backgroundColor: disabled ? "#9bb8ff" : "#055FFC",
+            ...sx,
+          }}
+          onClick={handleClick}
+        >
+          {label}
+        </Button>
+    </CSVLink>
+  );
+}
   
 SubHeader.List = Items;
 SubHeader.ActionButton = ActionButton;
+SubHeader.ExportCSVButton = ExportCSVButton;
 SubHeader.Container = SubHeader;
 
 export default SubHeader

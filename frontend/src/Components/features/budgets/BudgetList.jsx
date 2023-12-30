@@ -4,9 +4,7 @@ import { useGetBudgets } from "../../hooks/Budgets/useGetBudgets";
 import BudgetRow from "./BudgetRow";
 import CircularIndeterminate from "../../atoms/Loader/loader";
 
-function BudgetList({ amount, proposalId }) {
-
-  const { isLoading, budgets } = useGetBudgets(amount, proposalId);
+function BudgetList({ isLoading, budgetList }) {
 
   if (isLoading) return (
     <>
@@ -27,7 +25,7 @@ function BudgetList({ amount, proposalId }) {
           {/* <div>Action</div> */}
         </Table.Header>
           <Table.Body
-            data={budgets}
+            data={budgetList}
             // data={filteredCabins}
             //   data={sortedInvoices}
             render={(budget) => <BudgetRow budget={budget} key={budget.id} />}

@@ -62,8 +62,10 @@ return (
         </GoBack>
       </SubHeader.List>
       <SubHeader.List>
-        <SubHeader.ActionButton
+        <SubHeader.ExportCSVButton
           label="Export CSV"
+          data={invoices}
+          filename="Invoices"
           sx={{
             backgroundColor: "#282A2E",
           }}
