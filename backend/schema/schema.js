@@ -36,6 +36,11 @@ export const typeDefs = `#graphql
         budgets: [Budget]
     }
 
+input InvoiceFilterInput {
+  status: String
+  # Other filter criteria if needed
+}
+
     type Invoice {
         id: String
         category: String
@@ -88,7 +93,7 @@ export const typeDefs = `#graphql
         getBudgetById(id: String): Budget,
         getBudgetsForProposal(proposalid: String): [Budget],
         getInvoiceById(id: String): Invoice,
-        getInvoicesByBudget(budgetid: String): [Invoice],
+        getInvoicesByBudget(budgetid: String, where: InvoiceFilterInput): [Invoice],
         getProposalDetailsById(id: String): Proposal,
         getRemainingProposalAmount(id: String!): Float!,
         getProposalsByDao(daoid: String): [Proposal],

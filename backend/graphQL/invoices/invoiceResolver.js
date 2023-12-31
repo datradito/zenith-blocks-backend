@@ -19,17 +19,36 @@ import {
 const invoiceResolver = {
   Query: {
     getInvoicesByBudget: async (parent, args, context) => {
+      const { budgetid, where } = args;
       try {
-        return await Invoice.findAll(
-          {
-            where: { budgetid: args.budgetid },
-          },
-          {
-            sort: {
-              createdAt: "desc",
-            },
-          }
-        );
+              let invoices;
+
+              if (where && Object.keys(where).length > 0) {
+                // Filter based on 'where' conditions if provided
+                invoices = await Invoice.findAll(
+                  {
+                    where: { budgetid , ...where },
+                  },
+                  {
+                    sort: {
+                      createdAt: "desc",
+                    },
+                  }
+                );
+              } else {
+                // If 'where' conditions are not provided, fetch without any filter
+                invoices = await Invoice.findAll(
+                  {
+                    where: { budgetid },
+                  },
+                  {
+                    sort: {
+                      createdAt: "desc",
+                    },
+                  }
+                );
+              }
+        return invoices;
       } catch (error) {
         throw new GraphQLError(error.message);
       }
@@ -44,12 +63,12 @@ const invoiceResolver = {
   },
   Mutation: {
     submitInvoice: async (parent, { invoice }, context) => {
-      // const { valid, errors } = validateInvoice(
-      //     invoice);
+      const { valid: validInvoice, errors: errorsInvoice } = validateInvoice(
+          invoice);
 
-      // if (!valid) {
-      //     throw new GraphQLError(errors);
-      // }
+      if (!validInvoice) {
+          throw new GraphQLError(errorsInvoice);
+      }
 
       const { errors, valid } = await validateInvoiceAmount(
         invoice.budgetid,

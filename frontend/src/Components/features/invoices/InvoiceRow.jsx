@@ -10,12 +10,16 @@ import Menus from "../../molecules/Menus/Menus"
 import ConfirmDelete from "../../molecules/ConfirmDelete/ConfirmDelete";
 import { useSubmitInvoice } from "../../hooks/Invoices/useSubmitInvoice";
 import { useDuplicateInvoice } from "../../hooks/Invoices/useDuplicateInvoice";
+import { Avatar } from "@mui/material";
 
 
 const ScrollContainer = styled.div`
   max-width: 100%;
   overflow-x: auto;
   text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 `;
 
 function InvoiceRow({ invoice }) {
@@ -44,7 +48,7 @@ function InvoiceRow({ invoice }) {
   return (
     <Table.Row>
       <ScrollContainer>{Invoice}</ScrollContainer>
-      <ScrollContainer>{RecipientAddress}</ScrollContainer>
+      <ScrollContainer> <Avatar></Avatar>{RecipientAddress}</ScrollContainer>
       <ScrollContainer>{Amount}</ScrollContainer>
       <ScrollContainer>{Currency}</ScrollContainer>
         <ScrollContainer><StatusChip /></ScrollContainer>      

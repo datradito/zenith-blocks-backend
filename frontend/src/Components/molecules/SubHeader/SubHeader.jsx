@@ -63,6 +63,9 @@ function ExportCSVButton({ onClick, label, disabled, sx, info = "", data = [], f
   function handleClick() {
     onClick?.();
   }
+
+  //we can make adjustments to data before passing down to CSVLink
+  //for example a service which customizes based on if its budget invoices or transactions
   return (
     <CSVLink
       data={data}

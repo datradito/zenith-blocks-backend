@@ -13,6 +13,7 @@ import { Toaster } from "react-hot-toast";
 import { UserProvider } from "./Utility/Providers/UserProvider";
 import { router } from "./Routes/Router";
 import SwapProvider from "./Utility/Providers/SwapProvider";
+import InvoiceProvider from "./Utility/Providers/InvoiceProvider";
 
 function App() {
   return (
@@ -22,10 +23,13 @@ function App() {
         <Provider store={storeConfig}>
           <PersistGate loading={null} persistor={persistor}>
             <SwapProvider>
-            <UserProvider>
+
+              <UserProvider>
+                <InvoiceProvider>
               <Suspense fallback={<CircularIndeterminate />}>
                 <RouterProvider router={router} />
-              </Suspense>
+                  </Suspense>
+                  </InvoiceProvider>
               </UserProvider>
             </SwapProvider>
             <Toaster
