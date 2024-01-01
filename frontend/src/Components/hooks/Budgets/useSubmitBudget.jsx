@@ -1,42 +1,49 @@
-import { useParams } from 'react-router-dom';
-import { SUBMIT_BUDGET_MUTATION } from '../../../ServerQueries/Budget/Mutation';
+import { useParams } from "react-router-dom";
+import { SUBMIT_BUDGET_MUTATION } from "../../../ServerQueries/Budget/Mutation";
 import { useNavigate } from "react-router-dom";
-import { useMutation, gql} from '@apollo/client';
-import { toast } from "react-hot-toast";
-
+import { useMutation, gql } from "@apollo/client";
+import { message } from "antd";
 
 export const useSubmitBudget = () => {
   const proposalId = useParams().proposalId;
   const navigate = useNavigate();
 
-  const [submitBudgetMutation, { isSubmitting }] = useMutation(
+  const [submitBudgetMutation, { loading }] = useMutation(
     SUBMIT_BUDGET_MUTATION,
     {
       errorPolicy: "all",
-      onError: (errors) => {
-        toast.error(errors.message);
+      onError: (error) => {
+        message.destroy("submitBudget");
+        message.error({
+          content: `❌ ${error.message}`,
+          key: "submitBudgetError",
+        });
       },
       onCompleted: () => {
-        toast.success("Budget created successfully");
+        message.destroy("submitBudget");
+        message.success({
+          content: "Budget submitted successfully",
+          key: "submitBudgetSuccess",
+        });
         navigate(`/proposals/${proposalId}/budgets`);
       },
       update: (cache, { data: { submitBudget } }) => {
         cache.modify({
           fields: {
-            getBudgetsForProposal(existingBudgets=[]) {
+            getBudgetsForProposal(existingBudgets = []) {
               const newBudgetRef = cache.writeFragment({
                 data: submitBudget,
-                  fragment: gql`
-                      fragment NewBudget on Budget {
-                          id
-                          category
-                          amount
-                          currency
-                          breakdown
-                          remaining
-                          proposalid
-                      }
-                  `,
+                fragment: gql`
+                  fragment NewBudget on Budget {
+                    id
+                    category
+                    amount
+                    currency
+                    breakdown
+                    remaining
+                    proposalid
+                  }
+                `,
               });
               return [...existingBudgets, newBudgetRef];
             },
@@ -44,14 +51,21 @@ export const useSubmitBudget = () => {
         });
       },
       refetchQueries: [
-        'getBudgetsForProposal',
+        "getBudgetsForProposal",
         {
           variables: { proposalid: proposalId },
-        }
-
+        },
       ],
     }
   );
 
-  return { isSubmitting, submitBudgetMutation };
+  
+  if (loading) {
+    message.loading({
+      content: "Submitting budget... 🏗 ",
+      key: "submitBudget",
+    });
+  }
+
+  return { loading, submitBudgetMutation };
 };

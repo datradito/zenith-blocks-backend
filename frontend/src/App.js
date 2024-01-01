@@ -23,13 +23,12 @@ function App() {
         <Provider store={storeConfig}>
           <PersistGate loading={null} persistor={persistor}>
             <SwapProvider>
-
               <UserProvider>
                 <MemoizedInvoiceProvider>
-              <Suspense fallback={<CircularIndeterminate />}>
-                <RouterProvider router={router} />
+                  <Suspense fallback={<CircularIndeterminate />}>
+                    <RouterProvider router={router} />
                   </Suspense>
-                  </MemoizedInvoiceProvider>
+                </MemoizedInvoiceProvider>
               </UserProvider>
             </SwapProvider>
             <Toaster
@@ -59,4 +58,4 @@ function App() {
   );
 }
 
-export default App;
+export default React.memo(App);

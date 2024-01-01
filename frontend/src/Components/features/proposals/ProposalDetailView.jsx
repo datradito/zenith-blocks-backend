@@ -44,7 +44,7 @@ function ProposalDetailView() {
         <SubHeader.List>
           <SubHeader.ExportCSVButton
             label="CSV Report"
-            data={budgets}
+            data={budgets || []}
             filename="Budgets"
             sx={{
               backgroundColor: "#282A2E",

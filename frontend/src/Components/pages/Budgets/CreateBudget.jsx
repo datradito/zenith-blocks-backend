@@ -1,6 +1,5 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { useSubmitBudget } from '../../hooks/Budgets/useSubmitBudget';
@@ -9,7 +8,6 @@ import useFilteredProposalAmount from '../../hooks/Proposals/useFilteredProposal
 
 import SubHeader from '../../molecules/SubHeader/SubHeader';
 
-import CircularIndeterminate from '../../atoms/Loader/loader';
 import GoBack from '../../atoms/GoBack/GoBack';
 import Label from '../../atoms/Label/Label';
 import Container from '../../atoms/Container/Container';
@@ -20,19 +18,19 @@ import Breadcrumbs from '../../atoms/BreadCrumbs/BreadCrumbs';
 
 
 function CreateBudget() {
-  const  navigate  = useNavigate();
   let { proposal } = useSelector(state => state.currentProposal);
   const { proposals } = useSelector(state => state.currentProposalAmounts);
-  const { isSubmitting, submitBudgetMutation } = useSubmitBudget();
+  const { loading, submitBudgetMutation } = useSubmitBudget();
   const { remainingProposalAmount } = useGetRemainingProposalAmount(proposal.id);
   const filteredProposalAmount = useFilteredProposalAmount(proposals, proposal.id);
 
-  if (remainingProposalAmount === 0) {
-    toast.error("Proposal is fully budgeted");
-    //redirect to previous page
-    navigate(`/proposals/${proposal.id}/budgets`);
-    
-  }
+  // console.log(remainingProposalAmount);
+
+  // if (remainingProposalAmount === 0) {
+  //   toast.error("Proposal is fully budgeted");
+  //   //redirect to previous page
+  //   navigate(`/proposals/${proposal.id}/budgets`);
+  // }
 
   const methods = useForm({
     defaultValues: {
@@ -68,9 +66,6 @@ function CreateBudget() {
     toast.error(errors.message);
   }
 
-  if (isSubmitting) {
-    <CircularIndeterminate />
-  }
 
   return (
     <FormProvider {...methods}>
@@ -102,7 +97,7 @@ function CreateBudget() {
           <SubHeader.ActionButton
             label="Save Budget"
             onClick={() => methods.handleSubmit(handleCreateBudget, onError)()}
-            disabled={isSubmitting || remainingProposalAmount === 0}
+            disabled={loading || remainingProposalAmount === 0}
           />
         </SubHeader.List>
       </SubHeader.Container>

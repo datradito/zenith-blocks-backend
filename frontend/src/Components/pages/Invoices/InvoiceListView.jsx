@@ -109,5 +109,4 @@ function InvoiceListView() {
   );
 }
 
-
 export default InvoiceListView;

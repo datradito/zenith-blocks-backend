@@ -1,27 +1,39 @@
 import { useQuery } from "@apollo/client";
 import { GET_REMAINING_PROPOSAL_AMOUNT } from "../../../ServerQueries/Proposals/Queries";
 import { toast } from "react-hot-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const useGetRemainingProposalAmount = (proposalId) => {
-    const [ remainingProposalAmount, setRemainingProposalAmount ] = useState(0);
+  const [remainingProposalAmount, setRemainingProposalAmount] = useState(0);
+  const { data, loading, error } = useQuery(GET_REMAINING_PROPOSAL_AMOUNT, {
+    variables: { id: proposalId },
+  });
 
-    const { data, isLoading, error } = useQuery( GET_REMAINING_PROPOSAL_AMOUNT, {
-        variables: { id: proposalId },
-        onCompleted: () => {
-            setRemainingProposalAmount(data?.getRemainingProposalAmount);
-            toast.success("Proposal Amount fetched successfully");
-        },
-        onError: (errors) => {
-            toast.error(errors.message);
-        }
-    });
+  useEffect(() => {
+    if (data?.getRemainingProposalAmount !== undefined) {
+      setRemainingProposalAmount(data.getRemainingProposalAmount);
+      toast.success("Proposal Amount fetched successfully");
+    }
+  }, [data]);
 
+  if (loading) {
+    return { loading: true, remainingProposalAmount: null, error: null };
+  }
+
+  if (error) {
+    toast.error(error.message);
     return {
-        remainingProposalAmount,
-        isLoading,
-        error,
+      loading: false,
+      remainingProposalAmount: null,
+      error: error.message,
     };
+  }
+
+  return {
+    loading: false,
+    remainingProposalAmount,
+    error: null,
+  };
 };
 
 export default useGetRemainingProposalAmount;

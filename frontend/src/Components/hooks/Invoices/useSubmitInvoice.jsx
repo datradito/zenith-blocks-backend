@@ -6,6 +6,7 @@ import { message } from "antd";
 export const useSubmitInvoice = () => {
   const budgetId = useParams().budgetId;
   const navigate = useNavigate();
+  
 
   const [createInvoice, { loading }] = useMutation(SUBMIT_INVOICE_MUTATION, {
     onError: (error) => {
@@ -16,7 +17,6 @@ export const useSubmitInvoice = () => {
       });
     },
     onCompleted: () => {
-      console.log("Invoice submitted successfully");
       message.destroy("submitInvoice");
       message.success({
         content: "Invoice submitted successfully",
@@ -24,6 +24,12 @@ export const useSubmitInvoice = () => {
       });
       navigate(`/budgets/${budgetId}/invoices`);
     },
+    refetchQueries: [
+      "getInvoicesByBudget",
+      {
+        variables: { budgetid: budgetId },
+      },
+    ],
   });
 
   if (loading) {
@@ -35,6 +41,7 @@ export const useSubmitInvoice = () => {
 
   return { loading, createInvoice };
 };
+
 
 
 
