@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import { InvoiceContext } from "../../../Utility/Providers/InvoiceProvider";
+import { useContext } from "react";
+
 import SubHeader from "../../molecules/SubHeader/SubHeader";
 import ItemCardComponent from "../../atoms/ItemCard/ItemCard";
 import CircularIndeterminate from "../../atoms/Loader/loader";
-import { useNavigate } from "react-router-dom";
 import InvoiceList from "../../features/invoices/InvoiceList";
 import EmptyIcon from "../../atoms/EmptyIcon/EmptyIcon";
 import Label from "../../atoms/Label/Label";
@@ -12,8 +15,6 @@ import Breadcrumbs from "../../atoms/BreadCrumbs/BreadCrumbs";
 import List from "../../atoms/List/List";
 import styled from "styled-components";
 import FilterInvoices from "../../molecules/Invoices/FilterInvoices";
-import { InvoiceContext } from "../../../Utility/Providers/InvoiceProvider";
-import { useContext } from "react";
 
 const BudgetInfo = styled(List)`
   gap: 0.5rem;
@@ -30,14 +31,15 @@ const BudgetInfo = styled(List)`
 function InvoiceListView() {
   const { Budget, budget, proposal, invoices, isLoading, refetchInvoices } =
     useContext(InvoiceContext);
+
   const navigate = useNavigate();
 
-  const handleCreateInvoice = () => {
-    navigate(`/invoices/${Budget.id}/create`);
-  };
+  const header = useMemo(() => {
+    const handleCreateInvoice = () => {
+      navigate(`/invoices/${Budget.id}/create`);
+    };
 
-  return (
-    <div>
+    return (
       <SubHeader.Container sx={{ paddingTop: "1rem" }}>
         <SubHeader.List
           sx={{
@@ -67,28 +69,45 @@ function InvoiceListView() {
           />
         </SubHeader.List>
       </SubHeader.Container>
+    );
+  }, [invoices, proposal.id, Budget.id, navigate]);
 
-      <ItemCardComponent />
-
+  const budgetInfo = useMemo(() => {
+    return (
       <BudgetInfo>
         <ItemCardComponent.ItemCard label="Category" value={budget?.category} />
         <ItemCardComponent.ItemCard label="Amount" value={budget?.amount} />
         <ItemCardComponent.ItemCard label="Currency" value={budget?.currency} />
       </BudgetInfo>
+    );
+  }, [budget]);
 
-      <FilterInvoices refetchInvoices={refetchInvoices}  />
+  const content = useMemo(() => {
+    if (isLoading) {
+      return <CircularIndeterminate />;
+    }
 
-      <Container>
-        {isLoading ? (
-          <CircularIndeterminate />
-        ) : invoices && invoices.length > 0 ? (
-          <InvoiceList isLoading={isLoading} invoices={invoices} />
-        ) : (
-          <EmptyIcon />
-        )}
-      </Container>
+    if (invoices && invoices.length > 0) {
+      return <InvoiceList isLoading={isLoading} invoices={invoices} />;
+    }
+
+    return <EmptyIcon />;
+  }, [invoices, isLoading]);
+
+  return (
+    <div>
+      {header}
+
+      <ItemCardComponent />
+
+      {budgetInfo}
+
+      <FilterInvoices refetchInvoices={refetchInvoices} />
+
+      <Container>{content}</Container>
     </div>
   );
 }
+
 
 export default InvoiceListView;

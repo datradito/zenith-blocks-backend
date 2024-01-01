@@ -5,7 +5,6 @@ import useGetInvoiceById from "../../hooks/Invoices/useGetInvoiceById";
 import { useParams } from "react-router-dom";
 import CircularIndeterminate from "../../atoms/Loader/loader";
 import Container from "../../atoms/Container/Container";
-import { toast } from "react-hot-toast";
 import CustomPDFViewIcon from "../../atoms/PdfIcon/padfIcon";
 import styled from "styled-components";
 
@@ -17,14 +16,9 @@ const PdfContainer = styled(Container)`
   gap: 1rem;
 `;
 
-
 function BillList() {
   const { invoiceId } = useParams();
-  const { data, error, loading, refetch } = useGetInvoiceById(invoiceId);
-
-  if (loading) return <CircularIndeterminate />;
-  if (error) return toast.error(error.message);
-
+  const { data, error, loading } = useGetInvoiceById(invoiceId);
   return (
     <Container>
       <Table columns="0.4fr 0.4fr 0.4fr">
@@ -36,9 +30,13 @@ function BillList() {
 
         <Table.Body
           data={[data]}
-          // data={filteredCabins}
-          //   data={sortedInvoices}
-          render={(invoice) => <BillRow invoice={invoice} />}
+          render={() => {
+            if (loading) return <CircularIndeterminate />;
+            if (error) return <p>Error: {error.message}</p>;
+            if (!data) return <p>No data</p>;
+
+            return <BillRow invoice={data} />;
+          }}
         />
       </Table>
       <PdfContainer>

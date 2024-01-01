@@ -63,12 +63,12 @@ const invoiceResolver = {
   },
   Mutation: {
     submitInvoice: async (parent, { invoice }, context) => {
-      const { valid: validInvoice, errors: errorsInvoice } = validateInvoice(
-          invoice);
+      // const { valid: validInvoice, errors: errorsInvoice } = validateInvoice(
+      //     invoice);
 
-      if (!validInvoice) {
-          throw new GraphQLError(errorsInvoice);
-      }
+      // if (!validInvoice) {
+      //     throw new GraphQLError(errorsInvoice);
+      // }
 
       const { errors, valid } = await validateInvoiceAmount(
         invoice.budgetid,

@@ -13,7 +13,7 @@ import { Toaster } from "react-hot-toast";
 import { UserProvider } from "./Utility/Providers/UserProvider";
 import { router } from "./Routes/Router";
 import SwapProvider from "./Utility/Providers/SwapProvider";
-import InvoiceProvider from "./Utility/Providers/InvoiceProvider";
+import MemoizedInvoiceProvider from "./Utility/Providers/InvoiceProvider";
 
 function App() {
   return (
@@ -25,11 +25,11 @@ function App() {
             <SwapProvider>
 
               <UserProvider>
-                <InvoiceProvider>
+                <MemoizedInvoiceProvider>
               <Suspense fallback={<CircularIndeterminate />}>
                 <RouterProvider router={router} />
                   </Suspense>
-                  </InvoiceProvider>
+                  </MemoizedInvoiceProvider>
               </UserProvider>
             </SwapProvider>
             <Toaster

@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from "react";
+import PropTypes from "prop-types";
 import SubHeader from "../../molecules/SubHeader/SubHeader";
 import { useSelector } from "react-redux";
-import CircularIndeterminate from "../../atoms/Loader/loader";
 
 import { invoiceService } from "../../../Services/InvoiceServices/invoiceService";
 import { useSubmitInvoice } from "../../hooks/Invoices/useSubmitInvoice";
@@ -14,10 +14,19 @@ import GoBack from "../../atoms/GoBack/GoBack";
 import Container from "../../atoms/Container/Container";
 
 import { FormProvider, useForm } from "react-hook-form";
-import Breadcrumbs from "../../atoms/BreadCrumbs/BreadCrumbs";
+import Breadcrumbs from "../../atoms/BreadCrumbs/BreadCrumbs"; 
+
+
+CreateInvoiceForm.propTypes = {
+  remainingBudgetAmount: PropTypes.number,
+};
+
+FormProvider.propTypes = {
+  children: PropTypes.node,
+};
 
 function InvoiceCreation() {
-  const { loading: isCreating, createInvoice } = useSubmitInvoice();
+  const { createInvoice } = useSubmitInvoice();
 
   const { proposal, Budget } = useSelector((state) => ({
     proposal: state.currentProposal.proposal,
@@ -28,7 +37,6 @@ function InvoiceCreation() {
     Budget.id
   );
 
-  // Use the useGetBudgetById hook to get category and currency values
   const { budget } = useGetBudgetById(Budget.id);
 
   const methods = useForm({
@@ -45,7 +53,7 @@ function InvoiceCreation() {
         Proposal: defaultProposal,
         Amount: defaultAmount,
       };
-    }, [budget, proposal]),
+    }, [budget, proposal, remainingBudgetAmount]), // Added missing dependency
   });
 
   const handleSaveInvoice = useCallback(
@@ -58,13 +66,12 @@ function InvoiceCreation() {
       createInvoice({
         variables: {
           invoice: dataToBeSubmitted,
-        },
+        }
       });
+      methods.reset();
     },
-    [Budget, createInvoice, proposal]
+    [Budget, createInvoice, proposal, methods]
   );
-
-  if (isCreating) return <CircularIndeterminate />;
 
   return (
     <FormProvider {...methods}>
