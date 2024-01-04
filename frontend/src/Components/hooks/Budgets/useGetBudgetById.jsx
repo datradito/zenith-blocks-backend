@@ -16,7 +16,7 @@ export const useGetBudgetById = (budgetId) => {
     });
 
     if (loading) {
-        toastId = toast.loading("Loading...");
+        toastId = toast.loading("Loading budgets...");
     }
 
     return { budget: data?.getBudgetById, loading, error };

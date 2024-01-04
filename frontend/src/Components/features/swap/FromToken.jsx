@@ -30,7 +30,7 @@ const FromToken = ({ isPriceLoading }) => {
     if (isPriceLoading) {
       messageApi.open({
         type: "loading",
-        content: "Loading...",
+        content: "Loading price...",
         duration: 2.5,
       });
     }
