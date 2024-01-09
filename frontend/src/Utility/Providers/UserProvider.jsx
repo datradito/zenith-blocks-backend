@@ -1,46 +1,34 @@
 import React, { createContext, useState, useEffect } from "react";
 import { useDisconnect } from "wagmi";
-
-function decodeToken(token) {
-  if (!token) {
-    return null;
-  }
-  const base64Url = token.split(".")[1];
-  const base64 = base64Url.replace("-", "+").replace("_", "/");
-  return JSON.parse(window.atob(base64));
-}
+import { clearAuthData, decodeToken, isTokenExpired } from "../auth";
 
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-
   const { disconnectAsync } = useDisconnect();
   const [user, setUser] = useState(null);
+  
 
-  const fetchUser = () => {
+  const getUserFromStorage = () => {
     const token = sessionStorage.getItem("authToken");
-    const decodedUser = decodeToken(token);
+    const decodedToken = decodeToken(token);
 
-    // Check if the token is valid and the user is logged in
-    if (decodedUser) {
-      //Todo: check if token is expired using decoded token expiry time and current time
-      setUser(decodedUser);
-    } else {
-      // Token is invalid or user is not logged in, perform necessary actions
-      // For example, log the user out or clear user state
-      logOutUser();
+    if (isTokenExpired(decodedToken)) {
+      logoutAndClearUser();
+      return;
     }
+    setUser(decodedToken);
   };
 
-  const logOutUser = () => {
+  const logoutAndClearUser = () => {
     disconnectAsync();
-    sessionStorage.clear();
+    clearAuthData();
     setUser(null);
   };
 
   // Fetch the user on component mount
   useEffect(() => {
-    fetchUser();
+    getUserFromStorage();
   }, []);
 
   return (
@@ -48,8 +36,8 @@ export const UserProvider = ({ children }) => {
       value={{
         user,
         setUser,
-        fetchUser,
-        logOutUser,
+        getUserFromStorage,
+        logoutAndClearUser,
       }}
     >
       {children}

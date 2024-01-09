@@ -1,11 +1,11 @@
-import React from "react";
+import React, { createContext, useContext} from "react";
 import { useSelector } from "react-redux";
-import CircularIndeterminate from "../../Components/atoms/Loader/loader.jsx";
 import { useGetAllInvoices } from "../../Components/hooks/Invoices/useGetInvoices";
 import { useGetBudgetById } from "../../Components/hooks/Budgets/useGetBudgetById";
 import PropTypes from "prop-types";
 
-export const InvoiceContext = React.createContext();
+export const InvoiceContext = createContext();
+
 
 const MemoizedInvoiceProvider = React.memo(function InvoiceProvider({
   children,
@@ -16,15 +16,12 @@ const MemoizedInvoiceProvider = React.memo(function InvoiceProvider({
   }));
 
     const {
-      isLoading,
       invoices,
       refetchInvoices,
     } = useGetAllInvoices(Budget?.id);
+  
   const { budget } = useGetBudgetById(Budget?.id);
 
-  if (isLoading) {
-    return <CircularIndeterminate />;
-  }
 
   return (
     <InvoiceContext.Provider
@@ -43,6 +40,10 @@ const MemoizedInvoiceProvider = React.memo(function InvoiceProvider({
 
 MemoizedInvoiceProvider.propTypes = {
   children: PropTypes.node.isRequired,
+};
+
+export const useInvoice = () => {
+  return useContext(InvoiceContext);
 };
 
 export default MemoizedInvoiceProvider;

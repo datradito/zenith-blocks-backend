@@ -14,6 +14,8 @@ import PaymentCreation, {
 } from "../Components/pages/Payments/PaymentCreation";
 import InvoiceRoutes from "./InvoiceDependentRoutes";
 import NotFound from "./NotFound";
+import MemoizedInvoiceProvider from "../Utility/Providers/InvoiceProvider";
+import SwapProvider from "../Utility/Providers/SwapProvider";
 const Swap = lazy(() => import("../Components/pages/Swap/Swap"));
 const ProposalDetailView = lazy(() =>
   import("../Components/features/proposals/ProposalDetailView")
@@ -108,7 +110,9 @@ export const router = createBrowserRouter(
           path=":budgetId/invoices"
           element={
             <ProtectedRoute path="/*">
-              <InvoiceListView />
+              <MemoizedInvoiceProvider>
+                <InvoiceListView />
+              </MemoizedInvoiceProvider>
             </ProtectedRoute>
           }
           errorElement={<ErrorPage />}
@@ -145,7 +149,9 @@ export const router = createBrowserRouter(
         path="swap"
         element={
           <ProtectedRoute path="/*">
-            <Swap />
+            <SwapProvider>
+              <Swap />
+            </SwapProvider>
           </ProtectedRoute>
         }
         errorElement={<ErrorPage />}

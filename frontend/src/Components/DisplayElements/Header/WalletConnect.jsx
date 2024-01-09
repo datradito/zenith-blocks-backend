@@ -3,6 +3,7 @@ import React, { useEffect, useContext } from "react";
 import axios from "axios";
 
 import { UserContext } from "../../../Utility/Providers/UserProvider";
+import { decodeToken, clearAuthData, setAuthData } from "../../../Utility/auth";
 import { useAccount, useDisconnect, useNetwork } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useNavigate } from "react-router-dom";
@@ -11,22 +12,7 @@ import { useSignMessage } from "wagmi";
 import { SiweMessage } from "siwe";
 import { useDispatch } from "react-redux";
 import { setIsLoggedIn } from "../../../actions/createAuthAction";
-import { toast } from "react-hot-toast";
-
-const clearAuthData = () => {
-  sessionStorage.removeItem("authToken");
-  sessionStorage.removeItem("address");
-  sessionStorage.removeItem("daoId");
-};
-
-function decodeToken(token) {
-  if (!token) {
-    return;
-  }
-  const base64Url = token.split(".")[1];
-  const base64 = base64Url.replace("-", "+").replace("_", "/");
-  return JSON.parse(window.atob(base64));
-}
+import { message } from "antd";
 
 export default function WalletConnect() {
   const { signMessageAsync } = useSignMessage();
@@ -34,28 +20,24 @@ export default function WalletConnect() {
   const { chain } = useNetwork();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { setUser } = useContext(UserContext);  
+  const { setUser, user, logoutAndClearUser } = useContext(UserContext);  
 
   const { address } = useAccount({
     onConnect: () => {
-      const auth = sessionStorage.getItem("authToken");
-      !auth && signInWithEthereum();
+      !user && signInWithEthereum();
     },
     onDisconnect() {
-      clearAuthData();
-      dispatch(setIsLoggedIn(false));
+      logoutAndClearUser();
       navigate(`/`);
     },
   });
 
 
   useEffect(() => {
-    const auth = sessionStorage.getItem("authToken");
-    if (!auth) {
-      disconnectAsync();
-      localStorage.clear();
+    if (!user) {
+      logoutAndClearUser();
     }
-  }, []);
+  }, [user]);
 
   const createSiweMessage = async () => {
     try {
@@ -102,30 +84,66 @@ export default function WalletConnect() {
 
   async function signInWithEthereum() {
     try {
-      const message = await createSiweMessage();
+      const siweMessage = await createSiweMessage();
 
-      if (!message) {
+      if (!siweMessage) {
         throw new Error("Error creating message");
       }
 
-      const signature = await signMessageAsync({ message : message.prepareMessage() });
+      const signature = await signMessageAsync({ message : siweMessage.prepareMessage() });
 
       if (!signature) {
         throw new Error("Error signing message");
       }
-      const res = await sendForVerification(message, signature);
-      const { daoId, address } = decodeToken(res.authToken);
+      const resPromise = sendForVerification(siweMessage, signature);
+      message.loading({
+        content: "Verifying signature...",
+        key: "verifySignature",
+      });
 
-      sessionStorage.setItem("authToken", res.authToken);
-      sessionStorage.setItem("daoId", daoId);
-      sessionStorage.setItem("address", address);
-
-      dispatch(setIsLoggedIn(true));
-      const user = decodeToken(res.authToken);
-      setUser(user);
-      navigate(`/proposals`);
+      resPromise
+        .then((res) => {
+          message.destroy("verifySignature");
+          message.success({
+            content: "Signature verified successfully",
+            key: "verifySignatureSuccess",
+            duration: 1,
+            onClose: () => {
+                const { daoId, address } = decodeToken(
+                  res.authToken
+                );
+                setAuthData(address, res.authToken, daoId);
+                dispatch(setIsLoggedIn(true));
+                const user = decodeToken(res.authToken);
+                setUser(user);
+              message.loading({
+                content: "Signing in...",
+                key: "signIn",
+                duration: 1,
+                onClose: () => {
+                  message.destroy("signIn");
+                  message.success({
+                    content: "Signed in successfully",
+                    key: "signInSuccess",
+                    duration: 3,
+                    onClose: () => {
+                      message.destroy("signInSuccess");
+                      navigate("/proposals");
+                    },
+                  });
+                }
+              });
+            },
+          });              
+        })
+        .catch((error) => {
+          message.destroy("verifySignature");
+          message.error({
+            content: `❌ ${error.message}`,
+            key: "verifySignatureError",
+          });
+        });
     } catch (error) {
-      toast.error(error.message);
       disconnectAsync();
       dispatch(setIsLoggedIn(false));
       clearAuthData();

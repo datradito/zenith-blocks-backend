@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { InvoiceContext } from "../../../Utility/Providers/InvoiceProvider";
-import { useContext } from "react";
+import { useInvoice } from "../../../Utility/Providers/InvoiceProvider";
 
 import SubHeader from "../../molecules/SubHeader/SubHeader";
 import ItemCardComponent from "../../atoms/ItemCard/ItemCard";
@@ -29,8 +28,8 @@ const BudgetInfo = styled(List)`
 `;
 
 function InvoiceListView() {
-  const { Budget, budget, proposal, invoices, isLoading, refetchInvoices } =
-    useContext(InvoiceContext);
+  const { Budget,budget, proposal, invoices, isLoading, refetchInvoices } =
+    useInvoice();
 
   const navigate = useNavigate();
 

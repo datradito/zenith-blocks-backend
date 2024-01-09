@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { UserContext } from "../Utility/Providers/UserProvider";
-import { toast } from "react-hot-toast";
 
 const isAuthenticated = () => {
   const token = sessionStorage.getItem("authToken");
@@ -17,7 +16,6 @@ const isAuthenticated = () => {
 
 const logoutUser = (logOutUser) => {
   logOutUser();
-  toast.error("Please re-connect the wallet");
   return <Navigate to="/" />;
 };
 

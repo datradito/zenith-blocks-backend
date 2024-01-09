@@ -22,15 +22,11 @@ function App() {
       <ApolloProvider client={client}>
         <Provider store={storeConfig}>
           <PersistGate loading={null} persistor={persistor}>
-            <SwapProvider>
               <UserProvider>
-                <MemoizedInvoiceProvider>
                   <Suspense fallback={<CircularIndeterminate />}>
                     <RouterProvider router={router} />
                   </Suspense>
-                </MemoizedInvoiceProvider>
               </UserProvider>
-            </SwapProvider>
             <Toaster
               position="top-center"
               gutter={12}

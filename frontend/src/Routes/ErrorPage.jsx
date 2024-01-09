@@ -8,11 +8,11 @@ export default function ErrorPage() {
     // the response json is automatically parsed to
     // `error.data`, you also have access to the status
     return toast.error(
-      error.message || "Something went wrong! Please try again later."
+      "Something went wrong! Please try again later."
     );
   }
 
   // rethrow to let the parent error boundary handle it
   // when it's not a special case for this route
-  throw error;
+  console.error(error);
 }
