@@ -29,15 +29,6 @@ const StyledList = styled(List)`
 
 function FilterInvoices( { refetchInvoices }) {
     const handleStatusClick = (status) => {
-        // refetch({ budgetid: id, where: { status: status} });
-        // // Run gql query with where clause and pass the clicked button's status to the query
-        // // Replace `GET_INVOICES` with your actual gql query and update the variables accordingly
-        // // const { data, loading, error } = useQuery(GET_INVOICES, {
-        // //     variables: { status },
-        // // });
-
-        // // Handle the gql query response
-        // // ...
         refetchInvoices(status);
     };
 
