@@ -2,10 +2,7 @@ import { useFormContext } from "react-hook-form";
 
 import { categories } from "../../pages/Category/Category";
 
-import currencies from "../../../Utility/CurrencyList.json"
-
 import TextArea from "../../atoms/TextArea/TextArea";
-import StyledSelect from "../../atoms/SelectDropdown/SelectDropdown";
 import Form from "../../atoms/Form/Form";
 import FormRow from "../../atoms/FormRow/FormRow";
 import Input from "../../atoms/Input/Input";
@@ -89,27 +86,34 @@ function CreateBudgetForm({remainingProposalAmount}) {
               },
               required: "This field is required",
               onChange: (e) => {
-                methods.setValue("breakdown", `${(
-                  (parseInt(e.target.value) / parseInt(defaultValues["Total Budget"])) *
-                  100
-                ).toFixed(2)}%`);
-              }
+                methods.setValue(
+                  "breakdown",
+                  `${(
+                    (parseInt(e.target.value) /
+                      parseInt(defaultValues["Total Budget"])) *
+                    100
+                  ).toFixed(2)}%`
+                );
+              },
             })}
           />
         </FormRow>
-        <FormRow label="Currency" error={errors?.currency?.message}>
-          <StyledSelect
+        <FormRow
+          style={{
+            maxWidth: "20%",
+          }}
+          label="Currency"
+          error={errors?.currency?.message}
+        >
+          <Input
+            type="text"
+            id="currency"
+            readOnly
+            value={defaultValues.Currency}
             {...methods.register("currency", {
-              required: "This field is required",
+              required: "Currency is required",
             })}
-            onChange={(e) => methods.setValue("currency", e.target.value)}
-          >
-            {currencies.map((currency) => (
-              <option key={currency.ticker} value={currency.ticker}>
-                {currency.ticker}
-              </option>
-            ))}
-          </StyledSelect>
+          />
         </FormRow>
         <FormRow label="Breakdown">
           <Input
@@ -117,11 +121,9 @@ function CreateBudgetForm({remainingProposalAmount}) {
             id="breakdown"
             readOnly
             defaultValue={defaultValues.Breakdown}
-            {...methods.register("breakdown",
-              {
-                required: "This field is required",
-              },
-            )}
+            {...methods.register("breakdown", {
+              required: "This field is required",
+            })}
           />
         </FormRow>
         <FormRow label="Description" error={errors?.description?.message}>

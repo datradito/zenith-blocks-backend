@@ -5,6 +5,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useSubmitBudget } from '../../hooks/Budgets/useSubmitBudget';
 import useGetRemainingProposalAmount from '../../hooks/Proposals/useGetRemainingProposalAmount';
 import useFilteredProposalAmount from '../../hooks/Proposals/useFilteredProposalAmount';
+import useGetProposalAmount from '../../hooks/Proposals/useGetProposalAmount';
 
 import SubHeader from '../../molecules/SubHeader/SubHeader';
 
@@ -23,14 +24,7 @@ function CreateBudget() {
   const { loading, submitBudgetMutation } = useSubmitBudget();
   const { remainingProposalAmount } = useGetRemainingProposalAmount(proposal.id);
   const filteredProposalAmount = useFilteredProposalAmount(proposals, proposal.id);
-
-  // console.log(remainingProposalAmount);
-
-  // if (remainingProposalAmount === 0) {
-  //   toast.error("Proposal is fully budgeted");
-  //   //redirect to previous page
-  //   navigate(`/proposals/${proposal.id}/budgets`);
-  // }
+  const { currency } = useGetProposalAmount(proposal.id);
 
   const methods = useForm({
     defaultValues: {
@@ -39,10 +33,9 @@ function CreateBudget() {
       Proposal: proposal.title,
       "Ipfs Link": proposal.ipfs,
       Breakdown: 0,
+      Currency: currency,
     },
   });
-
-  
 
 
   const handleCreateBudget = (data) => {

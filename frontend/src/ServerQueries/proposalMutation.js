@@ -9,6 +9,7 @@ export const ADD_OR_UPDATE_PROPOSAL = gql`
     ) {
       id
       amount
+      currency
     }
   }
 `;

@@ -28,6 +28,7 @@ export const typeDefs = `#graphql
     type Proposal {
         id: String
         amount: Float
+        currency: String
         modified: String
         status: String
         modifier: String
@@ -153,6 +154,7 @@ input InvoiceFilterInput {
         modifier: String
         rootpath: String
         daoid: String
+        currency: String
     }
     input ProposalInput {
         id: String

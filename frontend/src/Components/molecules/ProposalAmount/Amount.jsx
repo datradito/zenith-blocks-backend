@@ -2,20 +2,20 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { addAmount } from "../../../actions/currentProposal/amount.js";
 import useGetProposalAmount from "../../hooks/Proposals/useGetProposalAmount.jsx";
-import CustomActionIcon from "../../atoms/ActionIcon/CustomActionIcon.jsx";
 import Box from "@mui/material/Box";
 import CircularIndeterminate from "../../atoms/Loader/loader.jsx";
+import CustomActionIcon from "../../atoms/ActionIcon/CustomActionIcon.jsx";
+import Modal from "../Modal/Modal.jsx";
+import FormDetailPanel from "../../atoms/EditDetails/EditDetailsProposal.jsx";
 
-export default function Amount({ proposalid, onClick }) {
+export default function Amount({ row }) {
   const dispatch = useDispatch();
 
-  const { amount, status, proposalLoading } = useGetProposalAmount(proposalid);
-
-  // dispatch(addAmount({ amount: amount, proposalId: proposalId }));
+  const { amount, status, proposalLoading, refetch } = useGetProposalAmount(row.id);
 
   if (amount) {
     dispatch(
-      addAmount({ amount: amount, proposalId: proposalid, status: status })
+      addAmount({ amount: amount, proposalId: row.id, status: status })
     );
   }
 
@@ -35,7 +35,24 @@ export default function Amount({ proposalid, onClick }) {
 
   return (
     <div>
-      {amount !== null ? amount : <CustomActionIcon onClick={onClick} />}
+      {amount !== null ? (
+        amount
+      ) : (
+        <>
+          <Modal>
+            <Modal.Open opens="editAmount">
+              <CustomActionIcon />
+            </Modal.Open>
+
+            <Modal.Window name="editAmount">
+                <FormDetailPanel
+                  row={row}
+                  refetch={refetch}
+                />
+            </Modal.Window>
+          </Modal>
+        </>
+      )}
     </div>
   );
 }
