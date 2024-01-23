@@ -37,7 +37,8 @@ const proposalResolver = {
                 "id": args.proposal.id,
                 "amount": args.proposal.amount,
                 "modifier": args.proposal.modifier,
-                "daoid": args.proposal.daoid
+                "daoid": args.proposal.daoid,
+                "currency": args.proposal.currency,
             };
 
             let ipfsResponse;

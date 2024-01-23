@@ -20,8 +20,8 @@ const logoutUser = (logOutUser) => {
 };
 
 const ProtectedRoute = ({ children }) => {
-  const { logOutUser } = useContext(UserContext);
-  return isAuthenticated() ? children : logoutUser(logOutUser);
+  const { logoutAndClearUser } = useContext(UserContext);
+  return isAuthenticated() ? children : logoutUser(logoutAndClearUser);
 };
 
 export default ProtectedRoute;

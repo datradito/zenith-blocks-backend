@@ -6,11 +6,11 @@ export default function StatusChip({ status }) {
     const chipStyle = {
         backgroundColor: status === 'PAID' ? '#0F2D20' : '#472B2B',
         padding: '0.5rem',
-        color: status === 'PAID' ? '#20CE6F' : '#FC4F4F',
+        color: status === 'PAID' || 'CLOSED' ? '#20CE6F' : '#FC4F4F',
     }
     return (
         <Stack direction="row" spacing={1}>
-            <Chip label= {status === 'PAID' ? "PAID" : "UNPAID"} sx={chipStyle} />
+            <Chip label= {status || "UNPAID"} sx={chipStyle} />
         </Stack>
     );
 }

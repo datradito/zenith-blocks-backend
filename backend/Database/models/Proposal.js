@@ -25,11 +25,15 @@ const Proposal = sequelize.define('proposals', {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    currency: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'USDT',
+    },
     ipfs: {
         type: DataTypes.STRING,
         allowNull: false,
     },
 });
-
 
 export default Proposal;

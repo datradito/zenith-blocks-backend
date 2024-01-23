@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
-import FormDetailPanel from "../../atoms/EditDetails/EditDetailsProposal.jsx";
 import Amount from "../../molecules/ProposalAmount/Amount.jsx";
-
+import LaunchIcon from "@mui/icons-material/Launch";
+import Modal from "../../molecules/Modal/Modal.jsx";
+import ProposalSnapShotView from "./ProposalSnapShotView.jsx";
 const SubItem = styled(Paper)(({ theme }) => ({
   backgroundColor: "#1A1C1E",
   padding: theme.spacing(1),
@@ -31,49 +32,38 @@ const label = {
   fontSize: ".65rem",
 };
 
-function ProposalCard({
-  item,
-  selectedItemId,
-  onClose,
-})
-{
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [isAmountAdded, setIsAmountAdded] = useState(false);
-
-  
+function ProposalCard({ item }) {
   return (
     <>
       <SubItem sx={subItemStyle}>
         <ColumnItem sx={label}>Governance</ColumnItem>
         <ColumnItem>{item.space.name}</ColumnItem>
       </SubItem>
-      <SubItem
-        sx={subItemStyle}
-      >
+      <SubItem sx={subItemStyle}>
         <ColumnItem sx={label}>Total Budget</ColumnItem>
         <ColumnItem>
-          {selectedItem === item.id && (
-            <FormDetailPanel
-              row={item}
-              onClose={onClose}
-              proposalId={item.id}
-              setIsAmountAdded={setIsAmountAdded}
-            />
-          )}
-          {(isAmountAdded || selectedItem !== item.id) && (
-            <>
-              <Amount
-                proposalid={item.id}
-                key={selectedItemId}
-                onClick={() => setSelectedItem(item.id)}
-              />
-            </>
-          )}
+          <>
+            <Amount row={item} />
+          </>
         </ColumnItem>
       </SubItem>
       <SubItem>
-        <Link to={`/proposals/${item.id}/budgets`} style={{ textDecoration: "none" }}>
-          <ColumnItem sx={label}>Proposal</ColumnItem>
+        <ColumnItem sx={label}>
+          Proposal
+          <Modal>
+            <Modal.Open opens="proposalDetail">
+              <LaunchIcon sx={{ color: "#1A65C0", fontSize: "0.75rem" }} />
+            </Modal.Open>
+
+            <Modal.Window name="proposalDetail">
+              <ProposalSnapShotView data={item} />
+            </Modal.Window>
+          </Modal>
+        </ColumnItem>
+        <Link
+          to={`/proposals/${item.id}/budgets`}
+          style={{ textDecoration: "none" }}
+        >
           <ColumnItem>{item.title}</ColumnItem>
         </Link>
       </SubItem>

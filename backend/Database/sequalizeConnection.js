@@ -15,6 +15,7 @@ Sequelize.models = {
 };
 
 const init = async () => {
+
   Budget.hasMany(Invoice);
   Invoice.belongsTo(Budget);
   Proposal.hasMany(Budget);

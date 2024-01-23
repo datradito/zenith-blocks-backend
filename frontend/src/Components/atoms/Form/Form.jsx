@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 const Form = styled.form`
 box-sizing: border-box;
   display: flex;
-  flex-direction: row;
+  flex-direction: ${(props) => (props.type === "modal"? "column" : "row")};
   gap: .45rem;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -20,7 +20,7 @@ box-sizing: border-box;
   ${(props) =>
     props.type === "modal" &&
     css`
-      width: 80rem;
+      width: 30rem;
     `}
     
   overflow: hidden;
