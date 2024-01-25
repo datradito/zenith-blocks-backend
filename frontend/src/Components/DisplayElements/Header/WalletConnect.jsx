@@ -16,7 +16,6 @@ import { message } from "antd";
 
 export default function WalletConnect() {
   const { signMessageAsync } = useSignMessage();
-  const { disconnectAsync } = useDisconnect();
   const { chain } = useNetwork();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -144,9 +143,8 @@ export default function WalletConnect() {
           });
         });
     } catch (error) {
-      disconnectAsync();
       dispatch(setIsLoggedIn(false));
-      clearAuthData();
+      logoutAndClearUser();
     }
   }
 

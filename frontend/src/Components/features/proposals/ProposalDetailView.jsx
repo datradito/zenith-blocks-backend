@@ -28,12 +28,7 @@ function ProposalDetailView() {
   return (
     <div>
       <SubHeader.Container>
-        <SubHeader.List
-          sx={{
-            flexDirection: "column",
-            gap: "2.5rem",
-          }}
-        >
+        <SubHeader.List>
           <Label>
             <Breadcrumbs />
           </Label>
@@ -41,7 +36,7 @@ function ProposalDetailView() {
             <Label>Proposals</Label>
           </GoBack>
         </SubHeader.List>
-        <SubHeader.List>
+        <SubHeader.List styles={{ flexDirection: "row", gap: "1rem" }}>
           <SubHeader.ExportCSVButton
             label="CSV Report"
             data={budgets || []}

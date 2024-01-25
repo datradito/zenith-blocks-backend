@@ -1,16 +1,15 @@
 import React from "react";
-import { NetworkStatus } from "@apollo/client";
 import { useDispatch } from "react-redux";
 import Stack from "@mui/material/Stack";
+import CircularIndeterminate from "../../atoms/Loader/loader.jsx";
 import PaginationControlled from "../../DisplayElements/Pagination.jsx";
 import SubHeader from "../../molecules/SubHeader/SubHeader.jsx";
-import CircularIndeterminate from "../../atoms/Loader/loader.jsx";
 import Label from "../../atoms/Label/Label.jsx";
 import useProposals from "../../hooks/Proposals/useProposals.jsx";
-import ProposalCard from "../../features/proposals/ProposalCard.jsx";
-import { toast } from "react-hot-toast";
+import ProposalCardMemo from "../../features/proposals/ProposalCard.jsx";
 import Container from "../../atoms/Container/Container.jsx";
 import { refreshState } from "../../../actions/createBudgetAction/index.js";
+import Search from "../../atoms/Search/Search.jsx";
 const pagination = {
   margin: "1rem",
   alignItems: "flex-end",
@@ -22,18 +21,16 @@ const Proposals = () => {
   dispatch(refreshState());
 
   const {
-    loading,
-    error,
-    data,
     syncedAt,
+    proposals,
+    loading,
     handleSyncProposals,
     handleSkipValueChange,
-    networkStatus,
+    handleSearch,
   } = useProposals();
 
-  if (networkStatus === NetworkStatus) return <CircularIndeterminate />;
-  if (loading) return <CircularIndeterminate />;
-  if (error) toast.error(error.message);
+  if(loading) return <CircularIndeterminate />;
+
 
   return (
     <Container
@@ -42,29 +39,16 @@ const Proposals = () => {
         paddingTop: "1rem",
       }}
     >
-      <SubHeader.Container sx={{ paddingTop: "1rem" }}>
-        <SubHeader.List
-          sx={{
-            flexDirection: "column",
-            gap: "2.5rem",
-          }}
-        >
+      <SubHeader.Container>
+        <SubHeader.List>
           <Label>{syncedAt}</Label>
           <Label variant="subtitle" style={{ color: "white" }}>
             Proposals
           </Label>
         </SubHeader.List>
-        <SubHeader.List>
-          <SubHeader.ActionButton
-            label="CSV Report"
-            sx={{
-              backgroundColor: "#282A2E",
-            }}
-          />
-          <SubHeader.ActionButton
-            label="Sync Proposals"
-            onClick={handleSyncProposals}
-          />
+        <SubHeader.List styles={{ flexDirection: "row", gap: "1rem" }}>
+          <Search onSearch={handleSearch} />
+          <SubHeader.ActionButton label="Sync Proposals" onClick={handleSyncProposals} />
         </SubHeader.List>
       </SubHeader.Container>
       <Container
@@ -72,7 +56,7 @@ const Proposals = () => {
           border: "none",
         }}
       >
-        {data?.proposals.map((item) => {
+        {proposals?.map((item) => {
           return (
             <Stack
               border={0.05}
@@ -83,7 +67,7 @@ const Proposals = () => {
               direction="row"
               justifyContent="flex-start"
             >
-              <ProposalCard item={item} />
+              <ProposalCardMemo item={item} />
             </Stack>
           );
         })}

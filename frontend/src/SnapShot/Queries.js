@@ -20,17 +20,6 @@ export const GET_SPACES = gql`
     }
 }`
 
-export const GET_All_PROPOSALS = gql`
-    query GetProposals($first: Int, $skip: Int) {
-      proposals(first: $first, skip: $skip) {
-        id,
-        title,
-        space {
-          name
-        },
-      }
-    }
-`;
 
 export const GET_PROPOSAL_BY_ID = gql`
     query GetProposals($id: String) {
@@ -52,15 +41,8 @@ export const GET_PROPOSAL_BY_ID = gql`
 `;
 
 export const GET_PROPOSAL_BY_SPACE = gql`
-    query GetProposals($name: String, $first: Int, $skip: Int) {
-        proposals(where: { space: $name }, first: $first, skip: $skip) 
-          # first: 20,
-          # skip: 0,
-          # where: {
-          #   space_in: ["balancer.eth"],
-          # },
-            # orderBy: "created",
-            # orderDirection: desc
+    query GetProposals($name: String, $first: Int, $skip: Int, $title: String) {
+        proposals(where: { space: $name, title_contains: $title }, first: $first, skip: $skip) 
          {
           id
           title

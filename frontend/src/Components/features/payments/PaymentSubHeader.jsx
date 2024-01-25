@@ -11,13 +11,9 @@ function PaymentSubHeader() {
     Budget: state.currentBudget.Budget,
   }));
   return (
-    <SubHeader.Container sx={{ paddingTop: "1rem" }}>
+    <SubHeader.Container>
       <SubHeader.List
-        sx={{
-          flexDirection: "column",
-          gap: "2.5rem",
-          margin: "0",
-        }}
+        styles={{margin: "0"}}
       >
         <Label>
           <Breadcrumbs id={proposal.id} secondaryId={Budget.id} />

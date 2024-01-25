@@ -1,11 +1,11 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useCallback } from "react";
 import { useDisconnect } from "wagmi";
 import { clearAuthData, decodeToken, isTokenExpired } from "../auth";
 
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const { disconnectAsync } = useDisconnect();
+  //const { disconnectAsync } = useDisconnect();
   const [user, setUser] = useState(null);
   
 
@@ -20,11 +20,11 @@ export const UserProvider = ({ children }) => {
     setUser(decodedToken);
   };
 
-  const logoutAndClearUser = () => {
-    disconnectAsync();
-    clearAuthData();
-    setUser(null);
-  };
+const logoutAndClearUser = useCallback(() => {
+  //disconnectAsync();
+  clearAuthData();
+  setUser(null);
+}, [setUser]); 
 
   // Fetch the user on component mount
   useEffect(() => {

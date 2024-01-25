@@ -1,76 +1,70 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { GET_PROPOSAL_BY_SPACE } from "../../../SnapShot/Queries.js";
 import { snapShotClient } from "../../../apolloConfig/client.js";
-import { UserContext } from "../../../Utility/Providers/UserProvider.jsx";
+import { useQuery } from "@apollo/client";
+import { message } from "antd";
+import CircularIndeterminate from "../../atoms/Loader/loader.jsx";
 
 const useProposals = () => {
   const dao = sessionStorage.getItem("daoId");
   const [currentPage, setCurrentPage] = useState(
     parseInt(localStorage.getItem("currentPage")) || 1
   );
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [data, setData] = useState(null);
-  const [networkStatus, setNetworkStatus] = useState(null);
+  const [proposals, setProposals] = useState(null);
   const [syncedAt, setSyncedAt] = useState(null);
-  const [refetch, setRefetch] = useState(false);
+  const [title, setTitle] = useState("");
 
-  const user = useContext(UserContext);
+  const { loading, refetch, error } = useQuery(GET_PROPOSAL_BY_SPACE, {
+    client: snapShotClient,
+    variables: {
+      first: 10,
+      skip: (currentPage - 1) * 10,
+      name: dao,
+      title: title,
+    },
+    onCompleted: (data) => {
+      setProposals(data.proposals);
+      setSyncedAt(new Date().toLocaleString());
+    },
+    onError: (err) => {
+      message.error({ content: "Error fetching proposals", key: "error" });
+    },
+  });
 
-  useEffect(() => {
-    const fetchProposals = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await snapShotClient.query({
-          query: GET_PROPOSAL_BY_SPACE,
-          variables: {
-            first: 10,
-            skip: (currentPage - 1) * 10,
-            name: dao,
-          },
-        });
-
-        const { loading, networkStatus, data, error } = response;
-
-        setData(data);
-        setLoading(loading);
-        setError(error);
-        setNetworkStatus(networkStatus);
-
-      } catch (err) {
-        setError(err);
-        setNetworkStatus(8);
-      } finally {
-        setLoading(false);
-        setSyncedAt(new Date().toLocaleString());
-      }
-    };
-
-    if (!user) {
-      window.location.href = "/";
-    } else {
-      fetchProposals();
-    }
-  }, [dao, currentPage, user, refetch]);
-
-  const handleSkipValueChange = () => {
+  const handleSkipValueChange = useCallback(() => {
     setCurrentPage((prevPage) => prevPage + 1);
-  };
+  }, []);
 
-  const handleSyncProposals = () => {
-    setRefetch((prev) => !prev);
-  };
+  const handleSearch = useMemo(() => {
+    return (searchTerm) => {
+      setTitle(searchTerm);
+      refetch();
+    };
+  }, [refetch]);
 
-  return {
-    loading,
-    error,
-    syncedAt,
-    data,
-    handleSyncProposals,
-    handleSkipValueChange,
-    networkStatus,
-  };
+  const handleSyncProposals = useCallback(() => {
+    setTitle("");
+    refetch();
+  }, [refetch]);
+
+  if (error) {
+    message.error({ content: "Error fetching proposals", key: "error" });
+    return;
+  }
+
+  //use message api from antd to show loading state
+  if (loading) {
+    return { loading: true };
+  } else {
+    return {
+      syncedAt,
+      proposals,
+      loading,
+      handleSyncProposals,
+      handleSkipValueChange,
+      handleSearch,
+    };
+  }
 };
 
 export default useProposals;
