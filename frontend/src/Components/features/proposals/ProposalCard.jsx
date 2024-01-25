@@ -71,4 +71,6 @@ function ProposalCard({ item }) {
   );
 }
 
-export default ProposalCard;
+
+const ProposalCardMemo = React.memo(ProposalCard);
+export default ProposalCardMemo;

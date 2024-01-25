@@ -76,12 +76,7 @@ function InvoiceCreation() {
   return (
     <FormProvider {...methods}>
       <SubHeader.Container>
-        <SubHeader.List
-          sx={{
-            flexDirection: "column",
-            gap: "2.5rem",
-          }}
-        >
+        <SubHeader.List>
           <Label>
             <Breadcrumbs id={Budget.id} />
           </Label>
@@ -89,7 +84,7 @@ function InvoiceCreation() {
             <Label>Invoices</Label>
           </GoBack>
         </SubHeader.List>
-        <SubHeader.List>
+        <SubHeader.List styles={{ flexDirection: "row", gap: "1rem" }}>
           <SubHeader.ActionButton
             label="Reset Invoice"
             onClick={() => methods.reset()}

@@ -1,4 +1,4 @@
-export const decodeToken = (token) =>  {
+export const decodeToken = (token) => {
   if (!token) {
     return;
   }
@@ -21,7 +21,7 @@ export const setAuthData = (address, authToken, daoId) => {
 };
 
 export const isTokenExpired = (decodedToken) => {
-    if (!decodedToken || !decodedToken.exp) {
+  if (!decodedToken || !decodedToken?.exp) {
       return true; 
     }
     const currentTime = Math.floor(Date.now() / 1000);

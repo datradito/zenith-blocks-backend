@@ -16,15 +16,13 @@ import styled from "styled-components";
 import FilterInvoices from "../../molecules/Invoices/FilterInvoices";
 
 const BudgetInfo = styled(List)`
-  gap: 0.5rem;
-  padding: 1rem;
   margin: 0rem;
-  justify-content: flex-start;
   border: 2px solid #282a2e;
-  margin-top: 1rem;
   border-radius: 0.5rem;
   width: 100%;
-  box-sizing: border-box;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
 `;
 
 function InvoiceListView() {
@@ -39,13 +37,8 @@ function InvoiceListView() {
     };
 
     return (
-      <SubHeader.Container sx={{ paddingTop: "1rem" }}>
-        <SubHeader.List
-          sx={{
-            flexDirection: "column",
-            gap: "2.5rem",
-          }}
-        >
+      <SubHeader.Container>
+        <SubHeader.List>
           <Label>
             <Breadcrumbs id={proposal.id} />
           </Label>
@@ -53,7 +46,7 @@ function InvoiceListView() {
             <Label>Budgets</Label>
           </GoBack>
         </SubHeader.List>
-        <SubHeader.List>
+        <SubHeader.List styles={{ flexDirection: "row", gap: "1rem" }}>
           <SubHeader.ExportCSVButton
             label="Export CSV"
             data={invoices || []}

@@ -1,7 +1,7 @@
-import React from 'react';
-import Button from '../../atoms/Button/Button';
-import styled from 'styled-components';
-import List from '../../atoms/List/List';
+import React from "react";
+import Button from "../../atoms/Button/Button";
+import styled, { css } from "styled-components";
+import List from "../../atoms/List/List";
 
 const StyledButton = styled(Button)`
   background-color: ${(props) => (props.selected ? "#055FFC" : "transparent")};
@@ -16,30 +16,51 @@ const StyledButton = styled(Button)`
   &:active {
     background-color: #272a2e;
   }
+
+  ${(props) =>
+    props.active &&
+    css`
+      background-color: #272a2e;
+    `}
 `;
 
-const StyledList = styled(List)`
-    gap: 0.5rem;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    padding: 0;
-    width: 100%;
-    justify-content: flex-start;
-  `
+const listStyles = {
+  flexDirection: "row",
+  margin: "1rem 0 1rem 0",
+  justifyContent: "flex-start",
+};
 
-function FilterInvoices( { refetchInvoices }) {
-    const handleStatusClick = (status) => {
-        refetchInvoices(status);
-    };
+function FilterInvoices({ refetchInvoices }) {
 
-    return (
-        <StyledList>
-            <StyledButton onClick={() => handleStatusClick()}>All</StyledButton>
-            <StyledButton onClick={() => handleStatusClick('Paid')}>Paid</StyledButton>
-            <StyledButton onClick={() => handleStatusClick('Unpaid')}>Unpaid</StyledButton>
-            <StyledButton onClick={() => handleStatusClick('Partial Paid')}>Partial Paid</StyledButton>
-        </StyledList>
-    );
+  const [currentFilter, setCurrentFilter] = React.useState("All");
+
+  const handleStatusClick = (status) => {
+    setCurrentFilter(status);
+    refetchInvoices(status);
+  };
+
+  return (
+    <List {...listStyles}>
+      <StyledButton
+        active={currentFilter === "All"}
+        onClick={() => handleStatusClick()}>All</StyledButton>
+      <StyledButton
+        active={currentFilter === "Paid"}
+        onClick={() => handleStatusClick("Paid")}>
+        Paid
+      </StyledButton>
+      <StyledButton
+        active={currentFilter === "Unpaid"}
+        onClick={() => handleStatusClick("Unpaid")}>
+        Unpaid
+      </StyledButton>
+      <StyledButton
+        active={currentFilter === "Partial Paid"}
+        onClick={() => handleStatusClick("Partial Paid")}>
+        Partial Paid
+      </StyledButton>
+    </List>
+  );
 }
 
-export default FilterInvoices
+export default FilterInvoices;
