@@ -39,6 +39,7 @@ function InvoiceRow({ invoice }) {
     Currency,
     Date,
     Due,
+    Status
   } = invoice;
 
   function handleDuplicate() {
@@ -56,7 +57,7 @@ function InvoiceRow({ invoice }) {
       <ScrollContainer>{Amount}</ScrollContainer>
       <ScrollContainer>{Currency}</ScrollContainer>
       <ScrollContainer>
-        <StatusChip />
+        <StatusChip status={Status} />
       </ScrollContainer>
       <ScrollContainer>{Date}</ScrollContainer>
       <ScrollContainer>{Due}</ScrollContainer>

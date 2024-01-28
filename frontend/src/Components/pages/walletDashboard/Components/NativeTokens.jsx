@@ -19,18 +19,18 @@ function NativeTokens({ wallet, chain, nativeBalance, setNativeBalance, nativeVa
         }
     }
 
-    const buttonConfig = {
-        innerText: 'Native Tokens',
-        onClick: getNativeBalance,
+    // const buttonConfig = {
+    //     innerText: 'Native Tokens',
+    //     onClick: getNativeBalance,
 
-    }
+    // }
 
-    const headers = ["Currency", "Balance", "Value"]
-    const data = [{
-        Native: "Native",
-        Balance: nativeBalance,
-        Value: `$${nativeValue}`,
-    }];
+    // const headers = ["Currency", "Balance", "Value"]
+    // const data = [{
+    //     Native: "Native",
+    //     Balance: nativeBalance,
+    //     Value: `$${nativeValue}`,
+    // }];
 
     return (
         <>

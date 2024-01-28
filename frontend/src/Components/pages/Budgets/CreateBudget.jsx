@@ -64,10 +64,6 @@ function CreateBudget() {
     <FormProvider {...methods}>
       <SubHeader.Container>
         <SubHeader.List
-          sx={{
-            flexDirection: "column",
-            gap: "2.5rem",
-          }}
         >
           <Label>
             <Breadcrumbs id={proposal.id} />
@@ -77,7 +73,7 @@ function CreateBudget() {
             <Label>Budgets</Label>
           </GoBack>
         </SubHeader.List>
-        <SubHeader.List>
+        <SubHeader.List styles={{ flexDirection: "row", gap: "1rem" }}>
           <SubHeader.ActionButton
             label="Reset Budget"
             sx={{
@@ -100,7 +96,7 @@ function CreateBudget() {
           borderRadius: 5,
         }}
       >
-        <CreateBudgetForm remainingProposalAmount={remainingProposalAmount}  />
+        <CreateBudgetForm remainingProposalAmount={remainingProposalAmount} />
       </Container>
     </FormProvider>
   );

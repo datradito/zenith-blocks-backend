@@ -3,8 +3,8 @@ import React, { useEffect, useContext } from "react";
 import axios from "axios";
 
 import { UserContext } from "../../../Utility/Providers/UserProvider";
-import { decodeToken, clearAuthData, setAuthData } from "../../../Utility/auth";
-import { useAccount, useDisconnect, useNetwork } from "wagmi";
+import { decodeToken,  setAuthData } from "../../../Utility/auth";
+import { useAccount, useNetwork } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useNavigate } from "react-router-dom";
 import { useSignMessage } from "wagmi";

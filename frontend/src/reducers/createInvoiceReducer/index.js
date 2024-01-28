@@ -1,4 +1,4 @@
-import { UPDATE_FIELD_INVOICE, ADD_ROW_INVOICE, DELETE_ROW_INVOICE, GET_ALL_ROWS_INVOICE, UPDATE_INVOICE_HEADER, RESET_INVOICE } from "../../actions/createInvoiceAction/types";
+import { UPDATE_FIELD_INVOICE, DELETE_ROW_INVOICE, GET_ALL_ROWS_INVOICE, UPDATE_INVOICE_HEADER, RESET_INVOICE } from "../../actions/createInvoiceAction/types";
 
 const initialState = {
         header:

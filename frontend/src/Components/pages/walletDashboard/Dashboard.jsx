@@ -2,7 +2,6 @@ import { useState } from "react";
 import NativeTokens from "./Components/NativeTokens";
 import Tokens from "./Components/Tokens";
 import TransferHistory from "./Components/TransferHistory";
-import WalletInputs from "./Components/WalletInput";
 import PortfolioValue from "./Components/PortfolioValue";
 import Avatar from '@mui/material/Avatar';
 import { NavLink } from "react-router-dom";
@@ -19,7 +18,7 @@ function Dashboard() {
     const [activeTab, setActiveTab] = useState('tokens');
     const { chain: networkChain } = useNetwork();
 
-   const { data, isError, isLoading } = useEnsAvatar({
+   const { data } = useEnsAvatar({
      address: address,
      cacheTime: 2_000,
    });
@@ -68,12 +67,12 @@ function Dashboard() {
                             />
                         </>
                     )}
-                <WalletInputs
+                {/* <WalletInputs
                     chain={chain}
                     setChain={setChain}
                     wallet={wallet}
                     setWallet={setWallet}
-                />
+                /> */}
 
             </Box>
             <Box

@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../db.js";
+import { BillStatuses } from "../../utility/BillStatuses.js";
 
 const Payment = sequelize.define("payments", {
   id: {
@@ -7,14 +8,6 @@ const Payment = sequelize.define("payments", {
     defaultValue: DataTypes.UUIDV4,
     allowNull: false,
     primaryKey: true,
-  },
-  recipient: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  owneraddress: {
-    type: DataTypes.STRING,
-    allowNull: false,
   },
   currency: {
     type: DataTypes.STRING,
@@ -26,22 +19,14 @@ const Payment = sequelize.define("payments", {
   },
   status: {
     type: DataTypes.STRING,
-    defaultValue: "Pending",
-    allowNull: false,
-  },
-  uploadPayments: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  proposalid: {
-    type: DataTypes.STRING,
+    defaultValue: BillStatuses.PENDING,
     allowNull: false,
   },
   invoiceid: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  transactionHash: {
+  transactionhash: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -54,7 +39,6 @@ const Payment = sequelize.define("payments", {
     allowNull: false,
   },
 });
-
 
 
 export default Payment;

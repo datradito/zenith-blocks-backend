@@ -1,4 +1,4 @@
-import React, { createContext, useContext} from "react";
+import React, { createContext, useContext, useMemo} from "react";
 import { useSelector } from "react-redux";
 import { useGetAllInvoices } from "../../Components/hooks/Invoices/useGetInvoices";
 import { useGetBudgetById } from "../../Components/hooks/Budgets/useGetBudgetById";
@@ -21,17 +21,20 @@ const MemoizedInvoiceProvider = React.memo(function InvoiceProvider({
     } = useGetAllInvoices(Budget?.id);
   
   const { budget } = useGetBudgetById(Budget?.id);
-
+ const value = useMemo(
+   () => ({
+     invoices,
+     refetchInvoices,
+     Budget,
+     budget,
+     proposal,
+   }),
+   [invoices, refetchInvoices, Budget, budget, proposal]
+ );
 
   return (
     <InvoiceContext.Provider
-      value={{
-        invoices,
-        refetchInvoices,
-        Budget,
-        budget,
-        proposal,
-      }}
+      value={value}
     >
       {children}
     </InvoiceContext.Provider>

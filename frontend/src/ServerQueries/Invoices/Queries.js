@@ -28,6 +28,7 @@ export const GET_ALL_INVOICES_BY_BUDGET = gql`
 export const GET_INVOICE_BY_ID = gql`
   query GetInvoiceById($id: String!) {
     getInvoiceById(id: $id) {
+      id
       category
       recipient
       owneraddress
