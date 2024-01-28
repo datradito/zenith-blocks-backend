@@ -59,15 +59,13 @@ input InvoiceFilterInput {
     }
     type Payment {
         id: String!
-        recipient: String!
-        owneraddress: String!
         invoiceid: String!
-        proposalid: String
         currency: String!
         total: Float!
         status: String!
-        transactionHash: String
+        transactionhash: String
         budgetid: String!
+        ipfs: String!
     }
 
     type Token {
@@ -114,13 +112,11 @@ input InvoiceFilterInput {
 
     
     input PaymentInput {
-        recipient: String!
         invoiceid: String!
-        proposalid: String
         currency: String!
         total: Float!
         status: String!
-        transactionHash: String
+        transactionhash: String
         budgetid: String!
     }
     

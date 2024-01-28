@@ -1,26 +1,24 @@
 import React, { useState, useEffect } from "react";
- 
-
 import { FormProvider, useForm } from "react-hook-form";
 import { useDebounce } from "use-debounce";
-import {
-  usePrepareSendTransaction,
-  useSendTransaction,
-  useWaitForTransaction,
-} from "wagmi";
-import { parseEther } from "viem";
-import CircularIndeterminate from "../../atoms/Loader/loader";
+import { useSubmitPayment } from "../../hooks/Payments/useSubmitPayment";
+import useGetAbi from "../../hooks/Web3/useGetAbi";
+import useHandleTransfer from "../../hooks/Payments/useHandleTransfer";
 import SubHeader from "../../molecules/SubHeader/SubHeader";
 import Input from "../../atoms/Input/Input";
 import { Divider } from "@mui/material";
-import Container from "../../atoms/Container/Container";
 import Form from "../../atoms/Form/Form";
 import FormRow from "../../atoms/FormRow/FormRow";
 import { message } from "antd";
+import { parseUnits } from "viem";
+import {
+  useWaitForTransaction,
+} from "wagmi";
 
 export function SendTransaction({ reciepent, paymentData }) {
-
-
+  const { contractABI, contractAddress } = useGetAbi(paymentData.currency);
+  const handleTransfer = useHandleTransfer();
+  const { submitPaymentMutation } = useSubmitPayment();
   const [messageApi, contextHolder] = message.useMessage();
   const methods = useForm({
     defaultValues: {
@@ -34,72 +32,96 @@ export function SendTransaction({ reciepent, paymentData }) {
 
   const [to, setTo] = useState("");
   const [debouncedTo] = useDebounce(to, 500);
+  const [ hash, setHash ] = useState("");
 
   const [amount, setAmount] = useState("");
   const [debouncedAmount] = useDebounce(amount, 500);
 
-  const { config, error: prepareTransactinoError } = usePrepareSendTransaction({
-    to: debouncedTo,
-    value: debouncedAmount ? parseEther(debouncedAmount) : undefined,
-  });
-
-  // prepareTransactinoError || (error && toast.error(prepareTransactinoError.message));
-  const { data, sendTransaction } = useSendTransaction(config);
 
   useEffect(() => {
     setTo(reciepent);
   }, [reciepent]);
 
-  const handlePaymentCreateOnClick = (hash) => {
-    console.log(hash);
+  const handlePaymentCreateOnClick = (hash, status) => {
+
+    const paymentInput = {
+      invoiceid: paymentData.id,
+      currency: paymentData.currency,
+      total: parseInt(amount),
+      status: status,
+      transactionhash: hash,
+      budgetid: paymentData.budgetid,
+    };
+
+    submitPaymentMutation(paymentInput);
   };
 
+
   const { isLoading, isSuccess, isError, error } = useWaitForTransaction({
-    hash: data?.hash,
+    hash: hash,
     onSuccess(data) {
-      handlePaymentCreateOnClick(data?.hash);
+      handlePaymentCreateOnClick(hash, "paid");
     },
     onError(error) {
       messageApi.open({
         type: "error",
-        content: error.message,
+        content: error.shortMessage,
         duration: 1.5,
       });
     },
   });
 
-  const handlePayment = (e) => {
-    e.preventDefault();
-    sendTransaction?.();
+  const handlePayment = async() => {
+    const transactionConfig = {
+      contractAddress: contractAddress,
+      contractABI: contractABI,
+      address: debouncedTo,
+      amount: Number(
+        parseUnits(debouncedAmount, paymentData.currency)
+      ).toString(),
+    };
+
+    try {
+      const data = await handleTransfer(transactionConfig);
+      setHash(data?.hash);
+    } catch (error) {
+      message.error(
+        error?.shortMessage || "Error: Transaction failed"
+
+      )
+    }
+
   };
 
-  if (isLoading) {
-    messageApi.open({
-      type: "loading",
-      content: "Waiting transaction...",
-      duration: 1.5,
-    });
-  };
-  if (isError || error) return messageApi.open({
-    type: "error",
-    content: `Error: ${error.message || isError.message}`,
-    duration: 1.5,
-  });
-  if (prepareTransactinoError) {
-    const error = JSON.parse(JSON.stringify(prepareTransactinoError));
-    messageApi.open({
-      type: "error",
-      content: error.shortMessage,
-      duration: 1.5,
-    });
-  }
+  // if (writeLoading) {
+  //   messageApi.open({
+  //     type: "loading",
+  //     content: "Waiting transaction...",
+  //     duration: 1.5,
+  //   });
+  // }
+  // if (writeError)
+  //   return messageApi.open({
+  //     type: "error",
+  //     content: `Error: ${writeError.shortMessage || isError.shortMessage}`,
+  //     duration: 1.5,
+  //   });
+  // if (prepareWriteContractError) {
+  //   //const error = JSON.parse(JSON.stringify(prepareWriteContractError));
+  //   messageApi.open({
+  //     type: "error",
+  //     content: prepareWriteContractError.shortMessage,
+  //     duration: 1.5,
+  //   });
+  // }
 
   return (
     <FormProvider {...methods}>
       {contextHolder}
       <Form
         onSubmit={(e) => {
-          handlePayment(e);
+          e.preventDefault();
+          handlePayment();
         }}
       >
         <FormRow
@@ -121,7 +143,6 @@ export function SendTransaction({ reciepent, paymentData }) {
           />
         </FormRow>
 
-        {/* <Label> Currency</Label> */}
         <FormRow
           style={{
             minWidth: "100%",
@@ -204,21 +225,10 @@ export function SendTransaction({ reciepent, paymentData }) {
         <>
           <SubHeader.ActionButton
             onClick={handlePayment}
-            disabled={isLoading || !sendTransaction || !to || !amount}
-            label={isLoading ? "Sending..." : "Pay Invoice"}
+            disabled={!to || !amount}
+            label={ "Pay Invoice"}
           />
         </>
-
-        {isLoading ? (
-          <CircularIndeterminate />
-        ) : isSuccess ? (
-          <Container>
-            Successfully sent {amount} ether to {to}
-            {/* <Container> */}
-            <a href={`https://etherscan.io/tx/${data?.hash}`}>Etherscan</a>
-            {/* </Container> */}
-          </Container>
-        ) : null}
       </Form>
     </FormProvider>
   );

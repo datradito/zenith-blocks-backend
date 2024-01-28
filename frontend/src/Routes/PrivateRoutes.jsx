@@ -10,7 +10,7 @@ const PrivateRoute = ({ children }) => {
     if (!user) {
      setUser(null)
     }
-  } ,[]);
+  } ,[setUser, user]);
 
   return user ? (
     children

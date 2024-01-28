@@ -1,27 +1,35 @@
 import { gql } from "@apollo/client";
 
-export const SUBMIT_PAYMENT = gql`
-  mutation SubmitPayment($payment: PaymentInput) {
-    submitPayment(payment: $payment) {
-      recipient
-      invoiceid
-      proposalid
-      currency
-      total
-      paid
-      status
-      transactionhash
-      budgetid
-    }
+// export const SUBMIT_PAYMENT = gql`
+//   mutation SubmitPayment($payment: PaymentInput) {
+//     submitPayment(payment: $payment) {
+//         invoiceid 
+//         currency 
+//         total 
+//         status 
+//         transactionhash
+//         budgetid 
+//     }
+//   }
+// `;
+
+const paymentFragment = gql`
+  fragment PaymentFields on Payment {
+    invoiceid
+    currency
+    total
+    status
+    transactionhash
+    budgetid
   }
 `;
 
-        // recipient: String!
-        // invoiceid: String!
-        // proposalid: String
-        // currency: String!
-        // total: Float!
-        // paid: Float!
-        // status: String!
-        // transactionHash: String
-        // budgetid: String!
+
+export const SUBMIT_PAYMENT = gql`
+  mutation SubmitPayment($paymentInput: PaymentInput!) {
+    submitPayment(payment: $paymentInput) {
+      ...PaymentFields
+    }
+  }
+  ${paymentFragment}
+`;

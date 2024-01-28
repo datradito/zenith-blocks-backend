@@ -17,7 +17,6 @@ export const transformItems =(items, totalBudget) => {
 }
 
 export const transformInvoices = (invoices) => {  
-    console.log(invoices);
     if(invoices === []) return null;
     
     invoices = invoices.map(invoice => {

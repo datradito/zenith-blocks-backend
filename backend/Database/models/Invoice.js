@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../db.js";
 import Budget from "./Budget.js";
+import { BillStatuses } from "../../utility/BillStatuses.js";
 
 const Invoice = sequelize.define("invoices", {
   id: {
@@ -35,7 +36,7 @@ const Invoice = sequelize.define("invoices", {
   },
   status: {
     type: DataTypes.STRING,
-    defaultValue: "New",
+    defaultValue: BillStatuses.UNPAID,
     allowNull: false,
   },
   date: {
@@ -63,5 +64,6 @@ const Invoice = sequelize.define("invoices", {
     allowNull: false,
   },
 });
+
 
 export default Invoice;

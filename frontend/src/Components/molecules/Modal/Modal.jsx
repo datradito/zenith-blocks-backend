@@ -3,7 +3,6 @@ import { createPortal } from "react-dom";
 import styled from "styled-components";
 import { useOutsideClick } from "../../hooks/useOutsideClicks";
 import { Overlay } from "../../atoms/Overlay/Overlay";
-import CloseIcon from "@mui/icons-material/Close";
 
 
 const StyledModal = styled.div`
