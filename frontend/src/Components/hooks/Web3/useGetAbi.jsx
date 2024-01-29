@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { getTokenContractAddress } from "../../../Utility/TokenContracts/tokenConfig"
 import { useNetwork } from "wagmi";
 import fetchContractABI from "../../../Utility/TokenContracts/fetchContractABI";
