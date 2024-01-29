@@ -1,5 +1,7 @@
 import { useCallback } from "react";
 import { useWalletClient } from "wagmi";
+import { parseGwei } from "viem";
+import { message } from "antd";
 
 /**
  * Initiates a token transfer transaction using the connected wallet client.
@@ -11,7 +13,7 @@ import { useWalletClient } from "wagmi";
  * @param {string} transferConfig.amount - The transfer amount 
  * @returns {Promise} - Promise that resolves to the transaction result or rejects with an error
  */
-export default function useHandleTransfer(transferConfig) {
+export default function useHandleTransfer() {
 
   const { data: walletClient, isError, isLoading } = useWalletClient();
 
@@ -47,14 +49,11 @@ export default function useHandleTransfer(transferConfig) {
         abi: transferConfig.contractABI,
         functionName: "transfer",
         args: [transferConfig.address, transferConfig.amount * 10 ** 6],
-        gas: process.env.REACT_APP_GAS_LIMIT,
+        gas: 1_000_0n,
+        maxFeePerGas: parseGwei("20"),
       });
     } catch (error) {
-      return {
-        error: {
-          shortMessage: error.message
-        }
-      };
+      message.error(error.shortMessage);
     }
 
   }, [isError, isLoading, walletClient]);

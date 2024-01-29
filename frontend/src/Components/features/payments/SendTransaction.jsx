@@ -87,7 +87,6 @@ export function SendTransaction({ reciepent, paymentData }) {
     } catch (error) {
       message.error(
         error?.shortMessage || "Error: Transaction failed"
-
       )
     }
 
