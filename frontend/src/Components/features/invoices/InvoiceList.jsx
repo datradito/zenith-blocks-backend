@@ -1,31 +1,13 @@
 import Table from "../../molecules/Table/Table";
 import Menus from "../../molecules/Menus/Menus";
 import InvoiceRow from "./InvoiceRow";
+import CircularIndeterminate from "../../atoms/Loader/loader";
 
 
-function InvoiceList({isLoading, invoices}) {
-
-//   const [searchParams] = useSearchParams();
-
-//   if (!invoices.length) return <EmptyIcon />;
-
-//   // 1) FILTER
-//   const filterValue = searchParams.get("discount") || "all";
-
-//   let filteredInvoices;
-//   if (filterValue === "all") filteredInvoices = invoices;
-//   if (filterValue === "no-discount")
-//     filteredInvoices = invoices.filter((invoice) => invoice.amount === 0);
-//   if (filterValue === "with-discount")
-//     filteredInvoices = invoices.filter((invoice) => invoice.amount > 0);
-
-//   // 2) SORT
-//   const sortBy = searchParams.get("sortBy") || "startDate-asc";
-//   const [field, direction] = sortBy.split("-");
-//   const modifier = direction === "asc" ? 1 : -1;
-//   const sortedInvoices = filteredInvoices.sort(
-//     (a, b) => (a[field] - b[field]) * modifier
-//   );
+function InvoiceList({ isLoading, invoices }) {
+  if (isLoading) {
+    return <CircularIndeterminate />;
+  }
   
   return (
     <Menus>
@@ -45,8 +27,6 @@ function InvoiceList({isLoading, invoices}) {
         
         <Table.Body
           data={invoices}
-          // data={filteredCabins}
-        //   data={sortedInvoices}
           render={(invoice) => (
             <InvoiceRow invoice={invoice} key={invoice.id} />
           )}

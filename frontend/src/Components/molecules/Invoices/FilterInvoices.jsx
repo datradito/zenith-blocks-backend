@@ -2,6 +2,7 @@ import React from "react";
 import Button from "../../atoms/Button/Button";
 import styled, { css } from "styled-components";
 import List from "../../atoms/List/List";
+import { useInvoice } from "../../../Utility/Providers/InvoiceProvider";
 
 const StyledButton = styled(Button)`
   background-color: ${(props) => (props.selected ? "#055FFC" : "transparent")};
@@ -30,7 +31,9 @@ const listStyles = {
   justifyContent: "flex-start",
 };
 
-function FilterInvoices({ refetchInvoices }) {
+function FilterInvoices() {
+
+  const { refetchInvoices } = useInvoice();
 
   const [currentFilter, setCurrentFilter] = React.useState("All");
 

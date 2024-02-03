@@ -2,13 +2,11 @@ import styled from "styled-components";
 import CustomPDFViewIcon from "../../atoms/PdfIcon/padfIcon";
 import CustomPaymentViewIcon from "../../atoms/PaymentIcon/paymentIcon";
 import StatusChip from "../../atoms/StatusChip/StatusChip";
-import CreateInvoiceForm from "../../features/invoices/CreateInvoiceForm";
-import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2";
+import {HiSquare2Stack, HiTrash } from "react-icons/hi2";
 import Modal from "../../molecules/Modal/Modal";
 import Table from "../../molecules/Table/Table";
 import Menus from "../../molecules/Menus/Menus";
 import ConfirmDelete from "../../molecules/ConfirmDelete/ConfirmDelete";
-import { useSubmitInvoice } from "../../hooks/Invoices/useSubmitInvoice";
 import { useDuplicateInvoice } from "../../hooks/Invoices/useDuplicateInvoice";
 import { Avatar } from "@mui/material";
 
@@ -22,9 +20,6 @@ const ScrollContainer = styled.div`
 `;
 
 function InvoiceRow({ invoice }) {
-  //   const { isDeleting, deleteInvoice } = useDeleteInvoice();
-
-  const { isCreating, createInvoice } = useSubmitInvoice();
   const { isDuplicating, duplicateInvoice } = useDuplicateInvoice();
 
   const isDeleting = false;
@@ -79,18 +74,12 @@ function InvoiceRow({ invoice }) {
               disabled={isDuplicating}
             ></Menus.Button>
 
-            {/* <Modal.Open opens="edit">
-              <Menus.Button icon={<HiPencil />}></Menus.Button>
-            </Modal.Open> */}
 
             <Modal.Open opens="delete">
               <Menus.Button icon={<HiTrash />}></Menus.Button>
             </Modal.Open>
           </Menus.List>
 
-          {/* <Modal.Window name="edit">
-            <CreateInvoiceForm invoice={invoice} />
-          </Modal.Window> */}
 
           <Modal.Window name="delete">
             <ConfirmDelete

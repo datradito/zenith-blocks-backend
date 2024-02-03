@@ -8,6 +8,8 @@ const Container = styled.div`
   margin-top: ${(props) => props.marginTop || "1rem"};
   margin-bottom: ${(props) => props.marginBottom || "1rem"};
   border-radius: 3px;
+  padding: ${(props) => props.padding || "0"};
+  ${(props) => props.style || ""}
 `;
 
 export default Container;

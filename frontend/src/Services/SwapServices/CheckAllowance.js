@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query"
 
 const checkTokenAllowance = async (tokenAddress, walletAddress) => {
   try {

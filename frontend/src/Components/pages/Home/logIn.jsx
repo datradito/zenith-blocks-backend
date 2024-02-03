@@ -1,51 +1,70 @@
-import React, { useContext } from 'react';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import { UserContext } from '../../../Utility/Providers/UserProvider';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import Typography from "@mui/material/Typography";
+import Button from "../../atoms/Button/Button";
+import List from "../../atoms/List/List";
+import { Link } from "react-router-dom";
+import { Divider } from "@mui/material";
+import logo from "../../../Images/logo.png";
 
-export default function Login() {
-    const navigate = useNavigate();
-    const { user } = useContext(UserContext);
 
-    if (user) {
-        navigate('/proposals');
-    }
+const listContainer = {
+  alignItems: "center",
+  justifyContent: "center",
+  width: "50%",
+  height: "100%",
+  flexDirection: "row",
+  margin: "6rem auto 0 auto",
+  border: "2rem #2c2c2c solid",
+  borderRadius: "5px",
+  gap: "1rem",
+    backgroundColor: "#101218",
+    padding: "2rem",
+    
+};
 
-    return (
-        <Card sx={{
-            display: 'flex',
-            backgroundColor: '#303133', // Main color
-            padding: '20px',
-            justifyContent: 'center',
-            borderRadius: '10px',
-            boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-            textAlign: 'center',
-            width: '50%',
-            margin: '0 auto',
-            marginTop: '10%',
-        }}>
-            <CardContent
-            >
-                <Typography sx={{ fontSize: 14, color: 'white' }} variant='subtitle2' gutterBottom>
-                    Welcome to ZenithBlocks
-                </Typography>
-                <Typography variant="h5" component="div">
+const rightPanel = {
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
+    flex: 1,
+    height: "100%",
+};
 
-                </Typography>
-                <Typography sx={{ mb: 1.5, mt: 1.5, color: 'white', }} >
-                    Please connect wallet to start
-                </Typography>
-                <Typography variant="body2">
+const leftPanel = {
+    alignItems: "center",
+    justifyContent: "space-between",
+    flex: .5,
+    height: "100%",
+};
+
     
 
-                </Typography>
-            </CardContent>
-            <CardActions>
-                {/* <img style={{ maxWidth: "8rem" }} src={logo} alt="Logo" /> */}
-            </CardActions>
-        </Card>
-    );
+export default function Login() {
+  return (
+    <List {...listContainer}>
+      <List {...rightPanel}>
+        <p style={{ color: "white", fontSize: "1.2rem" }}>
+          <img style={{ maxWidth: "8rem" }} src={logo} alt="Logo" />
+        </p>
+        <Typography variant="h4" component="div" color="#055FFC">
+          FOR DAO | BY DAO{" "}
+        </Typography>
+        <p style={{ color: "white", fontSize: "1.2rem", marginTop: "1rem" }}>
+          Please Connect your wallet <br />
+          to start using ZenithBlocks{" "}
+        </p>
+      </List>
+      <Divider orientation="vertical" flexItem color="gray" />
+      <List {...leftPanel}>
+        <p style={{ color: "white", fontSize: "0.8rem", textAlign: "center" }}>
+          If you are new to ZenithBlocks Please get in touch with us, to get you
+          set up with beta{" "}
+        </p>
+        <Link to="https://www.zenithblocks.com/#cta">
+          <Button type="primary" style={{ marginTop: "1rem" }}>
+            Register
+          </Button>
+        </Link>
+      </List>
+    </List>
+  );
 }

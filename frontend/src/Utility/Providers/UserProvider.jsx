@@ -1,34 +1,29 @@
 import React, { createContext, useState, useEffect, useCallback } from "react";
 import { clearAuthData, decodeToken, isTokenExpired } from "../auth";
+import { useDisconnect } from "wagmi";
 
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  //const { disconnectAsync } = useDisconnect();
+  const { disconnectAsync } = useDisconnect();
   const [user, setUser] = useState(null);
-
-    const logoutAndClearUser = useCallback(() => {
-      //disconnectAsync();
-      clearAuthData();
-      setUser(null);
-    }, [setUser]);
 
 
   const getUserFromStorage = useCallback(() => {
     const token = sessionStorage.getItem("authToken");
     const decodedToken = decodeToken(token);
-
     if (isTokenExpired(decodedToken)) {
-      logoutAndClearUser();
-      return;
+      disconnectAsync();
+      clearAuthData();
+      setUser(null);
+    } else {
+      setUser(decodedToken);
     }
-    setUser(decodedToken);
-  }, [logoutAndClearUser, setUser]);
+  }, []);
 
-  // Fetch the user on component mount
   useEffect(() => {
     getUserFromStorage();
-  }, [getUserFromStorage]);
+  }, []);
 
   return (
     <UserContext.Provider
@@ -36,7 +31,7 @@ export const UserProvider = ({ children }) => {
         user,
         setUser,
         getUserFromStorage,
-        logoutAndClearUser,
+        decodeToken,
       }}
     >
       {children}

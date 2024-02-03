@@ -9,7 +9,7 @@ const Button = styled.button`
   margin-right: ${(props) => props?.sx?.mr || "0"};
   border-radius: 50px;
   max-width: ${(props) => props?.sx?.width || "10rem"};
-  padding: 0.5rem 1rem;
+  padding: ${(props) => props?.sx?.padding || "0.5rem 1rem"};
   border: none;
   color: white;
   cursor: pointer;

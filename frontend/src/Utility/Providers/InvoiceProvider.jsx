@@ -6,7 +6,6 @@ import PropTypes from "prop-types";
 
 export const InvoiceContext = createContext();
 
-
 const MemoizedInvoiceProvider = React.memo(function InvoiceProvider({
   children,
 }) {
