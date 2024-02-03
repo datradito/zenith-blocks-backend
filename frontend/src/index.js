@@ -78,7 +78,7 @@ root.render(
     <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider
         theme={darkTheme({
-          accentColor: "#7b3fe4",
+          accentColor: "#055FFC",
           accentColorForeground: "white",
           borderRadius: "small",
           overlayBlur: "small",

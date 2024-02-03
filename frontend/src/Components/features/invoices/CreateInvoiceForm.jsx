@@ -169,7 +169,7 @@ function CreateInvoiceForm({ remainingBudgetAmount }) {
               {...methods.register("dueDate", {
                 required: "This field is required",
                 validate: (value) => {
-                  const selectedDate = new Date(defaultValues["date"]);
+                  const selectedDate = new Date(value["date"]);
                   const dueDate = new Date(value);
 
                   return dueDate <= selectedDate

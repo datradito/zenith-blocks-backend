@@ -26,7 +26,7 @@ const BudgetInfo = styled(List)`
 `;
 
 function InvoiceListView() {
-  const { Budget,budget, proposal, invoices, isLoading, refetchInvoices } =
+  const { Budget, budget, proposal, invoices, isLoading, refetchInvoices } =
     useInvoice();
 
   const navigate = useNavigate();
@@ -62,7 +62,7 @@ function InvoiceListView() {
         </SubHeader.List>
       </SubHeader.Container>
     );
-  }, [invoices, proposal.id, Budget.id, navigate]);
+  }, [proposal.id, invoices, navigate, Budget.id]);
 
   const budgetInfo = useMemo(() => {
     return (

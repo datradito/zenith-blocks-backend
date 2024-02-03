@@ -3,6 +3,8 @@ import { SUBMIT_INVOICE_MUTATION } from "../../../ServerQueries/Invoices/Mutatio
 import { useNavigate, useParams } from "react-router-dom";
 import { message } from "antd";
 
+import {invoiceService} from "../../../Services/InvoiceServices/invoiceService.js";
+
 export const useSubmitInvoice = () => {
   const budgetId = useParams().budgetId;
   const navigate = useNavigate();
@@ -39,7 +41,20 @@ export const useSubmitInvoice = () => {
     });
   }
 
-  return { loading, createInvoice };
+  const handleInvoiceSubmit = async (data, Budget, proposal) => {
+    const dataToBeSubmitted = await invoiceService.sanitizeInvoiceData(
+      data,
+      Budget,
+      proposal
+    );
+    createInvoice({
+      variables: {
+        invoice: dataToBeSubmitted,
+      },
+    });
+  }
+
+  return { loading, createInvoice, handleInvoiceSubmit };
 };
 
 

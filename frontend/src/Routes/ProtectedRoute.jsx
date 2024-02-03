@@ -14,14 +14,13 @@ const isAuthenticated = () => {
   return decodedToken.exp > currentTime;
 };
 
-const logoutUser = (logOutUser) => {
-  logOutUser();
+const logoutUser = () => {
   return <Navigate to="/" />;
 };
 
 const ProtectedRoute = ({ children }) => {
   const { logoutAndClearUser } = useContext(UserContext);
-  return isAuthenticated() ? children : logoutUser(logoutAndClearUser);
+  return isAuthenticated() ? children : logoutUser();
 };
 
 export default ProtectedRoute;

@@ -19,7 +19,6 @@ const useCurrentProposalDetail = () => {
 
   useEffect(() => {
     if (proposal) {
-      setLoading(false); // Data is ready, stop loading
       const updatedDataForItemCard = {
         ...data,
         Goverance: proposal.space,
@@ -27,8 +26,9 @@ const useCurrentProposalDetail = () => {
         "Total Budget": filteredProposal?.amount || 0,
       };
       setData(updatedDataForItemCard);
+      setLoading(false);
     }
-  }, [data, filteredProposal, proposal]);
+  }, [filteredProposal, proposal]);
 
   return { data, loading };
 };

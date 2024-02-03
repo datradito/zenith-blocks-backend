@@ -10,6 +10,7 @@ const List = styled.ul`
   align-items: ${props => props.alignItems || "flex-end"};
   padding: ${props => props.padding || "0"};
   gap: ${props => props.gap || "0.5rem"};
+  background-color: ${props => props.backgroundColor || "transparent"};
 `;
 
 export default List;

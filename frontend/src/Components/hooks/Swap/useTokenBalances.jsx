@@ -1,30 +1,8 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import fetchTokenBalances from "../../../Services/SwapServices/fetchTokenBalances";
 import { useAccount } from "wagmi";
 
-const fetchTokenBalances = async (address) => {
-  const options = {
-    method: "POST",
-    url: `https://eth-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_ALCHEMY_KEY}`,
-    headers: { accept: "application/json", "content-type": "application/json" },
-    data: {
-      id: 1,
-      jsonrpc: "2.0",
-      method: "alchemy_getTokenBalances",
-      params: [address, "erc20"],
-    },
-  };
-
-  try{
-    const response = await axios.request(options);
-    return response.data;
-  } 
-  catch (error) {
-    console.error(error);
-  }
-
-};
 
 const useTokenBalances = (token) => {
   const { address} = useAccount();
@@ -57,6 +35,7 @@ const useTokenBalances = (token) => {
 
   return {
     tokenBalance,
+    tokensOwned: data?.result?.tokenBalances,
     isLoading,
     isError,
   };

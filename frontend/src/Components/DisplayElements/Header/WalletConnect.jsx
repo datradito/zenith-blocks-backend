@@ -1,9 +1,9 @@
 
-import React, { useEffect, useContext } from "react";
+import React, { useContext } from "react";
 import axios from "axios";
 
 import { UserContext } from "../../../Utility/Providers/UserProvider";
-import { decodeToken,  setAuthData } from "../../../Utility/auth";
+import { decodeToken,  setAuthData, clearAuthData } from "../../../Utility/auth";
 import { useAccount, useNetwork } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useNavigate } from "react-router-dom";
@@ -19,24 +19,18 @@ export default function WalletConnect() {
   const { chain } = useNetwork();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { setUser, user, logoutAndClearUser } = useContext(UserContext);  
+  const { setUser, user } = useContext(UserContext);  
 
   const { address } = useAccount({
     onConnect: () => {
       !user && signInWithEthereum();
     },
     onDisconnect() {
-      logoutAndClearUser();
+      clearAuthData();
+      setUser(null);
       navigate(`/`);
     },
   });
-
-
-  useEffect(() => {
-    if (!user) {
-      logoutAndClearUser();
-    }
-  }, [user]);
 
   const createSiweMessage = async () => {
     try {
@@ -144,7 +138,7 @@ export default function WalletConnect() {
         });
     } catch (error) {
       dispatch(setIsLoggedIn(false));
-      logoutAndClearUser();
+      setUser(null);
     }
   }
 

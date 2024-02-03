@@ -1,16 +1,49 @@
 import * as React from 'react';
 import Chip from '@mui/material/Chip';
-import Stack from '@mui/material/Stack';
 
-export default function StatusChip({ status }) {
-    const chipStyle = {
-        backgroundColor: status === 'PAID' ? '#0F2D20' : '#472B2B',
-        padding: '0.5rem',
-        color: status === 'PAID' || 'CLOSED' ? '#20CE6F' : '#FC4F4F',
-    }
-    return (
-        <Stack direction="row" spacing={1}>
-            <Chip label= {status || "UNPAID"} sx={chipStyle} />
-        </Stack>
-    );
-}
+
+export const StatusTypes = {
+  PAID: "green",
+  UNPAID: "red",
+  CLOSED: "green",
+  SUCCESS: "green",
+  FAILED: "failedRed",
+  PENDING: "pendingYellow",
+  PROCESSING: "processingBlue",
+  CANCELLED: "cancelledRed",
+  COMPLETED: "completedGreen",
+  IN_PROGRESS: "inProgressBlue",
+  IN_REVIEW: "inReviewYellow",
+  APPROVED: "success",
+  REJECTED: "rejectedRed",
+  PENDING_APPROVAL: "pendingApprovalYellow",
+  NEW: "red",
+};
+
+const isValidStatus = (status) => Object.values(StatusTypes).includes(status);
+
+const StatusChip = ({ status }) => {
+  status = status.toUpperCase();
+  if (!isValidStatus(status)) {
+    return <Chip
+      label={status || "UNPAID"}
+      style={{
+        backgroundColor: StatusTypes[status] || "red",
+        color: "white"
+      }}
+    />;
+  }
+
+return (
+  <Chip 
+    label={status}
+    style={{
+      backgroundColor: StatusTypes[status.toUpperCase().replace(/\s+/g, "_")], 
+      color: "white"
+    }}
+    />
+  );
+};
+
+export default StatusChip;
+
