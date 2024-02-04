@@ -5,6 +5,10 @@ import App from "./App.js";
 import ErrorFallback from "./Components/atoms/ErrorFallback/ErrorFallback";
 import { ErrorBoundary } from "react-error-boundary";
 import "@rainbow-me/rainbowkit/styles.css";
+
+import { SafeThemeProvider } from "@safe-global/safe-react-components";
+import { ThemeProvider, CssBaseline } from "@mui/material";
+
 import {
   getDefaultWallets,
   RainbowKitProvider,
@@ -94,7 +98,14 @@ root.render(
           FallbackComponent={ErrorFallback}
           onReset={() => window.location.replace("/proposals")}
         >
-          <App />
+          <SafeThemeProvider mode="dark">
+            {(safeTheme) => (
+              <ThemeProvider theme={safeTheme}>
+                <CssBaseline />
+                <App />
+              </ThemeProvider>
+            )}
+          </SafeThemeProvider>
         </ErrorBoundary>
       </RainbowKitProvider>
     </WagmiConfig>
