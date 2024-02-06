@@ -7,6 +7,7 @@ import CircularIndeterminate from "../../atoms/Loader/loader.jsx";
 import CustomActionIcon from "../../atoms/ActionIcon/CustomActionIcon.jsx";
 import Modal from "../Modal/Modal.jsx";
 import FormDetailPanel from "../../atoms/EditDetails/EditDetailsProposal.jsx";
+import { Typography } from "@mui/material";
 
 export default function Amount({ row }) {
   const dispatch = useDispatch();
@@ -36,7 +37,7 @@ export default function Amount({ row }) {
   return (
     <div>
       {amount !== null ? (
-        amount
+        <Typography variant="body2">{amount}</Typography>
       ) : (
         <>
           <Modal>

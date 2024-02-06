@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 import WalletConnect from './WalletConnect';
-import axios from 'axios';
-
 import { useSelector } from 'react-redux';
 
 import {
@@ -22,19 +20,19 @@ const navLinkStyle = {
 
 
 //test function to create a user
-const createUser = () => {  
-  axios
-    .post(`${process.env.REACT_APP_API_URL}/createUser`, {
-      address: "0x1234",
-      daoId: "eth.balancer",
-    })
-    .then(function (response) {
-      console.log(response.data);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-}
+// const createUser = () => {  
+//   axios
+//     .post(`${process.env.REACT_APP_API_URL}/createUser`, {
+//       address: "0x1234",
+//       daoId: "eth.balancer",
+//     })
+//     .then(function (response) {
+//       console.log(response.data);
+//     })
+//     .catch(function (error) {
+//       console.log(error);
+//     });
+// }
 const ResponsiveHeaderBar = () => {
     let { proposal } = useSelector(state => state.currentProposal);
     let { Budget } = useSelector(state => state.currentBudget);
@@ -49,14 +47,14 @@ const ResponsiveHeaderBar = () => {
                 { name: 'Invoices', url: `/proposals/${proposal.id}/invoices` },
                 { name: 'Proposals', url: '/proposals' },
                 { name: 'Accounts', url: '/accounts' }
-            ) : pages.push({ name: 'Proposals', url: '/proposals' },
+            ) : pages.push({ name: 'Proposals', url: '/proposals'},
         { name: 'Accounts', url: '/accounts' });
 
     return (
       <AppBar
         position="static"
+        color="transparent"
         sx={{
-          backgroundColor: "#1A1C1E",
           fontFamily: "Fantasy",
           padding: ".5rem 2rem",
         }}
@@ -90,7 +88,6 @@ const ResponsiveHeaderBar = () => {
                 <WalletConnect />
               </Box>
             </>
-            {/* { !walletConnected &&  <Login />  } */}
           </Toolbar>
         </Container>
       </AppBar>

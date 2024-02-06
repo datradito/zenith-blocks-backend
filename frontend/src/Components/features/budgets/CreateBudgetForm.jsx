@@ -14,14 +14,15 @@ function CreateBudgetForm({remainingProposalAmount}) {
   const methods = useFormContext();
   const { errors, defaultValues } = methods.formState;
   return (
-    <Container
-      style={{
-        border: "none",
-        margin: "2rem",
-      }}
-    >
+    <Container padding={4}>
       <Form>
-        <FormRow label="Goverance" error={errors?.goverance?.message}>
+        <FormRow
+          style={{
+            flex: "1 1 50%",
+          }}
+          label="Goverance"
+          error={errors?.goverance?.message}
+        >
           <Input
             type="text"
             id="goverance"
@@ -30,7 +31,12 @@ function CreateBudgetForm({remainingProposalAmount}) {
             {...methods.register("goverance")}
           />
         </FormRow>
-        <FormRow label="Proposal">
+        <FormRow
+          style={{
+            flex: "1 1 40%",
+          }}
+          label="Proposal"
+        >
           <Input
             type="text"
             id="proposal"
@@ -39,7 +45,12 @@ function CreateBudgetForm({remainingProposalAmount}) {
             {...methods.register("proposal")}
           />
         </FormRow>
-        <FormRow label="IPFS Link">
+        <FormRow
+          style={{
+            flex: "1 1 40%",
+          }}
+          label="IPFS Link"
+        >
           <Input
             type="link"
             id="ipfsLink"
@@ -48,7 +59,13 @@ function CreateBudgetForm({remainingProposalAmount}) {
             {...methods.register("ipfsLink")}
           />
         </FormRow>
-        <FormRow label="Category" error={errors?.category?.message}>
+        <FormRow
+          style={{
+            flex: "1 1 20%",
+          }}
+          label="Category"
+          error={errors?.category?.message}
+        >
           <SelectDropdown
             {...methods.register("category", {
               required: "This field is required",
@@ -62,7 +79,12 @@ function CreateBudgetForm({remainingProposalAmount}) {
             ))}
           </SelectDropdown>
         </FormRow>
-        <FormRow label="Total Budget">
+        <FormRow
+          style={{
+            flex: "1 1 30%",
+          }}
+          label="Total Budget"
+        >
           <Input
             type="number"
             id="totalBudget"
@@ -71,7 +93,11 @@ function CreateBudgetForm({remainingProposalAmount}) {
             {...methods.register("totalBudget")}
           />
         </FormRow>
-        <FormRow label="Amount" error={errors?.amount?.message}>
+        <FormRow
+          style={{
+            flex: "1 1 auto",
+          }}
+          label="Amount" error={errors?.amount?.message}>
           <Input
             type="number"
             id="amount"

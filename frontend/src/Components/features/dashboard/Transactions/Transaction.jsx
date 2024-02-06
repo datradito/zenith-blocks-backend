@@ -3,36 +3,31 @@ import StatusChip from "../../../atoms/StatusChip/StatusChip";
 import styled from "styled-components";
 import { useWaitForTransaction } from "wagmi";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
-import Label from "../../../atoms/Label/Label";
 import ListItem from "../../../atoms/ListItem/ListItem";
-import List from "../../../atoms/List/List";
 import GetEnsName from "../../../molecules/GetEnsName/GetEnsName";
 import Container from "../../../atoms/Container/Container";
 import CircularIndeterminate from "../../../atoms/Loader/loader";
+import { Stack, Typography } from "@mui/material";
 
-
-const StyledTransactionList = styled(List)`
-  padding: 0;
-  margin: 0;
+const StyledTransactionList = styled(Stack)`
+  border: none;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
+  margin: 0;
 `;
 
 const TransactionBanner = styled(Container)`
-  display: flex;
   gap: 1rem;
-  align-items: center;
   border: none;
+  align-items: center;
+  flex-direction: row;
+  margin: 0;
 `;
-
-
 
 const Transaction = ({ transaction }) => {
   const { data, isLoading } = useWaitForTransaction({
     hash: "0x487de32c3c7ccfd304831df9ab9d5219501eee8bdd09988dc62a73ac9dc38c6a",
   });
-
 
   return (
     <TransactionBanner>
@@ -42,22 +37,19 @@ const Transaction = ({ transaction }) => {
         <StatusChip status={data.status} />
       )}
 
-      <ListItem
-        style={{
-          padding: "0",
-          margin: "0",
-        }}
-      >
+      <Stack border="none" margin="0">
         <StyledTransactionList>
           <GetEnsName address={transaction.from} />
-          <ArrowRightAltIcon fontSize="0.75rem" />
+          <ArrowRightAltIcon  />
           <GetEnsName address={transaction.to} />
         </StyledTransactionList>
         <StyledTransactionList>
-          <Label color="white">{transaction.value.toFixed(4)}</Label>
-          <Label>:{transaction.asset}</Label>
+          <Typography variant="subtitle2">
+            {transaction?.value?.toFixed(4)}
+          </Typography>
+          <Typography variant="subtitle1">{transaction.asset}</Typography>
         </StyledTransactionList>
-      </ListItem>
+      </Stack>
     </TransactionBanner>
   );
 };

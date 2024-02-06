@@ -1,70 +1,50 @@
 import React from "react";
-import Typography from "@mui/material/Typography";
-import Button from "../../atoms/Button/Button";
-import List from "../../atoms/List/List";
+import { Typography, Button, Stack } from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
 import { Link } from "react-router-dom";
 import { Divider } from "@mui/material";
 import logo from "../../../Images/logo.png";
 
-
-const listContainer = {
+const stackStyles = {
+  direction: { xs: "column", sm: "row" },
+  gap: 2,
   alignItems: "center",
   justifyContent: "center",
-  width: "50%",
-  height: "100%",
-  flexDirection: "row",
-  margin: "6rem auto 0 auto",
-  border: "2rem #2c2c2c solid",
-  borderRadius: "5px",
-  gap: "1rem",
-    backgroundColor: "#101218",
-    padding: "2rem",
-    
+  height: { sm: "50vh" },
+  border: "none",
+  margin: 4,
 };
-
-const rightPanel = {
-    alignItems: "flex-start",
-    justifyContent: "flex-start",
-    flex: 1,
-    height: "100%",
-};
-
-const leftPanel = {
-    alignItems: "center",
-    justifyContent: "space-between",
-    flex: .5,
-    height: "100%",
-};
-
-    
 
 export default function Login() {
   return (
-    <List {...listContainer}>
-      <List {...rightPanel}>
-        <p style={{ color: "white", fontSize: "1.2rem" }}>
+    <Stack {...stackStyles}>
+      <Stack alignItems={{ xs: "center", sm: "left" }} border={"none"}>
+        <p>
           <img style={{ maxWidth: "8rem" }} src={logo} alt="Logo" />
         </p>
-        <Typography variant="h4" component="div" color="#055FFC">
-          FOR DAO | BY DAO{" "}
+        <Typography variant="h3">FOR DAO | BY DAO </Typography>
+        <Typography variant="subtitle1">
+          ZenithBlocks is a platform for DAOs to manage their treasury and
+          governance
         </Typography>
-        <p style={{ color: "white", fontSize: "1.2rem", marginTop: "1rem" }}>
-          Please Connect your wallet <br />
-          to start using ZenithBlocks{" "}
-        </p>
-      </List>
+      </Stack>
       <Divider orientation="vertical" flexItem color="gray" />
-      <List {...leftPanel}>
-        <p style={{ color: "white", fontSize: "0.8rem", textAlign: "center" }}>
-          If you are new to ZenithBlocks Please get in touch with us, to get you
-          set up with beta{" "}
-        </p>
+      <Stack
+        alignItems={{ xs: "center" }}
+        spacing={2}
+        border={"none"}
+      >
+        <Typography variant="h4">Welcome to Zenith Blocks</Typography>
+        <Typography variant="h6">
+          Please register to continue
+        </Typography>
+
         <Link to="https://www.zenithblocks.com/#cta">
-          <Button type="primary" style={{ marginTop: "1rem" }}>
+          <Button variant="contained" endIcon={<SendIcon />}>
             Register
           </Button>
         </Link>
-      </List>
-    </List>
+      </Stack>
+    </Stack>
   );
 }

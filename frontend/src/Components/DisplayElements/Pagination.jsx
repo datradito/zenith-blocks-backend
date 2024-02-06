@@ -30,7 +30,10 @@ const PaginationControlled = ({ handleSkip }) => {
 
     return (
         <Stack
-            spacing={2}>
+            spacing={2}
+            border="none"
+            alignItems="flex-end"
+        >
             <Pagination
                 value={page}
                 count={499}

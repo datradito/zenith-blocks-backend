@@ -1,70 +1,54 @@
 import React from "react";
 import Paper from "@mui/material/Paper";
-import { styled } from "@mui/material/styles";
-import { Link } from "react-router-dom";
+import { Link, Typography, styled } from "@mui/material/";
 import Amount from "../../molecules/ProposalAmount/Amount.jsx";
 import LaunchIcon from "@mui/icons-material/Launch";
 import Modal from "../../molecules/Modal/Modal.jsx";
 import ProposalSnapShotView from "./ProposalSnapShotView.jsx";
 const SubItem = styled(Paper)(({ theme }) => ({
-  backgroundColor: "#1A1C1E",
   padding: theme.spacing(1),
   margin: theme.spacing(0.5),
   textAlign: "left",
-  color: theme.palette.text.secondary,
+  color: theme.palette.text.primary,
   boxShadow: "none",
+  
 }));
 
-const ColumnItem = styled(Paper)(({ theme }) => ({
-  backgroundColor: "#1A1C1E",
-  textAlign: "left",
-  color: "white",
-  boxShadow: "none",
-  fontSize: ".85rem",
-}));
 
-const subItemStyle = {
-  minWidth: 200,
-};
-
-const label = {
-  color: "Gray",
-  fontSize: ".65rem",
-};
 
 function ProposalCard({ item }) {
   return (
     <>
-      <SubItem sx={subItemStyle}>
-        <ColumnItem sx={label}>Governance</ColumnItem>
-        <ColumnItem>{item.space.name}</ColumnItem>
-      </SubItem>
-      <SubItem sx={subItemStyle}>
-        <ColumnItem sx={label}>Total Budget</ColumnItem>
-        <ColumnItem>
-          <>
-            <Amount row={item} />
-          </>
-        </ColumnItem>
+      <SubItem>
+        <Typography variant="subtitle1">
+          Governance
+        </Typography>
+        <Typography variant="body2">{item.space.name}</Typography>
       </SubItem>
       <SubItem>
-        <ColumnItem sx={label}>
+        <Typography variant="subtitle1">
+          Total Budget
+        </Typography>
+        <Amount row={item} />
+      </SubItem>
+      <SubItem>
+        <Typography variant="subtitle1">
           Proposal
           <Modal>
             <Modal.Open opens="proposalDetail">
-              <LaunchIcon sx={{ color: "#1A65C0", fontSize: "0.75rem" }} />
+              <LaunchIcon sx={{ color: "primary.main" }} />
             </Modal.Open>
 
             <Modal.Window name="proposalDetail">
               <ProposalSnapShotView data={item} />
             </Modal.Window>
           </Modal>
-        </ColumnItem>
+        </Typography>
         <Link
-          to={`/proposals/${item.id}/budgets`}
-          style={{ textDecoration: "none" }}
+          color="inherit"
+          href={`/proposals/${item.id}/budgets`}
         >
-          <ColumnItem>{item.title}</ColumnItem>
+          <Typography variant="body2">{item.title}</Typography>
         </Link>
       </SubItem>
     </>

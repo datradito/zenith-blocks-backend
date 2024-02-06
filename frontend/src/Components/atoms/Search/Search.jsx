@@ -1,31 +1,36 @@
 import React, { useState } from "react";
-import Input from "../Input/Input";
-import Button from "../Button/Button";
-import List from "../List/List";
+import SearchIcon from "@mui/icons-material/Search";
+import IconButton from "@mui/material/IconButton";
+import InputWithIcon from "../../molecules/Input/InputWithIcon";
+import { Stack } from "@mui/system";
 
-const listStyles = {
-  margin: "0",
-  padding: "0",
-  gap: "1rem",
-  alignItems: "center",
-  flexDirection: "row",
-};
-
-function Search({onSearch}) {
+function Search({ onSearch }) {
   const [searchTerm, setSearchTerm] = useState("");
 
   function handleOnClick() {
     onSearch(searchTerm);
   }
   return (
-    <List {...listStyles}>
-      <Input
-        type="text"
+    <Stack
+      direction="row"
+      sx={{
+        gap: "1rem",
+      }}
+    >
+      <InputWithIcon
+        placeholder="Search Proposals By Title"
+        inputProps={{ "aria-label": "search Proposals By Title" }}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <Button onClick={handleOnClick}>Search </Button>
-    </List>
+      <IconButton
+        type="button"
+        onClick={handleOnClick}
+        aria-label="search"
+      >
+        <SearchIcon />
+      </IconButton>
+    </Stack>
   );
 }
 

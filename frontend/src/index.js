@@ -1,5 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import CssBaseline from "@mui/material/CssBaseline";
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "./theme";
 import "./index.css";
 import App from "./App.js";
 import ErrorFallback from "./Components/atoms/ErrorFallback/ErrorFallback";
@@ -86,7 +89,6 @@ root.render(
         appInfo={{
           appName: "ZenithBlocks",
         }}
-        coolMode={true}
         chains={chains}
         showRecentTransactions={true}
       >
@@ -94,7 +96,11 @@ root.render(
           FallbackComponent={ErrorFallback}
           onReset={() => window.location.replace("/proposals")}
         >
-          <App />
+          <ThemeProvider theme={theme}>
+            {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+            <CssBaseline />
+            <App />
+          </ThemeProvider>
         </ErrorBoundary>
       </RainbowKitProvider>
     </WagmiConfig>

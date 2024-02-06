@@ -153,7 +153,7 @@ export default function WalletConnect() {
       {
         <ConnectButton
           accountStatus={{
-            smallScreen: "avatar",
+            smallScreen: false,
             largeScreen: "full",
           }}
           showBalance={{
@@ -161,7 +161,7 @@ export default function WalletConnect() {
             largeScreen: true,
           }}
           chainStatus={{
-            smallScreen: "icon",
+            smallScreen: false,
             largeScreen: "full",
           }}
         />

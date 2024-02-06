@@ -5,7 +5,7 @@ import FormRow from "../../atoms/FormRow/FormRow";
 import Input from "../../atoms/Input/Input";
 import FileUpload from "../../atoms/FileUpload/FileUpload";
 import Container from "../../atoms/Container/Container";
-import { Typography } from "@mui/material";
+import { Typography, Grid } from "@mui/material";
 
 function CreateInvoiceForm({ remainingBudgetAmount }) {
   const methods = useFormContext();
@@ -15,40 +15,28 @@ function CreateInvoiceForm({ remainingBudgetAmount }) {
   return (
     <Container
       style={{
-        border: "none",
+        width: "100%",
       }}
     >
       <Typography
-        variant="subtitle1"
+        variant="h6"
         style={{
-          color: "cream",
-          width: "100%",
           textAlign: "left",
-          marginLeft: "2rem",
+          margin: "2rem",
         }}
       >
-        Invoice #
+        Bill #
       </Typography>
       <Form
         style={{
           border: "none",
           display: "flex",
-          flexDirection: "row",
-          justifyContent: "flex-end",
         }}
       >
-        <Container
-          style={{
-            border: "none",
-            margin: "2rem",
-            width: "100%",
-            display: "flex",
-            gap: "1rem",
-          }}
-        >
+        <Grid container direction="row" margin={4} gap={2}>
           <FormRow
             style={{
-              minWidth: "70%",
+              flex: 2,
             }}
             label="Proposal"
           >
@@ -60,7 +48,13 @@ function CreateInvoiceForm({ remainingBudgetAmount }) {
               {...methods.register("proposal")}
             />
           </FormRow>
-          <FormRow label="Category" error={errors?.category?.message}>
+          <FormRow
+            style={{
+              flex: 1,
+            }}
+            label="Category"
+            error={errors?.category?.message}
+          >
             <Input
               type="text"
               id="category"
@@ -71,37 +65,23 @@ function CreateInvoiceForm({ remainingBudgetAmount }) {
               })}
             />
           </FormRow>
-        </Container>
+        </Grid>
 
         <Typography
-          variant="subtitle1"
+          variant="h6"
           style={{
-            color: "cream",
-            width: "100%",
             textAlign: "left",
             marginLeft: "2rem",
           }}
         >
-          Invoice Details
+          Bill Details
         </Typography>
-        <Container
-          style={{
-            border: "none",
-            display: "flex",
-            margin: "2rem",
-            flexWrap: "wrap",
-            justifyContent: "space-between",
-            alignContent: "stretch",
-            gap: "1rem",
-          }}
-        >
+        <Grid container direction="row" margin={4} gap={2}>
           <FormRow
             style={{
-              minWidth: "57%",
+              flex: "1 1 40%",
             }}
-            label="Recipient"
-            error={errors?.recipient?.message}
-          >
+            label="Recipient" error={errors?.recipient?.message}>
             <Input
               type="text"
               id="recipient"
@@ -112,11 +92,9 @@ function CreateInvoiceForm({ remainingBudgetAmount }) {
           </FormRow>
           <FormRow
             style={{
-              flex: 1,
+              flex: "1 1 20%",
             }}
-            label="Invoice #"
-            error={errors?.invoiceNumber?.message}
-          >
+            label="Bill #" error={errors?.invoiceNumber?.message}>
             <Input
               type="text"
               id="invoiceNumber"
@@ -127,11 +105,9 @@ function CreateInvoiceForm({ remainingBudgetAmount }) {
           </FormRow>
           <FormRow
             style={{
-              maxWidth: "20%",
+              flex: "auto",
             }}
-            label="Currency"
-            error={errors?.currency?.message}
-          >
+            label="Currency" error={errors?.currency?.message}>
             <Input
               type="text"
               id="currency"
@@ -143,12 +119,7 @@ function CreateInvoiceForm({ remainingBudgetAmount }) {
             />
           </FormRow>
 
-          <FormRow
-            style={{
-              minWidth: "34%",
-            }}
-            label="Date"
-          >
+          <FormRow label="Date">
             <Input
               type="date"
               id="date"
@@ -157,9 +128,6 @@ function CreateInvoiceForm({ remainingBudgetAmount }) {
             />
           </FormRow>
           <FormRow
-            style={{
-              flex: "35% 1 1",
-            }}
             label="Due Date"
             error={errors?.dueDate?.message} // Include the error message
           >
@@ -180,9 +148,6 @@ function CreateInvoiceForm({ remainingBudgetAmount }) {
             />
           </FormRow>
           <FormRow
-            style={{
-              flex: 1,
-            }}
             label="Amount"
             error={errors?.amount?.message}
           >
@@ -205,11 +170,9 @@ function CreateInvoiceForm({ remainingBudgetAmount }) {
           </FormRow>
           <FormRow
             style={{
-              flex: "50% 1 1",
+              flex: 1,
             }}
-            label="Description"
-            error={errors?.description?.message}
-          >
+            label="Description" error={errors?.description?.message}>
             <TextArea
               type="text"
               id="description"
@@ -218,7 +181,7 @@ function CreateInvoiceForm({ remainingBudgetAmount }) {
               })}
             />
           </FormRow>
-          <FormRow
+          {/* <FormRow
             style={{
               flex: 1,
               minHeight: "5rem",
@@ -234,8 +197,8 @@ function CreateInvoiceForm({ remainingBudgetAmount }) {
               id="invoicepdf"
               {...methods.register("invoicepdf")}
             ></FileUpload>
-          </FormRow>
-        </Container>
+          </FormRow> */}
+        </Grid>
       </Form>
     </Container>
   );

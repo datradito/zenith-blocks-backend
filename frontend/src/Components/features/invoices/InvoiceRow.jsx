@@ -9,7 +9,7 @@ import Menus from "../../molecules/Menus/Menus";
 import ConfirmDelete from "../../molecules/ConfirmDelete/ConfirmDelete";
 import { useDuplicateInvoice } from "../../hooks/Invoices/useDuplicateInvoice";
 import { Avatar } from "@mui/material";
-
+import GetEnsName from "../../molecules/GetEnsName/GetEnsName";
 const ScrollContainer = styled.div`
   max-width: 100%;
   overflow-x: auto;
@@ -47,7 +47,7 @@ function InvoiceRow({ invoice }) {
       <ScrollContainer>
         {" "}
         <Avatar></Avatar>
-        {RecipientAddress}
+        <GetEnsName address={RecipientAddress} />
       </ScrollContainer>
       <ScrollContainer>{Amount}</ScrollContainer>
       <ScrollContainer>{Currency}</ScrollContainer>

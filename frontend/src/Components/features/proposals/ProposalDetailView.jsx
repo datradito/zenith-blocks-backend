@@ -9,8 +9,9 @@ import BudgetList from "../budgets/BudgetList.jsx";
 import Container from "../../atoms/Container/Container.jsx";
 import useProposalIsEditable from "../../hooks/Proposals/useProposalIsEditable.jsx";
 import useProposalDetails from "../../hooks/Proposals/useProposalDetails.jsx";
-import {useGetBudgets} from "../../hooks/Budgets/useGetBudgets.jsx";
+import { useGetBudgets } from "../../hooks/Budgets/useGetBudgets.jsx";
 import CircularIndeterminate from "../../atoms/Loader/loader.jsx";
+import { Button } from "@mui/material";
 
 function ProposalDetailView() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ function ProposalDetailView() {
   const { loading, data } = useProposalDetails(proposalId);
   const { amount, status } = useProposalIsEditable(proposalId);
 
-   const { isLoading, budgets } = useGetBudgets(amount, proposalId);
+  const { isLoading, budgets } = useGetBudgets(amount, proposalId);
 
   const handleUpdateProposal = async () => {
     !status && navigate(`/budgets/${proposalId}/create`);
@@ -41,16 +42,16 @@ function ProposalDetailView() {
             label="CSV Report"
             data={budgets || []}
             filename="Budgets"
-            sx={{
-              backgroundColor: "#282A2E",
-            }}
           />
-          <SubHeader.ActionButton
+          <Button
+            variant="contained"
             label="Create Budget"
             onClick={handleUpdateProposal}
             disabled={status || !amount}
             info={status ? "Proposal is fully budgeted" : ""}
-          />
+          >
+            Create Budget
+          </Button>
         </SubHeader.List>
       </SubHeader.Container>
 
@@ -59,12 +60,7 @@ function ProposalDetailView() {
       ) : (
         data?.proposal && <ItemCardComponent />
       )}
-      <Container
-        style={{
-          border: "0.05rem #2c2c2c solid",
-          margin: "1rem 0",
-        }}
-      >
+      <Container>
         <BudgetList isLoading={isLoading} budgetList={budgets} />
       </Container>
     </div>

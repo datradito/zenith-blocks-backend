@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Chip from '@mui/material/Chip';
-import Stack from '@mui/material/Stack';
 import { useDispatch } from 'react-redux';
 import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
 import {  Link } from 'react-router-dom';
@@ -26,15 +25,12 @@ export default function CustomInvoiceViewIcon({budgetId}) {
     };
 
     return (
-        <Stack direction="row" spacing={1}>
             <Link to={`/budgets/${budgetId}/invoices`}>
-            {/* <Chip icon={<DescriptionRoundedIcon />} label="With Icon" /> */}
                 <Chip icon={<DescriptionRoundedIcon />}
                     label="INVOICE"
                     onClick={handleClick}
                     sx = {invoiceIconStyles.chipStyle}
                     />
             </Link>
-        </Stack>
     );
 }

@@ -26,8 +26,6 @@ function BudgetList({ isLoading, budgetList }) {
         </Table.Header>
           <Table.Body
             data={budgetList}
-            // data={filteredCabins}
-            //   data={sortedInvoices}
             render={(budget) => <BudgetRow budget={budget} key={budget.id} />}
           />
       </Table>

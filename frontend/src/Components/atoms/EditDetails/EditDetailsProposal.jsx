@@ -5,7 +5,6 @@ import { useDispatch } from "react-redux";
 import useSaveProposalDetails from "../../hooks/Proposals/useSetAmountProposal";
 import { addAmount } from "../../../actions/currentProposal/amount";
 
-import Input from "../Input/Input";
 import FormRow from "../FormRow/FormRow";
 import Form from "../Form/Form";
 import Button from "../Button/Button";
@@ -13,6 +12,7 @@ import CircularIndeterminate from "../Loader/loader";
 
 import currencies from "../../../Utility/CurrencyList.json";
 import StyledSelect from "../SelectDropdown/SelectDropdown";
+import { InputBase } from "@mui/material";
 
 export default function DetailPanelContent({ row, onCloseModal, refetch}) {
   const dispatch = useDispatch();
@@ -52,12 +52,18 @@ export default function DetailPanelContent({ row, onCloseModal, refetch}) {
   return (
     <Form onSubmit={handleSubmit(onSubmit)} type={"modal"}>
       <FormRow label={`#${row.title}`} error={errors?.amount?.message}>
-        <Input
+        <InputBase
           type="number"
+          placeholder="Amount"
+          inputProps={{ "aria-label": "Enter Proposal Amount" }}
           id="amount"
           name="amount"
           {...register("amount", {
             required: "Amount is required",
+            min: {
+              value: 0,
+              message: "Amount must be greater than 0",
+            },
           })}
         />
       </FormRow>

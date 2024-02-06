@@ -6,9 +6,8 @@ import { useInvoiceCreation } from "../../hooks/Invoices/useInvoiceCreation";
 import CreateInvoiceForm from "./CreateInvoiceForm";
 import Container from "../../atoms/Container/Container";
 
-import { FormProvider  } from "react-hook-form";
+import { FormProvider } from "react-hook-form";
 import InvoiceSubHeader from "./InvoiceSubHeader";
-
 
 CreateInvoiceForm.propTypes = {
   remainingBudgetAmount: PropTypes.number,
@@ -28,14 +27,14 @@ function InvoiceCreation() {
 
   return (
     <FormProvider {...methods}>
-      <InvoiceSubHeader transaction={Budget} methods={methods} handleSaveInvoice={handleSaveInvoice}/>
-      <Container>
-        <MemoizedCreateInvoiceForm
-          remainingBudgetAmount={
-            remainingBudgetAmount?.getRemainingBudgetAmount
-          }
-        />
-      </Container>
+      <InvoiceSubHeader
+        transaction={Budget}
+        methods={methods}
+        handleSaveInvoice={handleSaveInvoice}
+      />
+      <MemoizedCreateInvoiceForm
+        remainingBudgetAmount={remainingBudgetAmount?.getRemainingBudgetAmount}
+      />
     </FormProvider>
   );
 }

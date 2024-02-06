@@ -1,9 +1,8 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState,  useCallback, useMemo } from "react";
 import { GET_PROPOSAL_BY_SPACE } from "../../../SnapShot/Queries.js";
 import { snapShotClient } from "../../../apolloConfig/client.js";
 import { useQuery } from "@apollo/client";
 import { message } from "antd";
-import CircularIndeterminate from "../../atoms/Loader/loader.jsx";
 
 const useProposals = () => {
   const dao = sessionStorage.getItem("daoId");
@@ -37,6 +36,7 @@ const useProposals = () => {
 
   const handleSearch = useMemo(() => {
     return (searchTerm) => {
+      console.log(searchTerm);
       setTitle(searchTerm);
       refetch();
     };

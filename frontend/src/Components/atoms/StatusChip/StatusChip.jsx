@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Chip from '@mui/material/Chip';
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 
 export const StatusTypes = {
@@ -23,26 +24,32 @@ export const StatusTypes = {
 const isValidStatus = (status) => Object.values(StatusTypes).includes(status);
 
 const StatusChip = ({ status }) => {
+
+    const isSmallScreen = useMediaQuery("(max-width: 600px)");
+
   status = status.toUpperCase();
   if (!isValidStatus(status)) {
-    return <Chip
-      label={status || "UNPAID"}
-      style={{
-        backgroundColor: StatusTypes[status] || "red",
-        color: "white"
-      }}
-    />;
+    return (
+      <Chip
+        label={isSmallScreen ? "" : status || "NEW"}
+        style={{
+          backgroundColor: StatusTypes[status] || "red",
+          color: "white",
+        }}
+      />
+    );
   }
 
 return (
-  <Chip 
-    label={status}
+  <Chip
+    label={isSmallScreen ? "" : status}
+    size="small"
     style={{
-      backgroundColor: StatusTypes[status.toUpperCase().replace(/\s+/g, "_")], 
-      color: "white"
+      backgroundColor: StatusTypes[status.toUpperCase().replace(/\s+/g, "_")],
+      color: "white",
     }}
-    />
-  );
+  />
+);
 };
 
 export default StatusChip;
