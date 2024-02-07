@@ -9,6 +9,7 @@ import {
     Toolbar,
     Container,
     Button,
+    Grid,
 } from '@mui/material';
 
 import logo from "../../../Images/logo.png"
@@ -54,17 +55,11 @@ const ResponsiveHeaderBar = () => {
       <AppBar
         position="static"
         color="transparent"
-        sx={{
-          fontFamily: "Fantasy",
-          padding: ".5rem 2rem",
-        }}
       >
-        <Container
-        >
           <Toolbar disableGutters>
               <img style={{ maxWidth: "8rem" }} src={logo} alt="Logo" />
             <>
-              <Box sx={{
+              <Grid sx={{
                 flexGrow: 1
               }}>
                 {pages.map((page, index) => (
@@ -83,13 +78,12 @@ const ResponsiveHeaderBar = () => {
                     </NavLink>
                   </Button>
                 ))}
-              </Box>
-              <Box sx={{ flexGrow: 0 }}>
+              </Grid>
+              <Grid sx={{ flexGrow: 0 }}>
                 <WalletConnect />
-              </Box>
+              </Grid>
             </>
           </Toolbar>
-        </Container>
       </AppBar>
     );
 }

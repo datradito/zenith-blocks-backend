@@ -1,6 +1,5 @@
 import Table from "../../molecules/Table/Table";
 import Menus from "../../molecules/Menus/Menus";
-import { useGetBudgets } from "../../hooks/Budgets/useGetBudgets";
 import BudgetRow from "./BudgetRow";
 import CircularIndeterminate from "../../atoms/Loader/loader";
 

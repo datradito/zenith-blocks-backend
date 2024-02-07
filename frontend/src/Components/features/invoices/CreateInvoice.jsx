@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import { useInvoiceCreation } from "../../hooks/Invoices/useInvoiceCreation";
 
 import CreateInvoiceForm from "./CreateInvoiceForm";
-import Container from "../../atoms/Container/Container";
 
 import { FormProvider } from "react-hook-form";
 import InvoiceSubHeader from "./InvoiceSubHeader";

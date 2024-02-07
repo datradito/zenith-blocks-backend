@@ -1,6 +1,5 @@
 import Container from "../../atoms/Container/Container";
 import React, { useContext } from "react";
-import List from "../../atoms/List/List";
 import styled from "styled-components";
 import GetTransactions from "./GetTransactions";
 import DashboardNav from "./DashboardNav";
@@ -22,21 +21,21 @@ const StyledContainer = styled(Container)`
 
 const NavPanel = ({ children }) => {
   return (
-    <StyledContainer>
+    <Container border="none">
       <Avatar
         src="https://twitter.com/Balancer/photo"
         alt="Dao logo"
         style={{ marginBottom: "5rem" }}
       />
       <DashboardNav />
-    </StyledContainer>
+    </Container>
   );
 };
 
 const RightPanel = () => {
   const { activeTab } = useContext(DashboardContext);
   return (
-    <StyledContainer flex="8" border="2px solid rgba(40, 42, 46, 0.5)">
+    <StyledContainer flex={6} border="2px solid rgba(40, 42, 46, 0.5)">
       {activeTab === "wallet" && <WalletStatus />}
       {activeTab === "categories" && <CategoryList />}
       {activeTab === "contacts" && <ContactsList />}
@@ -54,7 +53,8 @@ const ConnectedWalletInfo = ({ children }) => {
 
 const LeftPanel = () => {
   return (
-    <Container
+    <StyledContainer
+      flex={3}
       style={{
         padding: "1rem",
         margin: "0",
@@ -73,7 +73,7 @@ const LeftPanel = () => {
         <Typography variant="h6">Transactions</Typography>
       </Container>
       <GetTransactions />
-    </Container>
+    </StyledContainer>
   );
 };
 
@@ -86,32 +86,22 @@ const BottomPanel = () => {
   );
 };
 
-const MainPanelContainer = styled(StyledContainer)`
-  flex-direction: column;
-  flex: 10;
-`;
-
 const MainPanel = () => {
   return (
-    <MainPanelContainer>
+    <Container border="none" flexDirection="column" width="100%" gap="2rem">
       <ConnectedWalletInfo />
       <BottomPanel />
-    </MainPanelContainer>
+    </Container>
   );
 };
 
-const DashboardLayoutContainer = styled(StyledContainer)`
-  flex-direction: row;
-  align-items: stretch;
-  margin-top: 4rem;
-`;
 
 function DashboardLayout({ children }) {
   return (
-    <DashboardLayoutContainer>
+    <Container border="none" flexDirection="row" gap="2rem">
       <NavPanel />
       <MainPanel />
-    </DashboardLayoutContainer>
+    </Container>
   );
 }
 

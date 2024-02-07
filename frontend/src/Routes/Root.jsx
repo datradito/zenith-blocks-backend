@@ -1,22 +1,22 @@
 import ResponsiveHeaderBar from "../Components/DisplayElements/Header/Header.jsx";
 import { Outlet } from "react-router-dom";
 import React from "react";
-import Container from "../Components/atoms/Container/Container.jsx";
+
+import styled from "styled-components";
+import { Container } from "@mui/material";
+
+export const WidthContainer = styled(Container)`
+  width: 90%;
+  @media (min-width: 1000px) {
+    width: 900px;
+  }
+`;
 
 export default function Root() {  
     return (
-      <>
-        <Container
-          style={{
-            width: "90%",
-            margin: "0 auto",
-            paddingTop: "1rem",
-            border: "none",
-          }}
-        >
+      <WidthContainer >
           <ResponsiveHeaderBar />
           <Outlet />
-        </Container>
-      </>
+        </WidthContainer>
     );
 }

@@ -33,10 +33,7 @@ const Proposals = () => {
 
   return (
     <Container
-      style={{
-        border: "none",
-        width: "100%",
-      }}
+      border="none"
     >
       <SubHeader.Container>
         <SubHeader.List>
