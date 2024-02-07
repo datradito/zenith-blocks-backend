@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "../../atoms/Button/Button.jsx";
+import { Button }from "@mui/material/"
 import List from "../../atoms/List/List.jsx";
 import { CSVLink } from "react-csv";
 import ToolTip from "../../atoms/ToolTip/ToolTip.jsx";
@@ -38,10 +38,7 @@ function ActionButton({ onClick, label, disabled, sx, info = "" }) {
     <ToolTip info={info} placement="top">
       <Button
         disabled={disabled}
-        sx={{
-          backgroundColor: disabled ? "#9bb8ff" : "#055FFC",
-          ...sx,
-        }}
+        variant="contained"
         onClick={handleClick}
       >
         {label}
@@ -53,9 +50,6 @@ function ActionButton({ onClick, label, disabled, sx, info = "" }) {
 function ExportCSVButton({
   onClick,
   label,
-  disabled,
-  sx,
-  info = "",
   data = [],
   filename = "Transactions",
 }) {
@@ -68,10 +62,7 @@ function ExportCSVButton({
   return (
     <CSVLink data={data} filename={filename} target="_blank">
       <Button
-        sx={{
-          backgroundColor: disabled ? "#9bb8ff" : "#055FFC",
-          ...sx,
-        }}
+        variant="contained"
         onClick={handleClick}
       >
         {label}

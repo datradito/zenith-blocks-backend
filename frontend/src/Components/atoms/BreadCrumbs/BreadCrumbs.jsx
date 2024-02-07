@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { css } from "styled-components";
 
 const BreadcrumbsContainer = styled.div`
-  margin: 1rem auto;
   display: flex;
   align-items: center;
   flex-direction: row;

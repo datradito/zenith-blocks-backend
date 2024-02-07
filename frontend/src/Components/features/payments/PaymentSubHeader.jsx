@@ -4,14 +4,16 @@ import Label from "../../atoms/Label/Label";
 import GoBack from "../../atoms/GoBack/GoBack";
 import Breadcrumbs from "../../atoms/BreadCrumbs/BreadCrumbs";
 import { useSelector } from "react-redux";
-
+import Container from "../../atoms/Container/Container";
 function PaymentSubHeader() {
   const { proposal, Budget } = useSelector((state) => ({
     proposal: state.currentProposal.proposal,
     Budget: state.currentBudget.Budget,
   }));
   return (
-    <SubHeader.Container>
+    <Container
+      border="none"
+    >
       <SubHeader.List
         styles={{margin: "0"}}
       >
@@ -22,7 +24,7 @@ function PaymentSubHeader() {
           <Label>Invoices</Label>
         </GoBack>
       </SubHeader.List>
-    </SubHeader.Container>
+    </Container>
   );
 }
 

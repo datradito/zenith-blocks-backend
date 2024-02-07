@@ -90,14 +90,7 @@ function CreateBudget() {
           />
         </SubHeader.List>
       </SubHeader.Container>
-      <Container
-        sx={{
-          textAlign: "center",
-          borderRadius: 5,
-        }}
-      >
         <CreateBudgetForm remainingProposalAmount={remainingProposalAmount} />
-      </Container>
     </FormProvider>
   );
 }

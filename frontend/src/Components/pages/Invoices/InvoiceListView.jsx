@@ -11,19 +11,8 @@ import Label from "../../atoms/Label/Label";
 import GoBack from "../../atoms/GoBack/GoBack";
 import Container from "../../atoms/Container/Container";
 import Breadcrumbs from "../../atoms/BreadCrumbs/BreadCrumbs";
-import List from "../../atoms/List/List";
-import styled from "styled-components";
 import FilterInvoices from "../../molecules/Invoices/FilterInvoices";
 
-const BudgetInfo = styled(List)`
-  margin: 0rem;
-  border: 2px solid #282a2e;
-  border-radius: 0.5rem;
-  width: 100%;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: flex-start;
-`;
 
 function InvoiceListView() {
   const { Budget, budget, proposal, invoices, isLoading, refetchInvoices } =
@@ -66,11 +55,11 @@ function InvoiceListView() {
 
   const budgetInfo = useMemo(() => {
     return (
-      <BudgetInfo>
+      <Container direction={"row"}>
         <ItemCardComponent.ItemCard label="Category" value={budget?.category} />
         <ItemCardComponent.ItemCard label="Amount" value={budget?.amount} />
         <ItemCardComponent.ItemCard label="Currency" value={budget?.currency} />
-      </BudgetInfo>
+      </Container>
     );
   }, [budget]);
 

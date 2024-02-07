@@ -1,10 +1,10 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import Stack from "@mui/material/Stack";
+import { Typography } from "@mui/material";
 import CircularIndeterminate from "../../atoms/Loader/loader.jsx";
 import PaginationControlled from "../../DisplayElements/Pagination.jsx";
 import SubHeader from "../../molecules/SubHeader/SubHeader.jsx";
-import Label from "../../atoms/Label/Label.jsx";
 import useProposals from "../../hooks/Proposals/useProposals.jsx";
 import ProposalCardMemo from "../../features/proposals/ProposalCard.jsx";
 import Container from "../../atoms/Container/Container.jsx";
@@ -29,41 +29,34 @@ const Proposals = () => {
     handleSearch,
   } = useProposals();
 
-  if(loading) return <CircularIndeterminate />;
-
+  if (loading) return <CircularIndeterminate />;
 
   return (
     <Container
-      style={{
-        border: "none",
-        paddingTop: "1rem",
-      }}
+      border="none"
     >
       <SubHeader.Container>
         <SubHeader.List>
-          <Label>{syncedAt}</Label>
-          <Label variant="subtitle" style={{ color: "white" }}>
-            Proposals
-          </Label>
+          <Typography variant="subtitle1">{syncedAt}</Typography>
+          <Typography variant="h6">Proposals</Typography>
         </SubHeader.List>
         <SubHeader.List styles={{ flexDirection: "row", gap: "1rem" }}>
           <Search onSearch={handleSearch} />
-          <SubHeader.ActionButton label="Sync Proposals" onClick={handleSyncProposals} />
+          <SubHeader.ActionButton label="Sync" onClick={handleSyncProposals} />
         </SubHeader.List>
       </SubHeader.Container>
       <Container
         style={{
           border: "none",
+          width: "100%",
         }}
       >
         {proposals?.map((item) => {
           return (
             <Stack
-              border={0.05}
-              borderRadius={3}
               marginTop={1}
               padding={1}
-              borderColor="#BDBDBB"
+              key={item.id}
               direction="row"
               justifyContent="flex-start"
             >
@@ -72,9 +65,7 @@ const Proposals = () => {
           );
         })}
       </Container>
-      <Stack sx={pagination}>
-        <PaginationControlled handleSkip={handleSkipValueChange} />
-      </Stack>
+      <PaginationControlled handleSkip={handleSkipValueChange} />
     </Container>
   );
 };

@@ -1,11 +1,9 @@
 import Container from "../../atoms/Container/Container";
-import React, { useContext} from "react";
-import List from "../../atoms/List/List";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import GetTransactions from "./GetTransactions";
 import DashboardNav from "./DashboardNav";
-import { Avatar } from "@mui/material";
-import Label from "../../atoms/Label/Label";
+import { Avatar, Stack, Typography } from "@mui/material";
 import SwapHorizontalCircleIcon from "@mui/icons-material/SwapHorizontalCircle";
 import Wallet from "./Wallet";
 import { DashboardContext } from "../../../Utility/Providers/DashboardProvider";
@@ -13,130 +11,97 @@ import WalletStatus from "./Wallet/WalletStatus";
 import CategoryList from "./Category/CategoryList";
 import ContactsList from "./Contacts/ContactsList";
 
-
-const commonPanelStyles = {
-  padding: "1rem",
-  border: "none",
-  width: "100%",
-  margin: "0",
-};
-
-const PanelContainer = styled(Container)`
-  ${commonPanelStyles}
+const StyledContainer = styled(Container)`
+  margin: 0;
+  gap: 1rem;
+  padding: 0;
+  border: ${(props) => props.border || "none"};
+  flex: ${(props) => props.flex || "1"};
 `;
 
 const NavPanel = ({ children }) => {
   return (
-    <PanelContainer
-      style={{
-        flex: 1,
-        backgroundColor: "transparent",
-      }}
-    >
+    <Container border="none">
       <Avatar
         src="https://twitter.com/Balancer/photo"
         alt="Dao logo"
         style={{ marginBottom: "5rem" }}
       />
       <DashboardNav />
-    </PanelContainer>
+    </Container>
   );
 };
 
 const RightPanel = () => {
-const { activeTab } = useContext(DashboardContext);
+  const { activeTab } = useContext(DashboardContext);
   return (
-    <PanelContainer
-      style={{
-        flex: 8,
-        backgroundColor: "#262942",
-      }}
-    >
+    <StyledContainer flex={6} border="2px solid rgba(40, 42, 46, 0.5)">
       {activeTab === "wallet" && <WalletStatus />}
       {activeTab === "categories" && <CategoryList />}
-      {activeTab === "contacts" &&  <ContactsList />}
-    </PanelContainer>
+      {activeTab === "contacts" && <ContactsList />}
+    </StyledContainer>
   );
 };
 
 const ConnectedWalletInfo = ({ children }) => {
   return (
-    <List width="100%" alignItems="flex-start">
+    <Stack width="100%" alignItems="flex-start" border="none" background="">
       <Wallet />
-    </List>
+    </Stack>
   );
 };
 
 const LeftPanel = () => {
   return (
-    <PanelContainer
+    <StyledContainer
+      flex={3}
       style={{
-        flex: 2,
-        backgroundColor: "#262942",
+        padding: "1rem",
+        margin: "0",
+        justifyContent: "flex-start",
       }}
     >
-      <List flexDirection="row" justifyContent="flex-start">
+      <Container
+        flexDirection="row"
+        justifyContent="flex-start"
+        alignItems="center"
+        margin="0"
+        gap="1rem"
+        border="none"
+      >
         <SwapHorizontalCircleIcon />
-        <Label fontSize="1.2rem" color="white">
-          Transactions
-        </Label>
-      </List>
+        <Typography variant="h6">Transactions</Typography>
+      </Container>
       <GetTransactions />
-    </PanelContainer>
+    </StyledContainer>
   );
 };
 
 const BottomPanel = () => {
   return (
-    <List
-      flexDirection="row"
-      margin="0"
-      width="100%"
-      alignItems="stretch"
-      padding="0"
-    >
+    <Stack flexDirection="row" gap={2} alignItems="stretch" border="none">
       <RightPanel />
       <LeftPanel />
-    </List>
+    </Stack>
   );
 };
-
-const MainPanelContainer = styled(PanelContainer)`
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  padding: 0rem;
-  flex: 10;
-  border-radius: 1.5rem;
-`;
 
 const MainPanel = () => {
   return (
-    <MainPanelContainer>
+    <Container border="none" flexDirection="column" width="100%" gap="2rem">
       <ConnectedWalletInfo />
       <BottomPanel />
-    </MainPanelContainer>
+    </Container>
   );
 };
 
-const DashboardLayoutContainer = styled(PanelContainer)`
-  display: flex;
-  flex-direction: row;
-  padding: 0.5rem;
-  gap: 1rem;
-  border: none;
-  border-radius: 1.5rem;
-  align-items: stretch;
-  background-color: #1b1d32;
-  margin-top: 4rem;
-`;
 
 function DashboardLayout({ children }) {
   return (
-    <DashboardLayoutContainer>
+    <Container border="none" flexDirection="row" gap="2rem">
       <NavPanel />
       <MainPanel />
-    </DashboardLayoutContainer>
+    </Container>
   );
 }
 

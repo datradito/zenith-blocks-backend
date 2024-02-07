@@ -9,6 +9,7 @@ import CustomPDFViewIcon from "../../atoms/PdfIcon/padfIcon";
 import styled from "styled-components";
 
 const PdfContainer = styled(Container)`
+  border: none;
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -20,7 +21,9 @@ function BillList() {
   const { invoiceId } = useParams();
   const { data, error, loading } = useGetInvoiceById(invoiceId);
   return (
-    <Container>
+    <Container
+      width="100%"
+    >
       <Table columns="0.4fr 0.4fr 0.4fr">
         <Table.Header>
           <div>Category</div>

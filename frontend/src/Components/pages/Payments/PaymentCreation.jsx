@@ -15,24 +15,15 @@ import PaymentBillingBanner from "../../features/payments/PaymentBillingBanner";
 import BillList from "../../features/payments/BillList";
 import PaymentSubHeader from "../../features/payments/PaymentSubHeader";
 
-const PanelContainer = styled(Container)`
-  display: flex;
-  border: none;
-  gap: 1.5rem;
-  margin-bottom: 4rem;
-  border-box: box-sizing;
-`;
 
 const RightPanel = styled(Container)`
-  background-color: rgba(40, 42, 46, 0.2);
-  padding: 2rem;
-  flex: 3;
+  padding: 1rem;
+  flex: 2;
   text-align: left;
 `;
 
 const LeftPanel = styled(Container)`
-  background-color: rgba(40, 42, 46, 0.2);
-  padding: 2rem;
+  padding: 1rem;
   flex: 1;
   text-align: left;
 `;
@@ -65,9 +56,13 @@ function PaymentCreation() {
   }, [data]);
 
   return (
-    <>
+    <div>
       <PaymentSubHeader />
-      <PanelContainer>
+      <Container
+        border="none"
+        gap="1.5rem"
+        flexDirection={{ xs: "column", md: "row" }}
+      >
         <RightPanel>
           <Typography variant="subtitle1" gutterBottom>
             Invoice <span>#{data.getInvoiceById.number}</span>
@@ -103,8 +98,8 @@ function PaymentCreation() {
             />
           )}
         </LeftPanel>
-      </PanelContainer>
-    </>
+      </Container>
+    </div>
   );
 }
 

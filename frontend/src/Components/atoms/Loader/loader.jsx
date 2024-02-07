@@ -8,7 +8,6 @@ const StyledCircularIndeterminate = styled(Box)(({ theme, styleProps }) => ({
   margin: "0rem auto",
   textAlign: "center",
   color: "white",
-  border: "0.05rem #2c2c2c solid",
   marginTop: "1rem",
   borderRadius: 3,
   ...(styleProps && styleProps),
