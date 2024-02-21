@@ -23,10 +23,10 @@ function TokenBalance({ value, tokenSymbol }) {
   return (
     <AmountContainer>
       <Typography fontWeight="700">
-        {value} {tokenSymbol} 
+        <AmountLabel amount={value} tokenSymbol={tokenSymbol} />
       </Typography>
     </AmountContainer>
-  )
+  );
 }
 
 
@@ -35,8 +35,6 @@ function TokenBalance({ value, tokenSymbol }) {
 // TODO: ADD CHAIN LABEL
 
 function SafeInfo({ safeAddress, chainId }) {
-
-  console.log(safeAddress)
   const {
     chain,
     erc20Balances = {},
@@ -74,22 +72,23 @@ function SafeInfo({ safeAddress, chainId }) {
 
   return (
     <Stack direction="row" spacing={2}>
-      <div style={{ position: 'relative' }}>
+      <div style={{ position: "relative" }}>
         {/* Safe Logo */}
         {isLoading ? (
           <Skeleton variant="circular" width={50} height={50} />
         ) : (
-          <img
-            src=".jpg"
-            alt="connected Safe account logo"
-            height="50px"
-          />
+          <img src=".jpg" alt="connected Safe account logo" height="50px" />
         )}
 
         {/* Threshold & owners label */}
         {isDeployed && (
           <SafeSettingsLabel>
-            <Typography fontSize="12px" fontWeight="700" color="inherit" lineHeight="initial">
+            <Typography
+              fontSize="12px"
+              fontWeight="700"
+              color="inherit"
+              lineHeight="initial"
+            >
               {threshold}/{owners}
             </Typography>
           </SafeSettingsLabel>
@@ -99,7 +98,7 @@ function SafeInfo({ safeAddress, chainId }) {
       <Stack direction="column" spacing={0.5} alignItems="flex-start">
         {/* Safe address label */}
         <Typography variant="body2">
-           {safeAddress} 
+          <AddressLabel address={safeAddress} showBlockExplorerLink />
         </Typography>
 
         {isLoading && <Skeleton variant="text" width={110} height={20} />}
@@ -123,22 +122,26 @@ function SafeInfo({ safeAddress, chainId }) {
                   id="token-selector"
                   value={tokenAddress}
                   label="Token"
-                  onChange={(event) =>
-                    setTokenAddress(event.target.value)
-                  }
+                  onChange={(event) => setTokenAddress(event.target.value)}
                 >
                   <MenuItem value={ethers.ZeroAddress}>
                     {/* Safe Balance for native token */}
                     <TokenBalance
-                      value={ethers.formatEther(safeBalance || '0')}
-                      tokenSymbol={chain?.token || ''}
+                      value={ethers.formatEther(safeBalance || "0")}
+                      tokenSymbol={chain?.token || ""}
                     />
                   </MenuItem>
                   {Object.values(erc20Balances).map((erc20Balance) => (
-                    <MenuItem value={erc20Balance.address} key={erc20Balance.address}>
+                    <MenuItem
+                      value={erc20Balance.address}
+                      key={erc20Balance.address}
+                    >
                       {/* ERC20 Safe Balances */}
                       <TokenBalance
-                        value={ethers.formatUnits(erc20Balance.balance || 0, erc20Balance.decimals)}
+                        value={ethers.formatUnits(
+                          erc20Balance.balance || 0,
+                          erc20Balance.decimals
+                        )}
                         tokenSymbol={erc20Balance.symbol}
                       />
                     </MenuItem>
@@ -147,15 +150,15 @@ function SafeInfo({ safeAddress, chainId }) {
               </FormControl>
             ) : (
               <TokenBalance
-                value={ethers.formatEther(safeBalance || '0')}
-                tokenSymbol={chain?.token || ''}
+                value={ethers.formatEther(safeBalance || "0")}
+                tokenSymbol={chain?.token || ""}
               />
             )}
           </>
         )}
       </Stack>
     </Stack>
-  )
+  );
 }
 
 export default SafeInfo

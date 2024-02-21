@@ -1,20 +1,25 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useAccount } from "wagmi";
 import { ethers } from "ethers";
 import SafeApiKit from "@safe-global/api-kit";
 import Safe, { SafeFactory, EthersAdapter } from "@safe-global/protocol-kit";
 import getChain from "../../Services/Safe/getChain";
+import {getERC20Info} from "../../Services/Safe/getERC20Info";
 import { initialChain } from "../../Constants/chains";
+
+import usePolling from "../../Components/hooks/Safe/usePolling";
+import { message } from "antd";
 
 const initialState = {
   isAuthenticated: false,
+  erc20token: {},
+  erc20Balances: {},
   loginWeb3Auth: () => {},
   logoutWeb3Auth: () => {},
   relayTransaction: async () => {},
   setChainId: () => {},
   setSafeSelected: () => {},
   setTokenAddress: () => {},
-  onRampWithStripe: async () => {},
   safes: [],
   tokenAddress: ethers.ZeroAddress,
   chainId: initialChain.id,
@@ -37,20 +42,41 @@ const AccountAbstractionProvider = ({ children }) => {
   const { chain: connectedChain, address } = useAccount();
   const [ownerAddress, setOwnerAddress] = useState("");
   const [safes, setSafes] = useState([]);
-  const [safeSelected, setSafeSelected] = useState(
-    localStorage.getItem("selectedSafe") || ""
-  );
+  const [safeSelected, setSafeSelected] = useState(null);
 
   const [tokenAddress, setTokenAddress] = useState(ethers.ZeroAddress);
   const [chainId, setChainId] = useState(connectedChain?.id);
   const [web3Provider, setWeb3Provider] = useState();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const [ protocolKit, setProtocolKit ] = useState();
+  const [protocolKit, setProtocolKit] = useState();
   const [apiKit, setApiKit] = useState(null);
   const [ethAdapter, setEthAdapter] = useState();
+  const [chain, setChain] = useState(getChain(chainId) || connectedChain?.id);
 
-  const chain = getChain(chainId) || connectedChain?.id;
+
+
+  useEffect(() => {
+    if (connectedChain?.id) {
+      setChainId(connectedChain.id);
+    }
+
+    setChain(getChain(connectedChain.id));
+  }, [connectedChain]);
+
+  useEffect(() => {
+    if (safeSelected) {
+      localStorage.setItem("selectedSafe", safeSelected);
+    }
+  }, [safeSelected]);
+
+  // When the component mounts, retrieve the selectedSafe from localStorage
+  useEffect(() => {
+    const storedSafe = localStorage.getItem("selectedSafe");
+    if (storedSafe) {
+      setSafeSelected(storedSafe);
+    }
+  }, []);
 
   useEffect(() => {
     setOwnerAddress("");
@@ -83,13 +109,17 @@ const AccountAbstractionProvider = ({ children }) => {
       }
       // const safeFactory = await SafeFactory.create({ ethAdapter })
 
-      const safeSdk = await Safe.create({ ethAdapter, safeAddress: safeSelected })
+      const safeSdk = await Safe.create({
+        ethAdapter,
+        safeAddress: safeSelected,
+      });
       setProtocolKit(safeSdk);
     };
     if (safeSelected) {
       initializeProtocolKit();
     }
   }, [safeSelected]);
+
   useEffect(() => {
     const initializeEthAdapter = async () => {
       // const web3Provider = new Web3.providers.HttpProvider(
@@ -116,11 +146,11 @@ const AccountAbstractionProvider = ({ children }) => {
       setOwnerAddress(address);
       setSafes(safes.safes || []);
       localStorage.setItem("safes", JSON.stringify(safes.safes));
-      const defaultSafe = localStorage.setItem("selectedSafe", safes.safes[0])
-      setSafeSelected(defaultSafe);
+      localStorage.setItem("selectedSafe", safes.safes[0]);
+      setSafeSelected(safes.safes[0]);
       setIsAuthenticated(true);
     } catch (error) {
-      console.error("Error fetching safes:", error);
+      message.error("Error fetching safes");
     }
   };
 
@@ -135,12 +165,37 @@ const AccountAbstractionProvider = ({ children }) => {
     localStorage.removeItem("selectedSafe");
   };
 
+  // fetch safe's ERC20 balances
+  const fetchErc20SafeBalances = useCallback(async () => {
+    if (!web3Provider) {
+      return {};
+    }
+
+    return Promise.all(
+      chain.supportedErc20Tokens?.map((erc20Address) =>
+        getERC20Info(erc20Address, web3Provider, safeSelected)
+      ) || []
+    ).then((tokens) =>
+      tokens.reduce(
+        (acc, token) => (!!token ? { ...acc, [token.address]: token } : acc),
+        {}
+      )
+    );
+  }, [web3Provider, safeSelected, chain]);
+
+    const erc20Balances = usePolling(fetchErc20SafeBalances);
+    const erc20token = erc20Balances?.[tokenAddress];
+
   const state = {
     ownerAddress,
     chainId,
     chain,
     safes,
+    erc20token,
+    erc20Balances,
     tokenAddress,
+    safeSelected,
+
     isAuthenticated,
     web3Provider,
     logoutWeb3Auth,

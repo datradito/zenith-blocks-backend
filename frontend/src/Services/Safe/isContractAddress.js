@@ -1,4 +1,4 @@
-import{ AlchemyProvider} from "ethers";
+import { AlchemyProvider} from "ethers";
 
 const isContractAddress = async (address, provider = AlchemyProvider | undefined) => {
   try {

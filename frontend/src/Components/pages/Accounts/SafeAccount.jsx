@@ -10,6 +10,7 @@ import { useAccountAbstraction } from "../../../Utility/Providers/AccountAbstrac
 import { InputLabel, Box } from "@mui/material";
 import { useEffect } from "react";
 import Button from "../../atoms/Button/Button";
+import { message } from "antd";
 
 export const ConnectedContainer = styled(Box)(
   ({ theme }) => `
@@ -19,22 +20,10 @@ export const ConnectedContainer = styled(Box)(
 );
 
 function SafeAccount(props) {
+  
   const { safeSelected, chainId, safes, setSafeSelected, getSafesOwned } =
     useAccountAbstraction();
-
-  useEffect(() => {
-    if (safes && safes.length > 0) {
-      console.log(safes);
-    }
-  }, [safes, safeSelected]);
-
-  useEffect(() => {
-    if (safes.length === 1) {
-      setSafeSelected(safes[0]);
-      localStorage.setItem("selectedSafe", safes[0]);
-    }
-  }
-  , [safes, setSafeSelected]);
+  
 
   return (
     <ConnectedContainer {...props}>
@@ -51,7 +40,7 @@ function SafeAccount(props) {
           Load Safes
             </Button>
             :
-            <AddressLabel address={safes[0]} />
+            <AddressLabel address={safeSelected} />
         }
       </Box>
 

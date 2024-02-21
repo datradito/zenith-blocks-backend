@@ -14,7 +14,6 @@ const AddressLabel = ({
   showCopyIntoClipboardButton = true
 }) => {
   const { chain } = useAccountAbstraction()
-  console.log(chain)
 
   const addressLabel = useMemoizedAddressLabel(address)
 

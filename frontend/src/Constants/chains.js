@@ -15,7 +15,7 @@ export const gnosisChain = {
 };
 
 export const goerliChain  = {
-  id: "0x5",
+  id: "5",
   token: "gETH",
   label: "Görli",
   shortName: "gor",
@@ -108,6 +108,20 @@ export const sepoliaChain = {
   supportedErc20Tokens: ["0x8267cF9254734C6Eb452a7bb9AAF97B392258b21"],
 };
 
+export const sepoliaChain2 = {
+  id: "11155111",
+  token: "SepoliaETH",
+  shortName: "eth",
+  label: "Sepolia",
+  rpcUrl: "https://ethereum-sepolia.publicnode.com/",
+  blockExplorerUrl: "https://sepolia.polygonscan.com",
+  color: "#AA36A7",
+  isStripePaymentsEnabled: false,
+  isMoneriumPaymentsEnabled: false,
+  faucetUrl: "https://sepoliafaucet.com/",
+  supportedErc20Tokens: ["0x8267cF9254734C6Eb452a7bb9AAF97B392258b21"],
+};
+
 const chains = [
   gnosisChain,
   goerliChain,
@@ -115,6 +129,7 @@ const chains = [
   mumbaiChain,
   polygonChain,
   sepoliaChain,
+  sepoliaChain2,
 ];
 
 export const initialChain = sepoliaChain;
