@@ -12,7 +12,7 @@ function GetTransactions() {
 
   return (
     <>
-      {transactionHistory.transactionHistory.length > 0 ? (
+      {transactionHistory?.transactionHistory?.length > 0 ? (
         <Suspense fallback={<CircularIndeterminate />}>
           <TransactionList
             transactions={transactionHistory.transactionHistory}

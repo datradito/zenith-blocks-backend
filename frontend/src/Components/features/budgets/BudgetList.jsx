@@ -9,6 +9,8 @@ function BudgetList({ isLoading, budgetList }) {
   const [page, setPage] = useState(1);
   const perPage = 5;
 
+  budgetList = budgetList || [];
+
   const paginatedBudgets = useMemo(() => {
     const start = (page - 1) * perPage;
     const end = start + perPage;

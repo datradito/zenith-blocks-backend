@@ -3,10 +3,12 @@ import fetchTokensOwned from "../../../Services/SwapServices/fetchTokensOwned";
 
 export const useGetTokens = (address) => {
     
-  const { data, isLoading, isError, refetch } = useQuery(
-    ["tokensOwned", address],
-    () => fetchTokensOwned(address),
-  );
+  const { data, isLoading, isError, refetch } = useQuery({
+    //key: ["tokensOwned", address],
+    queryKey: ["tokensOwned", address],
+    queryFn: fetchTokensOwned,
+  });
+  
 
   return {
     tokensOwnedByUser : data,

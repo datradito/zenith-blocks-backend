@@ -1,8 +1,8 @@
 import { GET_ALL_BUDGETS_FOR_PROPOSAL } from "../../../ServerQueries/Budget/Queries";
-import { toast } from "react-hot-toast";
 import { useState, useEffect } from "react";
 import { transformBudgets } from "../../../Services/BudgetServices/budgetService";
 import { useQuery } from "@apollo/client";
+import { message } from "antd";
 
 export const useGetBudgets = (amount, proposalId) => {
   const [budgets, setBudgets] = useState([]);
@@ -29,7 +29,7 @@ useEffect(() => {
 
 useEffect(() => {
   if (error) {
-    toast.error(error.message);
+    message.error("Error fetching budgets");
   }
 }, [error]);
 

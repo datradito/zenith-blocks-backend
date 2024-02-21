@@ -1,10 +1,9 @@
-
 import React, { useContext } from "react";
 import axios from "axios";
 
 import { UserContext } from "../../../Utility/Providers/UserProvider";
-import { decodeToken,  setAuthData, clearAuthData } from "../../../Utility/auth";
-import { useAccount, useNetwork } from "wagmi";
+import { decodeToken, setAuthData, clearAuthData } from "../../../Utility/auth";
+import { useAccountEffect } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useNavigate } from "react-router-dom";
 import { useSignMessage } from "wagmi";
@@ -16,14 +15,13 @@ import { message } from "antd";
 
 export default function WalletConnect() {
   const { signMessageAsync } = useSignMessage();
-  const { chain } = useNetwork();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { setUser, user } = useContext(UserContext);  
+  const { setUser, user } = useContext(UserContext);
 
-  const { address } = useAccount({
-    onConnect: () => {
-      !user && signInWithEthereum();
+  useAccountEffect({
+    onConnect(data) {
+      !user && signInWithEthereum(data);
     },
     onDisconnect() {
       clearAuthData();
@@ -32,7 +30,7 @@ export default function WalletConnect() {
     },
   });
 
-  const createSiweMessage = async () => {
+  const createSiweMessage = async (address, chainId) => {
     try {
       const { data: nonce } = await axios.get(
         `${process.env.REACT_APP_API_URL}/nonce`,
@@ -42,21 +40,22 @@ export default function WalletConnect() {
       );
       const data = new SiweMessage({
         domain: window.location.host,
-        address,
+        address: address,
         statement: "Sign in with Ethereum to the app.",
         uri: window.location.origin,
         version: "1",
-        chainId: chain?.id,
+        chainId: chainId,
         nonce: nonce,
       });
 
-      return data;
+      return data.prepareMessage();
     } catch (error) {
+      console.error(error);
       throw error;
     }
   };
 
-  const sendForVerification = async (message, signature ) => {
+  const sendForVerification = async (message, signature) => {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/verify`,
@@ -75,19 +74,40 @@ export default function WalletConnect() {
     }
   };
 
-  async function signInWithEthereum() {
+  async function signInWithEthereum(data) {
     try {
-      const siweMessage = await createSiweMessage();
-
+      let siweMessage = await createSiweMessage(data.address, data.chainId);
       if (!siweMessage) {
         throw new Error("Error creating message");
       }
 
-      const signature = await signMessageAsync({ message : siweMessage.prepareMessage() });
+      message.success({
+        content: "Message created successfully",
+        key: "messageCreated",
+        duration: 1,
+      });
 
-      if (!signature) {
-        throw new Error("Error signing message");
-      }
+      const signature = await signMessageAsync({
+        message: siweMessage,
+        onSuccess: () => {
+          message.success({
+            content: "Message signed successfully",
+            key: "messageSigned",
+            duration: 1,
+          });
+        },
+        onError: (error) => {
+          message.error({
+            content: `❌ ${error.message}`,
+            key: "signMessageError",
+            duration: 1,
+            onClose: () => {
+              message.destroy("signMessageError");
+            }
+          })
+        }
+      });
+
       const resPromise = sendForVerification(siweMessage, signature);
       message.loading({
         content: "Verifying signature...",
@@ -102,13 +122,11 @@ export default function WalletConnect() {
             key: "verifySignatureSuccess",
             duration: 1,
             onClose: () => {
-                const { daoId, address } = decodeToken(
-                  res.authToken
-                );
-                setAuthData(address, res.authToken, daoId);
-                dispatch(setIsLoggedIn(true));
-                const user = decodeToken(res.authToken);
-                setUser(user);
+              const { daoId, address } = decodeToken(res.authToken);
+              setAuthData(address, res.authToken, daoId);
+              dispatch(setIsLoggedIn(true));
+              const user = decodeToken(res.authToken);
+              setUser(user);
               message.loading({
                 content: "Signing in...",
                 key: "signIn",
@@ -121,13 +139,13 @@ export default function WalletConnect() {
                     duration: 3,
                     onClose: () => {
                       message.destroy("signInSuccess");
-                      navigate("/proposals");
+                      navigate("/accounts");
                     },
                   });
-                }
+                },
               });
             },
-          });              
+          });
         })
         .catch((error) => {
           message.destroy("verifySignature");
@@ -142,7 +160,7 @@ export default function WalletConnect() {
     }
   }
 
-  return (
+return (
     <div
       style={{
         display: "flex",

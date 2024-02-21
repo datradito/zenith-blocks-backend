@@ -1,8 +1,13 @@
 import React, {useState} from "react";
-import { useAccount, useNetwork, useEnsAvatar, useBalance } from "wagmi";
+import { useAccount, useEnsAvatar } from "wagmi";
+import { normalize } from "viem/ens";
 import { useGetTokens } from "../../Components/hooks/Dashboard/useGetTokens";
 import useTransactionHistory from "../../Components/hooks/Dashboard/useTransactionHistory";
 import { UserContext } from "./UserProvider";
+import { formatUnits } from "viem"; 
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useConfig } from "wagmi";
+import { getBalanceQueryOptions } from "wagmi/query"; 
 
 export const DashboardContext = React.createContext();
 
@@ -46,12 +51,15 @@ const categories = [
 ]
 
 function DashboardProvider({ children }) {
-  const { address } = useAccount();
-  const { chain: networkChain } = useNetwork();
+  const { address, chain } = useAccount();
   const { tokensOwnedByUser } = useGetTokens(address);
   const transactionHistory = useTransactionHistory(address);
   const [activeTab, setActiveTab] = useState("wallet");
   const { user } = React.useContext(UserContext);
+
+  const config = useConfig();
+  const options = getBalanceQueryOptions(config, { address: address });
+  const balance = useSuspenseQuery(options); 
 
 
   const handleTabChange = (tab) => {
@@ -59,12 +67,8 @@ function DashboardProvider({ children }) {
   };
 
 
-  const balance = useBalance({
-    address: address,
-  });
-
   const { data: ensName } = useEnsAvatar({
-    address: address,
+    name: normalize(address),
     cacheTime: 2_000,
   });
 
@@ -76,11 +80,10 @@ function DashboardProvider({ children }) {
     <DashboardContext.Provider
       value={{
         address,
-        networkChain,
+        chain,
         ensName,
-        nativeBalance: (
-          Number(balance?.data?.value) / Math.pow(10, 18)
-        ).toFixed(5),
+        nativeBalance: 
+        formatUnits(balance?.data?.value, balance?.data?.decimals),
         symbol: balance?.data?.symbol,
         tokensOwnedByUser,
         transactionHistory,

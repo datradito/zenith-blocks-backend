@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { getTokenContractAddress } from "../../../Utility/TokenContracts/tokenConfig"
-import { useNetwork } from "wagmi";
+import { useAccount } from "wagmi";
 import fetchContractABI from "../../../Utility/TokenContracts/fetchContractABI";
 
 const useGetAbi = (ticker) => {
   const [contractABI, setContractABI] = useState(null);
-  const { chain } = useNetwork();
+  const { chain } = useAccount();
   const contractAddress = getTokenContractAddress(chain?.id, ticker);
   
   useEffect(() => {

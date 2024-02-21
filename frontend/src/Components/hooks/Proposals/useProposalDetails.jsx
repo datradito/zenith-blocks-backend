@@ -1,9 +1,9 @@
 import { useQuery } from '@apollo/client';
 import { GET_PROPOSAL_BY_ID } from '../../../SnapShot/Queries.js';
 import { snapShotClient } from '../../../apolloConfig/client.js';
-import { toast } from "react-hot-toast";
 import { useDispatch } from 'react-redux';
 import { setProposal } from '../../../actions/currentProposal/index.js';
+import { message } from 'antd';
 
 export default function useProposalDetails(id) {
 
@@ -19,7 +19,7 @@ export default function useProposalDetails(id) {
         dispatch(setProposal(data.proposal));
     }
 
-    if(error) toast.error(error.message);
+    if(error) message.error("Error fetching proposal details");
 
     return { loading, data };
 }

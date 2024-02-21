@@ -1,7 +1,7 @@
 import React from "react";
 import StatusChip from "../../../atoms/StatusChip/StatusChip";
 import styled from "styled-components";
-import { useWaitForTransaction } from "wagmi";
+import { useWaitForTransactionReceipt } from "wagmi";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import GetEnsName from "../../../molecules/GetEnsName/GetEnsName";
 import Container from "../../../atoms/Container/Container";
@@ -9,7 +9,7 @@ import CircularIndeterminate from "../../../atoms/Loader/loader";
 import { Typography } from "@mui/material";
 
 const Transaction = ({ transaction }) => {
-  const { data, isLoading } = useWaitForTransaction({
+  const { data, isLoading } = useWaitForTransactionReceipt({
     hash: "0x487de32c3c7ccfd304831df9ab9d5219501eee8bdd09988dc62a73ac9dc38c6a",
   });
 

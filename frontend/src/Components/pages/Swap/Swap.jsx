@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from "react";
 
-import { useAccount, useSendTransaction, useWaitForTransaction } from "wagmi";
+import { useAccount, useSendTransaction, useWaitForTransactionReceipt } from "wagmi";
 import styled from "styled-components";
 import SwapLayout from "../../molecules/Swap/SwapLayout";
 import FromToken from "../../features/swap/FromToken";
@@ -71,8 +71,10 @@ function Swap() {
     value: txDetails.value,
   });
 
-  const { isLoading, isSuccess } = useWaitForTransaction({
+  const { isLoading, isSuccess } = useWaitForTransactionReceipt({
     hash: data?.hash,
+    confirmations: 2,
+    // pollingInterval: 1000,
   });
 
   const handleRefresh = async () => {

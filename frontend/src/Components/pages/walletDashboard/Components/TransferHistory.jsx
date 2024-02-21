@@ -6,41 +6,39 @@ import { transformTransactionHistory } from "../../../../Utility/transformItems"
 import CircularIndeterminate from "../../../atoms/Loader/loader";
 import Label from "../../../atoms/Label/Label";
 
-function TransferHistory({ chain, wallet, transfers, setTransfers }) {
+function TransferHistory({ wallet, transfers, setTransfers }) {
+  const [getTransactionHistory, { loading, data: transactionHistory }] =
+    useLazyQuery(GET_TRANSACTION_HISTORY, {
+      variables: { address: wallet },
+    });
 
-    const [getTransactionHistory, { loading, error, data: transactionHistory }] = useLazyQuery(
-      GET_TRANSACTION_HISTORY,
-      {
-        variables: { address: wallet },
-      }
-    );
-    
-    useEffect(() => {
-        if (transactionHistory) {
-            const history = transformTransactionHistory(transactionHistory?.getTokenTransactionHistory);
-            setTransfers(history);
-        }
-    }, [transactionHistory]);
-
-    async function getTokenTransfers() {
-        await getTransactionHistory(wallet);
+  useEffect(() => {
+    if (transactionHistory) {
+      const history = transformTransactionHistory(
+        transactionHistory?.getTokenTransactionHistory
+      );
+      setTransfers(history);
     }
+  }, [transactionHistory]);
 
-    if (loading) return <CircularIndeterminate />;
+  async function getTokenTransfers() {
+    await getTransactionHistory(wallet);
+  }
 
-    return (
-        <>
-                <Button onClick={getTokenTransfers} />
-                {transfers.length > 0 ? (
-                "Table"
+  if (loading) return <CircularIndeterminate />;
 
-            ) :
-                (
-                    <Label variant="subtitle2">This wallet does not have any historic transactions!</Label>
-                )
-                }
-            </>
-    );
+  return (
+    <>
+      <Button onClick={getTokenTransfers} />
+      {transfers.length > 0 ? (
+        "Table"
+      ) : (
+        <Label variant="subtitle2">
+          This wallet does not have any historic transactions!
+        </Label>
+      )}
+    </>
+  );
 }
 
 export default TransferHistory;

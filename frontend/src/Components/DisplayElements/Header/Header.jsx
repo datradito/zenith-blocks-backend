@@ -4,11 +4,9 @@ import WalletConnect from './WalletConnect';
 import { useSelector } from 'react-redux';
 
 import {
-    Box,
     AppBar,
-    Toolbar,
-    Container,
-    Button,
+  Toolbar,
+  Button,
     Grid,
 } from '@mui/material';
 

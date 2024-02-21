@@ -1,9 +1,7 @@
 import "./App.css";
 import React, { Suspense } from "react";
 import { ApolloProvider } from "@apollo/client";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient, client } from "./apolloConfig/client";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import {  client } from "./apolloConfig/client";
 import { RouterProvider } from "react-router-dom";
 import { Provider } from "react-redux";
 import { storeConfig, persistor } from "./store/storeConfigure";
@@ -14,9 +12,8 @@ import { UserProvider } from "./Utility/Providers/UserProvider";
 import { router } from "./Routes/Router";
 
 function App() {
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={false} />
       <ApolloProvider client={client}>
         <Provider store={storeConfig}>
           <PersistGate loading={null} persistor={persistor}>
@@ -25,7 +22,7 @@ function App() {
                     <RouterProvider router={router} />
                   </Suspense>
               </UserProvider>
-            <Toaster
+            {/* <Toaster
               position="top-center"
               gutter={12}
               containerStyle={{ margin: "8px" }}
@@ -44,11 +41,10 @@ function App() {
                   color: "var(--color-grey-700)",
                 },
               }}
-            />
+            /> */}
           </PersistGate>
         </Provider>
       </ApolloProvider>
-    </QueryClientProvider>
   );
 }
 

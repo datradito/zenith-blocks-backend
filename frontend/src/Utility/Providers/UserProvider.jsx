@@ -5,7 +5,7 @@ import { useDisconnect } from "wagmi";
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const { disconnectAsync } = useDisconnect();
+  const { disconnect } = useDisconnect();
   const [user, setUser] = useState(null);
 
 
@@ -13,7 +13,7 @@ export const UserProvider = ({ children }) => {
     const token = sessionStorage.getItem("authToken");
     const decodedToken = decodeToken(token);
     if (isTokenExpired(decodedToken)) {
-      disconnectAsync();
+      disconnect();
       clearAuthData();
       setUser(null);
     } else {

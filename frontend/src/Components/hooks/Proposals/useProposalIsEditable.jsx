@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { toast } from "react-hot-toast";
+import { message } from "antd";
 import { useSelector } from "react-redux";
 
 
@@ -27,13 +27,13 @@ const filteredProposal = useMemo(() => {
         //   <p style={{ color: "warning" , padding: "1rem", background: "white", borderRadius: "0.5rem"}}>⚠️ Proposal is fully funded</p>
         // );
       } else if (filteredProposal?.amount === null) {
-        toast.error("Proposal is missing an amount");
+        message.error("Proposal requires amount")
       }
     }
 
     if(!filteredProposal) {
       setProposalAmount(null);
-      toast.error("Proposal is missing an amount");
+      message.error("Proposal requires amount")
     }
   }, []);
 

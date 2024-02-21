@@ -12,7 +12,7 @@ import FormRow from "../../atoms/FormRow/FormRow";
 import { message } from "antd";
 import { parseUnits } from "viem";
 import {
-  useWaitForTransaction,
+  useWaitForTransactionReceipt,
 } from "wagmi";
 
 export function SendTransaction({ reciepent, paymentData }) {
@@ -57,8 +57,10 @@ export function SendTransaction({ reciepent, paymentData }) {
   };
 
 
-  const { isLoading, isSuccess, isError, error } = useWaitForTransaction({
-    hash: hash,
+  const result = useWaitForTransactionReceipt({
+    confirmations: 2,
+    hash: `0x${hash}`,
+    pollingInterval: 1_000,
     onSuccess(data) {
       handlePaymentCreateOnClick(hash, "paid");
     },

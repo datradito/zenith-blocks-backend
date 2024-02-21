@@ -16,6 +16,7 @@ import InvoiceRoutes from "./InvoiceDependentRoutes";
 import NotFound from "./NotFound";
 import MemoizedInvoiceProvider from "../Utility/Providers/InvoiceProvider";
 import SwapProvider from "../Utility/Providers/SwapProvider";
+import { AccountAbstractionProvider } from "../Utility/Providers/AccountAbstractionContext";
 const Swap = lazy(() => import("../Components/pages/Swap/Swap"));
 const ProposalDetailView = lazy(() =>
   import("../Components/features/proposals/ProposalDetailView")
@@ -137,15 +138,6 @@ export const router = createBrowserRouter(
         errorElement={<ErrorPage />}
       />
       <Route
-        path="accounts"
-        errorElement={<ErrorPage />}
-        element={
-          <ProtectedRoute path="/*">
-            <Accounts />
-          </ProtectedRoute>
-        }
-      />
-      <Route
         path="swap"
         element={
           <ProtectedRoute path="/*">
@@ -197,19 +189,10 @@ export const router = createBrowserRouter(
         path="accounts"
         errorElement={<ErrorPage />}
         element={
-          <ProtectedRoute path="/">
+          <AccountAbstractionProvider>
             <Accounts />
-          </ProtectedRoute>
+          </AccountAbstractionProvider>
         }
-      />
-      <Route
-        path="swap"
-        element={
-          <ProtectedRoute path="/*">
-            <Swap />
-          </ProtectedRoute>
-        }
-        errorElement={<ErrorPage />}
       />
       <Route path="*" element={<NotFound />} />
     </Route>
