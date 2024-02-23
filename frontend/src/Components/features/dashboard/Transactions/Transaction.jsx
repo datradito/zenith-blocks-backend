@@ -7,11 +7,12 @@ import GetEnsName from "../../../molecules/GetEnsName/GetEnsName";
 import Container from "../../../atoms/Container/Container";
 import CircularIndeterminate from "../../../atoms/Loader/loader";
 import { Typography } from "@mui/material";
+import Avatar from "antd/es/avatar/avatar";
 
 const Transaction = ({ transaction }) => {
-  const { data, isLoading } = useWaitForTransactionReceipt({
-    hash: "0x487de32c3c7ccfd304831df9ab9d5219501eee8bdd09988dc62a73ac9dc38c6a",
-  });
+  // const { data, isLoading } = useWaitForTransactionReceipt({
+  //   hash: "0x487de32c3c7ccfd304831df9ab9d5219501eee8bdd09988dc62a73ac9dc38c6a",
+  // });
 
   return (
     <Container
@@ -21,10 +22,10 @@ const Transaction = ({ transaction }) => {
       border="none"
       alignItems={"center"}
     >
-      {isLoading ? (
+      {false ? (
         <CircularIndeterminate />
       ) : (
-        <StatusChip status={data.status} />
+        <StatusChip status={transaction.status} />
       )}
 
       <Container
@@ -34,16 +35,41 @@ const Transaction = ({ transaction }) => {
         margin="0"
       >
         <Container flexDirection={"row"} border="none" margin="0" padding="0">
-          <GetEnsName address={transaction.from} />
+          <GetEnsName address={transaction?.from} />
           <ArrowRightAltIcon />
-          <GetEnsName address={transaction.to} />
+          <GetEnsName address={transaction?.to} />
         </Container>
-        <Container flexDirection={"row"} border="none" margin="0" padding="0">
-          <Typography variant="subtitle2">
-            {transaction?.value?.toFixed(4)}
-          </Typography>
-          <Typography variant="subtitle1">{transaction.asset}</Typography>
-        </Container>
+        {transaction?.tokenInfo !== undefined ? (
+          <Container
+            flexDirection={"row"}
+            border="none"
+            margin="0"
+            padding="0"
+            alignItems={"center"}
+          >
+            <Avatar size={24} src={transaction?.tokenInfo?.logoURI} />
+            <Typography variant="subtitle2">
+              {transaction?.tokenInfo?.value /
+                Math.pow(10, transaction?.tokenInfo?.decimals)}
+            </Typography>
+            <Typography variant="subtitle1">
+              {transaction.tokenInfo?.symbol}
+            </Typography>
+          </Container>
+        ) : (
+          <Container
+            flexDirection={"row"}
+            border="none"
+            margin="0"
+            padding="0"
+            alignItems={"center"}
+          >
+            <Typography variant="subtitle2">
+              {transaction?.value / Math.pow(10, 18)}
+            </Typography>
+            <Typography variant="subtitle1">ETH</Typography>
+          </Container>
+        )}
       </Container>
     </Container>
   );

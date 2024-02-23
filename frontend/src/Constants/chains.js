@@ -102,6 +102,7 @@ export const sepoliaChain = {
   rpcUrl: "https://ethereum-sepolia.publicnode.com/",
   blockExplorerUrl: "https://sepolia.polygonscan.com",
   color: "#AA36A7",
+  transactionServiceUrl: "https://safe-transaction-sepolia.safe.global",
   isStripePaymentsEnabled: false,
   isMoneriumPaymentsEnabled: false,
   faucetUrl: "https://sepoliafaucet.com/",
@@ -116,6 +117,7 @@ export const sepoliaChain2 = {
   rpcUrl: "https://ethereum-sepolia.publicnode.com/",
   blockExplorerUrl: "https://sepolia.polygonscan.com",
   color: "#AA36A7",
+  transactionServiceUrl: "https://safe-transaction-sepolia.safe.global",
   isStripePaymentsEnabled: false,
   isMoneriumPaymentsEnabled: false,
   faucetUrl: "https://sepoliafaucet.com/",
@@ -132,6 +134,6 @@ const chains = [
   sepoliaChain2,
 ];
 
-export const initialChain = sepoliaChain;
+export const initialChain = sepoliaChain2;
 
 export default chains;

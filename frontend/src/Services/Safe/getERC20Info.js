@@ -14,12 +14,15 @@ export const getERC20Info = async (
   provider,
   accountAddress
 ) => {
+  console.log("erc20Address", erc20Address);
   if (erc20Address === ethers.ZeroAddress) {
     return undefined;
   }
 
+
   const contract = new ethers.Contract(erc20Address, erc20ABI, provider);
 
+  console.log("contract", contract);
   const [balance, decimals, symbol] = await Promise.all([
     accountAddress != null
       ? contract.balanceOf(accountAddress)
@@ -27,6 +30,7 @@ export const getERC20Info = async (
     contract.decimals(),
     contract.symbol(),
   ]);
+  console.log("balance", balance);
 
   return { address: erc20Address, balance, decimals, symbol };
 };

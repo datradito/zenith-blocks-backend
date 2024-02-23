@@ -10,11 +10,7 @@ const getSafeInfo = async (
 )=> {
   const chain = getChain(connectedChainId)
 
-  console.log('chain', chain)
-
   const address = ethers.getAddress(safeAddress)
-
-  console.log('address', address)
 
   // Mumbai has no transaction service because it is not part of our official UI https://app.safe.global/
   if (!chain?.transactionServiceUrl) {

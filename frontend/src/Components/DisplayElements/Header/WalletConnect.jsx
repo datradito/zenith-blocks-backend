@@ -139,7 +139,7 @@ export default function WalletConnect() {
                     duration: 3,
                     onClose: () => {
                       message.destroy("signInSuccess");
-                      navigate("/accounts");
+                      navigate("/dashboard");
                     },
                   });
                 },

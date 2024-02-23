@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import { ethers } from 'ethers'
 import styled from '@emotion/styled'
-import { Skeleton } from '@mui/material'
+import { Avatar, Skeleton } from '@mui/material'
 import FormControl from '@mui/material/FormControl'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
@@ -71,31 +71,34 @@ function SafeInfo({ safeAddress, chainId }) {
   const isLoading = isDeployLoading || isGetSafeInfoLoading
 
   return (
-    <Stack direction="row" spacing={2}>
+    <Stack direction="row" spacing={2} border="none">
       <div style={{ position: "relative" }}>
         {/* Safe Logo */}
         {isLoading ? (
           <Skeleton variant="circular" width={50} height={50} />
         ) : (
-          <img src=".jpg" alt="connected Safe account logo" height="50px" />
+            <Avatar alt="connected Safe account logo" src=".jpg" height="50px" />
+          // <img src=".jpg" alt="connected Safe account logo" height="50px" />
         )}
 
         {/* Threshold & owners label */}
         {isDeployed && (
+          <Tooltip title="Threshold / Owners">
           <SafeSettingsLabel>
             <Typography
               fontSize="12px"
               fontWeight="700"
               color="inherit"
               lineHeight="initial"
-            >
+              >
               {threshold}/{owners}
             </Typography>
           </SafeSettingsLabel>
+              </Tooltip>
         )}
       </div>
 
-      <Stack direction="column" spacing={0.5} alignItems="flex-start">
+      <Stack direction="column" spacing={0.5} alignItems="flex-start" border="none">
         {/* Safe address label */}
         <Typography variant="body2">
           <AddressLabel address={safeAddress} showBlockExplorerLink />

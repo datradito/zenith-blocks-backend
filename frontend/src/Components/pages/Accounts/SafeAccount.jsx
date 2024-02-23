@@ -1,4 +1,4 @@
-import Typography from "@mui/material/Typography";
+import React from "react";
 import SafeInfo from "./SafeInfo";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -8,9 +8,9 @@ import styled from "styled-components";
 
 import { useAccountAbstraction } from "../../../Utility/Providers/AccountAbstractionContext";
 import { InputLabel, Box } from "@mui/material";
-import { useEffect } from "react";
 import Button from "../../atoms/Button/Button";
 import { message } from "antd";
+import Label from "../../atoms/Label/Label";
 
 export const ConnectedContainer = styled(Box)(
   ({ theme }) => `
@@ -20,28 +20,44 @@ export const ConnectedContainer = styled(Box)(
 );
 
 function SafeAccount(props) {
-  
-  const { safeSelected, chainId, safes, setSafeSelected, getSafesOwned } =
-    useAccountAbstraction();
-  
+  const {
+    safeSelected,
+    chainId,
+    safes,
+    hasLoadedSafes,
+    setHasLoadedSafes,
+    setSafeSelected,
+    getSafesOwned,
+  } = useAccountAbstraction();
+
+  const handleLoadSafes = async () => {
+    await getSafesOwned();
+    setHasLoadedSafes(true);
+  };
+
+  const createSafe = async () => {
+    message.info("Create Safe Logic");
+  };
 
   return (
     <ConnectedContainer {...props}>
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Box>
-          <Typography fontWeight="700">Safe Account</Typography>
-          <Typography fontSize="14px" marginTop="8px" marginBottom="32px">
-            Your Safe account (Smart Contract) holds and protects your assets.
-          </Typography>
-        </Box>
-        {
-          safes.length === 0 ?
-          <Button variant="contained" onClick={getSafesOwned}>
-          Load Safes
+        {!hasLoadedSafes ? (
+          <Button variant="contained" onClick={handleLoadSafes}>
+            Load Safes
+          </Button>
+        ) : safes.length === 0 && hasLoadedSafes ? (
+          <>
+            <Label>No Safe Found</Label>
+            <Button variant="contained" onClick={createSafe}>
+              Create Safe
             </Button>
-            :
-            <AddressLabel address={safeSelected} />
-        }
+          </>
+          ) : (
+              <>
+              </>
+          // <AddressLabel address={safeSelected} />
+        )}
       </Box>
 
       {!!safes && safes.length > 1 && (

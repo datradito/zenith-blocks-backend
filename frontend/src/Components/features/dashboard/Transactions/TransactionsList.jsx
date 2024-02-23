@@ -7,10 +7,12 @@ function TransactionList({ transactions }) {
   const [page, setPage] = useState(1);
   const perPage = 5;
 
+  console.log(transactions)
+
   const paginatedTransactions = useMemo(() => {
     const start = (page - 1) * perPage;
     const end = start + perPage;
-    return transactions.slice(start, end);
+    return transactions;
   }, [page, transactions]);
 
   return (
@@ -18,6 +20,7 @@ function TransactionList({ transactions }) {
       {paginatedTransactions.map((transaction, index) => (
         <Transaction key={index} transaction={transaction} />
       ))}
+
 
       <Pagination
         currentPage={page}

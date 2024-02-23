@@ -9,6 +9,8 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useConfig } from "wagmi";
 import { getBalanceQueryOptions } from "wagmi/query"; 
 
+import { useAccountAbstraction } from "./AccountAbstractionContext";
+
 export const DashboardContext = React.createContext();
 
 const categories = [
@@ -53,9 +55,11 @@ const categories = [
 function DashboardProvider({ children }) {
   const { address, chain } = useAccount();
   const { tokensOwnedByUser } = useGetTokens(address);
-  const transactionHistory = useTransactionHistory(address);
   const [activeTab, setActiveTab] = useState("wallet");
   const { user } = React.useContext(UserContext);
+  const { apiKit, safeSelected } = useAccountAbstraction();
+  
+  const transactionHistory = useTransactionHistory(safeSelected, apiKit);
 
   const config = useConfig();
   const options = getBalanceQueryOptions(config, { address: address });

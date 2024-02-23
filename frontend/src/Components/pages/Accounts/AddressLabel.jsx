@@ -22,7 +22,7 @@ const AddressLabel = ({
   }/${address}`
 
   return (
-    <Stack direction="row" alignItems="center" justifyContent="center" component="span">
+    <Stack direction="row" alignItems="center" justifyContent="center" component="span" border="none">
       <Tooltip title={address}>
         <span>{addressLabel}</span>
       </Tooltip>
