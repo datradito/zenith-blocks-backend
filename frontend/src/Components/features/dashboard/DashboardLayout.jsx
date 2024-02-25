@@ -36,7 +36,7 @@ const RightPanel = () => {
   const { activeTab } = useContext(DashboardContext);
   return (
     <StyledContainer flex={6} border="2px solid rgba(40, 42, 46, 0.5)">
-      {activeTab === "wallet" && <WalletStatus />}
+      {activeTab === "wallet" && <GetTransactions />}
       {activeTab === "categories" && <CategoryList />}
       {activeTab === "contacts" && <ContactsList />}
     </StyledContainer>
@@ -72,7 +72,7 @@ const LeftPanel = () => {
         <SwapHorizontalCircleIcon />
         <Typography variant="h6">Transactions</Typography>
       </Container>
-      <GetTransactions />
+      {/* <GetTransactions /> */}
     </StyledContainer>
   );
 };
@@ -94,7 +94,6 @@ const MainPanel = () => {
     </Container>
   );
 };
-
 
 function DashboardLayout({ children }) {
   return (

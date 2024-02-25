@@ -132,7 +132,18 @@ let theme = createTheme({
           width: "100%",
           padding: "0 0.5rem;",
           borderRadius: "5px",
-          border: "1px solid rgba(40, 42, 46, 0.5)",
+          // border: "1px solid rgba(40, 42, 46, 0.5)",
+          backgroundColor: "#24292E",
+        },
+        input: {
+          padding: "0.5rem",
+          color: "rgba(255, 255, 255, 0.87)",
+        },
+        "&.Mui-focused": {
+          border: "none",
+          backgroundColor: "#24292E",
+        },
+        "&.Mui-hover": {  
           backgroundColor: "#24292E",
         },
       },

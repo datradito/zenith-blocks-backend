@@ -121,7 +121,10 @@ export const sepoliaChain2 = {
   isStripePaymentsEnabled: false,
   isMoneriumPaymentsEnabled: false,
   faucetUrl: "https://sepoliafaucet.com/",
-  supportedErc20Tokens: ["0x8267cF9254734C6Eb452a7bb9AAF97B392258b21"],
+  supportedErc20Tokens: [
+    "0x8267cF9254734C6Eb452a7bb9AAF97B392258b21",
+    "0x08210F9170F89Ab7658F0B5E3fF39b0E03C594D4",
+  ],
 };
 
 const chains = [

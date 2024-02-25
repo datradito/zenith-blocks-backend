@@ -1,6 +1,22 @@
 import * as React from 'react';
 import Chip from '@mui/material/Chip';
 import useMediaQuery from "@mui/material/useMediaQuery";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import PendingIcon from "@mui/icons-material/Pending";
+import ErrorIcon from "@mui/icons-material/Error";
+
+
+const statusIcons = [
+  { component: <PendingIcon fontSize="large" />, status: "PENDING" },
+  {
+    component: <CheckCircleIcon fontSize="large" color="success" />,
+    status: "SUCCESS",
+  },
+  {
+    component: <ErrorIcon fontSize="large" color="#f44336" />,
+    status: "FAILED",
+  },
+];
 
 
 export const StatusTypes = {
@@ -22,13 +38,18 @@ export const StatusTypes = {
 };
 
 const isValidStatus = (status) => Object.values(StatusTypes).includes(status);
-
-const StatusChip = ({ status }) => {
-
-    const isSmallScreen = useMediaQuery("(max-width: 600px)");
+const StatusChip = ({ status, type }) => {
+  const isSmallScreen = useMediaQuery("(max-width: 600px)");
 
   status = status.toUpperCase();
   if (!isValidStatus(status)) {
+    // If type is 'payment', return the corresponding icon
+    if (type === "payment") {
+      const statusIcon = statusIcons.find((icon) => icon.status === status);
+      return statusIcon ? statusIcon.component : null;
+    }
+
+    // If no type is specified, return the default status chip
     return (
       <Chip
         label={isSmallScreen ? "" : status || "NEW"}
@@ -39,18 +60,6 @@ const StatusChip = ({ status }) => {
       />
     );
   }
-
-return (
-  <Chip
-    label={isSmallScreen ? "" : status}
-    size="small"
-    style={{
-      backgroundColor: StatusTypes[status.toUpperCase().replace(/\s+/g, "_")],
-      color: "white",
-    }}
-  />
-);
 };
-
 export default StatusChip;
 

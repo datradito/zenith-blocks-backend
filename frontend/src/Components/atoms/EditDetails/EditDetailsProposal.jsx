@@ -14,7 +14,7 @@ import currencies from "../../../Utility/CurrencyList.json";
 import StyledSelect from "../SelectDropdown/SelectDropdown";
 import { InputBase } from "@mui/material";
 
-export default function DetailPanelContent({ row, onCloseModal, refetch}) {
+export default function DetailPanelContent({ row, refetch }) {
   const dispatch = useDispatch();
   const {
     handleSubmit,
@@ -25,9 +25,12 @@ export default function DetailPanelContent({ row, onCloseModal, refetch}) {
   const methods = useForm();
 
   const onSubmit = async (data) => {
-    
     try {
-      await saveProposalDetails(data.amount, row, methods.getValues()?.currency);
+      await saveProposalDetails(
+        data.amount,
+        row,
+        methods.getValues()?.currency
+      );
 
       dispatch(
         addAmount({
@@ -36,11 +39,11 @@ export default function DetailPanelContent({ row, onCloseModal, refetch}) {
           status: "NotFilled",
         })
       );
-      onCloseModal();
+      // onCloseModal();
       refetch({
         variables: {
           proposalid: row.id,
-        }
+        },
       });
     } catch (error) {
       console.error(error);

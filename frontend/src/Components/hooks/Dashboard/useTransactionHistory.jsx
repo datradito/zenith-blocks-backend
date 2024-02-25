@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import getHistoricalTransactions from "../../../Services/DashboardServices/fetchHistoricalTransactions";
 import CircularIndeterminate from "../../atoms/Loader/loader";
@@ -7,44 +7,46 @@ import { useCallback } from "react";
 import usePolling from "../Safe/usePolling";
 import SafeTransactionsService from "../../../Services/DashboardServices/safeTransactions";
 
-
-const useTransactionHistory = (safeAddress, apiKit, maxCount = "0x3e8") => {
-
+const useTransactionHistory = (safeAddress, apiKit, transactionType) => {
   const [loading, setLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [error, setError] = useState(false);
   const [count, setCount] = useState(0);
 
-  const sanitizeTransactions = async (allTxs) => {
-    const sanitizedTransactions = [];
-    allTxs.forEach((tx) => {
-      const transaction = new SafeTransactionsService(tx);
-      sanitizedTransactions.push(transaction.sanitizeTransaction());
-    });
+  const sanitizeTransactions = useMemo(() => {
+    return async (allTxs) => {
+      const sanitizedTransactions = [];
+      try {
+        allTxs.forEach((tx) => {
+          const transaction = new SafeTransactionsService(tx);
+          sanitizedTransactions.push(transaction.sanitizeTransaction());
+        });
+      } catch (error) {
+        console.error("Error sanitizing transactions", error);
+        throw error;
+      }
 
-    return sanitizedTransactions;
-  };
-
+      return sanitizedTransactions;
+    };
+  }, [transactionType]);
 
   const safeTransactions = useCallback(async () => {
-    // const allTxsOptions = {
-    //   executed,
-    //   queued,
-    //   trusted,
-    // };
+    setTransactions([]);
     try {
       setLoading(true);
-      let allTxs = await apiKit.getAllTransactions(
+      let functionName = `get${
+        transactionType === "" ? "All" : transactionType
+      }Transactions`;
+      let allTxs = await apiKit[functionName](
         safeAddress,
         0,
         100,
-        true,
-        true,
-        true
       );
-      allTxs = await sanitizeTransactions(allTxs.results);
 
-      setCount(allTxs.length);
+      console.log(allTxs);
+      allTxs = await sanitizeTransactions(allTxs.results);
+      console.log(allTxs);
+      setCount(allTxs.length || 0);
       setTransactions(allTxs);
       setLoading(false);
       return allTxs;
@@ -52,9 +54,8 @@ const useTransactionHistory = (safeAddress, apiKit, maxCount = "0x3e8") => {
       setError(true);
       setLoading(false);
       console.log("error", error);
-      message.error("Error fetching transaction history");
     }
-  }, [safeAddress, apiKit]);
+  }, [safeAddress, apiKit, transactionType]);
 
   usePolling(safeTransactions);
 

@@ -5,7 +5,7 @@ import InputWithIcon from "../../molecules/Input/InputWithIcon";
 import { Stack } from "@mui/system";
 import { InputBase } from "@mui/material";
 
-function Search({ onSearch }) {
+function Search({ onSearch, ...props }) {
   const [searchTerm, setSearchTerm] = useState("");
 
   function handleOnClick() {
@@ -19,8 +19,8 @@ function Search({ onSearch }) {
       }}
     >
       <InputBase
-        placeholder="Search Proposals By Title"
-        inputProps={{ "aria-label": "search Proposals By Title" }}
+        placeholder={props.placeholder || "Search"}
+        inputProps={{ "aria-label": "search"}}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         style={{

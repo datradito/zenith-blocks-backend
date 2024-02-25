@@ -6,35 +6,9 @@ class SafeTransactionsService {
     this.transaction = transaction;
   }
 
-  sanitizeTransaction() {
-    let from,
-      to,
-      value,
-      tokenInfo,
-      transfers,
-      executionDate,
-      txHash,
-      transactionType,
-      createdDate;
-
-    if (this.transaction.txType === "MULTISIG_TRANSACTION") {
-      from = this.transaction.proposer;
-      to = this.transaction.to;
-      value = this.transaction.value;
-
-      createdDate = this.transaction.submissionDate;
-      executionDate = this.transaction.executionDate;
-
-      txHash = this.transaction.safeTxHash;
-      transactionType = "Safe";
-    } else if (this.transaction.txType === "ETHEREUM_TRANSACTION") {
-      from = this.transaction.from;
-      to = this.transaction.to;
-      value = this.transaction.value;
-      createdDate = this.transaction.executionDate;
-      executionDate = this.transaction.executionDate;
-      txHash = this.transaction.txHash;
-      transactionType = "ERC20";
+  getTransfers() {
+    let transfers;
+    if (this.transaction.transfers) {
       transfers = this.transaction.transfers.map((transfer) => {
         return {
           type: transfer.type,
@@ -50,10 +24,73 @@ class SafeTransactionsService {
           from: transfer.from,
         };
       });
-      tokenInfo =
-        this.transaction.transfers.length > 0
-          ? {...this.transaction.transfers[0].tokenInfo, value: this.transaction.transfers[0].value}
-          : null;
+    }
+
+    return transfers;
+  }
+
+  getTokenInfo() {
+    if (this.transaction.type === "ERC20_TRANSFER") {
+      return {
+        ...this.transaction.tokenInfo,
+        value: this.transaction.value,
+      };
+    } else if (this.transaction.type === "ETHER_TRANSFER") {
+      return {
+        ...null,
+        value: this.transaction.value,
+      };
+    } else if (this.transaction?.transfers?.length > 0) {
+      return {
+        ...this.transaction.transfers[0].tokenInfo,
+        value: this.transaction.transfers[0].value,
+      };
+    } else {
+      return {
+        ...this.transaction.tokenInfo,
+        value: this.transaction.value,
+      };
+    }
+  }
+
+  sanitizeTransaction() {
+    let from;
+    let to;
+    let value;
+    let tokenInfo;
+    let transfers;
+    let executionDate;
+    let txHash;
+    let transactionType;
+    let createdDate;
+
+    if (this.transaction.txType === "MULTISIG_TRANSACTION") {
+      from = this.transaction.proposer;
+      to = this.transaction.to;
+      value = this.transaction.value;
+
+      createdDate = this.transaction.submissionDate;
+      executionDate = this.transaction.executionDate;
+
+      txHash = this.transaction.safeTxHash;
+      transactionType = "Safe";
+    } else if (
+      this.transaction.txType === "ETHEREUM_TRANSACTION" ||
+      this.transaction.type === "ERC20_TRANSFER" ||
+      this.transaction.type === "ETHER_TRANSFER"
+    ) {
+      from = this.transaction.from;
+      to = this.transaction.to;
+      value = this.transaction.value;
+      createdDate = this.transaction.executionDate;
+      executionDate = this.transaction.executionDate;
+      txHash = this.transaction.txHash;
+      transactionType = "ERC20";
+      transfers = this.getTransfers();
+      tokenInfo = this.getTokenInfo();
+    } else {
+      from = this.transaction.from || this.transaction.safe;
+      to = this.transaction.to;
     }
 
     const sanitizedTransaction = {
@@ -62,7 +99,9 @@ class SafeTransactionsService {
         ? "Successful"
         : this.transaction.isExecuted
         ? "Executed"
-        : this.transaction.executionDate ? "Success" : "Failed",
+        : this.transaction.executionDate
+        ? "Success"
+        : "Failed",
       createdDate: createdDate,
       executionDate: executionDate,
       from: from,

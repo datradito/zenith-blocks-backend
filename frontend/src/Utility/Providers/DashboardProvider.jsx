@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import { useAccount, useEnsAvatar } from "wagmi";
 import { normalize } from "viem/ens";
 import { useGetTokens } from "../../Components/hooks/Dashboard/useGetTokens";
@@ -12,6 +12,14 @@ import { getBalanceQueryOptions } from "wagmi/query";
 import { useAccountAbstraction } from "./AccountAbstractionContext";
 
 export const DashboardContext = React.createContext();
+
+const TransactionOptions = [
+  "Incoming",
+  "Module",
+  "Pending",
+  "Multisig",
+  "All"
+]
 
 const categories = [
   {
@@ -56,15 +64,19 @@ function DashboardProvider({ children }) {
   const { address, chain } = useAccount();
   const { tokensOwnedByUser } = useGetTokens(address);
   const [activeTab, setActiveTab] = useState("wallet");
+  const[transactionType, setTransactionType] = useState("All");
   const { user } = React.useContext(UserContext);
   const { apiKit, safeSelected } = useAccountAbstraction();
   
-  const transactionHistory = useTransactionHistory(safeSelected, apiKit);
+  const transactionHistory = useTransactionHistory(safeSelected, apiKit, transactionType);
 
   const config = useConfig();
   const options = getBalanceQueryOptions(config, { address: address });
   const balance = useSuspenseQuery(options); 
 
+  const filterTransactions = useCallback((filter) => {
+    TransactionOptions.includes(filter) && setTransactionType(filter);
+  },[setTransactionType]);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -77,15 +89,13 @@ function DashboardProvider({ children }) {
   });
 
 
-  //i have a nav child component that will be used to switch between the different tabs, create necessary state and pass it down to the child component
-
-
   return (
     <DashboardContext.Provider
       value={{
         address,
         chain,
         ensName,
+        transactionType,
         nativeBalance: 
         formatUnits(balance?.data?.value, balance?.data?.decimals),
         symbol: balance?.data?.symbol,
@@ -93,7 +103,8 @@ function DashboardProvider({ children }) {
         transactionHistory,
         activeTab,
         handleTabChange,
-        categories
+        categories,
+        filterTransactions
       }}
     >
       {user && user.address && user.address === address && children}
