@@ -9,20 +9,13 @@ import erc20ABI from "../../Constants/erc20Abi.json";
  * @param accountAddress address to get the ERC20 token balance for
  * @returns the infos for the given token or undefined if no valid ERC20 address was provided
  */
-export const getERC20Info = async (
-  erc20Address,
-  provider,
-  accountAddress
-) => {
-  console.log("erc20Address", erc20Address);
+export const getERC20Info = async (erc20Address, provider, accountAddress) => {
   if (erc20Address === ethers.ZeroAddress) {
     return undefined;
   }
 
-
   const contract = new ethers.Contract(erc20Address, erc20ABI, provider);
 
-  console.log("contract", contract);
   const [balance, decimals, symbol] = await Promise.all([
     accountAddress != null
       ? contract.balanceOf(accountAddress)

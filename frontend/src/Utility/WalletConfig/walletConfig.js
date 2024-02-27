@@ -1,4 +1,3 @@
-import { http } from "@wagmi/core";
 import { mainnet, sepolia, goerli } from "@wagmi/core/chains";
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 
@@ -9,7 +8,7 @@ const projectId = "3a74d330e07a405df9ab1a0ff1825a9b";
 const config = getDefaultConfig({
   appName: "Zenith",
   projectId: projectId,
-  chains: [mainnet, sepolia, goerli],
+  chains: [mainnet, sepolia],
   // transports: {
   //   [mainnet.id]: http(
   //     `https://eth-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_ALCHEMY_KEY}`
@@ -23,6 +22,5 @@ const config = getDefaultConfig({
   // },
 });
 
-localStorage.clear();
 
 export default config;

@@ -16,7 +16,6 @@ import { initialChain } from "../../Constants/chains";
 import usePolling from "../../Components/hooks/Safe/usePolling";
 import { message } from "antd";
 
-
 const initialState = {
   isAuthenticated: false,
   erc20token: {},
@@ -45,27 +44,46 @@ const useAccountAbstraction = () => {
 };
 
 const AccountAbstractionProvider = ({ children }) => {
-  const { chain: connectedChain, address } = useAccount();
   const [ownerAddress, setOwnerAddress] = useState("");
   const [safes, setSafes] = useState([]);
-  const [safeSelected, setSafeSelected] = useState(null);
+  const [safeSelected, setSafeSelected] = useState(
+    window.localStorage.getItem("selectedSafe") || ""
+  );
   const [hasLoadedSafes, setHasLoadedSafes] = useState(false);
   const [tokenAddress, setTokenAddress] = useState(ethers.ZeroAddress);
-  const [chainId, setChainId] = useState(connectedChain?.id);
-  const [web3Provider, setWeb3Provider] = useState();
+
+  const { chain: connectedChain, address } = useAccount();
+  const [chainId, setChainId] = useState(connectedChain?.id || initialChain.id);
+  const [chain, setChain] = useState(getChain(chainId));
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const [protocolKit, setProtocolKit] = useState();
-  const [apiKit, setApiKit] = useState(null);
-  const [ethAdapter, setEthAdapter] = useState();
-  const [chain, setChain] = useState(getChain(chainId || connectedChain?.id));
+
+  const [web3Provider, setWeb3Provider] = useState(
+     JSON.parse(window.localStorage.getItem("web3Provider")) || null
+  );
+  const [ethAdapter, setEthAdapter] = useState(
+    () => JSON.parse(window.localStorage.getItem("ethAdapter")) || null
+  );
+  const [apiKit, setApiKit] = useState(
+    () => JSON.parse(window.localStorage.getItem("safeApiKit")) || null
+  );
+  const [protocolKit, setProtocolKit] = useState(
+    () => JSON.parse(window.localStorage.getItem("protocolKit")) || null
+  );
+
+  useEffect(() => {
+    window.localStorage.setItem("ethAdapter", JSON.stringify(ethAdapter));
+    window.localStorage.setItem("safeApiKit", JSON.stringify(apiKit));
+    window.localStorage.setItem("protocolKit", JSON.stringify(protocolKit));
+  }, [ethAdapter, apiKit, protocolKit]);
 
   useEffect(() => {
     if (connectedChain?.id) {
       setChainId(connectedChain.id);
     }
 
-    setChain(getChain(connectedChain.id));
+    setChain(getChain(chainId));
   }, [connectedChain]);
 
   useEffect(() => {
@@ -74,27 +92,39 @@ const AccountAbstractionProvider = ({ children }) => {
     }
   }, [safeSelected]);
 
-  // When the component mounts, retrieve the selectedSafe from localStorage
   useEffect(() => {
-    const storedSafe = localStorage.getItem("selectedSafe");
-    if (storedSafe) {
-      setSafeSelected(storedSafe);
+    if (connectedChain || address) {
+      // Reset the values
+      setEthAdapter(null);
+      setApiKit(null);
+      setProtocolKit(null);
+      // Remove from local storage
+      window.localStorage.removeItem("ethAdapter");
+      window.localStorage.removeItem("safeApiKit");
+      window.localStorage.removeItem("protocolKit");
     }
-  }, []);
+  }, [connectedChain, address]);
+
+  // When the component mounts, retrieve the selectedSafe from localStorage
+  // useEffect(() => {
+  //   const storedSafe = localStorage.getItem("selectedSafe");
+  //   if (storedSafe) {
+  //     setSafeSelected(storedSafe);
+  //   }
+  // }, []);
 
   useEffect(() => {
     setOwnerAddress("");
     setSafes([]);
-    setChainId(connectedChain?.id);
+    setChainId(connectedChain?.id || initialChain.id);
     setWeb3Provider(undefined);
     setSafeSelected("");
     setApiKit(null);
     setHasLoadedSafes(false);
-  }, [chain, address]);
+  }, [chainId, address]);
 
   //set safe api kit
   useEffect(() => {
-    // Initialize the safeApiKit when the component mounts
     const initializeSafeApiKit = async () => {
       const newSafeApiKit = new SafeApiKit({ chainId: chainId });
       setApiKit(newSafeApiKit);
@@ -106,24 +136,24 @@ const AccountAbstractionProvider = ({ children }) => {
     };
   }, [chainId, address]);
 
-  //set safe protocol kit
-  useEffect(() => {
-    const initializeProtocolKit = async () => {
-      if (protocolKit) {
-        return;
-      }
-      // const safeFactory = await SafeFactory.create({ ethAdapter })
+  // //set safe protocol kit
+  // useEffect(() => {
+  //   const initializeProtocolKit = async () => {
+  //     if (protocolKit) {
+  //       return;
+  //     }
+  //     // const safeFactory = await SafeFactory.create({ ethAdapter })
 
-      const safeSdk = await Safe.create({
-        ethAdapter,
-        safeAddress: safeSelected,
-      });
-      setProtocolKit(safeSdk);
-    };
-    if (safeSelected) {
-      initializeProtocolKit();
-    }
-  }, [safeSelected]);
+  //     const safeSdk = await Safe.create({
+  //       ethAdapter,
+  //       safeAddress: safeSelected,
+  //     });
+  //     setProtocolKit(safeSdk);
+  //   };
+  //   if (safeSelected) {
+  //     initializeProtocolKit();
+  //   }
+  // }, [safeSelected]);
 
   useEffect(() => {
     const initializeEthAdapter = async () => {
@@ -136,8 +166,11 @@ const AccountAbstractionProvider = ({ children }) => {
         ethers,
         signerOrProvider: await provider.getSigner(0),
       });
+      window.localStorage.setItem("ethAdapter", JSON.stringify(ethAdapter));
+      window.localStorage.setItem("web3Provider", JSON.stringify(provider));
       setWeb3Provider(provider);
       setEthAdapter(ethAdapter);
+      console.log("this runs");
     };
 
     initializeEthAdapter();

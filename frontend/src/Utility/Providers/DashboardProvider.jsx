@@ -62,7 +62,7 @@ const categories = [
 
 function DashboardProvider({ children }) {
   const { address, chain } = useAccount();
-  const { tokensOwnedByUser } = useGetTokens(address);
+  // const { tokensOwnedByUser } = useGetTokens(address);
   const [activeTab, setActiveTab] = useState("wallet");
   const[transactionType, setTransactionType] = useState("All");
   const { user } = React.useContext(UserContext);
@@ -99,7 +99,7 @@ function DashboardProvider({ children }) {
         nativeBalance: 
         formatUnits(balance?.data?.value, balance?.data?.decimals),
         symbol: balance?.data?.symbol,
-        tokensOwnedByUser,
+        // tokensOwnedByUser,
         transactionHistory,
         activeTab,
         handleTabChange,

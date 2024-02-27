@@ -8,7 +8,7 @@ import Table from "../../../molecules/Table/Table";
 
 const Transaction = ({ transaction }) => {
 
-  console.log(transaction);
+  
   return (
     <Table.Row>
       <StatusChip status={transaction.status} type="payment" />

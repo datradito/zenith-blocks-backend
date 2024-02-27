@@ -4,11 +4,15 @@ import Form from "../../atoms/Form/Form";
 import FormRow from "../../atoms/FormRow/FormRow";
 import Input from "../../atoms/Input/Input";
 import FileUpload from "../../atoms/FileUpload/FileUpload";
+import Option from "../../atoms/Option/Option";
 import Container from "../../atoms/Container/Container";
 import { Typography, Grid } from "@mui/material";
+import SelectDropdown from "../../atoms/SelectDropdown/SelectDropdown";
 
 function CreateInvoiceForm({ remainingBudgetAmount }) {
+
   const methods = useFormContext();
+  const contacts = ["Alice", "Bob", "Charlie", "David"];
 
   const { errors, defaultValues } = methods.formState;
 
@@ -59,6 +63,7 @@ function CreateInvoiceForm({ remainingBudgetAmount }) {
               type="text"
               id="category"
               readOnly
+              defaultValue={defaultValues.Category}
               value={defaultValues.Category}
               {...methods.register("category", {
                 required: "Category is required",
@@ -77,7 +82,7 @@ function CreateInvoiceForm({ remainingBudgetAmount }) {
           Bill Details
         </Typography>
         <Grid container direction="row" margin={4} gap={2}>
-          <FormRow
+          {/* <FormRow
             style={{
               flex: "1 1 40%",
             }}
@@ -89,12 +94,28 @@ function CreateInvoiceForm({ remainingBudgetAmount }) {
                 required: "Reciepient is required",
               })}
             />
-          </FormRow>
+          </FormRow> */}
+          <SelectDropdown
+            id="recipient"
+            {...methods.register("recipient", {
+              required: "This field is required",
+            })}
+            onChange={(e) => methods.setValue("recipient", e.target.value)}
+          >
+            {contacts.map((category) => (
+              <Option key={category} value={category}>
+                {category}
+              </Option>
+            ))}
+          </SelectDropdown>
+
           <FormRow
             style={{
               flex: "1 1 20%",
             }}
-            label="Bill #" error={errors?.invoiceNumber?.message}>
+            label="Bill #"
+            error={errors?.invoiceNumber?.message}
+          >
             <Input
               type="text"
               id="invoiceNumber"
@@ -107,7 +128,9 @@ function CreateInvoiceForm({ remainingBudgetAmount }) {
             style={{
               flex: "auto",
             }}
-            label="Currency" error={errors?.currency?.message}>
+            label="Currency"
+            error={errors?.currency?.message}
+          >
             <Input
               type="text"
               id="currency"
@@ -147,10 +170,7 @@ function CreateInvoiceForm({ remainingBudgetAmount }) {
               })}
             />
           </FormRow>
-          <FormRow
-            label="Amount"
-            error={errors?.amount?.message}
-          >
+          <FormRow label="Amount" error={errors?.amount?.message}>
             <Input
               type="number"
               id="amount"
@@ -172,7 +192,9 @@ function CreateInvoiceForm({ remainingBudgetAmount }) {
             style={{
               flex: 1,
             }}
-            label="Description" error={errors?.description?.message}>
+            label="Description"
+            error={errors?.description?.message}
+          >
             <TextArea
               type="text"
               id="description"

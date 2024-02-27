@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_PROPOSAL_BY_ID } from '../../../SnapShot/Queries.js';
 import { snapShotClient } from '../../../apolloConfig/client.js';
@@ -15,11 +16,13 @@ export default function useProposalDetails(id) {
 
     const dispatch = useDispatch();
 
-    if (data) {
+    useEffect(() => {
+      if (data) {
         dispatch(setProposal(data.proposal));
-    }
+      }
 
-    if(error) message.error("Error fetching proposal details");
+      if (error) message.error("Error fetching proposal details");
+    }, [data, error, dispatch]);
 
     return { loading, data };
 }

@@ -5,6 +5,9 @@ import Amount from "../../molecules/ProposalAmount/Amount.jsx";
 import LaunchIcon from "@mui/icons-material/Launch";
 import Modal from "../../molecules/Modal/Modal.jsx";
 import ProposalSnapShotView from "./ProposalSnapShotView.jsx";
+
+import { useDispatch } from "react-redux";
+import { setProposal } from "../../../actions/currentProposal/index.js";
 const SubItem = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(1),
   margin: theme.spacing(0.5),
@@ -17,6 +20,9 @@ const SubItem = styled(Paper)(({ theme }) => ({
 
 
 function ProposalCard({ item }) {
+  const dispatch = useDispatch();
+
+  // dispatch(setProposal(item));
   return (
     <>
       <SubItem>
@@ -45,6 +51,7 @@ function ProposalCard({ item }) {
           </Modal>
         </Typography>
         <Link
+          onClick={() => dispatch(setProposal(item))}
           color="inherit"
           href={`/proposals/${item.id}/budgets`}
         >

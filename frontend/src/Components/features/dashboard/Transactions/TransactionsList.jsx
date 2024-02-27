@@ -8,14 +8,11 @@ function TransactionList({ transactions, filter }) {
   const [page, setPage] = useState(1);
   const perPage = 5;
 
-  console.log(transactions)
-  //i have filter which is { search: "status"} , implemented this logic in the paginated transactions, make sure to skip it in case search is empty,
   const paginatedTransactions = useMemo(() => {
     let filteredTransactions = transactions;
 
 
     if (filter.search && filter.search.length > 0) {
-      console.log(filter.search)
       const searchStatuses = filter.search.map((s) => s.trim().toLowerCase());
       filteredTransactions = transactions.filter((transaction) =>
         searchStatuses.includes(transaction.status.toLowerCase())

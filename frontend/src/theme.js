@@ -131,8 +131,8 @@ let theme = createTheme({
         root: {
           width: "100%",
           padding: "0 0.5rem;",
-          borderRadius: "5px",
-          // border: "1px solid rgba(40, 42, 46, 0.5)",
+          borderRadius: "5rem",
+          border: "1px solid rgba(40, 42, 46, 0.5)",
           backgroundColor: "#24292E",
         },
         input: {
@@ -143,7 +143,28 @@ let theme = createTheme({
           border: "none",
           backgroundColor: "#24292E",
         },
-        "&.Mui-hover": {  
+        "&.Mui-hover": {
+          backgroundColor: "#24292E",
+        },
+      },
+    },
+    MuiSelect: {
+      styleOverrides: {
+        root: {
+          width: "100%",
+          borderRadius: "50px",
+          border: "1px solid rgba(40, 42, 46, 0.5)",
+          backgroundColor: "#24292E",
+        },
+        input: {
+          padding: "0.5rem",
+          color: "rgba(255, 255, 255, 0.87)",
+        },
+        "&.Mui-focused": {
+          border: "none",
+          backgroundColor: "#24292E",
+        },
+        "&.Mui-hover": {
           backgroundColor: "#24292E",
         },
       },

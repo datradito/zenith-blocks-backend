@@ -10,11 +10,7 @@ import ProposalCardMemo from "../../features/proposals/ProposalCard.jsx";
 import Container from "../../atoms/Container/Container.jsx";
 import { refreshState } from "../../../actions/createBudgetAction/index.js";
 import Search from "../../atoms/Search/Search.jsx";
-const pagination = {
-  margin: "1rem",
-  alignItems: "flex-end",
-  color: "white",
-};
+
 
 const Proposals = () => {
   const dispatch = useDispatch();

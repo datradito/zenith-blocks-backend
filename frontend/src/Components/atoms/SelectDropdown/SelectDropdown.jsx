@@ -1,5 +1,5 @@
 import styled from "styled-components";
-
+import React from "react";
 const StyledSelect = styled.select`
   box-sizing: border-box;
   border: 0.08rem #2c2c2c solid;
@@ -29,8 +29,10 @@ const StyledSelect = styled.select`
   }
 `;
 
-function SelectDropdown({ children, ...rest }) {
-  return <StyledSelect {...rest}>{children}</StyledSelect>;
-}
+const SelectDropdown = React.forwardRef(({ children, ...rest }) => {
+
+  return <StyledSelect
+    {...rest}>{children}</StyledSelect>;
+});
 
 export default SelectDropdown;

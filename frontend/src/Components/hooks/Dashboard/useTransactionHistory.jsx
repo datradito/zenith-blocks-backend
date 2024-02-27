@@ -43,9 +43,7 @@ const useTransactionHistory = (safeAddress, apiKit, transactionType) => {
         100,
       );
 
-      console.log(allTxs);
       allTxs = await sanitizeTransactions(allTxs.results);
-      console.log(allTxs);
       setCount(allTxs.length || 0);
       setTransactions(allTxs);
       setLoading(false);

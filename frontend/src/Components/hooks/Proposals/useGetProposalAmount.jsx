@@ -25,7 +25,7 @@ const useGetProposalAmount = (proposalid) => {
     
 
     const amount = proposalAmountData?.getProposalDetailsById?.amount || null;
-    const status = proposalAmountData?.getProposalDetailsById?.status || null;  // Replace 'amount' with the actual field name from the query result
+    const status = proposalAmountData?.getProposalDetailsById?.status || null;
     const currency = proposalAmountData?.getProposalDetailsById?.currency || null;
     return {
         amount,

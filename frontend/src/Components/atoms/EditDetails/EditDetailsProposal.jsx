@@ -61,6 +61,9 @@ export default function DetailPanelContent({ row, refetch }) {
           inputProps={{ "aria-label": "Enter Proposal Amount" }}
           id="amount"
           name="amount"
+          sx={{
+            borderRadius: "4px"
+          }}
           {...register("amount", {
             required: "Amount is required",
             min: {

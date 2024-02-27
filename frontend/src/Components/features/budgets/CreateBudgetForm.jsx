@@ -10,9 +10,12 @@ import Option from "../../atoms/Option/Option";
 import Container from "../../atoms/Container/Container";
 import SelectDropdown from "../../atoms/SelectDropdown/SelectDropdown";
 
-function CreateBudgetForm({remainingProposalAmount}) {
+function CreateBudgetForm() {
   const methods = useFormContext();
   const { errors, defaultValues } = methods.formState;
+
+  console.log(defaultValues)
+
   return (
     <Container padding={4}>
       <Form>
@@ -67,13 +70,20 @@ function CreateBudgetForm({remainingProposalAmount}) {
           error={errors?.category?.message}
         >
           <SelectDropdown
+            id="category"
             {...methods.register("category", {
               required: "This field is required",
             })}
-            onChange={(e) => methods.setValue("category", e.target.value)}
+            onChange={(e) =>
+              methods.setValue("category", e.target.value || categories[0])
+            }
           >
             {categories.map((category) => (
-              <Option key={category} value={category}>
+              <Option
+                // defaultValue={categories[0]}
+                key={category}
+                value={category}
+              >
                 {category}
               </Option>
             ))}
@@ -97,14 +107,16 @@ function CreateBudgetForm({remainingProposalAmount}) {
           style={{
             flex: "1 1 auto",
           }}
-          label="Amount" error={errors?.amount?.message}>
+          label="Amount"
+          error={errors?.amount?.message}
+        >
           <Input
             type="number"
             id="amount"
             {...methods.register("amount", {
               max: {
-                value: remainingProposalAmount,
-                message: `Amount cannot be greater than ${remainingProposalAmount} remaining in proposal`,
+                value: defaultValues["Total Budget"],
+                message: `Amount cannot be greater than ${defaultValues.remainingProposalAmount} remaining in proposal`,
               },
               min: {
                 value: 0,
@@ -135,7 +147,8 @@ function CreateBudgetForm({remainingProposalAmount}) {
             type="text"
             id="currency"
             readOnly
-            value={defaultValues.Currency}
+            defaultValue={defaultValues.currency}
+            value={defaultValues.currency}
             {...methods.register("currency", {
               required: "Currency is required",
             })}
