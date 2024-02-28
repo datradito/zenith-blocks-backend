@@ -19,7 +19,6 @@ const logoutUser = () => {
 };
 
 const ProtectedRoute = ({ children }) => {
-  const { logoutAndClearUser } = useContext(UserContext);
   return isAuthenticated() ? children : logoutUser();
 };
 

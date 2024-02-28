@@ -8,13 +8,15 @@ import Option from "../../atoms/Option/Option";
 import Container from "../../atoms/Container/Container";
 import { Typography, Grid } from "@mui/material";
 import SelectDropdown from "../../atoms/SelectDropdown/SelectDropdown";
+import StyledSelect from "../../atoms/SelectDropdown/SelectDropdown";
 
 function CreateInvoiceForm({ remainingBudgetAmount }) {
-
   const methods = useFormContext();
   const contacts = ["Alice", "Bob", "Charlie", "David"];
 
   const { errors, defaultValues } = methods.formState;
+
+  console.log(defaultValues, errors);
 
   return (
     <Container
@@ -82,20 +84,34 @@ function CreateInvoiceForm({ remainingBudgetAmount }) {
           Bill Details
         </Typography>
         <Grid container direction="row" margin={4} gap={2}>
-          {/* <FormRow
+          <FormRow
             style={{
               flex: "1 1 40%",
             }}
-            label="Recipient" error={errors?.recipient?.message}>
-            <Input
+            label="Recipient"
+            error={errors?.recipient?.message}
+          >
+            {/* <Input
               type="text"
               id="recipient"
               {...methods.register("recipient", {
                 required: "Reciepient is required",
               })}
-            />
-          </FormRow> */}
-          <SelectDropdown
+            /> */}
+            <StyledSelect
+              {...methods.register("recipient", {
+                required: "This field is required",
+              })}
+              onChange={(e) => methods.setValue("recipient", e.target.value)}
+            >
+              {contacts.map((contact) => (
+                <option key={contact} value={contact}>
+                  {contact}
+                </option>
+              ))}
+            </StyledSelect>
+          </FormRow>
+          {/* <SelectDropdown
             id="recipient"
             {...methods.register("recipient", {
               required: "This field is required",
@@ -107,7 +123,7 @@ function CreateInvoiceForm({ remainingBudgetAmount }) {
                 {category}
               </Option>
             ))}
-          </SelectDropdown>
+          </SelectDropdown> */}
 
           <FormRow
             style={{
@@ -174,11 +190,11 @@ function CreateInvoiceForm({ remainingBudgetAmount }) {
             <Input
               type="number"
               id="amount"
-              defaultValue={defaultValues.Amount}
+              defaultValue={defaultValues.Amount.getRemainingBudgetAmount}
               {...methods.register("amount", {
                 max: {
-                  value: remainingBudgetAmount || defaultValues["amount"],
-                  message: `Amount cannot be greater than ${remainingBudgetAmount} remaining in budget`,
+                  value: defaultValues.Amount.getRemainingBudgetAmount,
+                  message: `Amount cannot be greater than ${defaultValues.Amount.getRemainingBudgetAmount} remaining in budget`,
                 },
                 min: {
                   value: 0,

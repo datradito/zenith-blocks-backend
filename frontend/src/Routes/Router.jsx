@@ -49,48 +49,25 @@ export const router = createBrowserRouter(
     >
       <Route
         path="proposals"
-        element={
-          <ProtectedRoute path="/*">
-            <Proposals />
-          </ProtectedRoute>
-        }
+        element={<Proposals />}
         errorElement={<ErrorPage />}
       />
       <Route
         path="proposals/:proposalId/budgets"
-        element={
-          <ProtectedRoute path="/*">
-            <ProposalDetailView />
-          </ProtectedRoute>
-        }
+        element={<ProposalDetailView />}
         errorElement={<ErrorPage />}
       />
-      <Route
-        path="budgets"
-        element={
-          <ProtectedRoute path="/*">
-            <ProposalRoute />
-          </ProtectedRoute>
-        }
-      >
+      <Route path="budgets" element={<ProposalRoute />}>
         <Route
           path=":proposalId/create"
-          element={
-            <ProtectedRoute path="/*">
-              <CreateBudget />
-            </ProtectedRoute>
-          }
+          element={<CreateBudget />}
           errorElement={<ErrorPage />}
         />
       </Route>
 
       <Route
         path="invoice/:invoiceId/payment"
-        element={
-          <ProtectedRoute path="/*">
-            <PaymentCreation />
-          </ProtectedRoute>
-        }
+        element={<PaymentCreation />}
         errorElement={<ErrorPage />}
         loader={({ params }) => {
           return paymentLoader(params.invoiceId);
@@ -99,22 +76,13 @@ export const router = createBrowserRouter(
           console.log(request);
         }}
       />
-      <Route
-        path="budgets"
-        element={
-          <ProtectedRoute path="/*">
-            <InvoiceRoutes />
-          </ProtectedRoute>
-        }
-      >
+      <Route path="budgets" element={<InvoiceRoutes />}>
         <Route
           path=":budgetId/invoices"
           element={
-            <ProtectedRoute path="/*">
-              <MemoizedInvoiceProvider>
-                <InvoiceListView />
-              </MemoizedInvoiceProvider>
-            </ProtectedRoute>
+            <MemoizedInvoiceProvider>
+              <InvoiceListView />
+            </MemoizedInvoiceProvider>
           }
           errorElement={<ErrorPage />}
         />
@@ -122,66 +90,19 @@ export const router = createBrowserRouter(
       <Route
         path="invoices/:budgetId/create"
         errorElement={<ErrorPage />}
-        element={
-          <ProtectedRoute path="/*">
-            <InvoiceCreation />
-          </ProtectedRoute>
-        }
+        element={<InvoiceCreation />}
       />
       <Route
         path="dashboard"
-        element={
-          <ProtectedRoute path="/*">
-            <Dashboard />
-          </ProtectedRoute>
-        }
+        element={<Dashboard />}
         errorElement={<ErrorPage />}
       />
       <Route
         path="swap"
         element={
-          <ProtectedRoute path="/*">
-            <SwapProvider>
-              <Swap />
-            </SwapProvider>
-          </ProtectedRoute>
-        }
-        errorElement={<ErrorPage />}
-      />
-      <Route path="*" element={<NotFound />} />
-      <Route
-        path="budgets"
-        element={
-          <ProtectedRoute path="/*">
-            <InvoiceRoutes />
-          </ProtectedRoute>
-        }
-      >
-        <Route
-          path=":budgetId/invoices"
-          element={
-            <ProtectedRoute path="/">
-              <InvoiceListView />
-            </ProtectedRoute>
-          }
-          errorElement={<ErrorPage />}
-        />
-      </Route>
-      <Route
-        path="invoices/:budgetId/create"
-        errorElement={<ErrorPage />}
-        element={
-          <ProtectedRoute path="/">
-            <InvoiceCreation />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="dashboard"
-        element={
-          <ProtectedRoute path="/*">
-            <Dashboard />
-          </ProtectedRoute>
+          <SwapProvider>
+            <Swap />
+          </SwapProvider>
         }
         errorElement={<ErrorPage />}
       />
