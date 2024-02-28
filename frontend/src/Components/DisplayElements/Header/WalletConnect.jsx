@@ -25,7 +25,6 @@ export default function WalletConnect() {
     },
     onDisconnect() {
       clearAuthData();
-      setUser(null);
       navigate(`/`);
     },
   });
@@ -156,7 +155,7 @@ export default function WalletConnect() {
         });
     } catch (error) {
       dispatch(setIsLoggedIn(false));
-      setUser(null);
+      clearAuthData();
     }
   }
 

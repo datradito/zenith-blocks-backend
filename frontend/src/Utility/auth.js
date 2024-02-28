@@ -20,7 +20,9 @@ export const setAuthData = (address, authToken, daoId) => {
   sessionStorage.setItem("daoId", daoId);
 };
 
-export const isTokenExpired = (decodedToken) => {
+export const isTokenExpired = () => {
+  const token = sessionStorage.getItem("authToken");
+  const decodedToken = decodeToken(token);
   if (!decodedToken || !decodedToken?.exp) {
     return true;
   }

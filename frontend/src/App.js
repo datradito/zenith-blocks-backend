@@ -16,13 +16,13 @@ function App() {
     <ApolloProvider client={client}>
       <Provider store={storeConfig}>
         <PersistGate loading={null} persistor={persistor}>
-          <UserProvider>
-            <AccountAbstractionProvider>
-              <Suspense fallback={<CircularIndeterminate />}>
+          <Suspense fallback={<CircularIndeterminate />}>
+            <UserProvider>
+              <AccountAbstractionProvider>
                 <RouterProvider router={router} />
-              </Suspense>
-            </AccountAbstractionProvider>
-          </UserProvider>
+              </AccountAbstractionProvider>
+            </UserProvider>
+          </Suspense>
         </PersistGate>
       </Provider>
     </ApolloProvider>

@@ -7,7 +7,6 @@ import {
 import PrivateRoute from "./PrivateRoutes";
 import Root from "./Root";
 import ErrorPage from "./ErrorPage";
-import ProtectedRoute from "./ProtectedRoute";
 import ProposalRoute from "./ProposalDependentRoutes";
 import PaymentCreation, {
   paymentLoader,
@@ -34,7 +33,7 @@ const Dashboard = lazy(() =>
   import("../Components/pages/walletDashboard/Dashboard")
 );
 const Proposals = lazy(() => import("../Components/pages/Proposals/Proposals"));
-const Accounts = lazy(() => import("../Components/pages/Accounts/Accounts"));
+
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -56,6 +55,10 @@ export const router = createBrowserRouter(
         path="proposals/:proposalId/budgets"
         element={<ProposalDetailView />}
         errorElement={<ErrorPage />}
+        loader={({ params }) => {
+          return { proposalId: params.proposalId };
+        }
+        }
       />
       <Route path="budgets" element={<ProposalRoute />}>
         <Route
