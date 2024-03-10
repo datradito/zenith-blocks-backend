@@ -1,43 +1,44 @@
-import React, { useContext, Suspense, useState, useMemo } from "react";
+import React, {Suspense, useMemo } from "react";
 import EmptyIcon from "../../atoms/EmptyIcon/EmptyIcon";
-import { DashboardContext } from "../../../Utility/Providers/DashboardProvider";
 import CircularIndeterminate from "../../atoms/Loader/loader";
 import SwapHorizontalCircleIcon from "@mui/icons-material/SwapHorizontalCircle";
 import { Stack, Typography } from "@mui/material";
 import SearchSelect from "../../atoms/Search/SearchSelect";
 import FilterTransactions from "./Transactions/FilterTransactions";
-
-const TransactionStatuses = [
-  "Success",
-  "Failed",
-];
+import useDashboardStore from "../../../store/modules/dashboard/index.ts";
+import useTransactionHistory from "../../hooks/Dashboard/useTransactionHistory.jsx";
+const TransactionStatuses = ["Success", "Failed", "Pending", "Ready"];
 
 const TransactionList = React.lazy(() =>
   import("./Transactions/TransactionsList")
 );
 
 function GetTransactions() {
-  const { transactionHistory, transactionType, filterTransactions } =
-    useContext(DashboardContext);
-  const [filter, setFilter] = useState({});
+  const { txs: transactions, loading, count } = useTransactionHistory();
+  const { transactionFilter, onChangeTransactionFilter } = useDashboardStore();
 
   
   const transactionList = useMemo(() => {
-    if (transactionHistory?.loading) return <CircularIndeterminate />;
-    return transactionHistory?.count > 0 ? (
+
+    if (loading) return <CircularIndeterminate />;
+    
+    return count > 0 ? (
       <Suspense fallback={<CircularIndeterminate />}>
         <TransactionList
-          transactions={transactionHistory.transactions}
-          filter={filter}
+          transactions={transactions}
+          filter={transactionFilter.status}
+          count={count}
         />
       </Suspense>
     ) : (
       <EmptyIcon />
       );
-  }, [transactionHistory, filter]);
+  }, [transactions, transactionFilter]);
   
     const handleSearch = (value) => {
-      setFilter({ search: value });
+      onChangeTransactionFilter({
+        status: Array.isArray(value) ? value : [value],
+      });
     };
   
 
@@ -58,8 +59,9 @@ function GetTransactions() {
         <SearchSelect onChange={handleSearch} options={TransactionStatuses} />
       </Stack>
       <FilterTransactions
-        transactionType={transactionType}
-        filterTransactions={filterTransactions}
+        transactionType={transactionFilter.activeTab}
+        currentFilter={transactionFilter}
+        onTabChange={onChangeTransactionFilter}
       />
       {transactionList}
     </Stack>

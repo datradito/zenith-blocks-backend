@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 
-const DEFAULT_POLLING_TIME = 100_000 // 3 secs as default polling
+const DEFAULT_POLLING_TIME = 1000_000 // 3 secs as default polling
 
 function usePolling(
   callback ,

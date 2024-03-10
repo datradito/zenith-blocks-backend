@@ -1,4 +1,4 @@
-import ResponsiveHeaderBar from "../Components/DisplayElements/Header/Header.jsx";
+import ResponsiveHeaderBar from "../Components/features/home/Header";
 import { Outlet } from "react-router-dom";
 import React from "react";
 
@@ -12,11 +12,11 @@ export const WidthContainer = styled(Container)`
   }
 `;
 
-export default function Root() {  
-    return (
-      <WidthContainer >
-          <ResponsiveHeaderBar />
-          <Outlet />
-        </WidthContainer>
-    );
+export default function Root() {
+  return (
+    <WidthContainer>
+      <ResponsiveHeaderBar />
+      <Outlet />
+    </WidthContainer>
+  );
 }

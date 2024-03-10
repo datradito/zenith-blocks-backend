@@ -12,7 +12,7 @@ const Invoice = sequelize.define("invoices", {
   },
   category: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   recipient: {
     type: DataTypes.STRING,
@@ -47,17 +47,13 @@ const Invoice = sequelize.define("invoices", {
     type: DataTypes.DATE,
     allowNull: false,
   },
-  uploadinvoice: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
   description: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   budgetid: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   ipfs: {
     type: DataTypes.STRING,

@@ -29,12 +29,12 @@ const listStyles = {
   margin: "1rem 0 1rem 0",
   justifyContent: "flex-start",
 };
-function FilterTransactions({ transactionType, filterTransactions }) {
-
-    const handleClick = (type) => () => {
-      filterTransactions(type);
-    };
-
+function FilterTransactions({ transactionType, onTabChange, currentFilter }) {
+  const handleClick = (type) => () => {
+    onTabChange({
+      activeTab: type,
+    });
+  };
 
   return (
     <List {...listStyles}>

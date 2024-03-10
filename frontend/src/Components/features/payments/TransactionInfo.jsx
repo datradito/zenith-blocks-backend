@@ -1,6 +1,6 @@
 import React from 'react'
 import { useWaitForTransactionReceipt } from 'wagmi';
-import { bigIntToString } from '../../../Utility/Logical/bigIntToString'
+import { bigIntToString } from '../../../utils/logical/bigIntToString'
 
 function TransactionInfo() {
       const { data, isError, isLoading, isSuccess } = useWaitForTransactionReceipt({

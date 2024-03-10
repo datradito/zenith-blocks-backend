@@ -1,16 +1,10 @@
 import React from 'react'
-import GetEnsName from '../../../molecules/GetEnsName/GetEnsName';
-import Avatar from '@mui/material/Avatar';
-import Accounts from '../../../pages/Accounts/Accounts';
+import SafeAccount from '../../../../pages/Accounts/SafeAccount';
 
-const WalletInfo = ({ address, ensData }) => (
+//Todo: maybe we will find some other info to display along with safe account in this component
+const WalletInfo = () => (
   <>
-    {/* <Avatar
-      sx={{ width: 50, height: 50 }}
-      src={ensData || "https://i.imgur.com/6Z4X6XK.png"}
-    />
-    <GetEnsName address={address} /> */}
-    <Accounts />
+    <SafeAccount />
   </>
 );
 

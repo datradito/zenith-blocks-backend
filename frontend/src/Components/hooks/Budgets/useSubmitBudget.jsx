@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { SUBMIT_BUDGET_MUTATION } from "../../../ServerQueries/Budget/Mutation";
+import { SUBMIT_BUDGET_MUTATION } from "../../../model/budget/mutation";
 import { useNavigate } from "react-router-dom";
 import { useMutation, gql } from "@apollo/client";
 import { message } from "antd";
@@ -59,7 +59,6 @@ export const useSubmitBudget = () => {
     }
   );
 
-  
   if (loading) {
     message.loading({
       content: "Submitting budget... 🏗 ",

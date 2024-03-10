@@ -1,31 +1,31 @@
-import { useMutation } from '@apollo/client';
-import { SUBMIT_PAYMENT } from '../../../ServerQueries/Payments/Mutations';
-import { useNavigate } from 'react-router-dom';
-import { message } from 'antd';
+import { useMutation } from "@apollo/client";
+import { SUBMIT_PAYMENT } from "../../../model/payments/mutation";
+import { useNavigate } from "react-router-dom";
+import { message } from "antd";
 
 export const useSubmitPayment = () => {
-    const navigate = useNavigate();
-    
-    const [submitPayment, { loading, error, data, refetch }] = useMutation(
-        SUBMIT_PAYMENT,
-        {
-            onCompleted: (data) => {
-                message.success('Payment successful!');
-                navigate("/proposals");
-            },
-            onError: (error) => {
-                message.error(error.message);
-            },
-        }
-    );
+  const navigate = useNavigate();
 
-    const submitPaymentMutation = (payment) => {
-        submitPayment({
-            variables: {
-                paymentInput: payment,
-            },
-        });
-    };
+  const [submitPayment, { loading, error, data, refetch }] = useMutation(
+    SUBMIT_PAYMENT,
+    {
+      onCompleted: (data) => {
+        message.success("Payment successful!");
+        navigate("/proposals");
+      },
+      onError: (error) => {
+        message.error(error.message);
+      },
+    }
+  );
 
-    return { loading, error, data, refetch, submitPaymentMutation };
+  const submitPaymentMutation = (payment) => {
+    submitPayment({
+      variables: {
+        paymentInput: payment,
+      },
+    });
+  };
+
+  return { loading, error, data, refetch, submitPaymentMutation };
 };

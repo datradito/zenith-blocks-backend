@@ -1,12 +1,13 @@
-import React, { useContext, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import Label from "../../../atoms/Label/Label";
 import Table from "../../../molecules/Table/Table";
-import { DashboardContext } from "../../../../Utility/Providers/DashboardProvider";
 import CategoryRow from "./CategoryRow";
 import Pagination from "../../../molecules/Pagination/Pagination";
+import useDashboardStore from "../../../../store/modules/dashboard/index.ts";
 
 function CategoryList() {
-  const { categories } = useContext(DashboardContext);
+
+  const categories  = useDashboardStore((state) => state.categories);
 
   const [page, setPage] = useState(1);
   const perPage = 5;

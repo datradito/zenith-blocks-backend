@@ -1,21 +1,21 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
 
 import useSaveProposalDetails from "../../hooks/Proposals/useSetAmountProposal";
-import { addAmount } from "../../../actions/currentProposal/amount";
 
 import FormRow from "../FormRow/FormRow";
 import Form from "../Form/Form";
-import Button from "../Button/Button";
 import CircularIndeterminate from "../Loader/loader";
 
-import currencies from "../../../Utility/CurrencyList.json";
+//Todo: move this currenys list to somewhere more relevant
+import currencies from "../../../utils/CurrencyList.json";
 import StyledSelect from "../SelectDropdown/SelectDropdown";
-import { InputBase } from "@mui/material";
+import Input from "../Input/Input";
 
+import { Button } from "@mui/material";
+import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 export default function DetailPanelContent({ row, refetch }) {
-  const dispatch = useDispatch();
+
   const {
     handleSubmit,
     formState: { errors },
@@ -25,6 +25,7 @@ export default function DetailPanelContent({ row, refetch }) {
   const methods = useForm();
 
   const onSubmit = async (data) => {
+
     try {
       await saveProposalDetails(
         data.amount,
@@ -32,13 +33,7 @@ export default function DetailPanelContent({ row, refetch }) {
         methods.getValues()?.currency
       );
 
-      dispatch(
-        addAmount({
-          amount: data.amount,
-          proposalId: row.id,
-          status: "NotFilled",
-        })
-      );
+
       // onCloseModal();
       refetch({
         variables: {
@@ -55,15 +50,11 @@ export default function DetailPanelContent({ row, refetch }) {
   return (
     <Form onSubmit={handleSubmit(onSubmit)} type={"modal"}>
       <FormRow label={`#${row.title}`} error={errors?.amount?.message}>
-        <InputBase
+        <Input
           type="number"
           placeholder="Amount"
-          inputProps={{ "aria-label": "Enter Proposal Amount" }}
           id="amount"
           name="amount"
-          sx={{
-            borderRadius: "4px"
-          }}
           {...register("amount", {
             required: "Amount is required",
             min: {
@@ -87,7 +78,20 @@ export default function DetailPanelContent({ row, refetch }) {
           ))}
         </StyledSelect>
       </FormRow>
-      <Button>Save</Button>
+      <Button
+        sx={{
+          width: "40%",
+          height: "2rem",
+          "&:hover": {
+            backgroundColor: "#E0E0E0",
+          },
+        }}
+        type="submit"
+        variant="outlined"
+        endIcon={<ArrowCircleRightIcon />}
+      >
+        Submit
+      </Button>
     </Form>
   );
 }

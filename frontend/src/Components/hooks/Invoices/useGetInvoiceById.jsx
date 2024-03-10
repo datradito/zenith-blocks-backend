@@ -1,5 +1,5 @@
-import { useQuery } from '@apollo/client';
-import { GET_INVOICE_BY_ID } from "../../../ServerQueries/Invoices/Queries";
+import { useQuery } from "@apollo/client";
+import { GET_INVOICE_BY_ID } from "../../../model/invoices/query";
 import { toast } from "react-hot-toast";
 import { useParams } from "react-router-dom";
 

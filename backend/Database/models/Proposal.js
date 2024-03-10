@@ -36,4 +36,5 @@ const Proposal = sequelize.define('proposals', {
     },
 });
 
+
 export default Proposal;

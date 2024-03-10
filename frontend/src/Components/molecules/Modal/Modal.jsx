@@ -13,7 +13,7 @@ const StyledModal = styled.div`
   background-color: #0D0E10;
   border-radius: .5rem;
   box-shadow: var(--shadow-lg);
-  padding: 3.2rem 4rem;
+  padding: 1rem;
   transition: all 0.5s;
 `;
 

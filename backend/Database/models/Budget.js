@@ -50,4 +50,5 @@ const Budget = sequelize.define("budgets", {
   },
 });
 
+
 export default Budget;

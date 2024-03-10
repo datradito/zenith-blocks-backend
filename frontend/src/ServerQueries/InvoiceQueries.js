@@ -1,16 +1,7 @@
 import { gql } from "@apollo/client";
 
-const LineInput = gql`
-  input LineInput {
-    category: String!
-    amount: Float!
-    currency: Float!
-    description: String!
-  }
-`;
-
 export const SUBMIT_INVOICE_MUTATION = gql`
-  mutation (
+  mutation(
     $Category: String!
     $Recipient: String!
     $InvoiceNumber: String!
@@ -33,7 +24,7 @@ export const SUBMIT_INVOICE_MUTATION = gql`
       description: $Description
       budgetid: $BudgetId
       lines: $Lines
-    ){
+    ) {
       category
       recipient
       number

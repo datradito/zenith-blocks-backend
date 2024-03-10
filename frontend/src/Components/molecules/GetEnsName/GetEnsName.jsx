@@ -6,6 +6,7 @@ import { Tooltip, Typography } from "@mui/material";
 import toast from "react-hot-toast";
 
 function GetEnsName({ address }) {
+
   const { data, isError, isLoading } = useEnsName({
     address: address,
   });
@@ -13,6 +14,8 @@ function GetEnsName({ address }) {
   isLoading && <CircularIndeterminate />;
   
   isError && toast.error(isError.message);
+
+  if(!address) return null;
   return (
     <Tooltip title={data || address}>
       <Typography variant="subtitle1">

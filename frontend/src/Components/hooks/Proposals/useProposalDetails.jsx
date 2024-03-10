@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useQuery } from '@apollo/client';
-import { GET_PROPOSAL_BY_ID } from '../../../SnapShot/Queries.js';
+import { GET_PROPOSAL_BY_ID } from '../../../model/proposals/query';
 import { snapShotClient } from '../../../apolloConfig/client.js';
 import { useDispatch } from 'react-redux';
 import { setProposal } from '../../../actions/currentProposal/index.js';

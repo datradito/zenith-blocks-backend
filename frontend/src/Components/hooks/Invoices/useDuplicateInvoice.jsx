@@ -1,19 +1,13 @@
-import {
-  DUPLICATE_INVOICE_MUTATION,
-} from "../../../ServerQueries/Invoices/Mutations.js";
-import { client } from "../../../apolloConfig/client.js";
+import { DUPLICATE_INVOICE_MUTATION } from "../../../model/invoices/mutation.js";
+import { client } from "../../../config/apolloConfig/client.js";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { resetInvoice } from "../../../actions/createInvoiceAction/index.js";
-
-
+import useProposalStore from "../../../store/modules/proposal/index.ts";
+import { message } from "antd";
 export const useDuplicateInvoice = () => {
   const queryClient = useQueryClient();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-    const proposalId = useSelector((state) => state.currentProposal.proposal.id);
+  const { currentProposal } = useProposalStore();
 
   const { mutate: duplicateInvoice, isLoading: isDuplicating } = useMutation({
     mutationFn: async (invoiceId) => {
@@ -24,12 +18,11 @@ export const useDuplicateInvoice = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["invoices"] });
-      toast.success("Invoice created successfully");
-      navigate(`/proposal/${proposalId}/invoices`);
-      dispatch(resetInvoice());
+      message.success("Invoice duplicated successfully");
+      navigate(`/proposal/${currentProposal?.id}/invoices`);
     },
     onError: (err) => {
-      toast.error(err.message);
+      message.error("Error duplicating invoice");
     },
   });
 

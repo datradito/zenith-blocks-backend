@@ -41,4 +41,5 @@ const Payment = sequelize.define("payments", {
 });
 
 
+
 export default Payment;

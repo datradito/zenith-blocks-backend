@@ -1,8 +1,9 @@
 import { useQuery } from "@apollo/client";
-import { GET_REMAINING_PROPOSAL_AMOUNT } from "../../../ServerQueries/Proposals/Queries";
-import { toast } from "react-hot-toast";
+import { GET_REMAINING_PROPOSAL_AMOUNT } from "../../../model/proposals/query";
 import { useState, useEffect } from "react";
 
+//we should update amount on proposal in backend whenever there is a transaction against proposal so that
+//we dont have to have another resolver jsut for amount, right now even backend has to manually gather proposal total - budgetsed amount
 const useGetRemainingProposalAmount = (proposalId) => {
   const [remainingProposalAmount, setRemainingProposalAmount] = useState(0);
   const { data, loading, error } = useQuery(GET_REMAINING_PROPOSAL_AMOUNT, {
@@ -12,7 +13,6 @@ const useGetRemainingProposalAmount = (proposalId) => {
   useEffect(() => {
     if (data?.getRemainingProposalAmount !== undefined) {
       setRemainingProposalAmount(data.getRemainingProposalAmount);
-      toast.success("Proposal Amount fetched successfully");
     }
   }, [data]);
 
@@ -21,7 +21,6 @@ const useGetRemainingProposalAmount = (proposalId) => {
   }
 
   if (error) {
-    toast.error(error.message);
     return {
       loading: false,
       remainingProposalAmount: null,

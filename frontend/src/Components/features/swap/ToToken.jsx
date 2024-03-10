@@ -7,7 +7,7 @@ import CircularIndeterminate from "../../atoms/Loader/loader";
 import StyledIcon from "../../atoms/StyledIcon/StyledIcon";
 import TokenCardLayout from "../../molecules/Swap/TokenCardLayout";
 import { useContext } from "react";
-import { SwapContext } from "../../../Utility/Providers/SwapProvider";
+import { SwapContext } from "../../../utils/Providers/SwapProvider";
 
 const ToToken = () => {
   const { tokenTwoAmount, tokenTwo, isRefreshLoading, openModal } =

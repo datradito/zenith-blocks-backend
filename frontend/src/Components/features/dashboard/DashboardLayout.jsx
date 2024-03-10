@@ -1,16 +1,14 @@
 import Container from "../../atoms/Container/Container";
-import React, { useContext } from "react";
+import React from "react";
 import styled from "styled-components";
 import GetTransactions from "./GetTransactions";
 import DashboardNav from "./DashboardNav";
 import { Avatar, Stack, Typography } from "@mui/material";
 import SwapHorizontalCircleIcon from "@mui/icons-material/SwapHorizontalCircle";
-import Wallet from "./Wallet";
-import { DashboardContext } from "../../../Utility/Providers/DashboardProvider";
-import WalletStatus from "./Wallet/WalletStatus";
 import CategoryList from "./Category/CategoryList";
 import ContactsList from "./Contacts/ContactsList";
-
+import useDashboardStore from "../../../store/modules/dashboard/index.ts";
+import WalletInfo from "./Wallet/WalletInfo.jsx"
 const StyledContainer = styled(Container)`
   margin: 0;
   gap: 1rem;
@@ -33,7 +31,7 @@ const NavPanel = ({ children }) => {
 };
 
 const RightPanel = () => {
-  const { activeTab } = useContext(DashboardContext);
+  const activeTab= useDashboardStore(state => state.activeTab);
   return (
     <StyledContainer flex={6} border="2px solid rgba(40, 42, 46, 0.5)">
       {activeTab === "wallet" && <GetTransactions />}
@@ -46,10 +44,11 @@ const RightPanel = () => {
 const ConnectedWalletInfo = ({ children }) => {
   return (
     <Stack width="100%" alignItems="flex-start" border="none" background="">
-      <Wallet />
+      <WalletInfo />
     </Stack>
   );
 };
+
 
 const LeftPanel = () => {
   return (

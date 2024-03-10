@@ -1,40 +1,47 @@
-import { useQuery } from '@apollo/client';
-import { GET_PROPOSAL_DETAILS } from '../../../ServerQueries/proposalQuery'; // Import the GET_PROPOSAL_Details query
-import { useEffect } from 'react';
-import { toast } from "react-hot-toast";
+import { useState, useEffect } from "react";
+import { useQuery } from "@apollo/client";
+import { GET_PROPOSAL_DETAILS } from "../../../model/proposals/query";
+import { message } from "antd";
 
 const useGetProposalAmount = (proposalid) => {
+  const [amount, setAmount] = useState(null);
+  const [status, setStatus] = useState(null);
+  const [currency, setCurrency] = useState(null);
 
-    const { loading: proposalLoading, error: proposalError, data: proposalAmountData, refetch } = useQuery(GET_PROPOSAL_DETAILS, {
-        variables: { proposalid }
-    });
+  const {
+    loading: proposalLoading,
+    error: proposalError,
+    data: proposalAmountData,
+    refetch,
+    networkStatus,
+  } = useQuery(GET_PROPOSAL_DETAILS, {
+    variables: { proposalid },
+    notifyOnNetworkStatusChange: true,
+  });
 
-
-    useEffect(() => {
-        refetch();
-    }, [refetch]);
-
-    if (proposalError) {
-        toast.error("Failed to Load Proposal Details");
-        return {
-            proposalLoading: false,
-            amount: null,
-            status: null,
-        };
+  useEffect(() => {
+    if (proposalAmountData) {
+      setAmount(proposalAmountData.getProposalDetailsById?.amount || null);
+      setStatus(proposalAmountData.getProposalDetailsById?.status || null);
+      setCurrency(proposalAmountData.getProposalDetailsById?.currency || null);
     }
-    
+  }, [proposalAmountData, refetch]);
 
-    const amount = proposalAmountData?.getProposalDetailsById?.amount || null;
-    const status = proposalAmountData?.getProposalDetailsById?.status || null;
-    const currency = proposalAmountData?.getProposalDetailsById?.currency || null;
-    return {
-        amount,
-        status,
-        currency,
-        proposalLoading,
-        proposalid,
-        refetch
-    };
+  useEffect(() => {
+    if (proposalError) {
+      message.error("Error fetching proposal amount");
+    }
+  }, [proposalError]);
+
+  return {
+    amount,
+    status,
+    currency,
+    proposalLoading,
+    proposalid,
+    refetch,
+    networkStatus,
+  };
 };
 
 export default useGetProposalAmount;

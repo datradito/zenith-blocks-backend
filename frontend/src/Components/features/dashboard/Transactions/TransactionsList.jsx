@@ -4,16 +4,19 @@ import Pagination from "../../../molecules/Pagination/Pagination";
 import Label from "../../../atoms/Label/Label";
 import Table from "../../../molecules/Table/Table";
 
-function TransactionList({ transactions, filter }) {
+function TransactionList({ transactions,filter, count }) {
   const [page, setPage] = useState(1);
   const perPage = 5;
+  console.log(filter)
 
   const paginatedTransactions = useMemo(() => {
     let filteredTransactions = transactions;
 
+    console.log(filteredTransactions)
 
-    if (filter.search && filter.search.length > 0) {
-      const searchStatuses = filter.search.map((s) => s.trim().toLowerCase());
+
+    if (filter && filter.length > 0) {
+      const searchStatuses = filter.map((s) => s.trim().toLowerCase());
       filteredTransactions = transactions.filter((transaction) =>
         searchStatuses.includes(transaction.status.toLowerCase())
       );
@@ -42,7 +45,7 @@ function TransactionList({ transactions, filter }) {
       </Table>
       <Pagination
         currentPage={page}
-        totalPages={Math.ceil(transactions.length / perPage)}
+        totalPages={Math.ceil(count / perPage)}
         onPageChange={setPage}
       />
     </>

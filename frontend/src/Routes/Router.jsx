@@ -7,33 +7,18 @@ import {
 import PrivateRoute from "./PrivateRoutes";
 import Root from "./Root";
 import ErrorPage from "./ErrorPage";
-import ProposalRoute from "./ProposalDependentRoutes";
 import PaymentCreation, {
   paymentLoader,
-} from "../Components/pages/Payments/PaymentCreation";
-import InvoiceRoutes from "./InvoiceDependentRoutes";
+} from "../pages/Payments/PaymentCreation";
 import NotFound from "./NotFound";
-import MemoizedInvoiceProvider from "../Utility/Providers/InvoiceProvider";
-import SwapProvider from "../Utility/Providers/SwapProvider";
+import SwapProvider from "../utils/Providers/SwapProvider";
 
-const Swap = lazy(() => import("../Components/pages/Swap/Swap"));
-const ProposalDetailView = lazy(() =>
-  import("../Components/features/proposals/ProposalDetailView")
-);
-const CreateBudget = lazy(() =>
-  import("../Components/pages/Budgets/CreateBudget")
-);
-const InvoiceListView = lazy(() =>
-  import("../Components/pages/Invoices/InvoiceListView")
-);
-const InvoiceCreation = lazy(() =>
-  import("../Components/features/invoices/CreateInvoice")
-);
-const Dashboard = lazy(() =>
-  import("../Components/pages/walletDashboard/Dashboard")
-);
-const Proposals = lazy(() => import("../Components/pages/Proposals/Proposals"));
+const Swap = lazy(() => import("../pages/Swap/Swap"));
+const Budgets = lazy(() => import("../pages/Budgets/Budgets"));
+const Bills = lazy(() => import("../pages/Bills/Bills"));
 
+const Dashboard = lazy(() => import("../pages/WalletDashboard/Dashboard"));
+const Proposals = lazy(() => import("../pages/Proposals/Proposals"));
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -53,21 +38,9 @@ export const router = createBrowserRouter(
       />
       <Route
         path="proposals/:proposalId/budgets"
-        element={<ProposalDetailView />}
+        element={<Budgets />}
         errorElement={<ErrorPage />}
-        loader={({ params }) => {
-          return { proposalId: params.proposalId };
-        }
-        }
       />
-      <Route path="budgets" element={<ProposalRoute />}>
-        <Route
-          path=":proposalId/create"
-          element={<CreateBudget />}
-          errorElement={<ErrorPage />}
-        />
-      </Route>
-
       <Route
         path="invoice/:invoiceId/payment"
         element={<PaymentCreation />}
@@ -79,21 +52,19 @@ export const router = createBrowserRouter(
           console.log(request);
         }}
       />
-      <Route path="budgets" element={<InvoiceRoutes />}>
-        <Route
-          path=":budgetId/invoices"
-          element={
-            <MemoizedInvoiceProvider>
-              <InvoiceListView />
-            </MemoizedInvoiceProvider>
-          }
-          errorElement={<ErrorPage />}
-        />
-      </Route>
       <Route
-        path="invoices/:budgetId/create"
+        path="budgets/:budgetId/invoices"
+        element={
+            <Bills />
+        }
         errorElement={<ErrorPage />}
-        element={<InvoiceCreation />}
+      />
+      <Route
+        path="bills/misc"
+        element={
+            <Bills />
+        }
+        errorElement={<ErrorPage />}
       />
       <Route
         path="dashboard"

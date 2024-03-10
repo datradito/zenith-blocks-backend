@@ -1,18 +1,12 @@
-import Login from "../Components/pages/Home/logIn";
-import ResponsiveHeaderBar from "../Components/DisplayElements/Header/Header.jsx";
-import { useContext } from "react";
-import { UserContext } from "../Utility/Providers/UserProvider";
+import Login from "../pages/Home/logIn";
+import ResponsiveHeaderBar from "../Components/features/home/Header.jsx";
 import { WidthContainer } from "./Root.jsx";
-import CircularIndeterminate from "../Components/atoms/Loader/loader.jsx";
+import useAuthStore from "../store/modules/auth/index.ts";
 
 const PrivateRoute = ({ children }) => {
-  const { user, loading } = useContext(UserContext);
+  const isAuthenticated = useAuthStore(state => state.isAuthenticated);
 
-  if (loading) {
-    <CircularIndeterminate />;
-  }
-
-  return user ? (
+  return isAuthenticated ? (
     children
   ) : (
     <WidthContainer>

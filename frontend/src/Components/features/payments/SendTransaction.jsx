@@ -14,8 +14,10 @@ import { parseUnits } from "viem";
 import {
   useWaitForTransactionReceipt,
 } from "wagmi";
+import { getTransferTransaction } from "../../../Services/Safe/getTransferTransaction";
 
 export function SendTransaction({ reciepent, paymentData }) {
+  console.log(paymentData); 
   const { contractABI, contractAddress } = useGetAbi(paymentData.currency);
   const handleTransfer = useHandleTransfer();
   const { submitPaymentMutation } = useSubmitPayment();
@@ -29,6 +31,34 @@ export function SendTransaction({ reciepent, paymentData }) {
     },
   });
   const { errors, defaultValues } = methods.formState;
+
+  const sendTransaction = () => {
+    
+    const transaction = getTransferTransaction({
+      value: debouncedAmount,
+      debouncedTo,
+      type: "NON_NATIVE"
+    });
+
+    console.log(transaction);
+    // const nonce = await safeService.getNextNonce(safeAddress)
+
+// const options = {
+//   // safeTxGas, // Optional
+//   // baseGas, // Optional
+//   // gasPrice, // Optional
+//   // gasToken, // Optional
+//   // refundReceiver, // Optional
+//   nonce: nonce,// Optional
+// };
+
+// const safeTransaction = await safeSdk.createTransaction({
+//   transactions,
+//   options,
+// });
+
+// const safeTxHash = await safeSdk.getTransactionHash(safeTransaction);
+  };
 
   const [to, setTo] = useState("");
   const [debouncedTo] = useDebounce(to, 500);
@@ -53,7 +83,9 @@ export function SendTransaction({ reciepent, paymentData }) {
       budgetid: paymentData.budgetid,
     };
 
-    submitPaymentMutation(paymentInput);
+    sendTransaction();
+
+    // submitPaymentMutation(paymentInput);
   };
 
 
@@ -94,27 +126,6 @@ export function SendTransaction({ reciepent, paymentData }) {
 
   };
 
-  // if (writeLoading) {
-  //   messageApi.open({
-  //     type: "loading",
-  //     content: "Waiting transaction...",
-  //     duration: 1.5,
-  //   });
-  // }
-  // if (writeError)
-  //   return messageApi.open({
-  //     type: "error",
-  //     content: `Error: ${writeError.shortMessage || isError.shortMessage}`,
-  //     duration: 1.5,
-  //   });
-  // if (prepareWriteContractError) {
-  //   //const error = JSON.parse(JSON.stringify(prepareWriteContractError));
-  //   messageApi.open({
-  //     type: "error",
-  //     content: prepareWriteContractError.shortMessage,
-  //     duration: 1.5,
-  //   });
-  // }
 
   return (
     <FormProvider {...methods}>

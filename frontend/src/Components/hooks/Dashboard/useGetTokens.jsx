@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import fetchTokensOwned from "../../../Services/SwapServices/fetchTokensOwned";
+import fetchTokensOwned from "../../../services/SwapServices/fetchTokensOwned";
 
 export const useGetTokens = (address) => {
     

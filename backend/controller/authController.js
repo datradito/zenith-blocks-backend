@@ -46,7 +46,7 @@ async function verifyController(req, res) {
 
     const token = await signJWTToken({
       userAddress: user.address,
-      dao: user.daoId,
+      dao: user.daoid,
     });
 
     req.session.siwe = verified;

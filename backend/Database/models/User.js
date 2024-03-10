@@ -9,7 +9,7 @@ const User = sequelize.define('users', {
         allowNull: false,
         primaryKey: true,
     },
-    daoId: {
+    daoid: {
         type: DataTypes.STRING,
         allowNull: false,
     },
@@ -18,5 +18,6 @@ const User = sequelize.define('users', {
         allowNull: false,
     },
 });
+
 
 export default User;

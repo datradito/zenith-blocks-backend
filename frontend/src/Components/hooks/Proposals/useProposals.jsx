@@ -1,28 +1,27 @@
-import { useState,  useCallback, useMemo } from "react";
-import { GET_PROPOSAL_BY_SPACE } from "../../../SnapShot/Queries.js";
-import { snapShotClient } from "../../../apolloConfig/client.js";
+import { useState, useMemo } from "react";
+import { GET_PROPOSAL_BY_SPACE } from "../../../model/proposals/query.js";
+import { snapShotClient } from "../../../config/apolloConfig/client.js";
 import { useQuery } from "@apollo/client";
 import { message } from "antd";
+import useAuthStore from "../../../store/modules/auth/index.ts";
 
 const useProposals = () => {
-  const dao = sessionStorage.getItem("daoId");
-  const [currentPage, setCurrentPage] = useState(
-    parseInt(localStorage.getItem("currentPage")) || 1
-  );
-  const [proposals, setProposals] = useState(null);
+  const { daoId } = useAuthStore((state) => state.user);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [proposals, setProposals] = useState([]);
   const [syncedAt, setSyncedAt] = useState(null);
   const [title, setTitle] = useState("");
+  const perPage = 5;
 
   const { loading, refetch, error } = useQuery(GET_PROPOSAL_BY_SPACE, {
     client: snapShotClient,
     variables: {
-      first: 10,
       skip: (currentPage - 1) * 10,
-      name: dao,
+      name: daoId,
       title: title,
     },
     onCompleted: (data) => {
-      setProposals(data.proposals);
+      setProposals(data.proposals || []);
       setSyncedAt(new Date().toLocaleString());
     },
     onError: (err) => {
@@ -30,41 +29,37 @@ const useProposals = () => {
     },
   });
 
-  const handleSkipValueChange = useCallback(() => {
-    setCurrentPage((prevPage) => prevPage + 1);
-  }, []);
+  const paginatedProposals = useMemo(() => {
+    if (!proposals) return [];
+    const start = (currentPage - 1) * perPage;
+    const end = start + perPage;
+    return proposals.slice(start, end);
+  }, [currentPage, proposals]);
 
-  const handleSearch = useMemo(() => {
-    return (searchTerm) => {
-      console.log(searchTerm);
-      setTitle(searchTerm);
-      refetch();
-    };
-  }, [refetch]);
+  const handleSearch = (searchTerm) => {
+    setTitle(searchTerm);
+    refetch();
+  };
 
-  const handleSyncProposals = useCallback(() => {
+  const handleSyncProposals = () => {
     setTitle("");
     refetch();
-  }, [refetch]);
+  };
 
   if (error) {
     message.error({ content: "Error fetching proposals", key: "error" });
-    return;
   }
 
-  //use message api from antd to show loading state
-  if (loading) {
-    return { loading: true };
-  } else {
-    return {
-      syncedAt,
-      proposals,
-      loading,
-      handleSyncProposals,
-      handleSkipValueChange,
-      handleSearch,
-    };
-  }
+  return {
+    syncedAt,
+    count: proposals ? proposals.length : 0,
+    paginatedProposals,
+    loading,
+    handleSyncProposals,
+    handleSearch,
+    currentPage,
+    setCurrentPage,
+  };
 };
 
 export default useProposals;

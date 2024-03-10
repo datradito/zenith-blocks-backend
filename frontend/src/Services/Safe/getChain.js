@@ -1,8 +1,7 @@
-import chains from "../../Constants/chains";
+import chains from "../../utils/constants/chains";
 
 const getChain = (chainId) => {
 
-  console.log(chainId)
   const chain = chains.find((chain) => chain.id === chainId.toString());
 
   return chain;

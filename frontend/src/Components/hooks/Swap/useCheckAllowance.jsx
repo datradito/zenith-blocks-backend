@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import checkTokenAllowance from "../../../Services/SwapServices/CheckAllowance";
+import checkTokenAllowance from "../../../services/SwapServices/CheckAllowance";
 
 
 const useCheckAllowance = (tokenAddress, walletAddress) => {

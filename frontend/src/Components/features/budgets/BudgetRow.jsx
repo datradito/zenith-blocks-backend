@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import CustomizedProgressBars from "../../atoms/ProgressBar/ProgressBar";
 import Table from "../../molecules/Table/Table";
-import CustomInvoiceViewIcon from "../../atoms/InvoiceIcon/InvoiceIcon";
+import CustomBillsViewIcon from "../../atoms/BillsIcon/BillsIcon";
 
 const ScrollContainer = styled.div`
   max-width: 100%;
@@ -11,21 +11,18 @@ const ScrollContainer = styled.div`
 
 function BudgetRow({ budget }) {
 
-  const { id, category, amount, currency, remaining, Breakdown } = budget;
-
   return (
     <Table.Row>
-      <ScrollContainer>{category}</ScrollContainer>
-      <ScrollContainer>{amount}</ScrollContainer>
-      <ScrollContainer>{currency}</ScrollContainer>
+      <ScrollContainer>{budget.category}</ScrollContainer>
+      <ScrollContainer>{budget.amount}</ScrollContainer>
+      <ScrollContainer>{budget.currency}</ScrollContainer>
       <ScrollContainer>
-        <CustomizedProgressBars value={Breakdown} />
+        <CustomizedProgressBars value={budget.Breakdown} />
       </ScrollContainer>
-      <ScrollContainer>{remaining}</ScrollContainer>
+      <ScrollContainer>{budget.remaining}</ScrollContainer>
       <ScrollContainer>
-        <CustomInvoiceViewIcon budgetId={id} />
+        <CustomBillsViewIcon  budget={budget} />
       </ScrollContainer>
-
     </Table.Row>
   );
 }

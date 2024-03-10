@@ -4,7 +4,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { FormControl } from "@mui/base";
 import { styled } from "@mui/system";
 import Label from "../../atoms/Label/Label";
-import { SwapContext } from "../../../Utility/Providers/SwapProvider";
+import { SwapContext } from "../../../utils/Providers/SwapProvider";
 
 const StyledRefreshIcon = styled(SettingsIcon)({
   border: "none",

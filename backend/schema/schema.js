@@ -4,11 +4,19 @@ import invoiceResolver from "../graphQL/invoices/invoiceResolver.js";
 import budgetResolver from "../graphQL/budgets/budgetResolver.js";
 import paymentsResolver from "../graphQL/payments/paymentsResolver.js";
 import walletResolvers from "../graphQL/dashboard/walletResolvers.js";
+import contactResolver from "../graphQL/Contacts/contactResolver.js";
 import transactionHistoryResolver from "../graphQL/dashboard/transactionHistoryResolver.js";
 import Invoice from "../Database/models/Invoice.js";
 
 export const typeDefs = `#graphql
 
+    type Contacts {
+        id: String
+        name: String
+        address: String
+        daoid: String
+        safeaddress: String
+    }
     type DuplicateInvoice{
         id: String!
     }
@@ -37,10 +45,6 @@ export const typeDefs = `#graphql
         budgets: [Budget]
     }
 
-input InvoiceFilterInput {
-  status: String
-  # Other filter criteria if needed
-}
 
     type Invoice {
         id: String
@@ -92,7 +96,8 @@ input InvoiceFilterInput {
         getBudgetById(id: String): Budget,
         getBudgetsForProposal(proposalid: String): [Budget],
         getInvoiceById(id: String): Invoice,
-        getInvoicesByBudget(budgetid: String, where: InvoiceFilterInput): [Invoice],
+        getInvoices(filter: InvoiceFilterInput): [Invoice],
+        getContacts(filter: ContactsFilterInput): [Contacts],
         getProposalDetailsById(id: String): Proposal,
         getRemainingProposalAmount(id: String!): Float!,
         getProposalsByDao(daoid: String): [Proposal],
@@ -104,12 +109,19 @@ input InvoiceFilterInput {
     }
     type Mutation {
         submitBudget(budget: BudgetInput): Budget,
+        submitContact(contact: ContactsInput): Contacts,
         submitInvoice(invoice: InvoiceInput): Invoice,
         setProposalAmount(proposal: ProposalAmountInput): Proposal,
         submitPayment(payment: PaymentInput!): Payment!
         duplicateInvoice(id: String!): Invoice
     }
 
+    input ContactsInput {
+        name: String
+        address: String
+        daoid: String
+        safeaddress: String
+    }
     
     input PaymentInput {
         invoiceid: String!
@@ -161,6 +173,17 @@ input InvoiceFilterInput {
         rootpath: String
         daoid: String
     }
+
+        input InvoiceFilterInput {
+      budgetid: String
+      status: String
+    }
+
+    input ContactsFilterInput {
+      daoid: String
+      safeaddress: String
+    }
+
 `;
 export const resolvers = {
   Query: {
@@ -170,12 +193,14 @@ export const resolvers = {
     ...paymentsResolver.Query,
     ...walletResolvers.Query,
     ...transactionHistoryResolver.Query,
+    ...contactResolver.Query,
   },
   Mutation: {
     ...proposalResolver.Mutation,
     ...budgetResolver.Mutation,
     ...invoiceResolver.Mutation,
     ...paymentsResolver.Mutation,
+    ...contactResolver.Mutation,
   },
   Budget: {
     async invoices(parent) {
@@ -198,5 +223,3 @@ export const resolvers = {
 //   resolvers: resolvers,
 //   introspection: true,
 // });
-
-

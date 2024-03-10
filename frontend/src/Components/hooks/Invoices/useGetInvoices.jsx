@@ -1,10 +1,10 @@
-import { transformInvoices } from "../../../Utility/transformItems.js";
-import { GET_ALL_INVOICES_BY_BUDGET } from "../../../ServerQueries/Invoices/Queries";
+import { transformInvoices } from "../../../utils/transformItems.js";
+import { GET_ALL_INVOICES_BY_BUDGET } from "../../../model/invoices/query";
 import { useQuery } from "@apollo/client";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 
-export const useGetAllInvoices = (budgetId, status) => {
+export const useGetInvoices = (budgetId, status) => {
   const [invoices, setInvoices] = useState([]);
 
   const {

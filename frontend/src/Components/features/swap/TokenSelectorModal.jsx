@@ -2,7 +2,7 @@ import React from "react";
 import Label from "../../atoms/Label/Label";
 import { Modal, Paper, Typography, List, Box, } from "@mui/material";
 import { useContext } from "react";
-import { SwapContext } from "../../../Utility/Providers/SwapProvider";
+import { SwapContext } from "../../../utils/Providers/SwapProvider";
 import styled from "styled-components";
 
 const TokenLogo = styled("img")`

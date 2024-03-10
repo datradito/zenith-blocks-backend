@@ -3,19 +3,18 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/system";
 
-const StyledCircularIndeterminate = styled(Box)(({ theme, styleProps }) => ({
+const StyledCircularIndeterminate = styled(Box)(() => ({
   width: "90%",
   margin: "0rem auto",
   textAlign: "center",
   color: "white",
   marginTop: "1rem",
   borderRadius: 3,
-  ...(styleProps && styleProps),
 }));
 
-export default function CircularIndeterminate({ styleProps }) {
+export default function CircularIndeterminate() {
   return (
-    <StyledCircularIndeterminate styleProps={styleProps}>
+    <StyledCircularIndeterminate>
       <CircularProgress />
     </StyledCircularIndeterminate>
   );

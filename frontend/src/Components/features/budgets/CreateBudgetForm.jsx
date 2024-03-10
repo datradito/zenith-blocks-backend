@@ -1,7 +1,5 @@
 import { useFormContext } from "react-hook-form";
 
-import { categories } from "../../pages/Category/Category";
-
 import TextArea from "../../atoms/TextArea/TextArea";
 import Form from "../../atoms/Form/Form";
 import FormRow from "../../atoms/FormRow/FormRow";
@@ -9,16 +7,16 @@ import Input from "../../atoms/Input/Input";
 import Option from "../../atoms/Option/Option";
 import Container from "../../atoms/Container/Container";
 import SelectDropdown from "../../atoms/SelectDropdown/SelectDropdown";
+import useDashboardStore from "../../../store/modules/dashboard/index.ts";
 
 function CreateBudgetForm() {
   const methods = useFormContext();
+  const categories = useDashboardStore((state) => state.categories);
   const { errors, defaultValues } = methods.formState;
-
-  console.log(defaultValues)
 
   return (
     <Container padding={4}>
-      <Form>
+      <Form width="100%">
         <FormRow
           style={{
             flex: "1 1 50%",
@@ -52,20 +50,6 @@ function CreateBudgetForm() {
           style={{
             flex: "1 1 40%",
           }}
-          label="IPFS Link"
-        >
-          <Input
-            type="link"
-            id="ipfsLink"
-            readOnly
-            defaultValue={defaultValues["Ipfs Link"]}
-            {...methods.register("ipfsLink")}
-          />
-        </FormRow>
-        <FormRow
-          style={{
-            flex: "1 1 20%",
-          }}
           label="Category"
           error={errors?.category?.message}
         >
@@ -75,23 +59,22 @@ function CreateBudgetForm() {
               required: "This field is required",
             })}
             onChange={(e) =>
-              methods.setValue("category", e.target.value || categories[0])
+              methods.setValue("category", e.target.value || categories[0].name)
             }
           >
             {categories.map((category) => (
               <Option
-                // defaultValue={categories[0]}
-                key={category}
-                value={category}
+                key={category.name}
+                value={category.name}
               >
-                {category}
+                {category.name}
               </Option>
             ))}
           </SelectDropdown>
         </FormRow>
         <FormRow
           style={{
-            flex: "1 1 30%",
+            flex: "1 1 20%",
           }}
           label="Total Budget"
         >
@@ -105,7 +88,7 @@ function CreateBudgetForm() {
         </FormRow>
         <FormRow
           style={{
-            flex: "1 1 auto",
+            flex: "1 1 20%",
           }}
           label="Amount"
           error={errors?.amount?.message}
@@ -138,7 +121,7 @@ function CreateBudgetForm() {
         </FormRow>
         <FormRow
           style={{
-            maxWidth: "20%",
+            flex: "1 1 20%",
           }}
           label="Currency"
           error={errors?.currency?.message}

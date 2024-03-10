@@ -6,11 +6,6 @@ import {
   validateInvoiceAmount,
 } from "../../validators/validateInvoice.js";
 
-// const {
-//   throwCustomError,
-//   ErrorTypes,
-// } = require("../../utility//errorHandlerHelpers/errorHandlerHelper");
-
 import {
   throwCustomError,
   ErrorTypes,
@@ -18,16 +13,16 @@ import {
 
 const invoiceResolver = {
   Query: {
-    getInvoicesByBudget: async (parent, args, context) => {
-      const { budgetid, where } = args;
+    getInvoices: async (parent, args, context) => {
       try {
         let invoices;
 
-        if (where && Object.keys(where).length > 0) {
-          // Filter based on 'where' conditions if provided
+        if (args && Object.keys(args).length > 0) {
+          // Filter based on 'args' conditions if provided
+          console.log(args);
           invoices = await Invoice.findAll(
             {
-              where: { budgetid, ...where },
+              where: { ...args.filter },
             },
             {
               sort: {
@@ -36,17 +31,12 @@ const invoiceResolver = {
             }
           );
         } else {
-          // If 'where' conditions are not provided, fetch without any filter
-          invoices = await Invoice.findAll(
-            {
-              where: { budgetid },
+          // If 'args' conditions are not provided, fetch without any filter
+          invoices = await Invoice.findAll({
+            sort: {
+              createdAt: "desc",
             },
-            {
-              sort: {
-                createdAt: "desc",
-              },
-            }
-          );
+          });
         }
         return invoices;
       } catch (error) {
@@ -63,12 +53,6 @@ const invoiceResolver = {
   },
   Mutation: {
     submitInvoice: async (parent, { invoice }, context) => {
-      // const { valid: validInvoice, errors: errorsInvoice } = validateInvoice(
-      //     invoice);
-
-      // if (!validInvoice) {
-      //     throw new GraphQLError(errorsInvoice);
-      // }
 
       const { errors, valid } = await validateInvoiceAmount(
         invoice.budgetid,

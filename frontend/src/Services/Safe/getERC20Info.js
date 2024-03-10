@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import erc20ABI from "../../Constants/erc20Abi.json";
+import erc20ABI from "../../utils/constants/erc20Abi.json";
 // import { ERC20Token } from "src/models/erc20token";
 
 /**
@@ -16,14 +16,13 @@ export const getERC20Info = async (erc20Address, provider, accountAddress) => {
 
   const contract = new ethers.Contract(erc20Address, erc20ABI, provider);
 
+  
   const [balance, decimals, symbol] = await Promise.all([
     accountAddress != null
-      ? contract.balanceOf(accountAddress)
-      : Promise.resolve(),
+    ? contract.balanceOf(accountAddress)
+    : Promise.resolve(),
     contract.decimals(),
     contract.symbol(),
-  ]);
-  console.log("balance", balance);
-
+  ]);  
   return { address: erc20Address, balance, decimals, symbol };
 };

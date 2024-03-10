@@ -6,36 +6,53 @@ import LaunchIcon from "@mui/icons-material/Launch";
 import Modal from "../../molecules/Modal/Modal.jsx";
 import ProposalSnapShotView from "./ProposalSnapShotView.jsx";
 
-import { useDispatch } from "react-redux";
-import { setProposal } from "../../../actions/currentProposal/index.js";
+import useProposalStore from "../../../store/modules/proposal/index.ts";
+import useGetProposalAmount from "../../hooks/Proposals/useGetProposalAmount.jsx";
+import { NetworkStatus } from "@apollo/client";
+import CircularIndeterminate from "../../atoms/Loader/loader.jsx";
 const SubItem = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(1),
   margin: theme.spacing(0.5),
   textAlign: "left",
   color: theme.palette.text.primary,
   boxShadow: "none",
-  
 }));
 
+function ProposalCard({ proposal }) {
+  const { setCurrentProposal } = useProposalStore();
 
+  const { refetch, status, amount, currency, networkStatus } =
+    useGetProposalAmount(proposal.id);
 
-function ProposalCard({ item }) {
-  const dispatch = useDispatch();
+  if (networkStatus === NetworkStatus.refetch) {
+    <CircularIndeterminate />;
+  }
 
-  // dispatch(setProposal(item));
+  const prepareAndSetCurrentProposal = async (proposal) => {
+    try {
+      refetch(proposal.id);
+      setCurrentProposal({
+        id: proposal.id,
+        status,
+        amount,
+        currency,
+        title: proposal.title,
+        space: proposal.space.name,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       <SubItem>
-        <Typography variant="subtitle1">
-          Governance
-        </Typography>
-        <Typography variant="body2">{item.space.name}</Typography>
+        <Typography variant="subtitle1">Governance</Typography>
+        <Typography variant="body2">{proposal.space.name}</Typography>
       </SubItem>
       <SubItem>
-        <Typography variant="subtitle1">
-          Total Budget
-        </Typography>
-        <Amount row={item} />
+        <Typography variant="subtitle1">Total Budget</Typography>
+        <Amount row={proposal} />
       </SubItem>
       <SubItem>
         <Typography variant="subtitle1">
@@ -46,22 +63,21 @@ function ProposalCard({ item }) {
             </Modal.Open>
 
             <Modal.Window name="proposalDetail">
-              <ProposalSnapShotView data={item} />
+              <ProposalSnapShotView data={proposal} />
             </Modal.Window>
           </Modal>
         </Typography>
         <Link
-          onClick={() => dispatch(setProposal(item))}
+          onClick={() => prepareAndSetCurrentProposal(proposal)}
           color="inherit"
-          href={`/proposals/${item.id}/budgets`}
+          href={`/proposals/${proposal.id}/budgets`}
         >
-          <Typography variant="body2">{item.title}</Typography>
+          <Typography variant="body2">{proposal.title}</Typography>
         </Link>
       </SubItem>
     </>
   );
 }
-
 
 const ProposalCardMemo = React.memo(ProposalCard);
 export default ProposalCardMemo;

@@ -2,9 +2,8 @@ import React from "react";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import Container from "../Container/Container";
-import useCurrentProposalDetail from "../../hooks/useCurrentProposalDetail";
-import CircularIndeterminate from "../Loader/loader";
 import { Typography } from "@mui/material";
+import useProposalStore from "../../../store/modules/proposal/index.ts";
 
 const exclude = ["Invoice", "Date", "Due"];
 
@@ -19,7 +18,7 @@ function ItemCard({ label, value }) {
   return !exclude.includes(label) ? (
     <SubItem key={label}>
       <Typography variant="subtitle1" gutterBottom>
-        {label}
+        {label.toUpperCase()}
       </Typography>
       <Typography variant="body2" gutterBottom>
         {value}
@@ -29,19 +28,16 @@ function ItemCard({ label, value }) {
 }
 
 const ItemCardComponent = () => {
-  const { loading, data } = useCurrentProposalDetail();
+  const currentProposal = useProposalStore((state) => state.currentProposal);
 
+  const { id, description, ...rest } = currentProposal;
   return (
-    <Container
-      direction={"row"}
-    >
-      {loading ? (
-        <CircularIndeterminate />
-      ) : (
-        Object.entries(data).map(([key, value]) => (
-          <ItemCard key={key} label={key} value={value} />
-        ))
-      )}
+    <Container direction={"row"}>
+      {Object.entries(rest)
+        .reverse()
+        .map(([key, value]) =>
+          value ? <ItemCard key={key} label={key} value={value} /> : null
+        )}
     </Container>
   );
 };

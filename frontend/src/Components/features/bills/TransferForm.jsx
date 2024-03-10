@@ -1,0 +1,270 @@
+import React, { useEffect } from "react";
+import Form from "../../atoms/Form/Form";
+import { useFormContext } from "react-hook-form";
+import FormRow from "../../atoms/FormRow/FormRow";
+import Input from "../../atoms/Input/Input";
+import Container from "../../atoms/Container/Container";
+import SelectDropdown from "../../atoms/SelectDropdown/SelectDropdown";
+import Option from "../../atoms/Option/Option";
+import TextArea from "../../atoms/TextArea/TextArea";
+import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
+import { Button } from "@mui/material";
+import { ethers } from "ethers";
+import { transferFunds } from "../../../Services/Safe/transferFunds";
+import useDashboardStore from "../../../store/modules/dashboard/index.ts";
+import useAuthStore from "../../../store/modules/auth/index.ts";
+
+function TransferForm({
+  chain,
+  erc20Balances,
+  safeBalance,
+  contacts,
+  transactionService,
+  ...props
+}) {
+  const categories = useDashboardStore((state) => state.categories);
+  const {
+    user: { address },
+  } = useAuthStore();
+
+  const currencies = JSON.parse(erc20Balances);
+
+  const methods = useFormContext();
+  const {
+    formState: { errors },
+    watch,
+    handleSubmit,
+    register,
+    setValue,
+  } = methods;
+
+  useEffect(() => {
+    if (!props?.budgetAmount) {
+      setValue(
+        "currency",
+        Object.values(currencies).length > 0
+          ? Object.values(currencies)[0]
+          : chain?.token
+      );
+    }
+  }, []);
+
+
+  const selectedCurrencyBalance = watch("currency");
+  const startDate = watch("date");
+
+  return (
+    <Container padding={4}>
+      <Form
+        onSubmit={handleSubmit((data) => {
+          try {
+            if (props?.handleSubmit) {
+              props.handleSubmit(data);
+            }
+            // transferFunds([data], transactionService, address);
+          } catch (e) {
+            console.error(e);
+          }
+        })}
+      >
+        {/*
+        assign category from budget if match is not /bills/misc make field read only
+        */}
+        <FormRow
+          style={{
+            flex: "1 1 30%",
+          }}
+          label="Category"
+          error={errors?.category?.message}
+        >
+          <SelectDropdown
+            id="category"
+            {...register("category", {
+              required: "* required",
+            })}
+            readOnly={props?.budgetAmount ? true : false}
+            defaultValue={props?.budgetCategory || categories[0].name}
+            onChange={(e) => setValue("category", e.target.value)}
+          >
+            {categories.map((category) => (
+              <Option key={category.name} value={category}>
+                {category.name}
+              </Option>
+            ))}
+          </SelectDropdown>
+        </FormRow>
+
+        <FormRow
+          style={{
+            flex: "1 1 60%",
+          }}
+          label="Recipient"
+          error={errors?.recipient?.message}
+        >
+         <SelectDropdown
+            id="recipient"
+            {...register("recipient", {
+              required: "* required",
+            })}
+            defaultValue={contacts[0].to}
+            onChange={(e) => setValue("recipient", e.target.value)}
+          >
+            {contacts.length > 0 &&
+              contacts.map((contact) => (
+                <Option key={contact.to} value={contact.to}>
+                  {contact.to}
+                </Option>
+              ))}
+          </SelectDropdown>
+        </FormRow>
+
+        <FormRow
+          style={{
+            flex: "1 1 20%",
+          }}
+          label="Bill #"
+          error={errors?.invoiceNumber?.message}
+        >
+          <Input
+            type="text"
+            id="invoiceNumber"
+            {...register("invoiceNumber", {
+              required: "* required",
+            })}
+          />
+        </FormRow>
+
+        <FormRow
+          style={{
+            flex: "1 1 20%",
+          }}
+          label="Currency"
+          error={errors?.currency?.message}
+        >
+          <SelectDropdown
+            id="currency"
+            {...register("currency", {
+              required: "* required",
+            })}
+            onChange={(e) => {
+              setValue("currency", e.target.value);
+            }}
+          >
+            {Object.values(currencies).length > 0 ? (
+              Object.values(currencies).map((currency) => {
+
+                const handleBigInt = (key, value) =>
+                  typeof value === "bigint" ? value.toString() : value; // convert BigInt to string
+
+                return (
+                  <Option
+                    key={JSON.stringify(currency.address, handleBigInt)}
+                    value={JSON.stringify(currency, handleBigInt)}
+                  >
+                    {ethers.formatUnits(currency.balance, parseInt(currency.decimals))}
+                    {currency.symbol}
+                  </Option>
+                );
+              })
+            ) : (
+              <Option key={chain?.token} value={chain?.token}>
+                {ethers.formatEther(safeBalance || "0")} : {chain?.token}
+              </Option>
+            )}
+          </SelectDropdown>
+        </FormRow>
+        <FormRow label="Amount" error={errors?.amount?.message}>
+          <Input
+            id="amount"
+            {...register("amount", {
+              required: "* required",
+              min: {
+                value: 0,
+                message: "Amount must be greater than 0",
+              },
+              validate: (value) => {
+                const currency = JSON.parse(selectedCurrencyBalance);
+                const maxValue = ethers.formatUnits(
+                  currency.balance,
+                  parseInt(currency.decimals)
+                );
+
+                if (props?.budgetAmount) {
+                  return (
+                    parseInt(value) <= parseInt(props.budgetAmount) ||
+                    "Amount exceeds remaining budget amount"
+                  );
+                }
+
+                return (
+                  parseInt(value) <= parseInt(maxValue) ||
+                  "Exceeds available balance"
+                );
+              },
+            })}
+            onChange={(e) => setValue("amount", e.target.value)}
+          />
+        </FormRow>
+
+        <FormRow label="Date">
+          <Input
+            style={{
+              flex: "1 1 50%",
+            }}
+            type="date"
+            id="date"
+            defaultValue={new Date().toISOString().split("T")[0]}
+            {...register("date")}
+          />
+        </FormRow>
+        <FormRow
+          style={{
+            flex: "1 1 50%",
+          }}
+          label="Due Date"
+          error={errors?.dueDate?.message}
+        >
+          <Input
+            type="date"
+            id="dueDate"
+            {...register("dueDate", {
+              required: "* required",
+              validate: (value) => {
+                const selectedDate = new Date(startDate);
+                const dueDate = new Date(value);
+                return dueDate <= selectedDate
+                  ? "Due Date must be after the Creation Date"
+                  : undefined;
+              },
+            })}
+          />
+        </FormRow>
+        <FormRow
+          style={{
+            flex: "1 1 100%",
+          }}
+          label="Description"
+          error={errors?.description?.message}
+        >
+          <TextArea type="text" id="description" />
+        </FormRow>
+        <Button
+          sx={{
+            widht: "2rem",
+            height: "2rem",
+            "&:hover": {
+              backgroundColor: "#E0E0E0",
+            },
+          }}
+          type="submit"
+          variant="outlined"
+          endIcon={<ArrowCircleRightIcon />}
+        >
+          Submit
+        </Button>
+      </Form>
+    </Container>
+  );
+}
+
+export default TransferForm;

@@ -9,7 +9,7 @@ import TokenCardLayout from "../../molecules/Swap/TokenCardLayout";
 import useTokenBalances from "../../hooks/Swap/useTokenBalances";
 import { message } from "antd";
 import MaxLabel from "../../molecules/Swap/MaxLabel";
-import { SwapContext } from "../../../Utility/Providers/SwapProvider";
+import { SwapContext } from "../../../utils/Providers/SwapProvider";
 
 const FromToken = ({ isPriceLoading }) => {
   const {
