@@ -20,12 +20,14 @@ export function useBillCreation() {
     currentBudget?.id
   );
 
+  console.log(remainingBudgetAmount);
+
   const methods = useForm({
     defaultValues: useMemo(() => {
       const defaultCategory =  !match ? currentBudget.category : categories[0].name ;
       const defaultCurrency = !match ? currentBudget.currency : "" ;
       const defaultProposal = !match ? currentProposal.title : "";
-      const defaultAmount = 0;
+      const defaultAmount = !match ? remainingBudgetAmount.getRemainingBudgetAmount : 0;
       const defaultDate = new Date().toISOString().split('T')[0];
 
       return {
@@ -43,10 +45,10 @@ export function useBillCreation() {
 
   const handleSaveBill = useCallback(
     async (data) => {
-      handleBillSubmit(data, currentBudget, currentProposal);
+      handleBillSubmit(data);
       methods.reset();
     },
-    [handleBillSubmit, currentBudget, currentProposal, methods]
+    [handleBillSubmit, methods]
   );
 
   return { methods, handleSaveBill, remainingBudgetAmount };

@@ -10,6 +10,7 @@ interface Budget {
   amount: number;
   currency: string;
   remaining: number;
+  category: string;
 }
 
 interface BudgetStore {

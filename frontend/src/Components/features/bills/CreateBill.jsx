@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { useBillCreation } from "../../hooks/Invoices/useBillCreation";
+import { useBills } from "../../hooks/Invoices/useBills.tsx";
 
 import { FormProvider } from "react-hook-form";
 
@@ -20,7 +20,7 @@ const MemoizedCreateBillForm = React.memo(({ budgetAmount, handleSubmit }) => (
 
 function CreateBill({ onCloseModal }) {
   const { methods, handleSaveBill, remainingBudgetAmount } =
-    useBillCreation();
+    useBills();
   
   const submit = () => {
     handleSaveBill();

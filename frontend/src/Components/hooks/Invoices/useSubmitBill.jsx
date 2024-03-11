@@ -40,13 +40,10 @@ export const useSubmitBill = () => {
     });
   }
 
-  const handleBillSubmit = async (data, Budget, proposal) => {
+  const handleBillSubmit = async (data) => {
     console.log(data)
-    // const dataToBeSubmitted = await invoiceService.sanitizeInvoiceData(
-    //   data,
-    //   Budget,
-    //   proposal
-    // );
+
+    //TODO: if match, add on budgetid onto bill data, maybe use hash for ipfs endpoint
     // createBill({
     //   variables: {
     //     invoice: dataToBeSubmitted,

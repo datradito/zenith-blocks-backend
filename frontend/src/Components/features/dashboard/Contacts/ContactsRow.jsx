@@ -9,6 +9,7 @@ import CustomActionIcon from "../../../atoms/ActionIcon/CustomActionIcon";
 import EditContact from "./EditContact";
 import TransferForm from "../../bills/TransferForm";
 import Transfer from "../../bills/Transfer";
+import ContactDetails from "./ContactDetails";
 
 function ContactsRow({ contact, index }) {
 
@@ -32,20 +33,18 @@ function ContactsRow({ contact, index }) {
         </Modal.Window>
       </Modal>
       <Modal>
-        <Modal.Open opens="transferFunds">
+        <Modal.Open opens="contactInsights">
           <Button
             variant="primary"
             sx={{
               width: "5rem",
             }}
           >
-            Transact
+            Insights
           </Button>
         </Modal.Open>
-        <Modal.Window name="transferFunds">
-          <Transfer>
-            <TransferForm />
-          </Transfer>
+        <Modal.Window name="contactInsights">
+          <ContactDetails />
         </Modal.Window>
       </Modal>
     </Table.Row>

@@ -87,7 +87,7 @@ function TransferForm({
             onChange={(e) => setValue("category", e.target.value)}
           >
             {categories.map((category) => (
-              <Option key={category.name} value={category}>
+              <Option key={category.name} value={category.name}>
                 {category.name}
               </Option>
             ))}
@@ -106,13 +106,13 @@ function TransferForm({
             {...register("recipient", {
               required: "* required",
             })}
-            defaultValue={contacts[0].to}
+            defaultValue={contacts[0].name || contacts[0].to}
             onChange={(e) => setValue("recipient", e.target.value)}
           >
             {contacts.length > 0 &&
               contacts.map((contact) => (
                 <Option key={contact.to} value={contact.to}>
-                  {contact.to}
+                  {contact.name || contact.to}
                 </Option>
               ))}
           </SelectDropdown>
@@ -153,6 +153,7 @@ function TransferForm({
             {Object.values(currencies).length > 0 ? (
               Object.values(currencies).map((currency) => {
 
+                console.log(currency)
                 const handleBigInt = (key, value) =>
                   typeof value === "bigint" ? value.toString() : value; // convert BigInt to string
 
@@ -175,6 +176,7 @@ function TransferForm({
         </FormRow>
         <FormRow label="Amount" error={errors?.amount?.message}>
           <Input
+            type="number"
             id="amount"
             {...register("amount", {
               required: "* required",
@@ -183,7 +185,9 @@ function TransferForm({
                 message: "Amount must be greater than 0",
               },
               validate: (value) => {
-                const currency = JSON.parse(selectedCurrencyBalance);
+                console.log(selectedCurrencyBalance)
+                const currency = JSON.parse(selectedCurrencyBalance );
+                console.log(currency)
                 const maxValue = ethers.formatUnits(
                   currency.balance,
                   parseInt(currency.decimals)
