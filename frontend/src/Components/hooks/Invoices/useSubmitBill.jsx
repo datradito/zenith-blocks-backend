@@ -3,7 +3,7 @@ import { SUBMIT_INVOICE_MUTATION } from "../../../model/invoices/mutation.js";
 import { useNavigate, useParams } from "react-router-dom";
 import { message } from "antd";
 
-import { invoiceService } from "../../../Services/InvoiceServices/invoiceService.js";
+import { invoiceService } from "../../../services/InvoiceServices/invoiceService.js";
 
 export const useSubmitBill = () => {
   const budgetId = useParams().budgetId;

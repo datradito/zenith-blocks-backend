@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import theme from "./theme";
 import App from "./App.js";
-import ErrorFallback from "./Components/atoms/ErrorFallback/ErrorFallback";
+import ErrorFallback from "./components/atoms/ErrorFallback/ErrorFallback";
 import { ErrorBoundary } from "react-error-boundary";
 import "@rainbow-me/rainbowkit/styles.css";
 

@@ -1,15 +1,15 @@
 import React from "react";
-import SafeInfo from "../../Components/features/safe/SafeInfo.jsx";
+import SafeInfo from "../../components/features/safe/SafeInfo.jsx";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import AddressLabel from "../../Components/features/safe/AddressLabel.jsx";
+import AddressLabel from "../../components/features/safe/AddressLabel.jsx";
 import styled from "styled-components";
 import useSafeStore from "../../store/modules/safe/index.ts";
 import { InputLabel, Box } from "@mui/material";
-import Button from "../../Components/atoms/Button/Button";
+import Button from "../../components/atoms/Button/Button";
 import { message } from "antd";
-import Label from "../../Components/atoms/Label/Label";
+import Label from "../../components/atoms/Label/Label";
 
 export const ConnectedContainer = styled(Box)(
   ({ theme }) => `

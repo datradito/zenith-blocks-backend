@@ -4,8 +4,8 @@ import { ethers } from "ethers";
 import SafeApiKit from "@safe-global/api-kit";
 import { EthersAdapter } from "@safe-global/protocol-kit";
 import { initialChain } from "../../../utils/constants/chains";
-import getChain from "../../../Services/Safe/getChain";
-import { getERC20Info } from "../../../Services/Safe/getERC20Info.js";
+import getChain from "../../../services/Safe/getChain";
+import { getERC20Info } from "../../../services/Safe/getERC20Info.js";
 import useAuthStore from "../auth/index.ts";
 import useUtilitiesStore from "../utilities/index.ts";
 

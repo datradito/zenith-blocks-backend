@@ -5,14 +5,14 @@ import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import AddressLabel from "./AddressLabel.jsx";
-import getSafeInfo from "../../../Services/Safe/getSafeInfo.js";
+import getSafeInfo from "../../../services/Safe/getSafeInfo.js";
 import usePolling from "../../hooks/Safe/usePolling.jsx";
-import isContractAddress from "../../../Services/Safe/isContractAddress.js";
+import isContractAddress from "../../../services/Safe/isContractAddress.js";
 import TokenSelector from "../../molecules/Safe/TokenSelector.jsx";
 import useSafeStore from "../../../store/modules/safe/index.ts";
 import useApi from "../../hooks/Safe/useApi.jsx";
 
-import { getERC20Info } from "../../../Services/Safe/getERC20Info.js";
+import { getERC20Info } from "../../../services/Safe/getERC20Info.js";
 import { ethers } from "ethers";
 
 // TODO: ADD USDC LABEL

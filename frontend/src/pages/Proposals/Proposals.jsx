@@ -1,13 +1,13 @@
 import React from "react";
 import Stack from "@mui/material/Stack";
 import { Typography } from "@mui/material";
-import CircularIndeterminate from "../../Components/atoms/Loader/loader.jsx";
-import SubHeader from "../../Components/molecules/SubHeader/SubHeader.jsx";
-import useProposals from "../../Components/hooks/Proposals/useProposals.jsx";
-import ProposalCardMemo from "../../Components/features/proposals/ProposalCard.jsx";
-import Container from "../../Components/atoms/Container/Container.jsx";
-import Search from "../../Components/atoms/Search/Search.jsx";
-import Pagination from "../../Components/molecules/Pagination/Pagination.jsx";
+import CircularIndeterminate from "../../components/atoms/Loader/loader.jsx";
+import SubHeader from "../../components/molecules/SubHeader/SubHeader.jsx";
+import useProposals from "../../components/hooks/Proposals/useProposals.jsx";
+import ProposalCardMemo from "../../components/features/proposals/ProposalCard.jsx";
+import Container from "../../components/atoms/Container/Container.jsx";
+import Search from "../../components/atoms/Search/Search.jsx";
+import Pagination from "../../components/molecules/Pagination/Pagination.jsx";
 
 const Proposals = () => {
   const perPage = 5;

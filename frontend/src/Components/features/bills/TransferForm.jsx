@@ -10,7 +10,7 @@ import TextArea from "../../atoms/TextArea/TextArea";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import { Button } from "@mui/material";
 import { ethers } from "ethers";
-import { transferFunds } from "../../../Services/Safe/transferFunds";
+import { transferFunds } from "../../../services/Safe/transferFunds";
 import useDashboardStore from "../../../store/modules/dashboard/index.ts";
 import useAuthStore from "../../../store/modules/auth/index.ts";
 
