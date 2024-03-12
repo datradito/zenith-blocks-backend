@@ -1,15 +1,16 @@
 import { useQuery } from "@apollo/client";
+import { useState } from "react";
 
-import { GET_ALL_CONTACTS } from "../../../ServerQueries/Contacts/Queries.js";
+import { GET_ALL_CONTACTS } from "../../../model/contacts/query";
+import useDashboardStore from "../../../store/modules/dashboard/index.ts";
 
-import { useTransactionHistory } from "../Transactions/useTransactionHistory";
-import { useAccountAbstraction } from "../../Utility/Providers/AccountAbstractionContext";
 export const useGetContacts = (filter = {}, prevTransacted) => {
-  const { safeSelected, apiKit } = useAccountAbstraction();
+  const [contacts, setContacts] = useState([]);
 
-  const { transactions, loading: pervTransactedLoading } =
-    useTransactionHistory(safeSelected, apiKit, "All");
-
+  const { transactions } = useDashboardStore((state) => state);
+  //get all the contacts from dashboard store
+  //run a query to back end with all addresses
+  //return a final list of contacts with {{ address: xyz, name: xyz }]
 
     const sanitizePrevTransacted = async () => {
        return transactions.filter(
@@ -24,6 +25,7 @@ export const useGetContacts = (filter = {}, prevTransacted) => {
             !prevTransacted.find((prev) => prev.to === contact.address)
         );
     };
+
     
     
   const { loading, error, data, refetch } = useQuery(GET_ALL_CONTACTS, {
@@ -31,7 +33,10 @@ export const useGetContacts = (filter = {}, prevTransacted) => {
     errorPolicy: "all",
     onCompleted: async (data) => {
         const safeContacts = await sanitizePrevTransacted();
-        return mergeUniqueContacts(data?.getContacts, safeContacts);
+        console.log(data.getContacts)
+
+      const uniqueContacts = mergeUniqueContacts(data.getContacts, safeContacts);
+      setContacts(uniqueContacts);
         // mergeUniqueContacts is a custom function that merges and returns unique contacts from data and safeContacts
         // You need to implement this function according to your requirements
     },
@@ -45,7 +50,7 @@ export const useGetContacts = (filter = {}, prevTransacted) => {
   return {
     loading,
     error,
-    contacts: data?.getContacts,
+    contacts,
     refetchContacts: refetch,
   };
 };

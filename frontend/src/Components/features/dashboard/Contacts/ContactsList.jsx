@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Label from "../../../atoms/Label/Label";
 import Table from "../../../molecules/Table/Table";
 import Pagination from "../../../molecules/Pagination/Pagination";
@@ -8,19 +8,32 @@ import EditContact from "./EditContact.jsx";
 import { Tooltip } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import useDashboardStore from "../../../../store/modules/dashboard/index.ts";
+import useGetContacts from "../../../hooks/Contacts/useGetContacts.jsx";
 
+import CircularIndeterminate from "../../../atoms/Loader/loader.jsx";
 function ContactsList() {
-  const dashboard = useDashboardStore((state) => state);
+  //const dashboard = useDashboardStore((state) => state);
+  const { contacts, refetchContacts, loading} = useGetContacts();
   const [page, setPage] = useState(1);
   const perPage = 5;
 
-  const contacts = useMemo(() => {
-    return (dashboard.transactions || []).filter(
-      (transaction, index, self) =>
-        index === self.findIndex((t) => t.to === transaction.to)
-    );
-  }, [dashboard.transactions]);
+  console.log(contacts)
 
+  // const contacts = useMemo(() => {
+  //   return (dashboard.transactions || []).filter(
+  //     (transaction, index, self) =>
+  //       index === self.findIndex((t) => t.to === transaction.to)
+  //   );
+  // }, [dashboard.transactions]);
+  useEffect(() => {
+    if (contacts.length === 0) {
+      refetchContacts();
+    }
+  }, [contacts]);
+
+  if (loading) {
+    <CircularIndeterminate />;
+  }
 const paginatedContacts = useMemo(() => {
   const start = (page - 1) * perPage;
   const end = start + perPage;

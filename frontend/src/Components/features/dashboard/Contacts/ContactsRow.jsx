@@ -7,8 +7,6 @@ import Button from "../../../atoms/Button/Button";
 import Modal from "../../../molecules/Modal/Modal";
 import CustomActionIcon from "../../../atoms/ActionIcon/CustomActionIcon";
 import EditContact from "./EditContact";
-import TransferForm from "../../bills/TransferForm";
-import Transfer from "../../bills/Transfer";
 import ContactDetails from "./ContactDetails";
 
 function ContactsRow({ contact, index }) {
@@ -20,8 +18,8 @@ function ContactsRow({ contact, index }) {
   return (
     <Table.Row>
       <Label color="white">{index + 1}</Label>
-      <Label color="white">Name</Label>
-      <GetEnsName address={contact.to} />
+      <Label color="white">{ contact.name}</Label>
+      <GetEnsName address={contact.address} />
       <HiTrash />
       <Modal>
         <Modal.Open opens="editContact">
@@ -29,7 +27,7 @@ function ContactsRow({ contact, index }) {
         </Modal.Open>
 
         <Modal.Window name="editContact">
-          <EditContact defaultValues={{ address: contact.to, name: "" }} onSubmit={handleEditContact} />
+          <EditContact defaultValues={{ address: contact.address, name: "" }} onSubmit={handleEditContact} />
         </Modal.Window>
       </Modal>
       <Modal>
