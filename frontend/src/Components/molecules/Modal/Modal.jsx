@@ -4,19 +4,17 @@ import styled from "styled-components";
 import { useOutsideClick } from "../../hooks/useOutsideClicks";
 import { Overlay } from "../../atoms/Overlay/Overlay";
 
-
 const StyledModal = styled.div`
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #0D0E10;
-  border-radius: .5rem;
+  background-color: #0d0e10;
+  border-radius: 0.5rem;
   box-shadow: var(--shadow-lg);
   padding: 1rem;
   transition: all 0.5s;
 `;
-
 
 const Button = styled.button`
   background: none;
@@ -77,8 +75,13 @@ function Window({ children, name }) {
           <p
             style={{
               color: "white",
+              position: "absolute",
+              top: -12,
+              cursor: "pointer",
             }}
-          >X</p>
+          >
+            X
+          </p>
         </Button>
 
         <div>{cloneElement(children, { onCloseModal: close })}</div>

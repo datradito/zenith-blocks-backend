@@ -49,7 +49,7 @@ function SafeAccount(props) {
         )}
       </Box>
 
-      {!safe.safeSelected && safe.safes.length > 1 && (
+      {!safe.safeSelected && safe.safes.length >= 1 && (
         <FormControl fullWidth sx={{ marginBottom: "20px" }}>
           <InputLabel id="switch-address-selector-label">
             Select Safe
