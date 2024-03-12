@@ -31,27 +31,43 @@ function TransferForm({
 
   const methods = useFormContext();
   const {
-    formState: { errors },
+    formState: { errors, isDirty, touchedFields },
     watch,
     handleSubmit,
     register,
     setValue,
   } = methods;
 
-  useEffect(() => {
-    if (!props?.budgetAmount) {
-      setValue(
-        "currency",
-        Object.values(currencies).length > 0
-          ? Object.values(currencies)[0]
-          : chain?.token
-      );
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!props?.budgetAmount) {
+  //     console.log("setting currency");
+  //     console.log(Object.values(currencies[0]));
+  //     setValue(
+  //       "currency",
+  //       Object.values(currencies).length > 0
+  //         ? Object.values(currencies)[0]
+  //         : chain?.token
+  //     );
+  //   }
+  // }, [currencies, setValue]);
 
+
+  const handleBigInt = (key, value) =>
+    typeof value === "bigint" ? value.toString() : value; // convert BigInt to string
 
   const selectedCurrencyBalance = watch("currency");
   const startDate = watch("date");
+
+  const handleCurrencyChange = (e) => {
+    console.log("this runs")
+    if (e.target.value) {
+      setValue("currency", e.target.value);
+    } else {
+      setValue("currency", JSON.stringify(currencies[0], handleBigInt));
+    }
+
+    console.log(selectedCurrencyBalance);
+  }
 
   return (
     <Container padding={4}>
@@ -101,13 +117,15 @@ function TransferForm({
           label="Recipient"
           error={errors?.recipient?.message}
         >
-         <SelectDropdown
+          <SelectDropdown
             id="recipient"
             {...register("recipient", {
               required: "* required",
             })}
-            defaultValue={contacts[0].name || contacts[0].to}
-            onChange={(e) => setValue("recipient", e.target.value)}
+            defaultValue={contacts[0].to}
+            onChange={(e) =>
+              setValue("recipient", e.target.value) || contacts[0].to
+            }
           >
             {contacts.length > 0 &&
               contacts.map((contact) => (
@@ -146,23 +164,22 @@ function TransferForm({
             {...register("currency", {
               required: "* required",
             })}
+            defaultValue={JSON.stringify(currencies[0], handleBigInt)}
             onChange={(e) => {
-              setValue("currency", e.target.value);
+              handleCurrencyChange(e);
             }}
           >
             {Object.values(currencies).length > 0 ? (
               Object.values(currencies).map((currency) => {
-
-                console.log(currency)
-                const handleBigInt = (key, value) =>
-                  typeof value === "bigint" ? value.toString() : value; // convert BigInt to string
-
                 return (
                   <Option
                     key={JSON.stringify(currency.address, handleBigInt)}
                     value={JSON.stringify(currency, handleBigInt)}
                   >
-                    {ethers.formatUnits(currency.balance, parseInt(currency.decimals))}
+                    {ethers.formatUnits(
+                      currency.balance,
+                      parseInt(currency.decimals)
+                    )} 
                     {currency.symbol}
                   </Option>
                 );
@@ -185,25 +202,35 @@ function TransferForm({
                 message: "Amount must be greater than 0",
               },
               validate: (value) => {
-                console.log(selectedCurrencyBalance)
-                const currency = JSON.parse(selectedCurrencyBalance );
-                console.log(currency)
-                const maxValue = ethers.formatUnits(
-                  currency.balance,
-                  parseInt(currency.decimals)
+                if(!selectedCurrencyBalance) return true;
+                const parsedValue = parseInt(value);
+
+                const balance = JSON.parse(selectedCurrencyBalance).balance;
+                const decimals = JSON.parse(selectedCurrencyBalance).decimals;
+                const availableAmountForSelectedCurrency = parseInt(
+                  ethers.formatUnits(
+                    balance,
+                    parseInt(decimals)
+                  )
                 );
 
-                if (props?.budgetAmount) {
-                  return (
-                    parseInt(value) <= parseInt(props.budgetAmount) ||
-                    "Amount exceeds remaining budget amount"
-                  );
+                // If budgetAmount is defined and the entered value exceeds it, return an error
+                if (
+                  props?.budgetAmount &&
+                  parsedValue > parseInt(props.budgetAmount)
+                ) {
+                  return "Amount exceeds remaining budget amount";
                 }
 
-                return (
-                  parseInt(value) <= parseInt(maxValue) ||
-                  "Exceeds available balance"
-                );
+                console.log(parsedValue > availableAmountForSelectedCurrency);
+
+                // If the entered value exceeds the available amount for the selected currency, return an error
+                if (parsedValue > availableAmountForSelectedCurrency) {
+                  return "Exceeds available balance";
+                }
+
+                // If none of the above conditions are met, the value is valid
+                return true;
               },
             })}
             onChange={(e) => setValue("amount", e.target.value)}

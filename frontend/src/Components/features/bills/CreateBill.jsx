@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { useBills } from "../../hooks/Invoices/useBills.tsx";
-
 import { FormProvider } from "react-hook-form";
 
 import TransferForm from "./TransferForm";
@@ -22,8 +21,8 @@ function CreateBill({ onCloseModal }) {
   const { methods, handleSaveBill, remainingBudgetAmount } =
     useBills();
   
-  const submit = () => {
-    handleSaveBill();
+  const submit = (data) => {
+    handleSaveBill(data);
     onCloseModal();
   }
 

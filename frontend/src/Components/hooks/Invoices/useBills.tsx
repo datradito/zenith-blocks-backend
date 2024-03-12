@@ -40,10 +40,9 @@ interface FormValues {
 }
 
 export function useBills() {
-  const { handleBillSubmit } = useSubmitBill();
   const match = useMatch("/bills/misc");
+  const { handleBillSubmit } = useSubmitBill();
   const categories: Category[] = useDashboardStore((state) => state.categories);
-
   const currentProposal: Proposal | null = useProposalStore(
     (state) => state.currentProposal
   );
@@ -60,16 +59,14 @@ export function useBills() {
       const defaultCategory = !match
         ? currentBudget?.category
         : categories[0].name;
-      const defaultCurrency = !match ? currentBudget?.currency : "";
       const defaultProposal = currentProposal?.title ?? "";
-      const defaultAmount = !match
-        ? remainingBudgetAmount.getRemainingBudgetAmount
+      const defaultAmount = match
+        ? remainingBudgetAmount?.getRemainingBudgetAmount
         : 0;
       const defaultDate = new Date().toISOString().split("T")[0];
 
       return {
         category: defaultCategory,
-        currency: defaultCurrency,
         proposal: defaultProposal,
         amount: defaultAmount,
         date: defaultDate,
@@ -92,10 +89,11 @@ export function useBills() {
     
     const handleSaveBill = useCallback(
       async (data: FormValues) => {
+        console.log("data", data);
           try {
             // Trigger sign transaction
             //const transactionResult = await triggerSignTransaction();
-
+            console.log(data)
             // If user signs the transaction, submit bills data to backend
             if (false) {
               await handleBillSubmit(data);

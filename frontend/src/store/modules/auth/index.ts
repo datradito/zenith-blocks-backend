@@ -17,6 +17,8 @@ interface AuthStore {
   isAuthenticated: boolean;
   login: (accessToken: string) => void;
   logout: () => void;
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
 }
 
 const useAuthStore = create<AuthStore>(

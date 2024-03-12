@@ -17,34 +17,30 @@ const stackStyles = {
 
 export default function Login() {
   return (
-    <Stack {...stackStyles}>
-      <Stack alignItems={{ xs: "center", sm: "left" }} border={"none"}>
-        <p>
-          <img style={{ maxWidth: "8rem" }} src={logo} alt="Logo" />
-        </p>
-        <Typography variant="h3">FOR DAO | BY DAO </Typography>
-        <Typography variant="subtitle1">
-          ZenithBlocks is a platform for DAOs to manage their treasury and
-          governance
-        </Typography>
-      </Stack>
-      <Divider orientation="vertical" flexItem color="gray" />
-      <Stack
-        alignItems={{ xs: "center" }}
-        spacing={2}
-        border={"none"}
-      >
-        <Typography variant="h4">Welcome to Zenith Blocks</Typography>
-        <Typography variant="h6">
-          Please register to continue
-        </Typography>
+    <>
+      <Stack {...stackStyles}>
+        <Stack alignItems={{ xs: "center", sm: "left" }} border={"none"}>
+          <p>
+            <img style={{ maxWidth: "8rem" }} src={logo} alt="Logo" />
+          </p>
+          <Typography variant="h3">FOR DAO | BY DAO </Typography>
+          <Typography variant="subtitle1">
+            ZenithBlocks is a platform for DAOs to manage their treasury and
+            governance
+          </Typography>
+        </Stack>
+        <Divider orientation="vertical" flexItem color="gray" />
+        <Stack alignItems={{ xs: "center" }} spacing={2} border={"none"}>
+          <Typography variant="h4">Welcome to Zenith Blocks</Typography>
+          <Typography variant="h6">Please register to continue</Typography>
 
-        <Link to="https://www.zenithblocks.com/#cta">
-          <Button variant="contained" endIcon={<SendIcon />}>
-            Register
-          </Button>
-        </Link>
+          <Link to="https://www.zenithblocks.com/#cta">
+            <Button variant="contained" endIcon={<SendIcon />}>
+              Register
+            </Button>
+          </Link>
+        </Stack>
       </Stack>
-    </Stack>
+    </>
   );
 }
