@@ -3,22 +3,22 @@ import React, { useMemo } from "react";
 import { Button } from "@mui/material";
 import { message } from "antd";
 
-import BudgetList from "../../components/features/budgets/BudgetList.jsx";
-import CreateBudget from "../../components/features/budgets/CreateBudget.jsx";
+import BudgetList from "../../Components/features/budgets/BudgetList.jsx";
+import CreateBudget from "../../Components/features/budgets/CreateBudget.jsx";
 
 import useProposalStore from "../../store/modules/proposal/index.ts";
-import { useGetBudgets } from "../../components/hooks/Budgets/useGetBudgets.jsx";
+import { useGetBudgets } from "../../Components/hooks/Budgets/useGetBudgets.jsx";
 
-import Modal from "../../components/molecules/Modal/Modal.jsx";
-import SubHeader from "../../components/molecules/SubHeader/SubHeader.jsx";
+import Modal from "../../Components/molecules/Modal/Modal.jsx";
+import SubHeader from "../../Components/molecules/SubHeader/SubHeader.jsx";
 
-import GoBack from "../../components/atoms/GoBack/GoBack.jsx";
-import ItemCardComponent from "../../components/atoms/ItemCard/ItemCard.jsx";
-import Label from "../../components/atoms/Label/Label.jsx";
-import Breadcrumbs from "../../components/atoms/BreadCrumbs/BreadCrumbs.jsx";
-import Container from "../../components/atoms/Container/Container.jsx";
-import CircularIndeterminate from "../../components/atoms/Loader/loader.jsx";
-import EmptyIcon from "../../components/atoms/EmptyIcon/EmptyIcon.jsx";
+import GoBack from "../../Components/atoms/GoBack/GoBack.jsx";
+import ItemCardComponent from "../../Components/atoms/ItemCard/ItemCard.jsx";
+import Label from "../../Components/atoms/Label/Label.jsx";
+import Breadcrumbs from "../../Components/atoms/BreadCrumbs/BreadCrumbs.jsx";
+import Container from "../../Components/atoms/Container/Container.jsx";
+import CircularIndeterminate from "../../Components/atoms/Loader/loader.jsx";
+import EmptyIcon from "../../Components/atoms/EmptyIcon/EmptyIcon.jsx";
 
 function Budgets() {
   const { currentProposal } = useProposalStore();

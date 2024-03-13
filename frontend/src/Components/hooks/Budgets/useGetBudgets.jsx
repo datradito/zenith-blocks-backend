@@ -1,6 +1,6 @@
 import { GET_ALL_BUDGETS_FOR_PROPOSAL } from "../../../model/budget/query";
 import { useState, useEffect } from "react";
-import { transformBudgets } from "../../../services/BudgetServices/budgetService";
+import { transformBudgets } from "../../../Services/BudgetServices/budgetService";
 import { useQuery } from "@apollo/client";
 import { message } from "antd";
 

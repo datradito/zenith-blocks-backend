@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import fetchTokenBalances from "../../../services/SwapServices/fetchTokenBalances";
+import fetchTokenBalances from "../../../Services/SwapServices/fetchTokenBalances";
 import { useAccount } from "wagmi";
 
 

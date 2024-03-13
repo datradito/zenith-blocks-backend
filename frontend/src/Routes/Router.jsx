@@ -12,7 +12,6 @@ import PaymentCreation, {
 } from "../pages/Payments/PaymentCreation";
 import NotFound from "./NotFound";
 import SwapProvider from "../utils/Providers/SwapProvider";
-import Login from "../pages/Home/logIn";
 
 const Swap = lazy(() => import("../pages/Swap/Swap"));
 const Budgets = lazy(() => import("../pages/Budgets/Budgets"));

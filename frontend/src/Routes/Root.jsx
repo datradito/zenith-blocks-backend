@@ -1,4 +1,4 @@
-import ResponsiveHeaderBar from "../components/features/home/Header";
+import ResponsiveHeaderBar from "../Components/features/home/Header";
 import { Outlet } from "react-router-dom";
 import React from "react";
 

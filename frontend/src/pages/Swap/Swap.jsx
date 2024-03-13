@@ -2,15 +2,15 @@ import React, { useEffect, useContext } from "react";
 
 import { useAccount, useSendTransaction, useWaitForTransactionReceipt } from "wagmi";
 
-import SwapLayout from "../../components/molecules/Swap/SwapLayout";
-import FromToken from "../../components/features/swap/FromToken";
-import ToToken from "../../components/features/swap/ToToken";
-import SwapButton from "../../components/features/swap/SwapButton";
-import TokenSelectorModal from "../../components/features/swap/TokenSelectorModal";
-import SettingsPopover from "../../components/features/swap/SettingsPopOver";
+import SwapLayout from "../../Components/molecules/Swap/SwapLayout";
+import FromToken from "../../Components/features/swap/FromToken";
+import ToToken from "../../Components/features/swap/ToToken";
+import SwapButton from "../../Components/features/swap/SwapButton";
+import TokenSelectorModal from "../../Components/features/swap/TokenSelectorModal";
+import SettingsPopover from "../../Components/features/swap/SettingsPopOver";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import Button from "../../components/atoms/Button/Button";
+import Button from "../../Components/atoms/Button/Button";
 import { SwapContext } from "../../utils/Providers/SwapProvider";
 
 import styled from "styled-components";

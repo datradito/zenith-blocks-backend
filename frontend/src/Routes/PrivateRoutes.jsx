@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import Login from "../pages/Home/logIn.jsx";
 import { WidthContainer } from "./Root.jsx";
-import ResponsiveHeaderBar from "../components/features/home/Header.jsx";
+import ResponsiveHeaderBar from "../Components/features/home/Header.jsx";
 
 function PrivateRoute({ children }) {
   const navigate = useNavigate();
