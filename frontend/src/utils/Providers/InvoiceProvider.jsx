@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useMemo } from "react";
-import { useGetBills } from "../../Components/hooks/Invoices/useGetBills";
+import { useGetBills } from "../../components/hooks/Invoices/useGetBills";
 import PropTypes from "prop-types";
 
 export const InvoiceContext = createContext();

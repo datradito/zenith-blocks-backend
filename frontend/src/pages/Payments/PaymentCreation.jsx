@@ -1,19 +1,19 @@
 import React, { useEffect } from "react";
 import { Typography } from "@mui/material";
 import { useAccount, useEnsName } from "wagmi";
-import { SendTransaction } from "../../Components/features/payments/SendTransaction";
+import { SendTransaction } from "../../components/features/payments/SendTransaction";
 // We don't need to declare client here, just use useQuery ;)
 import { client } from "../../config/apolloConfig/client";
 import { GET_INVOICE_BY_ID } from "../../model/invoices/query";
 import { useLoaderData } from "react-router-dom";
 import { useSelector } from "react-redux";
-import TransactionInfo from "../../Components/features/payments/TransactionInfo";
-import Container from "../../Components/atoms/Container/Container";
+import TransactionInfo from "../../components/features/payments/TransactionInfo";
+import Container from "../../components/atoms/Container/Container";
 
-import Label from "../../Components/atoms/Label/Label";
-import PaymentBillingBanner from "../../Components/features/payments/PaymentBillingBanner";
-import BillList from "../../Components/features/payments/BillList";
-import PaymentSubHeader from "../../Components/features/payments/PaymentSubHeader";
+import Label from "../../components/atoms/Label/Label";
+import PaymentBillingBanner from "../../components/features/payments/PaymentBillingBanner";
+import BillList from "../../components/features/payments/BillList";
+import PaymentSubHeader from "../../components/features/payments/PaymentSubHeader";
 
 import styled from "styled-components";
 

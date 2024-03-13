@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useCallback } from "react";
 import tokenList from "../tokenList.json";
-import useGetTokensPrices from "../../Components/hooks/Swap/useGetTokensPrices";
+import useGetTokensPrices from "../../components/hooks/Swap/useGetTokensPrices";
 import { message } from "antd";
 import { useAccount } from "wagmi";
 export const SwapContext = createContext();

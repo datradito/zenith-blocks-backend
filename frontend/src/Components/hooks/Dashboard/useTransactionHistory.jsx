@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import CircularIndeterminate from "../../atoms/Loader/loader";
 import { useCallback } from "react";
 import usePolling from "../Safe/usePolling";
-import SafeTransactionsService from "../../../Services/DashboardServices/safeTransactions";
+import SafeTransactionsService from "../../../services/DashboardServices/safeTransactions";
 import useSafeStore from "../../../store/modules/safe/index.ts";
 import useDashboardStore from "../../../store/modules/dashboard/index.ts";
 import SafeApiKit from "@safe-global/api-kit";

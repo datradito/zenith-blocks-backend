@@ -14,7 +14,7 @@ import { parseUnits } from "viem";
 import {
   useWaitForTransactionReceipt,
 } from "wagmi";
-import { getTransferTransaction } from "../../../Services/Safe/getTransferTransaction";
+import { getTransferTransaction } from "../../../services/Safe/getTransferTransaction";
 
 export function SendTransaction({ reciepent, paymentData }) {
   console.log(paymentData); 

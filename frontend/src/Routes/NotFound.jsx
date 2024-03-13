@@ -1,7 +1,7 @@
 import React from 'react'
-import GoBack from '../Components/atoms/GoBack/GoBack';
-import Container from '../Components/atoms/Container/Container'
-import Label from '../Components/atoms/Label/Label'
+import GoBack from '../components/atoms/GoBack/GoBack';
+import Container from '../components/atoms/Container/Container'
+import Label from '../components/atoms/Label/Label'
 
 function NotFound() {
   return (

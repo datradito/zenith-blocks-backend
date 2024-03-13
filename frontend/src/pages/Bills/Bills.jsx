@@ -1,23 +1,23 @@
 import React, { useMemo, useEffect } from "react";
 import { useMatch } from "react-router-dom";
 
-import SubHeader from "../../Components/molecules/SubHeader/SubHeader";
-import ItemCardComponent from "../../Components/atoms/ItemCard/ItemCard";
-import CircularIndeterminate from "../../Components/atoms/Loader/loader";
-import BillList from "../../Components/features/bills/BillList.jsx";
-import EmptyIcon from "../../Components/atoms/EmptyIcon/EmptyIcon";
-import Label from "../../Components/atoms/Label/Label";
-import GoBack from "../../Components/atoms/GoBack/GoBack";
-import Container from "../../Components/atoms/Container/Container";
-import Breadcrumbs from "../../Components/atoms/BreadCrumbs/BreadCrumbs";
-import Modal from "../../Components/molecules/Modal/Modal";
+import SubHeader from "../../components/molecules/SubHeader/SubHeader";
+import ItemCardComponent from "../../components/atoms/ItemCard/ItemCard";
+import CircularIndeterminate from "../../components/atoms/Loader/loader";
+import BillList from "../../components/features/bills/BillList.jsx";
+import EmptyIcon from "../../components/atoms/EmptyIcon/EmptyIcon";
+import Label from "../../components/atoms/Label/Label";
+import GoBack from "../../components/atoms/GoBack/GoBack";
+import Container from "../../components/atoms/Container/Container";
+import Breadcrumbs from "../../components/atoms/BreadCrumbs/BreadCrumbs";
+import Modal from "../../components/molecules/Modal/Modal";
 import { Button } from "@mui/material";
-import FilterBills from "../../Components/molecules/Bills/FilterBills";
+import FilterBills from "../../components/molecules/Bills/FilterBills";
 import useProposalStore from "../../store/modules/proposal/index.ts";
 import useBillStore from "../../store/modules/bills/index.ts";
-import { useGetBills } from "../../Components/hooks/Invoices/useGetBills.jsx";
+import { useGetBills } from "../../components/hooks/Invoices/useGetBills.jsx";
 import useBudgetStore from "../../store/modules/budgets/index.ts";
-import CreateBill from "../../Components/features/bills/CreateBill.jsx";
+import CreateBill from "../../components/features/bills/CreateBill.jsx";
 
 function Bills() {
   const match = useMatch("/bills/misc");

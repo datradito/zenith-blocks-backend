@@ -2,8 +2,8 @@ import React, { Suspense } from "react";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "./config/apolloConfig/client";
 import { RouterProvider } from "react-router-dom";
-import CircularIndeterminate from "./Components/atoms/Loader/loader";
-import { router } from "./Routes/Router";
+import CircularIndeterminate from "./components/atoms/Loader/loader";
+import { router } from "./routes/Router";
 
 function App() {
   return (

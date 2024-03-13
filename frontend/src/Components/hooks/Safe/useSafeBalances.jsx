@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import getSafeBalances from "../../../Services/Safe/getSafeBalances";
+import getSafeBalances from "../../../services/Safe/getSafeBalances";
 
 //returns all fiat balances over 0 usd
 
