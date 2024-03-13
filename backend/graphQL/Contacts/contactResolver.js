@@ -42,6 +42,18 @@ const contactResolver = {
                 throw new GraphQLError(error.message);
             }
         },
+        deleteContact: async (parent, { id }, context) => {
+            try {
+                const contact = await Contact.findByPk(id);
+                if (!contact) {
+                    throw new GraphQLError("Contact not found");
+                }
+                await contact.destroy();
+                return contact;
+            } catch (error) {
+                throw new GraphQLError(error.message);
+            }
+        },
     },
 };
 

@@ -151,6 +151,7 @@ function TransferForm({
                 ) {
                   return "Amount exceeds remaining budget amount";
                 }
+                console.log(selectedCurrencyBalance)
 
                 console.log(parsedValue > balance);
 

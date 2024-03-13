@@ -8,26 +8,50 @@ import Modal from "../../../molecules/Modal/Modal";
 import CustomActionIcon from "../../../atoms/ActionIcon/CustomActionIcon";
 import EditContact from "./EditContact";
 import ContactDetails from "./ContactDetails";
+import ConfirmDelete from "../../../atoms/ConfirmDelete/ConfirmDelete";
+
+import useGetContacts from "../../../hooks/Contacts/useGetContacts";
+import useDeleteContact from "../../../hooks/Contacts/useDeleteContact";
 
 function ContactsRow({ contact, index }) {
-
-  const handleEditContact = (data) => { 
-    console.log("Edit contact", data);
-  }
+  const { refetchContacts } = useGetContacts();
+  const { remove, removing } = useDeleteContact();
 
   return (
     <Table.Row>
       <Label color="white">{index + 1}</Label>
-      <Label color="white">{ contact.name}</Label>
+      <Label color="white">{contact.name}</Label>
       <GetEnsName address={contact.address} />
-      <HiTrash />
+      <Modal>
+        <Modal.Open opens="deleteContact">
+          <HiTrash
+            style={{
+              cursor: "pointer",
+              color: "red",
+            }}
+          />
+        </Modal.Open>
+        <Modal.Window name="deleteContact">
+          <ConfirmDelete
+            resourceName={contact.name}
+            onConfirm={() => {
+              remove(contact.id, {
+                onSettled: () => {
+                  refetchContacts();
+                },
+              });
+            }}
+            disabled={removing}
+          />
+        </Modal.Window>
+      </Modal>
       <Modal>
         <Modal.Open opens="editContact">
           <CustomActionIcon />
         </Modal.Open>
 
         <Modal.Window name="editContact">
-          <EditContact defaultValues={{ address: contact.address, name: "" }} onSubmit={handleEditContact} />
+          <EditContact defaultValues={{ address: contact.address, name: "" }} />
         </Modal.Window>
       </Modal>
       <Modal>

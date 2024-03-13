@@ -1,16 +1,15 @@
 import { useMutation } from "@apollo/client";
 import { message } from "antd";
+import useGetContacts from "./useGetContacts";
 
 import { SUBMIT_CONTACT } from "../../../model/contacts/mutation";
 const useSubmitContact = () => {
+  const { refetchContacts } = useGetContacts();
 
   const [submitContact, { loading, error }] = useMutation(SUBMIT_CONTACT, {
-    onCompleted: (data) => {},
-    refetchQueries: [
-      {
-        query: "getContacts",
-      },
-    ],
+    onCompleted: () => {
+      refetchContacts();
+    },
   });
 
   const submit = async (values) => {
@@ -22,8 +21,9 @@ const useSubmitContact = () => {
           },
         },
       });
+
       message.success({
-        content: "Contact submitted successfully",
+        content: "✅ Contact saved successfully",
         key: "submitContactSuccess",
       });
     } catch (error) {

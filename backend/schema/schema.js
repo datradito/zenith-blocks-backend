@@ -114,6 +114,7 @@ export const typeDefs = `#graphql
         setProposalAmount(proposal: ProposalAmountInput): Proposal,
         submitPayment(payment: PaymentInput!): Payment!
         duplicateInvoice(id: String!): Invoice
+        deleteContact(id: String!): Contacts
     }
 
     input ContactsInput {

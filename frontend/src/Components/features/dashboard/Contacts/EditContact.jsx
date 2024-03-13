@@ -5,14 +5,18 @@ import Input from "../../../atoms/Input/Input";
 import Form from "../../../atoms/Form/Form";
 import Button from "../../../atoms/Button/Button";
 import useSubmitContact from "../../../hooks/Contacts/useSubmitContact";
+import useGetContacts from "../../../hooks/Contacts/useGetContacts";
 import useSafeStore from "../../../../store/modules/safe/index.ts";
 import useAuthStore from "../../../../store/modules/auth/index.ts";
+import { isAddressValid } from "../../../../utils/logical/isAddressValid.js";
+import { message } from "antd";
 
 function EditContact({ defaultValues = "", onCloseModal }) {
 
   const { safeSelected } = useSafeStore();
   const { user: { daoId } } = useAuthStore();
   const { submit, loading } = useSubmitContact();
+  const { refetchContacts } = useGetContacts();
   
   const {
     handleSubmit,
@@ -32,6 +36,10 @@ function EditContact({ defaultValues = "", onCloseModal }) {
       daoid: daoId,
     }
     await submit(contact);
+    refetchContacts();
+    if (loading) {
+      message.loading({ content: "Saving contact...", key: "submitContact" });
+    }
     !loading && onCloseModal();
   };
 
@@ -58,6 +66,9 @@ function EditContact({ defaultValues = "", onCloseModal }) {
           {...register("address", {
             required: "Address is required",
             //TODO: add validation for correct eth address
+            validate: (value) => {
+              return isAddressValid(value);
+            }
           })}
         />
       </FormRow>

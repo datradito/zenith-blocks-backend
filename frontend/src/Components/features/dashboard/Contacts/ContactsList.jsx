@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import Label from "../../../atoms/Label/Label";
 import Table from "../../../molecules/Table/Table";
 import Pagination from "../../../molecules/Pagination/Pagination";
@@ -10,25 +10,19 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import useGetContacts from "../../../hooks/Contacts/useGetContacts.jsx";
 
 import CircularIndeterminate from "../../../atoms/Loader/loader.jsx";
-import useDashboardStore from "../../../../store/modules/dashboard/index.ts";
 function ContactsList() {
   const { contacts, loading } = useGetContacts();
-  const { setContacts} = useDashboardStore();
   const [page, setPage] = useState(1);
   const perPage = 5;
-
-  useEffect(() => {
-    setContacts(contacts);
-  }, [contacts]);
 
   if (loading) {
     <CircularIndeterminate />;
   }
-const paginatedContacts = useMemo(() => {
-  const start = (page - 1) * perPage;
-  const end = start + perPage;
-  return contacts.slice(start, end);
-}, [page, contacts]);
+  const paginatedContacts = useMemo(() => {
+    const start = (page - 1) * perPage;
+    const end = start + perPage;
+    return contacts.slice(start, end);
+  }, [page, contacts]);
 
   return (
     <>
