@@ -1,73 +1,41 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Form from "../../atoms/Form/Form";
 import { useFormContext } from "react-hook-form";
 import FormRow from "../../atoms/FormRow/FormRow";
 import Input from "../../atoms/Input/Input";
 import Container from "../../atoms/Container/Container";
-import SelectDropdown from "../../atoms/SelectDropdown/SelectDropdown";
-import Option from "../../atoms/Option/Option";
 import TextArea from "../../atoms/TextArea/TextArea";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import { Button } from "@mui/material";
-import { ethers } from "ethers";
 import { transferFunds } from "../../../Services/Safe/transferFunds";
-import useDashboardStore from "../../../store/modules/dashboard/index.ts";
 import useAuthStore from "../../../store/modules/auth/index.ts";
+import useSafeTransaction from "../../hooks/Safe/useSafeTransaction";
+import ControlledDropdown from "../../molecules/Bills/ListDropdown.jsx";
+
+import { isAddressValid } from "../../../utils/logical/isAddressValid.js";
 
 function TransferForm({
-  chain,
-  erc20Balances,
-  safeBalance,
-  contacts,
-  transactionService,
   ...props
 }) {
-  const categories = useDashboardStore((state) => state.categories);
+    const transactionService = useSafeTransaction();
   const {
     user: { address },
   } = useAuthStore();
 
-  const currencies = JSON.parse(erc20Balances);
 
   const methods = useFormContext();
   const {
-    formState: { errors, isDirty, touchedFields },
+    formState: { errors, isDirty, defaultValues },
     watch,
     handleSubmit,
     register,
     setValue,
   } = methods;
 
-  // useEffect(() => {
-  //   if (!props?.budgetAmount) {
-  //     console.log("setting currency");
-  //     console.log(Object.values(currencies[0]));
-  //     setValue(
-  //       "currency",
-  //       Object.values(currencies).length > 0
-  //         ? Object.values(currencies)[0]
-  //         : chain?.token
-  //     );
-  //   }
-  // }, [currencies, setValue]);
-
-
-  const handleBigInt = (key, value) =>
-    typeof value === "bigint" ? value.toString() : value; // convert BigInt to string
 
   const selectedCurrencyBalance = watch("currency");
   const startDate = watch("date");
 
-  const handleCurrencyChange = (e) => {
-    console.log("this runs")
-    if (e.target.value) {
-      setValue("currency", e.target.value);
-    } else {
-      setValue("currency", JSON.stringify(currencies[0], handleBigInt));
-    }
-
-    console.log(selectedCurrencyBalance);
-  }
 
   return (
     <Container padding={4}>
@@ -83,9 +51,6 @@ function TransferForm({
           }
         })}
       >
-        {/*
-        assign category from budget if match is not /bills/misc make field read only
-        */}
         <FormRow
           style={{
             flex: "1 1 30%",
@@ -93,47 +58,39 @@ function TransferForm({
           label="Category"
           error={errors?.category?.message}
         >
-          <SelectDropdown
-            id="category"
-            {...register("category", {
-              required: "* required",
-            })}
+          <ControlledDropdown
+            name="category"
+            options={props?.formData.categories}
             readOnly={props?.budgetAmount ? true : false}
-            defaultValue={props?.budgetCategory || categories[0].name}
-            onChange={(e) => setValue("category", e.target.value)}
-          >
-            {categories.map((category) => (
-              <Option key={category.name} value={category.name}>
-                {category.name}
-              </Option>
-            ))}
-          </SelectDropdown>
+          />
         </FormRow>
-
         <FormRow
           style={{
-            flex: "1 1 60%",
+            flex: "1 1 30%",
           }}
           label="Recipient"
           error={errors?.recipient?.message}
         >
-          <SelectDropdown
-            id="recipient"
-            {...register("recipient", {
-              required: "* required",
-            })}
-            defaultValue={contacts[0].to}
-            onChange={(e) =>
-              setValue("recipient", e.target.value) || contacts[0].to
-            }
-          >
-            {contacts.length > 0 &&
-              contacts.map((contact) => (
-                <Option key={contact.to} value={contact.to}>
-                  {contact.name || contact.to}
-                </Option>
-              ))}
-          </SelectDropdown>
+          {props?.formData.contacts && props?.formData.contacts.length > 0 ? (
+            <ControlledDropdown
+              name="recipient"
+              options={props?.formData.contacts}
+            />
+          ) : (
+            <Input
+              type="text"
+              placeholder="Recipient"
+              inputProps={{ "aria-label": "Enter Address" }}
+              id="Recipient"
+              name="Recipient"
+              {...register("Recipient", {
+                required: "Recipient is required",
+                validate: (value) => {
+                  return isAddressValid(value);
+                },
+              })}
+            />
+          )}
         </FormRow>
 
         <FormRow
@@ -151,7 +108,6 @@ function TransferForm({
             })}
           />
         </FormRow>
-
         <FormRow
           style={{
             flex: "1 1 20%",
@@ -159,39 +115,22 @@ function TransferForm({
           label="Currency"
           error={errors?.currency?.message}
         >
-          <SelectDropdown
-            id="currency"
-            {...register("currency", {
-              required: "* required",
-            })}
-            defaultValue={JSON.stringify(currencies[0], handleBigInt)}
-            onChange={(e) => {
-              handleCurrencyChange(e);
-            }}
-          >
-            {Object.values(currencies).length > 0 ? (
-              Object.values(currencies).map((currency) => {
-                return (
-                  <Option
-                    key={JSON.stringify(currency.address, handleBigInt)}
-                    value={JSON.stringify(currency, handleBigInt)}
-                  >
-                    {ethers.formatUnits(
-                      currency.balance,
-                      parseInt(currency.decimals)
-                    )} 
-                    {currency.symbol}
-                  </Option>
-                );
-              })
-            ) : (
+          <ControlledDropdown
+            name="currency"
+            options={props?.formData.currencies}
+          />
+        </FormRow>
+
+        {/* <FormRow
               <Option key={chain?.token} value={chain?.token}>
                 {ethers.formatEther(safeBalance || "0")} : {chain?.token}
               </Option>
-            )}
-          </SelectDropdown>
-        </FormRow>
-        <FormRow label="Amount" error={errors?.amount?.message}>
+        </FormRow> */}
+        <FormRow
+          style={{
+            flex: "1 1 10%",
+          }}
+          label="Amount" error={errors?.amount?.message}>
           <Input
             type="number"
             id="amount"
@@ -202,19 +141,10 @@ function TransferForm({
                 message: "Amount must be greater than 0",
               },
               validate: (value) => {
-                if(!selectedCurrencyBalance) return true;
                 const parsedValue = parseInt(value);
+                const balance = parseInt(selectedCurrencyBalance.balance);
 
-                const balance = JSON.parse(selectedCurrencyBalance).balance;
-                const decimals = JSON.parse(selectedCurrencyBalance).decimals;
-                const availableAmountForSelectedCurrency = parseInt(
-                  ethers.formatUnits(
-                    balance,
-                    parseInt(decimals)
-                  )
-                );
-
-                // If budgetAmount is defined and the entered value exceeds it, return an error
+                console.log(parsedValue, balance);
                 if (
                   props?.budgetAmount &&
                   parsedValue > parseInt(props.budgetAmount)
@@ -222,14 +152,12 @@ function TransferForm({
                   return "Amount exceeds remaining budget amount";
                 }
 
-                console.log(parsedValue > availableAmountForSelectedCurrency);
+                console.log(parsedValue > balance);
 
-                // If the entered value exceeds the available amount for the selected currency, return an error
-                if (parsedValue > availableAmountForSelectedCurrency) {
+                if (parsedValue > balance) {
                   return "Exceeds available balance";
                 }
 
-                // If none of the above conditions are met, the value is valid
                 return true;
               },
             })}
@@ -240,17 +168,16 @@ function TransferForm({
         <FormRow label="Date">
           <Input
             style={{
-              flex: "1 1 50%",
+              flex: "1 1 40%",
             }}
             type="date"
             id="date"
-            defaultValue={new Date().toISOString().split("T")[0]}
             {...register("date")}
           />
         </FormRow>
         <FormRow
           style={{
-            flex: "1 1 50%",
+            flex: "1 1 40%",
           }}
           label="Due Date"
           error={errors?.dueDate?.message}

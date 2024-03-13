@@ -28,6 +28,12 @@ interface TransactionFilter {
   status: string[];
 }
 
+interface Contact {
+  id: string;
+  name: string;
+  address: string;
+}
+
 type DashboardStore = {
   activeTab: string;
   onChangeActiveTab: (activeTab: string) => void;
@@ -38,6 +44,8 @@ type DashboardStore = {
   onChangeLoading: (loading: boolean) => void;
   transactions: any[];
   setTransactions: (transactions: any[]) => void;
+  contacts: Contact[];
+  setContacts: (contacts: Contact[]) => void;
   reset: () => void;
 };
 
@@ -50,6 +58,7 @@ const initialState = {
   categories,
   loading: false,
   transactions: [],
+  contacts: []
 };
 
 
@@ -78,6 +87,11 @@ const useDashboardStore = create<DashboardStore>(
           },
         }));
       },
+      setContacts: (contacts: Contact[]) => {
+        set(() => ({
+          contacts,
+        }));
+      },  
       onChangeActiveTab: (activeTab: string) => {
         set(() => ({
           activeTab,

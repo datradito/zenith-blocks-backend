@@ -3,10 +3,14 @@ import { message } from "antd";
 
 import { SUBMIT_CONTACT } from "../../../model/contacts/mutation";
 const useSubmitContact = () => {
+
   const [submitContact, { loading, error }] = useMutation(SUBMIT_CONTACT, {
-    onCompleted: (data) => {
-      console.log(data);
-    },
+    onCompleted: (data) => {},
+    refetchQueries: [
+      {
+        query: "getContacts",
+      },
+    ],
   });
 
   const submit = async (values) => {

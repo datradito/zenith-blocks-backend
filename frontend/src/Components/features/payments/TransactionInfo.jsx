@@ -1,6 +1,6 @@
 import React from 'react'
 import { useWaitForTransactionReceipt } from 'wagmi';
-import { bigIntToString } from '../../../utils/logical/bigIntToString'
+import { handleBigInt } from '../../../utils/logical/bigIntToString';
 
 function TransactionInfo() {
       const { data, isError, isLoading, isSuccess } = useWaitForTransactionReceipt({
@@ -10,7 +10,7 @@ function TransactionInfo() {
       if (isLoading) return <div>Processing…</div>;
       if (isError) return <div>Transaction error</div>;
   
-    const serializedData = bigIntToString(data);
+    const serializedData = handleBigInt(data);
   // return <div>Transaction: {JSON.stringify(serializedData)}</div>;
    return <div>Transaction</div>;
 }

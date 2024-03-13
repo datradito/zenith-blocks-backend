@@ -6,8 +6,10 @@ import { useGetRemainingBudgetAmount } from "../Budgets/useGetRemainingBudgetAmo
 import useBudgetStore from "../../../store/modules/budgets/index.ts";
 import useProposalStore from "../../../store/modules/proposal/index.ts";
 import useDashboardStore from "../../../store/modules/dashboard/index.ts";
+import useGetContacts from "../Contacts/useGetContacts.jsx";
+import { getSafeDataForForms } from "../../../Services/Safe/getSafeDataForForms.js";
 
-interface Category {
+type Category =  {
   name: string;
   // Add other properties of category here
 }
@@ -39,10 +41,19 @@ interface FormValues {
   invoiceNumber: string;
 }
 
+type InputValues = {
+  category: string;
+  proposal: string;
+  amount: number;
+  date: string;
+  dueDate: string;
+  description: string;
+  invoiceNumber: string;
+};
+
 export function useBills() {
   const match = useMatch("/bills/misc");
   const { handleBillSubmit } = useSubmitBill();
-  const categories: Category[] = useDashboardStore((state) => state.categories);
   const currentProposal: Proposal | null = useProposalStore(
     (state) => state.currentProposal
   );
@@ -54,27 +65,20 @@ export function useBills() {
     currentBudget?.id
   );
 
-  const methods = useForm({
-    defaultValues: useMemo(() => {
-      const defaultCategory = !match
-        ? currentBudget?.category
-        : categories[0].name;
-      const defaultProposal = currentProposal?.title ?? "";
-      const defaultAmount = match
-        ? remainingBudgetAmount?.getRemainingBudgetAmount
-        : 0;
-      const defaultDate = new Date().toISOString().split("T")[0];
+  const {categories, currencies, contacts} = getSafeDataForForms();
 
-      return {
-        category: defaultCategory,
-        proposal: defaultProposal,
-        amount: defaultAmount,
-        date: defaultDate,
-        dueDate: "",
-        description: "",
-        invoiceNumber: "",
-      };
-    }, [currentBudget, currentProposal, remainingBudgetAmount]),
+  const methods = useForm({
+    defaultValues: {
+      category: !match ? currentBudget?.category : categories[1].name,
+      proposal: !match ? "" : currentProposal?.title,
+      currency: currencies[0],
+      recipient: contacts[0] || "Enter recipient",
+      amount: 0,
+      date: new Date().toISOString().split("T")[0],
+      dueDate: "",
+      description: "",
+      invoiceNumber: "",
+    },
   });
 
 //   const handleSaveBill = useCallback(
@@ -119,5 +123,5 @@ export function useBills() {
       [handleBillSubmit, currentBudget, currentProposal, methods]
     );
 
-  return { methods, handleSaveBill, remainingBudgetAmount };
+  return { methods, handleSaveBill, remainingBudgetAmount, currencies, categories, contacts};
 }

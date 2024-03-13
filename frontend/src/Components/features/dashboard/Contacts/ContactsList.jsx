@@ -7,28 +7,18 @@ import Modal from "../../../molecules/Modal/Modal.jsx";
 import EditContact from "./EditContact.jsx";
 import { Tooltip } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import useDashboardStore from "../../../../store/modules/dashboard/index.ts";
 import useGetContacts from "../../../hooks/Contacts/useGetContacts.jsx";
 
 import CircularIndeterminate from "../../../atoms/Loader/loader.jsx";
+import useDashboardStore from "../../../../store/modules/dashboard/index.ts";
 function ContactsList() {
-  //const dashboard = useDashboardStore((state) => state);
-  const { contacts, refetchContacts, loading} = useGetContacts();
+  const { contacts, loading } = useGetContacts();
+  const { setContacts} = useDashboardStore();
   const [page, setPage] = useState(1);
   const perPage = 5;
 
-  console.log(contacts)
-
-  // const contacts = useMemo(() => {
-  //   return (dashboard.transactions || []).filter(
-  //     (transaction, index, self) =>
-  //       index === self.findIndex((t) => t.to === transaction.to)
-  //   );
-  // }, [dashboard.transactions]);
   useEffect(() => {
-    if (contacts.length === 0) {
-      refetchContacts();
-    }
+    setContacts(contacts);
   }, [contacts]);
 
   if (loading) {
@@ -42,7 +32,7 @@ const paginatedContacts = useMemo(() => {
 
   return (
     <>
-      <Table columns="0.15fr 0.75fr 5fr 0.5fr 0.5fr 1.5fr">
+      <Table columns="0.15fr 1.5fr 5fr 0.5fr 0.5fr 1.5fr">
         <Table.Header>
           <Modal>
             <Modal.Open opens="addContact">
@@ -59,12 +49,17 @@ const paginatedContacts = useMemo(() => {
           <Label>Address</Label>
           <p></p>
         </Table.Header>
-        <Table.Body
-          data={paginatedContacts}
-          render={(contact, index) => {
-            return <ContactsRow key={index} contact={contact} index={index} />;
-          }}
-        />
+        {loading && <CircularIndeterminate />}{" "}
+        {!loading && (
+          <Table.Body
+            data={paginatedContacts}
+            render={(contact, index) => {
+              return (
+                <ContactsRow key={index} contact={contact} index={index} />
+              );
+            }}
+          />
+        )}
       </Table>
       <Pagination
         currentPage={page}
