@@ -73,6 +73,7 @@ const useDashboardStore = create<DashboardStore>(
         "transactionFilter",
         "categories",
         "transactions",
+        "contacts",
         "loading",
       ],
     },
@@ -88,6 +89,7 @@ const useDashboardStore = create<DashboardStore>(
         }));
       },
       setContacts: (contacts: Contact[]) => {
+        console.log("contacts", contacts)
         set(() => ({
           contacts,
         }));

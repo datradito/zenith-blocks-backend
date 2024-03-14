@@ -1,53 +1,63 @@
 import { useQuery } from "@apollo/client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { GET_ALL_CONTACTS } from "../../../model/contacts/query";
 import useDashboardStore from "../../../store/modules/dashboard/index.ts";
+import { message } from "antd";
+import { on } from "events";
 
-const getPreviouslyTransactedContacts = async (transactions) => {
-  return transactions.filter(
+const transformTransactionsToContacts = async (transactions) => {
+  const transactionContact = [];
+  const uniqueContacts = transactions.filter(
     (transaction, index, self) =>
       index === self.findIndex((t) => t.to === transaction.to)
   );
+
+  uniqueContacts.forEach((contact) => {
+    transactionContact.push({ name: "Unnamed", address: contact.to });
+  });
+
+  return transactionContact;
 };
 
 const mergeUniqueContacts = (contacts, prevTransacted) => {
-  return contacts.filter(
-    (contact) => !prevTransacted.find((prev) => prev.to === contact.address)
+  const mergedContacts = [...contacts, ...prevTransacted];
+  return mergedContacts.filter(
+    (contact, index, self) =>
+      index === self.findIndex((t) => t.address === contact.address)
   );
 };
 
 export const useGetContacts = (filter = {}) => {
-  const [contacts, setContacts] = useState([]);
-
-  const { transactions, setContacts: setMergedContactList } = useDashboardStore((state) => state);
-
-  const { loading, error, refetch } = useQuery(GET_ALL_CONTACTS, {
+  const { transactions, setContacts, onChangeLoading } = useDashboardStore(
+    (state) => state
+  );
+  const { data, refetch: loadContacts } = useQuery(GET_ALL_CONTACTS, {
     variables: { filter },
     errorPolicy: "all",
-    onCompleted: async (data) => {
-      const safeContacts = await getPreviouslyTransactedContacts(transactions);
-      const uniqueContacts = mergeUniqueContacts(
-        data.getContacts,
-        safeContacts
-      );
-      console.log("this Running")
-
-      await setContacts(uniqueContacts);
-      await setMergedContactList(uniqueContacts);
-    },
-    onError: (error) => {
-      console.log(error);
-    },
   });
 
-  console.log(contacts);
+  useEffect(() => {
+    async function fetchData() {
+      if (data) {
+        onChangeLoading(true);
+        const safeContacts = await transformTransactionsToContacts(
+          transactions
+        );
+        const uniqueContacts = mergeUniqueContacts(
+          data.getContacts,
+          safeContacts
+        );
+        setContacts(uniqueContacts);
+        onChangeLoading(false);
+      }
+    }
+    fetchData();
+  }, [data, transactions]);
 
   return {
-    loading,
-    error,
-    contacts,
-    refetchContacts: refetch,
+    loadContacts,
   };
 };
+
 export default useGetContacts;

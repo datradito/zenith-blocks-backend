@@ -14,7 +14,7 @@ import useGetContacts from "../../../hooks/Contacts/useGetContacts";
 import useDeleteContact from "../../../hooks/Contacts/useDeleteContact";
 
 function ContactsRow({ contact, index }) {
-  const { refetchContacts } = useGetContacts();
+  const { loadContacts } = useGetContacts();
   const { remove, removing } = useDeleteContact();
 
   return (
@@ -37,7 +37,7 @@ function ContactsRow({ contact, index }) {
             onConfirm={() => {
               remove(contact.id, {
                 onSettled: () => {
-                  refetchContacts();
+                  loadContacts();
                 },
               });
             }}

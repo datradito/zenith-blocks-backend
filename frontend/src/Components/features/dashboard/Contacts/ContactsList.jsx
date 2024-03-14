@@ -7,11 +7,11 @@ import Modal from "../../../molecules/Modal/Modal.jsx";
 import EditContact from "./EditContact.jsx";
 import { Tooltip } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import useGetContacts from "../../../hooks/Contacts/useGetContacts.jsx";
 
 import CircularIndeterminate from "../../../atoms/Loader/loader.jsx";
+import useDashboardStore from "../../../../store/modules/dashboard/index.ts";
 function ContactsList() {
-  const { contacts, loading } = useGetContacts();
+  const { contacts, loading } = useDashboardStore();
   const [page, setPage] = useState(1);
   const perPage = 5;
 
@@ -43,8 +43,8 @@ function ContactsList() {
           <Label>Address</Label>
           <p></p>
         </Table.Header>
-        {loading && <CircularIndeterminate />}{" "}
-        {!loading && (
+        {/* {loading && <CircularIndeterminate />}{" "}
+        {!loading && ( */}
           <Table.Body
             data={paginatedContacts}
             render={(contact, index) => {
@@ -53,7 +53,7 @@ function ContactsList() {
               );
             }}
           />
-        )}
+        {/* )} */}
       </Table>
       <Pagination
         currentPage={page}

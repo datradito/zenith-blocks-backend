@@ -20,7 +20,6 @@ import { ethers } from "ethers";
 
 function SafeInfo({ safeAddress, chainId }) {
   const safe = useSafeStore((state) => state);
-  console.log(safe.erc20Balances);
 
   const [isDeployed, setIsDeployed] = useState(false);
   const [isDeployLoading, setIsDeployLoading] = useState(true);

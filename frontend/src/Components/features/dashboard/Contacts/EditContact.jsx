@@ -16,7 +16,6 @@ function EditContact({ defaultValues = "", onCloseModal }) {
   const { safeSelected } = useSafeStore();
   const { user: { daoId } } = useAuthStore();
   const { submit, loading } = useSubmitContact();
-  const { refetchContacts } = useGetContacts();
   
   const {
     handleSubmit,
@@ -36,7 +35,6 @@ function EditContact({ defaultValues = "", onCloseModal }) {
       daoid: daoId,
     }
     await submit(contact);
-    refetchContacts();
     if (loading) {
       message.loading({ content: "Saving contact...", key: "submitContact" });
     }

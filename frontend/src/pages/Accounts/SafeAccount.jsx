@@ -10,6 +10,8 @@ import { InputLabel, Box } from "@mui/material";
 import Button from "../../Components/atoms/Button/Button";
 import { message } from "antd";
 import Label from "../../Components/atoms/Label/Label";
+import useGetContacts from "../../Components/hooks/Contacts/useGetContacts";
+import Safe from "@safe-global/protocol-kit";
 
 export const ConnectedContainer = styled(Box)(
   ({ theme }) => `
@@ -20,10 +22,17 @@ export const ConnectedContainer = styled(Box)(
 
 function SafeAccount(props) {
   const safe = useSafeStore();
+  const { loadContacts } = useGetContacts();
 
   const handleLoadSafes = async () => {
     await safe.setSafeApiKit(safe.chainId);
     await safe?.getSafesOwned();
+  };
+
+  const handleSafeSelection = async (safeAddress) => {
+    await safe.setSafeApiKit(safe.chainId);
+    await safe.setSafeSelected(safeAddress);
+    loadContacts();
   };
 
   const createSafe = async () => {
@@ -49,7 +58,7 @@ function SafeAccount(props) {
         )}
       </Box>
 
-      {!safe.safeSelected && safe.safes.length >= 1 && (
+      {!safe.safeSelected && safe.safes.length > 1 && (
         <FormControl fullWidth sx={{ marginBottom: "20px" }}>
           <InputLabel id="switch-address-selector-label">
             Select Safe
@@ -68,8 +77,7 @@ function SafeAccount(props) {
                 key={safeAddress}
                 value={safeAddress}
                 onClick={async () => {
-                  await safe.setSafeApiKit(safe.chainId);
-                  await safe.setSafeSelected(safeAddress);
+                  handleSafeSelection(safeAddress);
                 }}
               >
                 <div
@@ -84,6 +92,13 @@ function SafeAccount(props) {
             ))}
           </Select>
         </FormControl>
+      )}
+
+      {!safe.safeSelected && safe.safes.length === 1 && (
+        <>
+          {handleSafeSelection(safe.safes[0])}
+          <SafeInfo safeAddress={safe.safes[0]} chainId={safe.chainId} />
+        </>
       )}
 
       {safe.safeSelected && (

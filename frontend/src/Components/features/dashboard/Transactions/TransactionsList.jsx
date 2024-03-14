@@ -7,13 +7,9 @@ import Table from "../../../molecules/Table/Table";
 function TransactionList({ transactions,filter, count }) {
   const [page, setPage] = useState(1);
   const perPage = 5;
-  console.log(filter)
 
   const paginatedTransactions = useMemo(() => {
     let filteredTransactions = transactions;
-
-    console.log(filteredTransactions)
-
 
     if (filter && filter.length > 0) {
       const searchStatuses = filter.map((s) => s.trim().toLowerCase());
