@@ -1,13 +1,13 @@
 import useAuthStore from "../../store/modules/auth/index.ts";
 
-async function sanitizeInvoiceData(data, Budget) {
+async function sanitizeInvoiceData(data, budgetid) {
   const { user: {address}} = useAuthStore.getState(state => state);
   return {
     category: data.category.name,
     recipient: data.recipient.address,
     owneraddress: address,
     number: data.invoiceNumber,
-    budgetid: Budget? Budget.id : "",
+    budgetid: budgetid,
     total: parseInt(data.amount),
     currency: data.currency.name,
     date: data.date,

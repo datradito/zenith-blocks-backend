@@ -4,10 +4,12 @@ import { GET_ALL_INVOICES } from "../../../model/invoices/query.js";
 import { useQuery } from "@apollo/client";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import useBillStore from "../../../store/modules/bills/index.ts";
 
-export const useGetBills = (filter = {}) => {
+export const useGetBills = () => {
   const [bills, setBills] = useState([]);
   const isMounted = useRef(null); // add this line
+  const filter = useBillStore(state => state.billFilter)
 
   useEffect(() => {
     isMounted.current = true; // set to true when the component mounts

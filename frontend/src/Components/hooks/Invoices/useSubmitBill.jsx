@@ -1,13 +1,13 @@
 import { useMutation } from "@apollo/client";
 import { SUBMIT_INVOICE_MUTATION } from "../../../model/invoices/mutation.js";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useMatch } from "react-router-dom";
 import { message } from "antd";
 
 import { invoiceService } from "../../../Services/InvoiceServices/invoiceService.js";
 
 export const useSubmitBill = () => {
+  const match = useMatch('/misc/bills')
   const budgetId = useParams().budgetId;
-  const navigate = useNavigate();
 
   const [createBill, { loading }] = useMutation(SUBMIT_INVOICE_MUTATION, {
     onError: (error) => {
@@ -23,14 +23,13 @@ export const useSubmitBill = () => {
         content: "Bill submitted successfully",
         key: "submitBillSuccess",
       });
-      navigate(`/budgets/${budgetId}/invoices`);
     },
-    refetchQueries: [
-      "getInvoicesByBudget",
-      {
-        variables: { budgetid: budgetId },
-      },
-    ],
+    // refetchQueries: [
+    //   "getInvoicesByBudget",
+    //   {
+    //     variables: { budgetid: budgetId },
+    //   },
+    // ],
   });
 
   if (loading) {
@@ -39,11 +38,11 @@ export const useSubmitBill = () => {
       key: "submitBill",
     });
   }
-  const handleBillSubmit = async (data, Budget) => {
+  const handleBillSubmit = async (data) => {
     console.log(data);
     const dataToBeSubmitted = await invoiceService.sanitizeInvoiceData(
       data,
-      Budget,
+      match ? "": budgetId
     );
     createBill({
       variables: {

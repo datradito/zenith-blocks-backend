@@ -33,10 +33,10 @@ const listStyles = {
 
 function FilterBills() {
 
-  const { billFilter, setCurrentFilter } = useBillStore();
+  const { billFilter, setBillFilter } = useBillStore();
 
   const handleStatusClick = (status) => {
-    setCurrentFilter({ ...billFilter, status });
+    setBillFilter({ ...billFilter, status });
   };
 
   console.log(billFilter);

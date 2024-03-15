@@ -1,54 +1,52 @@
 import { create } from "zustand";
+import persist from "../../../utils/persist";
 
-
-//this is place holder store onyl, still work in progress
 interface BillFilter {
-    status: string;
-    budgetid: string;
+  status: string;
+  budgetid: string;
 }
 
 const initialState = {
-    bills: [],
-    bill: null,
-    billLoading: false,
-    billFilter: {
-        status: "All",
-        budgetid: "",
-    },
-}
+  billLoading: false,
+  billFilter: {
+    status: "All",
+  },
+};
 
 interface BillStore {
-    bills: any[];
-    bill: any | null;
-    billLoading: boolean;
-    billFilter: BillFilter;
-    setBills: (bills: any[]) => void;
-    setBill: (bill: any) => void;
-    setBillFilter: (filter: BillFilter) => void;
+  billLoading: boolean;
+  billFilter: BillFilter;
+  setBillFilter: (filter: BillFilter) => void;
+  reset: () => void;
 }
 
-const useBillStore = create<BillStore>((set) => ({
-    ...initialState,
-    setBills: (bills) => {
-        set(() => ({
-            bills,
-        }));
+const useBillStore = create<BillStore>()(
+  //@ts-ignore
+  persist(
+    {
+      key: "bill",
+      allowlist: ["billFilter"],
     },
-    setBill: (bill) => {
-        set(() => ({
-            bill,
+    //@ts-ignore
+    (set: Function, get) => ({
+      billLoading: false,
+      billFilter: {
+        status: "All",
+      },
+      setBillFilter: (filter: BillFilter) => {
+        set((state) => ({
+          ...state,
+          billFilter: {
+            ...state.billFilter,
+            ...filter,
+          },
         }));
-    },
-    setBillLoading: (loading) => {
-        set(() => ({
-            billLoading: loading,
-        }));
-    },
-    setBillFilter: (filter) => {
-        set(() => ({
-            billFilter: filter,
-        }));
-    },
-}));
+      },
+      reset: () => {
+        set(initialState);
+      },
+    })
+  )
+);
 
 export default useBillStore;
