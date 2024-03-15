@@ -1,27 +1,25 @@
 import React from "react";
-import Form from "../../atoms/Form/Form";
+import Form from "../../atoms/Form/Form.jsx";
 import { useFormContext } from "react-hook-form";
-import FormRow from "../../atoms/FormRow/FormRow";
-import Input from "../../atoms/Input/Input";
-import Container from "../../atoms/Container/Container";
-import TextArea from "../../atoms/TextArea/TextArea";
+import FormRow from "../../atoms/FormRow/FormRow.jsx";
+import Input from "../../atoms/Input/Input.jsx";
+import Container from "../../atoms/Container/Container.jsx";
+import TextArea from "../../atoms/TextArea/TextArea.jsx";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import { Button } from "@mui/material";
-import { transferFunds } from "../../../Services/Safe/transferFunds";
 import useAuthStore from "../../../store/modules/auth/index.ts";
-import useSafeTransaction from "../../hooks/Safe/useSafeTransaction";
+import useSafeTransaction from "../../hooks/Safe/useSafeTransaction.jsx";
 import ControlledDropdown from "../../molecules/Bills/ListDropdown.jsx";
 
 import { isAddressValid } from "../../../utils/logical/isAddressValid.js";
+import { FormInputText } from "./Form/FormInput.jsx";
+import FormSelectDropdown from "./Form/FormSelectDropdown.jsx";
 
-function TransferForm({
-  ...props
-}) {
-    const transactionService = useSafeTransaction();
+function BillForm({ ...props }) {
+  const transactionService = useSafeTransaction();
   const {
     user: { address },
   } = useAuthStore();
-
 
   const methods = useFormContext();
   const {
@@ -32,11 +30,10 @@ function TransferForm({
     setValue,
   } = methods;
 
-
   const selectedCurrencyBalance = watch("currency");
   const startDate = watch("date");
 
-
+  console.log(selectedCurrencyBalance);
   return (
     <Container padding={4}>
       <Form
@@ -51,19 +48,12 @@ function TransferForm({
           }
         })}
       >
-        <FormRow
-          style={{
-            flex: "1 1 30%",
-          }}
-          label="Category"
-          error={errors?.category?.message}
-        >
-          <ControlledDropdown
-            name="category"
-            options={props?.formData.categories}
-            readOnly={props?.budgetAmount ? true : false}
-          />
-        </FormRow>
+        <FormSelectDropdown
+          name="category"
+          options={props?.formData.categories}
+          register={register}
+        />
+
         <FormRow
           style={{
             flex: "1 1 30%",
@@ -75,6 +65,7 @@ function TransferForm({
             <ControlledDropdown
               name="recipient"
               options={props?.formData.contacts}
+              register={register}
             />
           ) : (
             <Input
@@ -108,18 +99,11 @@ function TransferForm({
             })}
           />
         </FormRow>
-        <FormRow
-          style={{
-            flex: "1 1 20%",
-          }}
-          label="Currency"
-          error={errors?.currency?.message}
-        >
-          <ControlledDropdown
-            name="currency"
-            options={props?.formData.currencies}
-          />
-        </FormRow>
+        <FormSelectDropdown
+          name="currency"
+          options={props?.formData.currencies}
+          register={register}
+        />
 
         {/* <FormRow
               <Option key={chain?.token} value={chain?.token}>
@@ -130,7 +114,9 @@ function TransferForm({
           style={{
             flex: "1 1 10%",
           }}
-          label="Amount" error={errors?.amount?.message}>
+          label="Amount"
+          error={errors?.amount?.message}
+        >
           <Input
             type="number"
             id="amount"
@@ -140,20 +126,16 @@ function TransferForm({
                 value: 0,
                 message: "Amount must be greater than 0",
               },
-              validate: (value) => {
+              validate: async (value) => {
                 const parsedValue = parseInt(value);
+                console.log(selectedCurrencyBalance);
                 const balance = parseInt(selectedCurrencyBalance.balance);
-
-                console.log(parsedValue, balance);
                 if (
                   props?.budgetAmount &&
                   parsedValue > parseInt(props.budgetAmount)
                 ) {
                   return "Amount exceeds remaining budget amount";
                 }
-                console.log(selectedCurrencyBalance)
-
-                console.log(parsedValue > balance);
 
                 if (parsedValue > balance) {
                   return "Exceeds available balance";
@@ -198,15 +180,13 @@ function TransferForm({
             })}
           />
         </FormRow>
-        <FormRow
-          style={{
-            flex: "1 1 100%",
-          }}
+
+        <FormInputText
+          name="description"
+          control={methods.control}
           label="Description"
-          error={errors?.description?.message}
-        >
-          <TextArea type="text" id="description" />
-        </FormRow>
+        />
+
         <Button
           sx={{
             widht: "2rem",
@@ -226,4 +206,4 @@ function TransferForm({
   );
 }
 
-export default TransferForm;
+export default BillForm;

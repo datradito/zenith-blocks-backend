@@ -26,7 +26,7 @@ function ContactsList() {
 
   return (
     <>
-      <Table columns="0.15fr 1.5fr 5fr 0.5fr 0.5fr 1.5fr">
+      <Table columns="0.15fr 2.5fr 5fr 0.5fr 0.5fr 1.5fr">
         <Table.Header>
           <Modal>
             <Modal.Open opens="addContact">

@@ -3,7 +3,7 @@ import React from "react";
 import { useBills } from "../../hooks/Invoices/useBills.tsx";
 import { FormProvider } from "react-hook-form";
 
-import TransferForm from "./TransferForm";
+import BillForm from "./BillForm";
 
 const CreateBill = ({ onCloseModal }) => {
   const {
@@ -21,7 +21,7 @@ const CreateBill = ({ onCloseModal }) => {
 
   return (
     <FormProvider {...methods}>
-      <TransferForm
+      <BillForm
         budgetAmount={remainingBudgetAmount?.getRemainingBudgetAmount}
         handleSubmit={submit}
         formData={{ categories, contacts, currencies }}

@@ -29,10 +29,10 @@ const StyledSelect = styled.select`
   }
 `;
 
-const SelectDropdown = React.forwardRef(({ children, ...rest }) => {
+const SelectDropdown = React.forwardRef(({ children, ...props }) => {
 
   return <StyledSelect
-    {...rest}>{children}</StyledSelect>;
+    {...props}>{children}</StyledSelect>;
 });
 
 export default SelectDropdown;

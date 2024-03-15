@@ -11,9 +11,9 @@ function normalizeCurrencies(currencies) {
       currency.balance,
       parseInt(currency.decimals)
     );
-    const value = JSON.stringify(currency, handleBigInt);
-    const key = JSON.stringify(currency.address, handleBigInt)
-    return { balance, value: value, key, name: currency.symbol};
+    // const value = JSON.stringify(currency);
+    // const key = JSON.stringify(currency.address, handleBigInt)
+    return { balance, name: currency.symbol, address: currency.address };
   });
 }
 

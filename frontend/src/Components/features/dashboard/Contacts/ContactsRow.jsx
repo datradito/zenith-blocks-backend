@@ -1,7 +1,6 @@
 import React from "react";
 import Table from "../../../molecules/Table/Table";
 import Label from "../../../atoms/Label/Label";
-import GetEnsName from "../../../molecules/GetEnsName/GetEnsName";
 import { HiTrash } from "react-icons/hi2";
 import Button from "../../../atoms/Button/Button";
 import Modal from "../../../molecules/Modal/Modal";
@@ -12,6 +11,7 @@ import ConfirmDelete from "../../../atoms/ConfirmDelete/ConfirmDelete";
 
 import useGetContacts from "../../../hooks/Contacts/useGetContacts";
 import useDeleteContact from "../../../hooks/Contacts/useDeleteContact";
+import AddressLabel from "../../safe/AddressLabel";
 
 function ContactsRow({ contact, index }) {
   const { loadContacts } = useGetContacts();
@@ -19,9 +19,13 @@ function ContactsRow({ contact, index }) {
 
   return (
     <Table.Row>
-      <Label color="white">{index + 1}</Label>
+      <Label>{index + 1}.</Label>
       <Label color="white">{contact.name}</Label>
-      <GetEnsName address={contact.address} />
+      <AddressLabel
+        style={{
+          color: "yellow",
+        }}
+        address={contact.address} />
       <Modal>
         <Modal.Open opens="deleteContact">
           <HiTrash

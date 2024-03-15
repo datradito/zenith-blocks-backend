@@ -54,6 +54,7 @@ type InputValues = {
 export function useBills() {
   const match = useMatch("/bills/misc");
   const { handleBillSubmit } = useSubmitBill();
+
   const currentProposal: Proposal | null = useProposalStore(
     (state) => state.currentProposal
   );
@@ -69,7 +70,7 @@ export function useBills() {
 
   const methods = useForm({
     defaultValues: {
-      category: !match ? currentBudget?.category : categories[1].name,
+      category: !match ? {name: currentBudget?.category} : categories[0],
       proposal: !match ? "" : currentProposal?.title,
       currency: currencies[0],
       recipient: contacts[0] || "Enter recipient",
@@ -81,19 +82,12 @@ export function useBills() {
     },
   });
 
-//   const handleSaveBill = useCallback(
-//     async (data: FormValues) => {
-//       if (currentBudget && currentProposal) {
-//         handleBillSubmit(data, currentBudget, currentProposal);
-//         methods.reset();
-//       }
-//     },
-//     [handleBillSubmit, currentBudget, currentProposal, methods]
-    //   );
-    
     const handleSaveBill = useCallback(
       async (data: FormValues) => {
         console.log("data", data);
+        const dataForSafe = {
+
+        }
           try {
             // Trigger sign transaction
             //const transactionResult = await triggerSignTransaction();

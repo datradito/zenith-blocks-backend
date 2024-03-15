@@ -25,7 +25,6 @@ const AddressLabel = ({
     <Stack
       direction="row"
       alignItems="center"
-      justifyContent="center"
       component="span"
       border="none"
     >
