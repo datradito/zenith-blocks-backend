@@ -85,9 +85,7 @@ export function useBills() {
     const handleSaveBill = useCallback(
       async (data: FormValues) => {
         console.log("data", data);
-        const dataForSafe = {
-
-        }
+        handleBillSubmit(data, currentBudget, currentProposal);
           try {
             // Trigger sign transaction
             //const transactionResult = await triggerSignTransaction();

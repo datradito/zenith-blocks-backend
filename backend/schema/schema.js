@@ -146,16 +146,13 @@ export const typeDefs = `#graphql
         category: String
         recipient: String
         owneraddress: String
-        proposal: String
-        number: String
         budgetid: String
+        number: String
         total: Float
         currency: String
         date: String
         duedate: String
         description: String
-        uploadinvoice: String
-        rootpath: String
     }
     input ProposalAmountInput {
         id: String

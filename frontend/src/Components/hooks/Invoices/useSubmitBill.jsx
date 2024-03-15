@@ -39,16 +39,17 @@ export const useSubmitBill = () => {
       key: "submitBill",
     });
   }
-
-  const handleBillSubmit = async (data) => {
-    console.log(data)
-
-    //TODO: if match, add on budgetid onto bill data, maybe use hash for ipfs endpoint
-    // createBill({
-    //   variables: {
-    //     invoice: dataToBeSubmitted,
-    //   },
-    // });
+  const handleBillSubmit = async (data, Budget) => {
+    console.log(data);
+    const dataToBeSubmitted = await invoiceService.sanitizeInvoiceData(
+      data,
+      Budget,
+    );
+    createBill({
+      variables: {
+        invoice: dataToBeSubmitted,
+      },
+    });
     message.info("🚧 This feature is under construction 🚧");
   };
 

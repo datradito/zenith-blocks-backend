@@ -1,13 +1,15 @@
+import useAuthStore from "../../store/modules/auth/index.ts";
+
 async function sanitizeInvoiceData(data, Budget) {
-  // const owneraddress = await sessionStorage.getItem("address");
+  const { user: {address}} = useAuthStore.getState(state => state);
   return {
-    category: data.category,
-    recipient: data.recipient,
-    owneraddress: data.owneraddress,
+    category: data.category.name,
+    recipient: data.recipient.address,
+    owneraddress: address,
     number: data.invoiceNumber,
-    budgetid: Budget.id,
+    budgetid: Budget? Budget.id : "",
     total: parseInt(data.amount),
-    currency: data.currency,
+    currency: data.currency.name,
     date: data.date,
     duedate: data.dueDate,
     description: data.description,
