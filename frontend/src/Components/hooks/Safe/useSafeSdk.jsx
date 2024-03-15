@@ -4,7 +4,6 @@ import { ethers } from "ethers";
 import { message } from "antd";
 
 function useSafeSdk(safeAddress) {
-
   const [ethAdapter, setEthAdapter] = useState(null);
   const [safeSdk, setSafeSdk] = useState(null);
 
@@ -13,15 +12,16 @@ function useSafeSdk(safeAddress) {
       if (!safeAddress) {
         message.error("Something went wrong, please re-connect safe");
         return;
-      };
+      }
 
       const provider = new ethers.BrowserProvider(window.ethereum);
 
       let adapter = ethAdapter;
       if (ethAdapter === null) {
+        const signer = await provider.getSigner(0);
         adapter = new EthersAdapter({
           ethers,
-          signerOrProvider: provider,
+          signerOrProvider: signer,
         });
         setEthAdapter(adapter);
       }
@@ -40,8 +40,9 @@ function useSafeSdk(safeAddress) {
     return () => {
       // Cleanup if needed
     };
-  }, [safeAddress]);
+  }, []);
 
+  console.log(ethAdapter);
   return { safeSdk };
 }
 

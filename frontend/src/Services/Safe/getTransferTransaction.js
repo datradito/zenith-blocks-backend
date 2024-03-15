@@ -3,11 +3,9 @@ import { ethers } from "ethers";
 
 let ABI = ["function transfer(address to, uint amount)"];
 
-function encodeTxData(method, recipient, value) {
+function encodeTxData(recipient, value) {
   const ethersInterface = new ethers.Interface(ABI);
-
-  return ethersInterface.encodeFunctionData(method, [recipient, value]);
-  // return encodeFunctionCall(method, [recipient, value]);
+  return ethersInterface.encodeFunctionData("transfer", [recipient, value]);
 }
 
 function getTransferTransaction(value, recipient, erc20Address) {
@@ -24,7 +22,7 @@ function getTransferTransaction(value, recipient, erc20Address) {
     // For other token types, generate a contract tx
     to: recipient,
     value: "0",
-    data: encodeTxData(ERC_20_ABI.transfer, recipient, value),
+    data: encodeTxData(recipient, value),
   };
 }
 

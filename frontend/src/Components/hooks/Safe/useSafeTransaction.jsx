@@ -4,11 +4,8 @@ import useSafeStore from "../../../store/modules/safe/index.ts";
 import useSafeSdk from "./useSafeSdk";
 import SafeApiKit from "@safe-global/api-kit";
 
-
 function useSafeTransaction() {
-  const { safeSelected,
-    chainId
-  } = useSafeStore();
+  const { safeSelected, chainId } = useSafeStore();
 
   const { safeSdk } = useSafeSdk(safeSelected);
   const [transactionHash, setTransactionHash] = useState(null);
@@ -29,6 +26,7 @@ function useSafeTransaction() {
         transactions,
         options,
       });
+      console.log(safeTransaction)
       setSafeTransaction(safeTransaction);
       const safeTxHash = await getTransactionHash(safeTransaction);
       const senderSignature = await signHash(safeTxHash);
@@ -49,14 +47,18 @@ function useSafeTransaction() {
     signature,
     senderAddress
   ) => {
-    await service.proposeTransaction({
-      safeSelected,
-      safeTransactionData: safeTransaction.data,
-      transactionHash,
-      safeTxHash: transactionHash,
-      senderAddress,
-      senderSignature: signature.data,
-    });
+    try {
+      await service.proposeTransaction({
+        safeAddress: safeSelected,
+        safeTransactionData: safeTransaction.data,
+        safeTxHash: transactionHash,
+        senderAddress,
+        signature: signature.data,
+      });
+    } catch (error) {
+      console.error("Error proposing transaction:", error);
+      throw error;
+    }
   };
 
   const getNextNonce = async () => {
@@ -68,7 +70,12 @@ function useSafeTransaction() {
   };
 
   const getTransactionHash = async (safeTransaction) => {
-    return await safeSdk.getTransactionHash(safeTransaction);
+    try {
+      return await safeSdk.getTransactionHash(safeTransaction);
+    } catch (error) {
+      console.error("Error getting transaction hash:", error);
+      throw error;
+    }
   };
 
   const signHash = async (hash) => {

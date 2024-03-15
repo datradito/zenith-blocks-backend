@@ -16,10 +16,6 @@ import { FormInputText } from "./Form/FormInput.jsx";
 import FormSelectDropdown from "./Form/FormSelectDropdown.jsx";
 
 function BillForm({ ...props }) {
-  const transactionService = useSafeTransaction();
-  const {
-    user: { address },
-  } = useAuthStore();
 
   const methods = useFormContext();
   const {
@@ -128,7 +124,6 @@ function BillForm({ ...props }) {
               },
               validate: async (value) => {
                 const parsedValue = parseInt(value);
-                console.log(selectedCurrencyBalance);
                 const balance = parseInt(selectedCurrencyBalance.balance);
                 if (
                   props?.budgetAmount &&
