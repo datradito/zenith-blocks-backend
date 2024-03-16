@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Label from "../../../atoms/Label/Label";
 import Table from "../../../molecules/Table/Table";
 import Pagination from "../../../molecules/Pagination/Pagination";
@@ -7,13 +7,19 @@ import Modal from "../../../molecules/Modal/Modal.jsx";
 import EditContact from "./EditContact.jsx";
 import { Tooltip } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-
+import SyncIcon from "@mui/icons-material/Sync";
 import CircularIndeterminate from "../../../atoms/Loader/loader.jsx";
 import useDashboardStore from "../../../../store/modules/dashboard/index.ts";
+import useGetContacts from "../../../hooks/Contacts/useGetContacts.jsx";
 function ContactsList() {
+  const { loadContacts } = useGetContacts();
   const { contacts, loading } = useDashboardStore();
   const [page, setPage] = useState(1);
   const perPage = 5;
+
+  useEffect(() => {
+    loadContacts();
+  }, []);
 
   if (loading) {
     <CircularIndeterminate />;
@@ -42,17 +48,27 @@ function ContactsList() {
           <Label>ENS</Label>
           <Label>Address</Label>
           <p></p>
+
+          <Label></Label>
+
+          <Tooltip title="Sync Contacts">
+            <SyncIcon
+              fontSize="large"
+              onClick={() => {
+                loadContacts();
+              }}
+            />
+            Refresh
+          </Tooltip>
         </Table.Header>
         {/* {loading && <CircularIndeterminate />}{" "}
         {!loading && ( */}
-          <Table.Body
-            data={paginatedContacts}
-            render={(contact, index) => {
-              return (
-                <ContactsRow key={index} contact={contact} index={index} />
-              );
-            }}
-          />
+        <Table.Body
+          data={paginatedContacts}
+          render={(contact, index) => {
+            return <ContactsRow key={index} contact={contact} index={index} />;
+          }}
+        />
         {/* )} */}
       </Table>
       <Pagination

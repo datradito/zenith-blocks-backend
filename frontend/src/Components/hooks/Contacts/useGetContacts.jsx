@@ -5,6 +5,7 @@ import { GET_ALL_CONTACTS } from "../../../model/contacts/query";
 import useDashboardStore from "../../../store/modules/dashboard/index.ts";
 import { message } from "antd";
 import { on } from "events";
+import usePolling from "../Safe/usePolling.jsx";
 
 const transformTransactionsToContacts = async (transactions) => {
   const transactionContact = [];
@@ -28,12 +29,11 @@ const mergeUniqueContacts = (contacts, prevTransacted) => {
   );
 };
 
-export const useGetContacts = (filter = {}) => {
+export const useGetContacts = () => {
   const { transactions, setContacts, onChangeLoading } = useDashboardStore(
     (state) => state
   );
   const { data, refetch: loadContacts } = useQuery(GET_ALL_CONTACTS, {
-    variables: { filter },
     errorPolicy: "all",
   });
 

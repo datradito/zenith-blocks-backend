@@ -36,7 +36,7 @@ export default function WalletConnect() {
       const data = new SiweMessage({
         domain: window.location.host,
         address: address,
-        statement: "Sign in with Ethereum to the app.",
+        statement: "Sign in with Ethereum to the zenith.",
         uri: window.location.origin,
         version: "1",
         chainId: chainId,

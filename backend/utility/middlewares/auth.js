@@ -3,7 +3,6 @@
 
 import jwt from 'jsonwebtoken';
 import { AuthenticationError } from 'apollo-server';
-import exp from 'constants';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
