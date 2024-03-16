@@ -14,7 +14,6 @@ export default function WalletConnect() {
   const { signMessageAsync } = useSignMessage();
   const navigate = useNavigate();
   const { login, logout, isAuthenticated } = useAuthStore();
-  
 
   useAccountEffect({
     onConnect(data) {
@@ -50,11 +49,16 @@ export default function WalletConnect() {
     }
   };
 
-  const sendForVerification = async (message, signature) => {
+  const sendForVerification = async (messageToVerify, signature) => {
     try {
+      message.loading({
+        content: "Verifying signature...",
+        key: "verifyingSignature",
+      });
+      
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/verify`,
-        JSON.stringify({ message, signature }),
+        JSON.stringify({ message: messageToVerify, signature }),
         {
           headers: {
             "Content-Type": "application/json",
@@ -63,6 +67,13 @@ export default function WalletConnect() {
         }
       );
 
+      message.destroy("verifyingSignature");
+
+      message.success({
+        content: "Signature verified successfully",
+        key: "verifySignatureSuccess",
+        duration: 1,
+      });
       return response.data;
     } catch (error) {
       throw error.response.data;
@@ -98,61 +109,26 @@ export default function WalletConnect() {
             duration: 1,
             onClose: () => {
               message.destroy("signMessageError");
-            }
-          })
-        }
-      });
-
-      const resPromise = sendForVerification(siweMessage, signature);
-      message.loading({
-        content: "Verifying signature...",
-        key: "verifySignature",
-      });
-
-      resPromise
-        .then((res) => {
-          message.destroy("verifySignature");
-          message.success({
-            content: "Signature verified successfully",
-            key: "verifySignatureSuccess",
-            duration: 1,
-            onClose: () => {
-              console.log(res.authToken);
-              login(res.authToken);
-              navigate("/dashboard");
-              message.loading({
-                content: "Signing in...",
-                key: "signIn",
-                duration: 1,
-                onClose: () => {
-                  message.destroy("signIn");
-                  message.success({
-                    content: "Signed in successfully",
-                    key: "signInSuccess",
-                    duration: 3,
-                    onClose: () => {
-                      message.destroy("signInSuccess");
-                      navigate("/dashboard");
-                    },
-                  });
-                },
-              });
             },
           });
-        })
-        .catch((error) => {
-          message.destroy("verifySignature");
-          message.error({
-            content: `❌ ${error.message}`,
-            key: "verifySignatureError",
-          });
-        });
+        },
+      });
+
+
+      const response = await sendForVerification(siweMessage, signature);
+      login(response.authToken);
+      navigate("/dashboard");
     } catch (error) {
+      message.destroy("verifySignature");
+      message.error({
+        content: `❌ ${error.message}`,
+        key: "verifySignatureError",
+      });
       logout();
     }
   }
 
-return (
+  return (
     <div
       style={{
         display: "flex",
