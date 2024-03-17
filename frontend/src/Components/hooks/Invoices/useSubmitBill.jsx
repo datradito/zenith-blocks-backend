@@ -39,12 +39,13 @@ export const useSubmitBill = () => {
       key: "submitBill",
     });
   }
-  const handleBillSubmit = async (data) => {
-    console.log(data);
+  const handleBillSubmit = async (data, transactionHash) => {
     const dataToBeSubmitted = await invoiceService.sanitizeInvoiceData(
       data,
       match ? "": budgetId
     );
+
+    dataToBeSubmitted.transactionHash = transactionHash;
     createBill({
       variables: {
         invoice: dataToBeSubmitted,

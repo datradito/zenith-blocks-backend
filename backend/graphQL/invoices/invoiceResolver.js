@@ -54,20 +54,19 @@ const invoiceResolver = {
   Mutation: {
     submitInvoice: async (parent, { invoice }, context) => {
 
-      const { errors, valid } = await validateInvoiceAmount(
-        invoice.budgetid,
-        invoice.total
-      );
+      // const { errors, valid } = await validateInvoiceAmount(
+      //   invoice.budgetid,
+      //   invoice.total
+      // );
 
-      if (!valid) {
-        throwCustomError(
-          errors.total || errors.budget,
-          ErrorTypes.BAD_USER_INPUT
-        );
-      } else {
+      // if (!valid) {
+      //   throwCustomError(
+      //     errors.total || errors.budget,
+      //     ErrorTypes.BAD_USER_INPUT
+      //   );
+      // } else {
         const newInvoice = new Invoice({
           ...invoice,
-          ipfs: "ipfsResponse",
         });
 
         try {
@@ -76,7 +75,7 @@ const invoiceResolver = {
         } catch (error) {
           throw new GraphQLError(error.message);
         }
-      }
+      
     },
     duplicateInvoice: async (parent, { id: invoiceId }, context) => {
       const invoice = await Invoice.findByPk(invoiceId);

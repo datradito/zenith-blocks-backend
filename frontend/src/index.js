@@ -23,7 +23,7 @@ root.render(
       <QueryClientProvider client={queryClient}>
         <ErrorBoundary
           FallbackComponent={ErrorFallback}
-          onReset={() => window.location.replace("/accounts")}
+          onReset={() => window.location.replace("/dashboard")}
         >
           <ThemeProvider theme={theme}>
             <CssBaseline />

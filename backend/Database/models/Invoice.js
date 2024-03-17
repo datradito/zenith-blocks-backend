@@ -55,11 +55,10 @@ const Invoice = sequelize.define("invoices", {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  ipfs: {
+  transactionHash: {
     type: DataTypes.STRING,
     allowNull: false,
   },
 });
-
 
 export default Invoice;

@@ -34,6 +34,7 @@ export const transformInvoices = (invoices) => {
             View: "Invoice",
             Payment: "PAID",
             Action: "ACTION",
+            transactionHash: invoice.transactionHash,
         };
     }
     );

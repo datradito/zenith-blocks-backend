@@ -56,10 +56,10 @@ export const typeDefs = `#graphql
         total: Float
         date: String
         duedate: String
-        uploadinvoice: String
         description: String
         budgetid: String
         status: String
+        transactionHash: String
     }
     type Payment {
         id: String!
@@ -153,6 +153,7 @@ export const typeDefs = `#graphql
         date: String
         duedate: String
         description: String
+        transactionHash: String!
     }
     input ProposalAmountInput {
         id: String

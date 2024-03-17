@@ -19,7 +19,7 @@ import { ethers } from "ethers";
 // TODO: ADD CHAIN LABEL
 
 function SafeInfo({ safeAddress, chainId }) {
-  const safe = useSafeStore((state) => state);
+  const safe = useSafeStore();
 
   const [isDeployed, setIsDeployed] = useState(false);
   const [isDeployLoading, setIsDeployLoading] = useState(true);
@@ -47,7 +47,7 @@ function SafeInfo({ safeAddress, chainId }) {
     );
 
     const handleBigInt = (key, value) =>
-      typeof value === "bigint" ? value.toString() : value; 
+      typeof value === "bigint" ? value.toString() : value;
 
     safe.setErc20Balances(JSON.stringify(tokens, handleBigInt));
     return tokens;
@@ -56,6 +56,7 @@ function SafeInfo({ safeAddress, chainId }) {
   useEffect(() => {
     fetchErc20SafeBalances();
   }, [safeAddress, safe.chain]);
+
   // detect if the safe is deployed with polling
   const detectSafeIsDeployed = useCallback(async () => {
     const isDeployed = await isContractAddress(safeAddress, provider);
@@ -73,6 +74,11 @@ function SafeInfo({ safeAddress, chainId }) {
   );
 
   const { data: safeInfo, isLoading: isGetSafeInfoLoading } = useApi(fetchInfo);
+  useEffect(() => {
+    if (safeInfo) {
+      safe.setSafeOwners(safeInfo?.owners);
+    }
+  }, [safeInfo]);
 
   const owners = safeInfo?.owners.length || 1;
   const threshold = safeInfo?.threshold || 1;
@@ -128,7 +134,7 @@ function SafeInfo({ safeAddress, chainId }) {
           </CreationPendingLabel>
         )}
 
-        {/* {!isLoading && (
+        {!isLoading && (
           <TokenSelector
             erc20Balances={safe.erc20Balances}
             tokenAddress={safe.tokenAddress}
@@ -136,7 +142,7 @@ function SafeInfo({ safeAddress, chainId }) {
             safeBalance={safe.safeBalance}
             chain={safe.chain}
           />
-        )} */}
+        )}
       </Stack>
     </Stack>
   );

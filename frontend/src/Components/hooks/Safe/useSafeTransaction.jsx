@@ -1,24 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import useSafeStore from "../../../store/modules/safe/index.ts";
-import useSafeSdk from "./useSafeSdk";
 import SafeApiKit from "@safe-global/api-kit";
+import { useSafeProvider } from "../../../Services/Safe/SafeProvider.jsx";
 
 function useSafeTransaction() {
   const { safeSelected, chainId } = useSafeStore();
-
-  const { safeSdk } = useSafeSdk(safeSelected);
+  const { safeSdk, service, refreshSafeSdk } = useSafeProvider();
   const [transactionHash, setTransactionHash] = useState(null);
-  const [service, setService] = useState(null);
   const [signature, setSignature] = useState(null);
   const [safeTransaction, setSafeTransaction] = useState(null);
-
-  useEffect(() => {
-    if (safeSelected) {
-      const apiKit = new SafeApiKit({ chainId: chainId });
-      setService(apiKit);
-    }
-  }, [safeSelected, chainId]);
 
   const createTransaction = async (transactions, options) => {
     try {
@@ -26,7 +17,6 @@ function useSafeTransaction() {
         transactions,
         options,
       });
-      console.log(safeTransaction)
       setSafeTransaction(safeTransaction);
       const safeTxHash = await getTransactionHash(safeTransaction);
       const senderSignature = await signHash(safeTxHash);
@@ -79,6 +69,9 @@ function useSafeTransaction() {
   };
 
   const signHash = async (hash) => {
+    if (!safeSdk) {
+      await refreshSafeSdk();
+    }
     return await safeSdk.signHash(hash);
   };
 
@@ -100,7 +93,13 @@ function useSafeTransaction() {
   };
 
   const getTransaction = async (safeTxHash) => {
-    return await service.getTransaction(safeTxHash);
+    console.log(!service)
+    if(!service) {
+      const apiKit = new SafeApiKit({ chainId: chainId });
+      return await apiKit.getTransaction(safeTxHash);
+    } else {
+      return await service.getTransaction(safeTxHash);
+    }
   };
 
   const confirmTransactionWithHash = async (safeTxHash) => {

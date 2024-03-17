@@ -3,14 +3,15 @@ import { useQuery } from "@tanstack/react-query";
 import fetchTokenBalances from "../../../Services/SwapServices/fetchTokenBalances";
 import { useAccount } from "wagmi";
 
-
 const useTokenBalances = (token) => {
-  const { address} = useAccount();
+  const { address } = useAccount();
   const [tokenBalance, setTokenBalance] = useState(0);
 
   const { data, isLoading, isError } = useQuery(
-    ["tokenBalances", address],
-    () => fetchTokenBalances(address),
+    {
+      queryKey: ["tokenBalances", address],
+      queryFn: async () => await fetchTokenBalances(address),
+    },
     {
       enabled: address !== undefined,
     }
@@ -24,9 +25,7 @@ const useTokenBalances = (token) => {
           token?.address.toLowerCase()
       );
       if (balance) {
-        setTokenBalance(
-          balance?.tokenBalance / Math.pow(10, token?.decimals)
-        );
+        setTokenBalance(balance?.tokenBalance / Math.pow(10, token?.decimals));
       } else {
         setTokenBalance(0);
       }

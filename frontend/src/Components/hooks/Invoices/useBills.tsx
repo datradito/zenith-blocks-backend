@@ -1,10 +1,12 @@
-import { useCallback } from "react";
+import { useMemo, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { useMatch } from "react-router-dom";
 import { useSubmitBill } from "./useSubmitBill";
 import { useGetRemainingBudgetAmount } from "../Budgets/useGetRemainingBudgetAmount";
 import useBudgetStore from "../../../store/modules/budgets/index.ts";
 import useProposalStore from "../../../store/modules/proposal/index.ts";
+import useDashboardStore from "../../../store/modules/dashboard/index.ts";
+import useGetContacts from "../Contacts/useGetContacts.jsx";
 import { getSafeDataForForms } from "../../../Services/Safe/getSafeDataForForms.js";
 
 import useAuthStore from "../../../store/modules/auth/index.ts";
@@ -89,30 +91,36 @@ export function useBills() {
   const handleSaveBill = useCallback(
     async (data) => {
       console.log("data", data);
-      try {
 
-        // If user signs the transaction, submit bills data to backend
+      //handleBillSubmit(data, currentBudget, currentProposal);
+      try {
+        let safeTxHash;
+        // Trigger sign transaction
         if (currentUser) {
-          await transferFunds(
+          safeTxHash = await transferFunds(
             [data],
             transactionService,
             currentUser.address
           );
-          await handleBillSubmit(data);
+        }
+
+        // If user signs the transaction, submit bills data to backend
+        if (safeTxHash) {
+          await handleBillSubmit(data, safeTxHash);
           methods.reset();
         } else {
           // If user rejects the signing, ask if bill should be saved for later
-          // const saveForLater = window.confirm(
-          //   "Do you want to save the bill for later?"
-          // );
+          const saveForLater = window.confirm(
+            "Do you want to save the bill for later?"
+          );
 
-          // // If yes, send bill to backend
-          // if (saveForLater) {
-          //   // await saveBillForLater(data);
-          // } else {
-          //   // If no, cancel and redirect user back to home page
-          //   // history.push("/home");
-          // }
+          // If yes, send bill to backend
+          if (saveForLater) {
+            // await saveBillForLater(data);
+          } else {
+            // If no, cancel and redirect user back to home page
+            // history.push("/home");
+          }
         }
       } catch (error) {
         console.error("Error while saving bill:", error);

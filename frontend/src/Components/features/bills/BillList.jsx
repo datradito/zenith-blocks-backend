@@ -8,7 +8,6 @@ import Pagination from "../../molecules/Pagination/Pagination";
 function BillList({ isLoading, invoices }) {
   const [page, setPage] = useState(1);
   const perPage = 5;
-
   const paginatedInvoices = useMemo(() => {
     const start = (page - 1) * perPage;
     const end = start + perPage;

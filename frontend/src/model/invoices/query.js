@@ -12,10 +12,10 @@ export const GET_ALL_INVOICES = gql`
       total
       date
       duedate
-      uploadinvoice
       description
       budgetid
       status
+      transactionHash
     }
   }
 `;
@@ -32,10 +32,10 @@ export const GET_INVOICE_BY_ID = gql`
       total
       date
       duedate
-      uploadinvoice
       description
       budgetid
       status
+      transactionHash
     }
   }
 `;

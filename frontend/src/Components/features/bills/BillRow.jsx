@@ -2,7 +2,7 @@ import styled from "styled-components";
 import CustomPDFViewIcon from "../../atoms/PdfIcon/padfIcon";
 import CustomPaymentViewIcon from "../../atoms/PaymentIcon/paymentIcon";
 import StatusChip from "../../atoms/StatusChip/StatusChip";
-import {HiSquare2Stack, HiTrash } from "react-icons/hi2";
+import { HiSquare2Stack, HiTrash } from "react-icons/hi2";
 import Modal from "../../molecules/Modal/Modal";
 import Table from "../../molecules/Table/Table";
 import Menus from "../../molecules/Menus/Menus";
@@ -10,6 +10,8 @@ import ConfirmDelete from "../../molecules/ConfirmDelete/ConfirmDelete";
 import { useDuplicateInvoice } from "../../hooks/Invoices/useDuplicateInvoice";
 import { Avatar } from "@mui/material";
 import GetEnsName from "../../molecules/GetEnsName/GetEnsName";
+import BillDetails from "./BillDetails";
+import useSafeTransaction from "../../hooks/Safe/useSafeTransaction";
 const ScrollContainer = styled.div`
   max-width: 100%;
   overflow-x: auto;
@@ -21,6 +23,7 @@ const ScrollContainer = styled.div`
 
 function BillRow({ invoice }) {
   const { isDuplicating, duplicateInvoice } = useDuplicateInvoice();
+  
 
   const isDeleting = false;
   const deleteInvoice = () => {
@@ -34,7 +37,8 @@ function BillRow({ invoice }) {
     Currency,
     Date,
     Due,
-    Status
+    Status,
+    transactionHash,
   } = invoice;
 
   function handleDuplicate() {
@@ -56,9 +60,14 @@ function BillRow({ invoice }) {
       </ScrollContainer>
       <ScrollContainer>{Date}</ScrollContainer>
       <ScrollContainer>{Due}</ScrollContainer>
-      <ScrollContainer>
-        <CustomPDFViewIcon invoiceId={invoice["id"]} />
-      </ScrollContainer>
+        <Modal>
+          <Modal.Open opens="details">
+            <CustomPDFViewIcon label="Details" />
+          </Modal.Open>
+          <Modal.Window name="details">
+            <BillDetails txHash={transactionHash} />
+          </Modal.Window>
+        </Modal>
       <ScrollContainer>
         <CustomPaymentViewIcon invoiceId={invoice["InvoiceId"]} />
       </ScrollContainer>
@@ -74,12 +83,10 @@ function BillRow({ invoice }) {
               disabled={isDuplicating}
             ></Menus.Button>
 
-
             <Modal.Open opens="delete">
               <Menus.Button icon={<HiTrash />}></Menus.Button>
             </Modal.Open>
           </Menus.List>
-
 
           <Modal.Window name="delete">
             <ConfirmDelete

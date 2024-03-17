@@ -34,6 +34,7 @@ interface Chain {
 
 interface safe {
   ownerAddress?: string;
+  safeOwners?: string[];
   chainId: BigInt;
   safes: string[];
   hasLoadedSafes: boolean;
@@ -61,6 +62,7 @@ interface safe {
   setErc20Balances?: (provider: any) => Promise<void>;
   setTokenAddress: React.Dispatch<React.SetStateAction<string>>;
   getSafesOwned: () => Promise<void> | null;
+  setSafeOwners: (owners: string[]) => void;
   reset: () => void;
 }
 
@@ -68,6 +70,7 @@ const { chainId } = useUtilitiesStore.getState();
 const initialSafeState = {
   chainId: chainId,
   tokenAddress: ethers.ZeroAddress,
+  safeOwners: [],
   safeSelected: null,
   safes: [],
   hasLoadedSafes: false,
@@ -100,6 +103,7 @@ const useSafeStore = create<safe>(
         "safeProtocolKit",
         "EthAdapter",
         "hasLoadedSafes",
+        "safeOwners"
       ],
     },
     //@ts-ignore
@@ -187,6 +191,11 @@ const useSafeStore = create<safe>(
         balance = balance?.toString();
         set(() => ({
           safeBalance: balance,
+        }));
+      },
+      setSafeOwners: (safeOwners: string[]) => {
+        set(() => ({
+          safeOwners,
         }));
       },
     })

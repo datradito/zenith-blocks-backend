@@ -12,6 +12,7 @@ import PaymentCreation, {
 } from "../pages/Payments/PaymentCreation";
 import NotFound from "./NotFound";
 import SwapProvider from "../utils/Providers/SwapProvider";
+import { SafeProvider } from "../Services/Safe/SafeProvider";
 
 const Swap = lazy(() => import("../pages/Swap/Swap"));
 const Budgets = lazy(() => import("../pages/Budgets/Budgets"));
@@ -55,22 +56,33 @@ export const router = createBrowserRouter(
       <Route
         path="budgets/:budgetId/invoices"
         element={
+          <SafeProvider>
             <Bills />
+          </SafeProvider>
         }
         errorElement={<ErrorPage />}
       />
       <Route
         path="bills/misc"
         element={
+          <SafeProvider>
             <Bills />
+          </SafeProvider>
         }
         errorElement={<ErrorPage />}
       />
       <Route
         path="dashboard"
-        element={<Dashboard />}
+        element={
+          <SafeProvider>
+            <Dashboard />
+          </SafeProvider>
+        }
         errorElement={<ErrorPage />}
       />
+      
+      {/* 
+      Disabling this route for now, until we finish other essential work
       <Route
         path="swap"
         element={
@@ -79,7 +91,7 @@ export const router = createBrowserRouter(
           </SwapProvider>
         }
         errorElement={<ErrorPage />}
-      />
+      /> */}
       <Route path="*" element={<NotFound />} />
     </Route>
   )

@@ -30,7 +30,6 @@ const ResponsiveHeaderBar = () => {
 
   let pages = [
     { name: "Proposals", url: "/proposals" },
-    { name: "Swap", url: "/swap" },
     { name: "Bills", url: "/bills/misc" },
     { name: "Dashboard", url: "/dashboard" },
   ];

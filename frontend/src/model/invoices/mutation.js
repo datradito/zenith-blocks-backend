@@ -10,9 +10,9 @@ export const SUBMIT_INVOICE_MUTATION = gql`
       total
       date
       duedate
-      uploadinvoice
       description
       budgetid
+      transactionHash
     }
   }
 `;
@@ -27,7 +27,6 @@ export const DUPLICATE_INVOICE_MUTATION = gql`
       total
       date
       duedate
-      uploadinvoice
       description
       budgetid
     }

@@ -3,8 +3,10 @@ import fetchTokenPrices from "../../../Services/SwapServices/fetchTokenPrices";
 
 const useGetTokensPrices = (addresses, fetchPrice) => {
   const { data, isLoading, isError, refetch } = useQuery(
-    ["tokenPrices", addresses],
-    () => fetchTokenPrices(addresses),
+    {
+      queryKey: ["tokenPrices", addresses],
+      queryFn: async() => await fetchTokenPrices(addresses),
+    },
     {
       enabled: fetchPrice,
     }
