@@ -24,7 +24,7 @@ function BillList({ isLoading, invoices }) {
         <Table columns="0.2fr 0.7fr 0.2fr 0.2fr 0.2fr 0.2fr 0.2fr 0.2fr 0.2fr 0.2fr">
           <Table.Header>
             <div>Invoice</div>
-            <div>Reciepient</div>
+            <div>Recipient</div>
             <div>Amount</div>
             <div>Currency</div>
             <div>Status</div>

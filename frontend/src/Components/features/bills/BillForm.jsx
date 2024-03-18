@@ -4,11 +4,8 @@ import { useFormContext } from "react-hook-form";
 import FormRow from "../../atoms/FormRow/FormRow.jsx";
 import Input from "../../atoms/Input/Input.jsx";
 import Container from "../../atoms/Container/Container.jsx";
-import TextArea from "../../atoms/TextArea/TextArea.jsx";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import { Button } from "@mui/material";
-import useAuthStore from "../../../store/modules/auth/index.ts";
-import useSafeTransaction from "../../hooks/Safe/useSafeTransaction.jsx";
 import ControlledDropdown from "../../molecules/Bills/ListDropdown.jsx";
 
 import { isAddressValid } from "../../../utils/logical/isAddressValid.js";
@@ -16,6 +13,7 @@ import { FormInputText } from "./Form/FormInput.jsx";
 import FormSelectDropdown from "./Form/FormSelectDropdown.jsx";
 
 function BillForm({ ...props }) {
+
 
   const methods = useFormContext();
   const {
@@ -29,7 +27,6 @@ function BillForm({ ...props }) {
   const selectedCurrencyBalance = watch("currency");
   const startDate = watch("date");
 
-  console.log(selectedCurrencyBalance);
   return (
     <Container padding={4}>
       <Form
@@ -38,9 +35,9 @@ function BillForm({ ...props }) {
             if (props?.handleSubmit) {
               props.handleSubmit(data);
             }
-            // transferFunds([data], transactionService, address);
           } catch (e) {
             console.error(e);
+            throw e;
           }
         })}
       >

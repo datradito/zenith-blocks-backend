@@ -27,7 +27,11 @@ const GnosisChain = {
 const config = getDefaultConfig({
   appName: "Zenith",
   projectId: projectId,
-  chains: [mainnet, sepolia, gnosisChiado],
+  chains: [
+    mainnet,
+    sepolia,
+    gnosisChiado
+  ],
   // transports: {
   //   [gnosisChiado.id]: http(`https://rpc.chiadochain.net`),
   //   // [sepolia.id]: http(

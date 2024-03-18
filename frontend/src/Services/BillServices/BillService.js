@@ -1,6 +1,6 @@
 import useAuthStore from "../../store/modules/auth/index.ts";
 
-async function sanitizeInvoiceData(data, budgetid) {
+async function sanitizeBillData(data, budgetid) {
   const { user: {address}} = useAuthStore.getState(state => state);
   return {
     category: data.category.name,
@@ -16,6 +16,6 @@ async function sanitizeInvoiceData(data, budgetid) {
   };
 }
 
-export const invoiceService = {
-  sanitizeInvoiceData,
+export const billService = {
+  sanitizeBillData,
 };

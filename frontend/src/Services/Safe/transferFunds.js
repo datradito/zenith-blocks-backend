@@ -35,11 +35,13 @@ const transferFunds = async (data, transactionService, sender) => {
     // refundReceiver, // Optional
     nonce: nonce, // Optional
   };
+
+  console.log(options)
   const {safeTransaction, safeTxHash, senderSignature } = await transactionService.createTransaction(transactions, options);
 
   try {
 
-    console.log(safeTransaction, safeTxHash, senderSignature, sender)
+    console.log( safeTxHash)
     await transactionService.proposeTransaction(safeTransaction, safeTxHash, senderSignature, sender);
     return safeTxHash;
   } catch (error) {

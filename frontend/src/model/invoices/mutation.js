@@ -28,7 +28,15 @@ export const DUPLICATE_INVOICE_MUTATION = gql`
       date
       duedate
       description
-      budgetid
+
+    }
+  }
+`;
+
+export const DELETE_BILLS_MUTATION = gql`
+  mutation DeleteInvoices($billIds: [String]!) {
+    deleteBills(billIds: $billIds) {
+      deletedBillIds
     }
   }
 `;

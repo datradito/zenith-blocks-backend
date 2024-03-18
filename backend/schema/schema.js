@@ -10,6 +10,10 @@ import Invoice from "../Database/models/Invoice.js";
 
 export const typeDefs = `#graphql
 
+
+   type DeleteBillsResponse {
+      deletedBillIds: [String]
+    }
     type Contacts {
         id: String
         name: String
@@ -114,6 +118,7 @@ export const typeDefs = `#graphql
         setProposalAmount(proposal: ProposalAmountInput): Proposal,
         submitPayment(payment: PaymentInput!): Payment!
         duplicateInvoice(id: String!): Invoice
+        deleteBills(billIds: [String]!): DeleteBillsResponse
         deleteContact(id: String!): Contacts
     }
 
@@ -153,7 +158,7 @@ export const typeDefs = `#graphql
         date: String
         duedate: String
         description: String
-        transactionHash: String!
+        transactionHash: String
     }
     input ProposalAmountInput {
         id: String
@@ -222,3 +227,5 @@ export const resolvers = {
 //   resolvers: resolvers,
 //   introspection: true,
 // });
+
+

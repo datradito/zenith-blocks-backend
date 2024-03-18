@@ -1,15 +1,20 @@
-import React, { useState, useEffect } from "react";
-import useSafeTransaction from "../../hooks/Safe/useSafeTransaction";
-import useAuthStore from "../../../store/modules/auth/index.ts";
-import useSafeStore from "../../../store/modules/safe/index.ts";
+import React, { useState, useEffect, useMemo } from "react";
+import useSafeTransaction from "../../Components/hooks/Safe/useSafeTransaction.jsx";
+import useAuthStore from "../../store/modules/auth/index.ts";
+import useSafeStore from "../../store/modules/safe/index.ts";
 import { Button } from "antd";
-import Label from "../../atoms/Label/Label";
+import Label from "../../Components/atoms/Label/Label.jsx";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import { Toolbar, Tooltip } from "@mui/material";
+import { Tooltip } from "@mui/material";
+import BillConfirmations from "../../Components/features/bills/BillConfirmations.jsx";
+import BillExecute from "../../Components/features/bills/BillExecute.jsx";
 // Import your ErrorBoundary component
 
 const BillDetails = ({ txHash }) => {
-  const { getTransaction, confirmTransactionWithHash, isTxExecutable } = useSafeTransaction();
+  const { getTransaction, confirmTransactionWithHash, isTxExecutable } =
+    useSafeTransaction();
+  
+  console.log(!txHash)
   //for now lets just get user form AuthStore but we need better way to centralize this kinda data which is used thorugh out the site
   const {
     user: { address },
@@ -21,7 +26,11 @@ const BillDetails = ({ txHash }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchTransaction = async () => {
+    (async () => {
+      if (!txHash) {
+        setLoading(false);
+        return;
+      }
       try {
         const tx = await getTransaction(txHash);
         setTransaction(tx);
@@ -30,12 +39,11 @@ const BillDetails = ({ txHash }) => {
         setError(err);
         setLoading(false);
       }
-    };
-
-    fetchTransaction();
+    })();
   }, [txHash]);
 
   const handleSignTransaction = async () => {
+    if (!transaction) return;
     try {
       const signature = await confirmTransactionWithHash(txHash);
       console.log(signature);
@@ -64,7 +72,8 @@ const BillDetails = ({ txHash }) => {
   //   return confirmation.owner.toLowerCase() === address.toLowerCase();
   // });
 
-  const signedByCurrentUser = () => {
+  const signedByCurrentUser = useMemo(() => {
+    if (!txHash) return false;
     if (!transaction || !Array.isArray(transaction.confirmations)) {
       throw new Error("Invalid transaction object");
     }
@@ -74,32 +83,24 @@ const BillDetails = ({ txHash }) => {
     }
 
     return transaction.confirmations.some(
-      (confirmation) => confirmation.owner.toLowerCase() === address.toLowerCase()
+      (confirmation) =>
+        confirmation.owner.toLowerCase() === address.toLowerCase()
     );
-  }
+  }, [address, transaction]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
-    return (
+  return (
     <div>
-      <>
-        <Label>
-          Confirmation Required : {transaction.confirmationsRequired}
-        </Label>
-        {transaction.confirmations.map((confirmation) => (
-          <div key={confirmation.owner}>
-            <Label>Signed By: {confirmation.owner}</Label>
-          </div>
-        ))}
-      </>
+      {transaction ? <BillConfirmations transaction={transaction} /> : null}
       {signedByCurrentUser ? (
         <Label>You have already signed this transaction</Label>
       ) : (
         <Button onClick={handleSignTransaction}>sign</Button>
       )}
 
-      {safeOwners.map((owner) => {
+      {transaction && safeOwners.map((owner) => {
         if (owner !== address) {
           const isSigned = transaction.confirmations.some(
             (confirmation) =>
@@ -119,10 +120,9 @@ const BillDetails = ({ txHash }) => {
         return null; // Return null at end of arrow function
       })}
 
-      {transaction.confirmations.length ===
-        transaction.confirmationsRequired && (
-        <Button onClick={handleExecute}>Execute</Button>
-      )}
+      {
+        transaction ? <BillExecute transaction={transaction} handleExecute={handleExecute} /> : null
+      }
     </div>
   );
 };

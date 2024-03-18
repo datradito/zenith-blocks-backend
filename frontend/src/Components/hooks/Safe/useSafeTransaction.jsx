@@ -1,12 +1,10 @@
 import { useState } from "react";
 
-import useSafeStore from "../../../store/modules/safe/index.ts";
 import SafeApiKit from "@safe-global/api-kit";
 import { useSafeProvider } from "../../../Services/Safe/SafeProvider.jsx";
 
 function useSafeTransaction() {
-  const { safeSelected, chainId } = useSafeStore();
-  const { safeSdk, service, refreshSafeSdk } = useSafeProvider();
+  const { safeSdk, service, safeSelected, chainId } = useSafeProvider();
   const [transactionHash, setTransactionHash] = useState(null);
   const [signature, setSignature] = useState(null);
   const [safeTransaction, setSafeTransaction] = useState(null);
@@ -18,7 +16,9 @@ function useSafeTransaction() {
         options,
       });
       setSafeTransaction(safeTransaction);
+      console.log(safeTransaction)
       const safeTxHash = await getTransactionHash(safeTransaction);
+      console.log(safeTxHash)
       const senderSignature = await signHash(safeTxHash);
 
       setTransactionHash(safeTxHash);
@@ -46,7 +46,7 @@ function useSafeTransaction() {
         signature: signature.data,
       });
     } catch (error) {
-      console.error("Error proposing transaction:", error);
+      console.log("Error proposing transaction:", error);
       throw error;
     }
   };
@@ -69,9 +69,9 @@ function useSafeTransaction() {
   };
 
   const signHash = async (hash) => {
-    if (!safeSdk) {
-      await refreshSafeSdk();
-    }
+    // if (!safeSdk) {
+    //   await refreshSafeSdk();
+    // }
     return await safeSdk.signHash(hash);
   };
 

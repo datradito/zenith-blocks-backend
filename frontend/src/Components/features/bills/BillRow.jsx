@@ -8,9 +8,10 @@ import Table from "../../molecules/Table/Table";
 import Menus from "../../molecules/Menus/Menus";
 import ConfirmDelete from "../../molecules/ConfirmDelete/ConfirmDelete";
 import { useDuplicateInvoice } from "../../hooks/Invoices/useDuplicateInvoice";
+import { useDeleteBills } from "../../hooks/Invoices/useDeleteBills";
 import { Avatar } from "@mui/material";
 import GetEnsName from "../../molecules/GetEnsName/GetEnsName";
-import BillDetails from "./BillDetails";
+import BillDetails from "../../../pages/Bills/BillDetails";
 import useSafeTransaction from "../../hooks/Safe/useSafeTransaction";
 const ScrollContainer = styled.div`
   max-width: 100%;
@@ -23,12 +24,8 @@ const ScrollContainer = styled.div`
 
 function BillRow({ invoice }) {
   const { isDuplicating, duplicateInvoice } = useDuplicateInvoice();
-  
+  const { isDeleting, handleDeleteBills } = useDeleteBills();
 
-  const isDeleting = false;
-  const deleteInvoice = () => {
-    console.log("deleteInvoice");
-  };
   const {
     id: InvoiceId,
     Invoice,
@@ -60,14 +57,14 @@ function BillRow({ invoice }) {
       </ScrollContainer>
       <ScrollContainer>{Date}</ScrollContainer>
       <ScrollContainer>{Due}</ScrollContainer>
-        <Modal>
-          <Modal.Open opens="details">
-            <CustomPDFViewIcon label="Details" />
-          </Modal.Open>
-          <Modal.Window name="details">
-            <BillDetails txHash={transactionHash} />
-          </Modal.Window>
-        </Modal>
+      <Modal>
+        <Modal.Open opens="details">
+          <CustomPDFViewIcon label="Details" />
+        </Modal.Open>
+        <Modal.Window name="details">
+          <BillDetails txHash={transactionHash} />
+        </Modal.Window>
+      </Modal>
       <ScrollContainer>
         <CustomPaymentViewIcon invoiceId={invoice["InvoiceId"]} />
       </ScrollContainer>
@@ -92,7 +89,8 @@ function BillRow({ invoice }) {
             <ConfirmDelete
               resourceName="invoices"
               disabled={isDeleting}
-              onConfirm={() => deleteInvoice(InvoiceId)}
+              onConfirm={() => handleDeleteBills(invoice.InvoiceId)}
+              context="Only bills without payments can be deleted. If bill has been signed by any user. Please reject transaction from details and try deleting again!"
             />
           </Modal.Window>
         </Menus.Menu>

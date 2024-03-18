@@ -27,7 +27,6 @@ export const getAvailableCurrencies = () => {
             {
                 balance: ethers.formatEther(currency),
                 name: "ETH",
-                value: JSON.stringify({ balance: currency, symbol: "ETH" }, handleBigInt),
                 key: JSON.stringify("ETH", handleBigInt),
             },
         ];

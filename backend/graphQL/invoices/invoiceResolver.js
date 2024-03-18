@@ -1,4 +1,5 @@
 import { GraphQLError } from "graphql";
+import { Sequelize } from "sequelize";
 import Invoice from "../../Database/models/Invoice.js";
 import Budget from "../../Database/models/Budget.js";
 import {
@@ -53,7 +54,6 @@ const invoiceResolver = {
   },
   Mutation: {
     submitInvoice: async (parent, { invoice }, context) => {
-
       // const { errors, valid } = await validateInvoiceAmount(
       //   invoice.budgetid,
       //   invoice.total
@@ -65,17 +65,46 @@ const invoiceResolver = {
       //     ErrorTypes.BAD_USER_INPUT
       //   );
       // } else {
-        const newInvoice = new Invoice({
-          ...invoice,
+      const newInvoice = new Invoice({
+        ...invoice,
+      });
+
+      try {
+        const savedInvoice = await newInvoice.save();
+        return savedInvoice;
+      } catch (error) {
+        throw new GraphQLError(error.message);
+      }
+    },
+    deleteBills: async (parent, { billIds }, context) => {
+      console.log(billIds);
+      try {
+        const deletedBills = await Invoice.findAll({
+          where: {
+            id: {
+              [Sequelize.Op.in]: billIds,
+            },
+            transactionHash: null,
+          },
         });
 
-        try {
-          const savedInvoice = await newInvoice.save();
-          return savedInvoice;
-        } catch (error) {
-          throw new GraphQLError(error.message);
+        console.log(deletedBills)
+
+        if (deletedBills.length > 0) {
+          await Invoice.destroy({
+            where: {
+              id: {
+                [Sequelize.Op.in]: billIds,
+              },
+              transactionHash: null,
+            },
+          });
         }
-      
+
+        return deletedBills.map((bill) => bill.id);
+      } catch (error) {
+        throw new GraphQLError(error.message);
+      }
     },
     duplicateInvoice: async (parent, { id: invoiceId }, context) => {
       const invoice = await Invoice.findByPk(invoiceId);

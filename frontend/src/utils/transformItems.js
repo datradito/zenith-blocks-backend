@@ -31,7 +31,7 @@ export const transformInvoices = (invoices) => {
             Status: invoice.status,
             Date: new Date(parseInt(invoice.date)).toLocaleDateString(),
             Due: new Date(parseInt(invoice.duedate)).toLocaleDateString(),
-            View: "Invoice",
+            View: "Details",
             Payment: "PAID",
             Action: "ACTION",
             transactionHash: invoice.transactionHash,

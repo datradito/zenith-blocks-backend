@@ -6,6 +6,7 @@ import CircularIndeterminate from "./Components/atoms/Loader/loader";
 import {router} from "./Routes/Router";
 
 function App() {
+  
   return (
     <ApolloProvider client={client}>
       <Suspense fallback={<CircularIndeterminate />}>

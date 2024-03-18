@@ -6,13 +6,13 @@ import {
 } from "react-router-dom";
 import PrivateRoute from "./PrivateRoutes";
 import Root from "./Root";
-import ErrorPage from "./ErrorPage";
 import PaymentCreation, {
   paymentLoader,
 } from "../pages/Payments/PaymentCreation";
 import NotFound from "./NotFound";
 import SwapProvider from "../utils/Providers/SwapProvider";
 import { SafeProvider } from "../Services/Safe/SafeProvider";
+import ErrorFallback from "../Components/atoms/ErrorFallback/ErrorFallback";
 
 const Swap = lazy(() => import("../pages/Swap/Swap"));
 const Budgets = lazy(() => import("../pages/Budgets/Budgets"));
@@ -30,22 +30,22 @@ export const router = createBrowserRouter(
           <Root />
         </PrivateRoute>
       }
-      errorElement={<ErrorPage />}
+     errorElement={<ErrorFallback resetErrorBoundary={() => window.location.reload(false)} />}
     >
       <Route
         path="proposals"
         element={<Proposals />}
-        errorElement={<ErrorPage />}
+       errorElement={<ErrorFallback resetErrorBoundary={() => window.location.reload(false)} />}
       />
       <Route
         path="proposals/:proposalId/budgets"
         element={<Budgets />}
-        errorElement={<ErrorPage />}
+       errorElement={<ErrorFallback resetErrorBoundary={() => window.location.reload(false)} />}
       />
       <Route
         path="invoice/:invoiceId/payment"
         element={<PaymentCreation />}
-        errorElement={<ErrorPage />}
+       errorElement={<ErrorFallback resetErrorBoundary={() => window.location.reload(false)} />}
         loader={({ params }) => {
           return paymentLoader(params.invoiceId);
         }}
@@ -60,7 +60,7 @@ export const router = createBrowserRouter(
             <Bills />
           </SafeProvider>
         }
-        errorElement={<ErrorPage />}
+        errorElement={<ErrorFallback resetErrorBoundary={() => window.location.reload(false)} />}
       />
       <Route
         path="bills/misc"
@@ -69,7 +69,7 @@ export const router = createBrowserRouter(
             <Bills />
           </SafeProvider>
         }
-        errorElement={<ErrorPage />}
+       errorElement={<ErrorFallback resetErrorBoundary={() => window.location.reload(false)} />}
       />
       <Route
         path="dashboard"
@@ -78,7 +78,7 @@ export const router = createBrowserRouter(
             <Dashboard />
           </SafeProvider>
         }
-        errorElement={<ErrorPage />}
+       errorElement={<ErrorFallback resetErrorBoundary={() => window.location.reload(false)} />}
       />
       
       {/* 
@@ -90,7 +90,7 @@ export const router = createBrowserRouter(
             <Swap />
           </SwapProvider>
         }
-        errorElement={<ErrorPage />}
+       errorElement={<ErrorFallback resetErrorBoundary={() => window.location.reload(false)} />}
       /> */}
       <Route path="*" element={<NotFound />} />
     </Route>

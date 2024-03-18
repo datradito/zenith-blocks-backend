@@ -3,8 +3,8 @@ import React, {
   createContext,
   useState,
   useEffect,
-  useCallback,
   useContext,
+  useCallback
 } from "react";
 import Safe, { EthersAdapter } from "@safe-global/protocol-kit";
 import { ethers } from "ethers";
@@ -42,69 +42,55 @@ export const SafeProvider = ({ children }) => {
     return new ethers.BrowserProvider(window.ethereum);
   }, []);
 
-  const initializeSafeSdk = useCallback(async () => {
-    try {
-      const provider = getProvider();
-      const signer = await provider?.getSigner(0);
-      const ethAdapter = new EthersAdapter({
-        ethers,
-        signerOrProvider: signer,
-      });
+  useEffect(() => {
+    (async () => {
+      try {
+        const provider = await getProvider();
+        const signer = await provider?.getSigner(0);
 
-      const safe = await Safe.create({
-        ethAdapter,
-        safeSelected,
-      });
+        const ethAdapter = new EthersAdapter({
+          ethers,
+          signerOrProvider: signer,
+        });
+        const safe = await Safe.create({
+          ethAdapter,
+          safeSelected,
+        });
 
-      setSafeSdk(safe);
-    } catch (error) {
-      // Handle this error appropriately
-      console.error("Failed to initialize safeSdk", error);
-    }
+        setSafeSdk(safe);
+        console.log("Safe SDK initialized");
+      } catch (error) {
+        // Handle this error appropriately
+        console.error("Failed to initialize safeSdk", error);
+      }
+    })();
   }, [getProvider, safeSelected]);
 
   useEffect(() => {
-    if (safeSelected && chainId && getProvider) {
-      initializeSafeSdk();
-    }
-  }, [getProvider, safeSelected, initializeSafeSdk]);
-
-  useEffect(() => {
-    const initializeService = async () => {
+    (async () => {
+      if (!chainId) return;
       try {
+        console.log(chainId);
         const apiKit = new SafeApiKit({ chainId });
         setService(apiKit);
       } catch (error) {
-        // Handle this error appropriately
         console.error("Failed to initialize service", error);
       }
-    };
-
-    if (chainId) {
-      initializeService();
-    }
+    })();
   }, [chainId]);
-    
-    const refreshSafeSdk = async () => {
-        await initializeSafeSdk();
-    }
 
   if (!service) {
     return <div>Loading...</div>; // Or a loading spinner
   }
-    
-    const state = {
-        safeSdk,
-        service,
-        provider: getProvider(),
-        refreshSafeSdk
-    };
 
-  console.log(service, safeSdk);
+  const state = {
+    safeSdk,
+    service,
+    provider: getProvider(),
+    safeSelected,
+    chainId,
+  };
 
-  return (
-    <SafeContext.Provider value={state}>
-      {children}
-    </SafeContext.Provider>
-  );
+  return <SafeContext.Provider value={state}>{children}</SafeContext.Provider>;
 };
+

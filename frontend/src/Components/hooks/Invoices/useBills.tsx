@@ -104,24 +104,8 @@ export function useBills() {
           );
         }
 
-        // If user signs the transaction, submit bills data to backend
-        if (safeTxHash) {
-          await handleBillSubmit(data, safeTxHash);
-          methods.reset();
-        } else {
-          // If user rejects the signing, ask if bill should be saved for later
-          const saveForLater = window.confirm(
-            "Do you want to save the bill for later?"
-          );
-
-          // If yes, send bill to backend
-          if (saveForLater) {
-            // await saveBillForLater(data);
-          } else {
-            // If no, cancel and redirect user back to home page
-            // history.push("/home");
-          }
-        }
+        await handleBillSubmit(data, safeTxHash);
+        methods.reset();
       } catch (error) {
         console.error("Error while saving bill:", error);
       }

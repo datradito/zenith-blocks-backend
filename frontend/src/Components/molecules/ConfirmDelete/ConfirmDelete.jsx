@@ -20,7 +20,18 @@ const StyledConfirmDelete = styled.div`
   }
 `;
 
-function ConfirmDelete({ resourceName, onConfirm, disabled, onCloseModal }) {
+function ConfirmDelete({
+  resourceName,
+  onConfirm,
+  disabled,
+  onCloseModal,
+  ...props
+}) {
+
+  const handleDelete = async() => {
+    await onConfirm();
+    onCloseModal();
+  };
   return (
     <StyledConfirmDelete>
       <Typography as="h3">Delete {resourceName}</Typography>
@@ -28,6 +39,8 @@ function ConfirmDelete({ resourceName, onConfirm, disabled, onCloseModal }) {
         Are you sure you want to delete this {resourceName} permanently? This
         action cannot be undone.
       </p>
+
+      {props.context ? <p>{props.context}</p> : null}
 
       <div>
         <Button
@@ -37,7 +50,8 @@ function ConfirmDelete({ resourceName, onConfirm, disabled, onCloseModal }) {
         >
           Cancel
         </Button>
-        <Button variation="danger" disabled={disabled} onClick={onConfirm}>
+        <Button variation="danger" disabled={disabled}
+          onClick={handleDelete}>
           Delete
         </Button>
       </div>

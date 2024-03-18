@@ -9,7 +9,7 @@ import useBillStore from "../../../store/modules/bills/index.ts";
 export const useGetBills = () => {
   const [bills, setBills] = useState([]);
   const isMounted = useRef(null); // add this line
-  const filter = useBillStore(state => state.billFilter)
+  const filter = useBillStore((state) => state.billFilter);
 
   useEffect(() => {
     isMounted.current = true; // set to true when the component mounts
