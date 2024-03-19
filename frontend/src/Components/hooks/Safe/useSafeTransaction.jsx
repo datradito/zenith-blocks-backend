@@ -16,9 +16,9 @@ function useSafeTransaction() {
         options,
       });
       setSafeTransaction(safeTransaction);
-      console.log(safeTransaction)
+      console.log(safeTransaction);
       const safeTxHash = await getTransactionHash(safeTransaction);
-      console.log(safeTxHash)
+      console.log(safeTxHash);
       const senderSignature = await signHash(safeTxHash);
 
       setTransactionHash(safeTxHash);
@@ -37,14 +37,33 @@ function useSafeTransaction() {
     signature,
     senderAddress
   ) => {
+    // const transactionConfig: ProposeTransactionProps = {
+    //   safeAddress,
+    //   safeTxHash,
+    //   safeTransactionData,
+    //   senderAddress,
+    //   senderSignature,
+    //   origin,
+    // };
     try {
+      console.log(safeTransaction);
+      console.log(transactionHash);
+      console.log(signature);
+
       await service.proposeTransaction({
         safeAddress: safeSelected,
         safeTransactionData: safeTransaction.data,
         safeTxHash: transactionHash,
         senderAddress,
-        signature: signature.data,
+        senderSignature: signature.data,
       });
+      // await service.proposeTransaction({
+      //   safeAddress: safeSelected,
+      //   safeTxHash: transactionHash,
+      //   safeTransactionData: safeTransaction.data,
+      //   senderAddress,
+      //   senderSignature: signature.data,
+      // });
     } catch (error) {
       console.log("Error proposing transaction:", error);
       throw error;
@@ -93,8 +112,8 @@ function useSafeTransaction() {
   };
 
   const getTransaction = async (safeTxHash) => {
-    console.log(!service)
-    if(!service) {
+    console.log(!service);
+    if (!service) {
       const apiKit = new SafeApiKit({ chainId: chainId });
       return await apiKit.getTransaction(safeTxHash);
     } else {

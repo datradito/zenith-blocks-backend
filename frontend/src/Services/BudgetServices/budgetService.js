@@ -4,10 +4,9 @@ export const transformBudgets = (items, totalBudget) => {
 if (items === null || items === undefined || (Array.isArray(items) && items[0] === null)) return null;
 
   items = items.map((item) => {
-    const { action, breakdown, remaining, __typename, ...rest } = item;
+    const { action, remaining, __typename, ...rest } = item;
     return {
       ...rest,
-      Breakdown: (parseInt(item.amount) / parseInt(totalBudget)) * 100,
       remaining: item.remaining,
       Invoices: "INVOICE",
     };

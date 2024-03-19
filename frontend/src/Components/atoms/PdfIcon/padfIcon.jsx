@@ -17,9 +17,6 @@ export default function CustomPDFViewIcon({label = "PDF", ...props }) {
             },
         }
     }
-    const handleClick = () => {
-        console.info('You clicked the Chip.');
-    };
 
     return (
         <Stack direction="row" spacing={1}>

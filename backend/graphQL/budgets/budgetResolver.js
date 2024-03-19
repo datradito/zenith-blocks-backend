@@ -1,11 +1,8 @@
 import { GraphQLError } from "graphql";
 import Budget from "../../Database/models/Budget.js";
 
-
-import {
-  validateBudget,
-} from "../../validators/validateBudget.js";
-import  updateProposalStatus  from "../../utility/budgetHelpers/updateProposalStatus.js";
+import { validateBudget } from "../../validators/validateBudget.js";
+import updateProposalStatus from "../../utility/budgetHelpers/updateProposalStatus.js";
 import { getRemainingBudgetAmount } from "../../Services/Budgets.js";
 import {
   throwCustomError,
@@ -25,11 +22,10 @@ const budgetResolver = {
     getBudgetsForProposal: async (parent, args) => {
       try {
         const budgets = await Budget.findAll({
-          where: { proposalid: args.proposalid }
+          where: { proposalid: args.proposalid },
         });
 
         const budgetsWithRemaining = budgets.map(async (budget) => {
-          
           const remaining = await getRemainingBudgetAmount(budget.id);
           return { ...budget.toJSON(), remaining }; // merge the original budget with remaining
         });
@@ -57,15 +53,6 @@ const budgetResolver = {
       if (!valid) {
         throwCustomError(errors.amount, ErrorTypes.BAD_USER_INPUT);
       }
-
-      let ipfsResponse;
-
-      // Upload data to IPFS
-      // const response = await UploadDataToIpfs(args.rootpath, JSON.stringify(args));
-      // ipfsResponse = response.jsonResponse[0].path;
-
-      // We'll simulate the response for demonstration purposes
-      ipfsResponse = "sample-ipfs-response-path";
 
       await updateProposalStatus(args.budget.proposalid, args.budget.amount);
 

@@ -30,10 +30,6 @@ const Budget = sequelize.define("budgets", {
     type: DataTypes.STRING.BINARY,
     allowNull: false,
   },
-  ipfs: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
   remaining: {
     type: DataTypes.VIRTUAL,
     get() {

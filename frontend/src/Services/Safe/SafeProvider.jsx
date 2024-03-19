@@ -10,6 +10,7 @@ import Safe, { EthersAdapter } from "@safe-global/protocol-kit";
 import { ethers } from "ethers";
 import SafeApiKit from "@safe-global/api-kit";
 import useSafeStore from "../../store/modules/safe/index.ts";
+import CircularIndeterminate from "../../Components/atoms/Loader/loader.jsx";
 
 const initialState = {
   safeSdk: null,
@@ -54,7 +55,7 @@ export const SafeProvider = ({ children }) => {
         });
         const safe = await Safe.create({
           ethAdapter,
-          safeSelected,
+          safeAddress: safeSelected,
         });
 
         setSafeSdk(safe);
@@ -80,7 +81,7 @@ export const SafeProvider = ({ children }) => {
   }, [chainId]);
 
   if (!service) {
-    return <div>Loading...</div>; // Or a loading spinner
+    return <CircularIndeterminate />; // Or a loading spinner
   }
 
   const state = {

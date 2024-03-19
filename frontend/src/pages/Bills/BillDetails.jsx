@@ -11,6 +11,7 @@ import BillExecute from "../../Components/features/bills/BillExecute.jsx";
 // Import your ErrorBoundary component
 
 const BillDetails = ({ txHash }) => {
+  console.log(txHash)
   const { getTransaction, confirmTransactionWithHash, isTxExecutable } =
     useSafeTransaction();
   
@@ -73,7 +74,7 @@ const BillDetails = ({ txHash }) => {
   // });
 
   const signedByCurrentUser = useMemo(() => {
-    if (!txHash) return false;
+    if (!txHash || !transaction) return false;
     if (!transaction || !Array.isArray(transaction.confirmations)) {
       throw new Error("Invalid transaction object");
     }

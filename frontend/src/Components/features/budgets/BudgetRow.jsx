@@ -10,14 +10,14 @@ const ScrollContainer = styled.div`
 `;
 
 function BudgetRow({ budget }) {
-
+  console.log(budget)
   return (
     <Table.Row>
       <ScrollContainer>{budget.category}</ScrollContainer>
       <ScrollContainer>{budget.amount}</ScrollContainer>
       <ScrollContainer>{budget.currency}</ScrollContainer>
       <ScrollContainer>
-        <CustomizedProgressBars value={budget.Breakdown} />
+        <CustomizedProgressBars value={budget.breakdown} />
       </ScrollContainer>
       <ScrollContainer>{budget.remaining}</ScrollContainer>
       <ScrollContainer>

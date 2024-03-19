@@ -11,8 +11,9 @@ import { useDuplicateInvoice } from "../../hooks/Invoices/useDuplicateInvoice";
 import { useDeleteBills } from "../../hooks/Invoices/useDeleteBills";
 import { Avatar } from "@mui/material";
 import GetEnsName from "../../molecules/GetEnsName/GetEnsName";
-import BillDetails from "../../../pages/Bills/BillDetails";
 import useSafeTransaction from "../../hooks/Safe/useSafeTransaction";
+import Payment from "../../../pages/Payments/Payment";
+import BillDetail from "../../../pages/Bills/BillDetail";
 const ScrollContainer = styled.div`
   max-width: 100%;
   overflow-x: auto;
@@ -62,12 +63,17 @@ function BillRow({ invoice }) {
           <CustomPDFViewIcon label="Details" />
         </Modal.Open>
         <Modal.Window name="details">
-          <BillDetails txHash={transactionHash} />
+          <BillDetail bill={invoice} />
         </Modal.Window>
       </Modal>
-      <ScrollContainer>
-        <CustomPaymentViewIcon invoiceId={invoice["InvoiceId"]} />
-      </ScrollContainer>
+      <Modal>
+        <Modal.Open opens="payment">
+          <CustomPaymentViewIcon label="Payment" />
+        </Modal.Open>
+        <Modal.Window name="payment">
+          <Payment txHash={transactionHash} />
+        </Modal.Window>
+      </Modal>
 
       <Modal>
         <Menus.Menu>

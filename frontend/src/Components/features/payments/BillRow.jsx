@@ -2,20 +2,20 @@ import React from 'react'
 import Table from "../../molecules/Table/Table";
 import ScrollContainer from "../../atoms/Scroll/ScrollContainer";
 
-function BillRow({ invoice }) {
+function BillRow({ bill }) {
 
   const {
-    category,
-    total,
-    currency,
-  } = invoice.getInvoiceById;
+    Category,
+    Amount,
+    Currency,
+  } = bill;
 
 
   return (
     <Table.Row>
-      <ScrollContainer>{category}</ScrollContainer>
-      <ScrollContainer>{total}</ScrollContainer>
-      <ScrollContainer>{currency}</ScrollContainer>
+      <ScrollContainer>{Category}</ScrollContainer>
+      <ScrollContainer>{Amount}</ScrollContainer>
+      <ScrollContainer>{Currency}</ScrollContainer>
     </Table.Row>
   );
 }

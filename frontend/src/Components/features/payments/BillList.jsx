@@ -1,9 +1,6 @@
 import React from "react";
 import BillRow from "./BillRow";
 import Table from "../../molecules/Table/Table";
-import useGetInvoiceById from "../../hooks/Invoices/useGetInvoiceById";
-import { useParams } from "react-router-dom";
-import CircularIndeterminate from "../../atoms/Loader/loader";
 import Container from "../../atoms/Container/Container";
 import CustomPDFViewIcon from "../../atoms/PdfIcon/padfIcon";
 import styled from "styled-components";
@@ -17,9 +14,8 @@ const PdfContainer = styled(Container)`
   gap: 1rem;
 `;
 
-function BillList() {
-  const { invoiceId } = useParams();
-  const { data, error, loading } = useGetInvoiceById(invoiceId);
+function BillList({ bill }) {
+
   return (
     <Container
       width="100%"
@@ -32,13 +28,9 @@ function BillList() {
         </Table.Header>
 
         <Table.Body
-          data={[data]}
+          data={[bill]}
           render={() => {
-            if (loading) return <CircularIndeterminate />;
-            if (error) return <p>Error: {error.message}</p>;
-            if (!data) return <p>No data</p>;
-
-            return <BillRow invoice={data} />;
+            return <BillRow bill={bill} />;
           }}
         />
       </Table>

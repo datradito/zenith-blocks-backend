@@ -17,18 +17,13 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
         },
       },
     };
-function CustomPaymentViewIcon({ invoiceId }) {
-    const navigate = useNavigate();
-
-    const handleClick = () => {
-        navigate(`/invoice/${invoiceId}/payment`);
-    };
+function CustomPaymentViewIcon({ label , ...props}) {
 
     return (
         <Stack direction="row" spacing={1}>
             <Chip icon={<AccountBalanceWalletIcon />}
-                label="PAY"
-                onClick={handleClick}
+                label={label}
+                onClick={props?.onClick}
                 sx={paymentIconStyles.chipStyle}
                 />
         </Stack>

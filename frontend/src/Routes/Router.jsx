@@ -6,9 +6,7 @@ import {
 } from "react-router-dom";
 import PrivateRoute from "./PrivateRoutes";
 import Root from "./Root";
-import PaymentCreation, {
-  paymentLoader,
-} from "../pages/Payments/PaymentCreation";
+import Payment from "../pages/Payments/Payment";
 import NotFound from "./NotFound";
 import SwapProvider from "../utils/Providers/SwapProvider";
 import { SafeProvider } from "../Services/Safe/SafeProvider";
@@ -30,28 +28,38 @@ export const router = createBrowserRouter(
           <Root />
         </PrivateRoute>
       }
-     errorElement={<ErrorFallback resetErrorBoundary={() => window.location.reload(false)} />}
+      errorElement={
+        <ErrorFallback
+          resetErrorBoundary={() => window.location.reload(false)}
+        />
+      }
     >
       <Route
         path="proposals"
         element={<Proposals />}
-       errorElement={<ErrorFallback resetErrorBoundary={() => window.location.reload(false)} />}
+        errorElement={
+          <ErrorFallback
+            resetErrorBoundary={() => window.location.reload(false)}
+          />
+        }
       />
       <Route
         path="proposals/:proposalId/budgets"
         element={<Budgets />}
-       errorElement={<ErrorFallback resetErrorBoundary={() => window.location.reload(false)} />}
+        errorElement={
+          <ErrorFallback
+            resetErrorBoundary={() => window.location.reload(false)}
+          />
+        }
       />
       <Route
         path="invoice/:invoiceId/payment"
-        element={<PaymentCreation />}
-       errorElement={<ErrorFallback resetErrorBoundary={() => window.location.reload(false)} />}
-        loader={({ params }) => {
-          return paymentLoader(params.invoiceId);
-        }}
-        action={({ params, request }) => {
-          console.log(request);
-        }}
+        element={<Payment />}
+        errorElement={
+          <ErrorFallback
+            resetErrorBoundary={() => window.location.reload(false)}
+          />
+        }
       />
       <Route
         path="budgets/:budgetId/invoices"
@@ -60,7 +68,11 @@ export const router = createBrowserRouter(
             <Bills />
           </SafeProvider>
         }
-        errorElement={<ErrorFallback resetErrorBoundary={() => window.location.reload(false)} />}
+        errorElement={
+          <ErrorFallback
+            resetErrorBoundary={() => window.location.reload(false)}
+          />
+        }
       />
       <Route
         path="bills/misc"
@@ -69,7 +81,11 @@ export const router = createBrowserRouter(
             <Bills />
           </SafeProvider>
         }
-       errorElement={<ErrorFallback resetErrorBoundary={() => window.location.reload(false)} />}
+        errorElement={
+          <ErrorFallback
+            resetErrorBoundary={() => window.location.reload(false)}
+          />
+        }
       />
       <Route
         path="dashboard"
@@ -78,9 +94,13 @@ export const router = createBrowserRouter(
             <Dashboard />
           </SafeProvider>
         }
-       errorElement={<ErrorFallback resetErrorBoundary={() => window.location.reload(false)} />}
+        errorElement={
+          <ErrorFallback
+            resetErrorBoundary={() => window.location.reload(false)}
+          />
+        }
       />
-      
+
       {/* 
       Disabling this route for now, until we finish other essential work
       <Route
