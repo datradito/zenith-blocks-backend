@@ -4,10 +4,12 @@ import { useParams, useMatch } from "react-router-dom";
 import { message } from "antd";
 
 import { billService } from "../../../Services/BillServices/BillService.js";
+import { useGetBills } from "./useGetBills.jsx";
 
 export const useSubmitBill = () => {
   const match = useMatch("/misc/bills");
   const budgetId = useParams().budgetId;
+  const { refetchBills } = useGetBills();
 
   const [createBill, { loading }] = useMutation(SUBMIT_INVOICE_MUTATION, {
     onError: (error) => {
@@ -37,7 +39,6 @@ export const useSubmitBill = () => {
       data,
       match ? "" : budgetId
     );
-    console.log(transactionHash)
 
     if (!transactionHash) {
       const saveForLater = window.confirm(
@@ -54,14 +55,13 @@ export const useSubmitBill = () => {
     }
 
     dataToBeSubmitted.transactionHash = transactionHash || null;
-
-    console.log(dataToBeSubmitted)
     try {
       await createBill({
         variables: {
           invoice: dataToBeSubmitted,
         },
       });
+      await refetchBills();
     } catch (err) {
       message.error({
         content: `❌ ${err.message}`,

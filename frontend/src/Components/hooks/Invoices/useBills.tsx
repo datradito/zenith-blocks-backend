@@ -1,18 +1,17 @@
-import { useMemo, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { useMatch } from "react-router-dom";
 import { useSubmitBill } from "./useSubmitBill";
 import { useGetRemainingBudgetAmount } from "../Budgets/useGetRemainingBudgetAmount";
 import useBudgetStore from "../../../store/modules/budgets/index.ts";
 import useProposalStore from "../../../store/modules/proposal/index.ts";
-import useDashboardStore from "../../../store/modules/dashboard/index.ts";
-import useGetContacts from "../Contacts/useGetContacts.jsx";
 import { getSafeDataForForms } from "../../../Services/Safe/getSafeDataForForms.js";
 
 import useAuthStore from "../../../store/modules/auth/index.ts";
 import useSafeTransaction from "../Safe/useSafeTransaction.jsx";
 import { transferFunds } from "../../../Services/Safe/transferFunds.js";
 
+import { message } from "antd";
 type Category = {
   name: string;
   // Add other properties of category here
@@ -57,6 +56,8 @@ type InputValues = {
 };
 
 export function useBills() {
+  const [ waitingForSign, setWaitingForSign ] = useState(false);
+
   const match = useMatch("/bills/misc");
   const { handleBillSubmit } = useSubmitBill();
   const transactionService = useSafeTransaction();
@@ -97,12 +98,19 @@ export function useBills() {
         let safeTxHash;
         // Trigger sign transaction
         if (currentUser) {
+          message.loading({ content: "Waiting for signature", key: "sign tx" });
+
           safeTxHash = await transferFunds(
             [data],
             transactionService,
             currentUser.address
           );
         }
+
+        message.success({
+          content: "Bill created successfully",
+          key: "sign tx",
+        });
 
         await handleBillSubmit(data, safeTxHash);
         methods.reset();

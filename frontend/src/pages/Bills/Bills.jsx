@@ -1,23 +1,27 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useMatch } from "react-router-dom";
 
-import SubHeader from "../../Components/molecules/SubHeader/SubHeader";
-import ItemCardComponent from "../../Components/atoms/ItemCard/ItemCard";
+import { Button } from "@mui/material";
+
 import CircularIndeterminate from "../../Components/atoms/Loader/loader";
-import BillList from "../../Components/features/bills/BillList.jsx";
 import EmptyIcon from "../../Components/atoms/EmptyIcon/EmptyIcon";
 import Label from "../../Components/atoms/Label/Label";
 import GoBack from "../../Components/atoms/GoBack/GoBack";
-import Container from "../../Components/atoms/Container/Container";
 import Breadcrumbs from "../../Components/atoms/BreadCrumbs/BreadCrumbs";
 import Modal from "../../Components/molecules/Modal/Modal";
-import { Button } from "@mui/material";
+
+import SubHeader from "../../Components/molecules/SubHeader/SubHeader";
+import ItemCardComponent from "../../Components/atoms/ItemCard/ItemCard";
+import Container from "../../Components/atoms/Container/Container";
 import FilterBills from "../../Components/molecules/Bills/FilterBills";
+import BillList from "../../Components/features/bills/BillList.jsx";
+import CreateBill from "../../Components/features/bills/CreateBill.jsx";
+
+import { useGetBills } from "../../Components/hooks/Invoices/useGetBills.jsx";
+
+import useBudgetStore from "../../store/modules/budgets/index.ts";
 import useProposalStore from "../../store/modules/proposal/index.ts";
 import useBillStore from "../../store/modules/bills/index.ts";
-import { useGetBills } from "../../Components/hooks/Invoices/useGetBills.jsx";
-import useBudgetStore from "../../store/modules/budgets/index.ts";
-import CreateBill from "../../Components/features/bills/CreateBill.jsx";
 
 function Bills() {
   const match = useMatch("/bills/misc");
@@ -25,6 +29,7 @@ function Bills() {
   const { bills, isLoading } = useGetBills(billFilter);
   const { currentProposal: proposal } = useProposalStore();
   const currentBudget = useBudgetStore((state) => state.currentBudget);
+
 
   const header = useMemo(() => {
     return (
@@ -87,7 +92,7 @@ function Bills() {
         </Container>
       </>
     );
-  }, [currentBudget]);
+  }, [currentBudget, match]);
 
   const content = useMemo(() => {
     if (isLoading) {
