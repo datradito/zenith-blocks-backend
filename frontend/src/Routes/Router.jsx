@@ -8,7 +8,6 @@ import PrivateRoute from "./PrivateRoutes";
 import Root from "./Root";
 import Payment from "../pages/Payments/Payment";
 import NotFound from "./NotFound";
-import SwapProvider from "../utils/Providers/SwapProvider";
 import { SafeProvider } from "../Services/Safe/SafeProvider";
 import ErrorFallback from "../Components/atoms/ErrorFallback/ErrorFallback";
 
@@ -68,11 +67,7 @@ export const router = createBrowserRouter(
             <Bills />
           </SafeProvider>
         }
-        errorElement={
-          <ErrorFallback
-            resetErrorBoundary={() => window.location.reload(false)}
-          />
-        }
+        errorElement={<ErrorFallback resetErrorBoundary={() => window.location.reload(false)} />}
       />
       <Route
         path="bills/misc"
@@ -100,6 +95,7 @@ export const router = createBrowserRouter(
           />
         }
       />
+
 
       {/* 
       Disabling this route for now, until we finish other essential work

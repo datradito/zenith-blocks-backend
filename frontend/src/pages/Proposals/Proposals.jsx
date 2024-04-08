@@ -21,7 +21,7 @@ const Proposals = () => {
     setCurrentPage,
     paginatedProposals,
   } = useProposals();
-  
+
   if (loading) return <CircularIndeterminate />;
   return (
     <Container border="none">
@@ -57,7 +57,7 @@ const Proposals = () => {
       </Container>
       <Pagination
         currentPage={currentPage}
-        totalPages={Math.ceil(count/ perPage)}
+        totalPages={Math.ceil(count / perPage)}
         onPageChange={setCurrentPage}
       />
     </Container>

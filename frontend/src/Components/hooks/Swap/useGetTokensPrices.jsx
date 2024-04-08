@@ -5,7 +5,7 @@ const useGetTokensPrices = (addresses, fetchPrice) => {
   const { data, isLoading, isError, refetch } = useQuery(
     {
       queryKey: ["tokenPrices", addresses],
-      queryFn: async() => await fetchTokenPrices(addresses),
+      queryFn: async () => await fetchTokenPrices(addresses),
     },
     {
       enabled: fetchPrice,

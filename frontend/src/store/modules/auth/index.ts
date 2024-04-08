@@ -34,6 +34,9 @@ const useAuthStore = create<AuthStore>(
       isAuthenticated: false,
       login: async (authToken: string) => {
         const decodedToken = await decodeToken(authToken);
+        //TODO: once we have auth service fully working revert address and dao to following
+        // const { userAddress, dao } = decodedToken;
+
         const { address, daoId } = decodedToken;
         if (isTokenExpired(decodedToken)) {
           set(() => ({

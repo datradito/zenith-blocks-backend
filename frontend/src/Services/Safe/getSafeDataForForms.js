@@ -4,6 +4,7 @@ import useDashboardStore from "../../store/modules/dashboard/index.ts";
 import useSafeStore from "../../store/modules/safe/index.ts";
 
 import { handleBigInt } from "../../utils/logical/bigIntToString.js";
+import getChain from "./getChain.js";
 
 function normalizeCurrencies(currencies) {
     return Object.values(currencies).map((currency) => {
@@ -17,22 +18,29 @@ function normalizeCurrencies(currencies) {
   });
 }
 
+function addSafeNativeCurrency(currencies) {
+    const currency = useSafeStore.getState().safeBalance;
+    const chainId = useSafeStore.getState().chainId;
+    const chain = getChain(chainId);
+    return [
+        ...normalizeCurrencies(currencies),
+      {
+          balance: currency,
+          name: chain.token,
+          address: ethers.ZeroAddress,
+          key: JSON.stringify("ETH", handleBigInt),
+        },
+    ];
+
+}
+
 
 export const getAvailableCurrencies = () => {
     let currencies = useSafeStore.getState().erc20Balances;
+    console.log(currencies)
     currencies = JSON.parse(currencies);
-    if (!currencies) {
-        const currency = useSafeStore.getState().safeBalance;
-        return [
-            {
-                balance: ethers.formatEther(currency),
-                name: "ETH",
-                key: JSON.stringify("ETH", handleBigInt),
-            },
-        ];
-    };
-    
-    return normalizeCurrencies(currencies);
+    return addSafeNativeCurrency(currencies);
+;
 }
 
 export const getAvailableContacts = () => {

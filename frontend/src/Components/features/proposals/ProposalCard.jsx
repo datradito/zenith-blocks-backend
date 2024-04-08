@@ -1,7 +1,7 @@
 import React from "react";
 import Paper from "@mui/material/Paper";
 import { Link, Typography, styled } from "@mui/material/";
-import Amount from "../../molecules/ProposalAmount/Amount.jsx";
+import Amount from "./Amount.jsx";
 import LaunchIcon from "@mui/icons-material/Launch";
 import Modal from "../../molecules/Modal/Modal.jsx";
 import ProposalSnapShotView from "./ProposalSnapShotView.jsx";

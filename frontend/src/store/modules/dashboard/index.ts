@@ -16,12 +16,12 @@ const categories = [
   },
 ];
 
-const TransactionOptions = [
-  "Success",
-  "Failed",
-  "Pending",
-  "Ready"
-];
+// const TransactionOptions = [
+//   "Success",
+//   "Failed",
+//   "Pending",
+//   "Ready"
+// ];
 
 interface TransactionFilter {
   activeTab: string;  

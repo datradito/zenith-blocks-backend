@@ -32,7 +32,6 @@ const useSaveProposalDetails = () => {
           id: row.id,
           amount: parseInt(amount),
           modifier: address,
-          rootpath: row.id,
           daoid: row.space.id,
           currency: currency,
         },

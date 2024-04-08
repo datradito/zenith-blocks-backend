@@ -7,34 +7,35 @@ import ErrorIcon from "@mui/icons-material/Error";
 
 
 const statusIcons = [
-  { component: <PendingIcon fontSize="large" />, status: "PENDING" },
+  { component: <PendingIcon fontSize="small" />, status: "PENDING" },
   {
-    component: <CheckCircleIcon fontSize="large" color="success" />,
+    component: <CheckCircleIcon fontSize="small" color="success" />,
     status: "SUCCESS",
   },
   {
-    component: <ErrorIcon fontSize="large" color="#f44336" />,
+    component: <ErrorIcon fontSize="small" color="#f44336" />,
     status: "FAILED",
   },
 ];
 
 
 export const StatusTypes = {
-  PAID: "green",
-  UNPAID: "red",
-  CLOSED: "green",
-  SUCCESS: "green",
-  FAILED: "failedRed",
-  PENDING: "pendingYellow",
-  PROCESSING: "processingBlue",
-  CANCELLED: "cancelledRed",
-  COMPLETED: "completedGreen",
-  IN_PROGRESS: "inProgressBlue",
-  IN_REVIEW: "inReviewYellow",
-  APPROVED: "success",
-  REJECTED: "rejectedRed",
-  PENDING_APPROVAL: "pendingApprovalYellow",
-  NEW: "red",
+  PAID: "#008000", // green
+  UNPAID: "#FF0000", // red
+  CLOSED: "#008000", // green
+  SUCCESS: "#008000", // green
+  SIGNED: "#008000", // green
+  FAILED: "#FF0000", // failedRed
+  PENDING: "#B8860B", // pendingYellow
+  PROCESSING: "#0000FF", // processingBlue
+  CANCELLED: "#FF0000", // cancelledRed
+  COMPLETED: "#008000", // completedGreen
+  IN_PROGRESS: "#0000FF", // inProgressBlue
+  IN_REVIEW: "#FFFF00", // inReviewYellow
+  APPROVED: "#008000", // success
+  REJECTED: "#FF0000", // rejectedRed
+  PENDING_APPROVAL: "#FFFF00", // pendingApprovalYellow
+  NEW: "#FF0000", // red
 };
 
 const isValidStatus = (status) => Object.values(StatusTypes).includes(status);
@@ -55,7 +56,6 @@ const StatusChip = ({ status, type }) => {
         label={isSmallScreen ? "" : status || "NEW"}
         style={{
           backgroundColor: StatusTypes[status] || "red",
-          color: "white",
         }}
       />
     );

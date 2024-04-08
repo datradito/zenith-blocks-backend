@@ -1,13 +1,13 @@
 import express from "express";
 import cors from "cors";
-import session from "./utility/middlewares/session.js";
-import { corsOptions } from "./utility/middlewares/cors.js";
-import { authRouter } from "./routes/authRoutes.js";
-import { swapRouter } from "./routes/1inchSwapRoutes.js";
+import session from "./src/middlewares/session.js";
+import { corsOptions } from "./src/middlewares/cors.js";
+import { authRouter } from "./src/routes/authRoutes.js";
+import { swapRouter } from "./src/routes/1inchSwapRoutes.js";
 
-import User from "./Database/models/User.js";
-import { typeDefs, resolvers } from "./schema/schema.js";
-import context from "./utility/middlewares/context.js";
+import User from "./src/Database/models/User.js";
+import { typeDefs, resolvers } from "./src/schema/schema.js";
+import context  from "./src/middlewares/context.js";
 import Moralis from "moralis";
 
 import { ApolloServer } from "@apollo/server";
@@ -15,7 +15,7 @@ import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import http from "http";
 
-import init from "./Database/sequalizeConnection.js";
+import init from "./src/Database/sequalizeConnection.js";
 
 const app = express();
 
@@ -67,13 +67,6 @@ app.get("/", (req, res) => {
   res.send("Hey this is my API running 🥳");
 });
 
-
-app.post("/createUser", async (req, res) => {
-  const { address, daoId } = req.body;
-  const user = await User.create({ address, daoId });
-  return res.status(200).json(user);
-});
-
 app.get("/tokenTransfers", async (req, res) => {
   try {
     const { address, chain } = req.query;
@@ -110,6 +103,24 @@ app.get("/tokenTransfers", async (req, res) => {
   }
 });
 
+app.post("/createUser", async (req, res) => {
+  try {
+    const { address, daoid } = req.body;
+    const user = await User.create({
+      address: address,
+      daoid: daoid,
+    });
+    res.send({
+      message: "User created",
+      user: user
+    });
+  } catch (e) {
+    res.send({
+      message: "Error creating user", error: e
+    });
+  }
+}
+);
 
 httpServer.listen(8000, async () => {
   await init();

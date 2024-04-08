@@ -1,7 +1,7 @@
-import React from 'react'
-import GoBack from '../Components/atoms/GoBack/GoBack';
-import Container from '../Components/atoms/Container/Container'
-import Label from '../Components/atoms/Label/Label'
+import React from "react";
+import GoBack from "../Components/atoms/GoBack/GoBack";
+import Container from "../Components/atoms/Container/Container";
+import Label from "../Components/atoms/Label/Label";
 
 function NotFound() {
   return (
@@ -40,4 +40,4 @@ function NotFound() {
   );
 }
 
-export default NotFound
+export default NotFound;

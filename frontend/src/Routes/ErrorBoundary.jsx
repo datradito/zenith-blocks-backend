@@ -15,7 +15,12 @@ export default class ErrorBoundary extends Component {
 
   render() {
     if (this.state.hasError) {
-      return <ErrorFallback error={this.state.error} resetErrorBoundary={() => window.location.replace("/dashboard")} />;;
+      return (
+        <ErrorFallback
+          error={this.state.error}
+          resetErrorBoundary={() => window.location.replace("/dashboard")}
+        />
+      );
     } else {
       return this.props.children;
     }

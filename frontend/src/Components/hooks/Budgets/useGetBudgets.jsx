@@ -4,7 +4,7 @@ import { transformBudgets } from "../../../Services/BudgetServices/budgetService
 import { useQuery } from "@apollo/client";
 import { message } from "antd";
 
-export const useGetBudgets = (amount, proposalId) => {
+export const useGetBudgets = ( proposalId) => {
   const [budgets, setBudgets] = useState([]);
 
   const {
@@ -14,14 +14,12 @@ export const useGetBudgets = (amount, proposalId) => {
     refetch,
   } = useQuery(GET_ALL_BUDGETS_FOR_PROPOSAL, {
     variables: { proposalid: proposalId },
-    errorPolicy: "all",
   });
 
   useEffect(() => {
     if (data) {
       const transformedBudgets = transformBudgets(
-        data.getBudgetsForProposal,
-        amount
+        data.getBudgetsForProposal
       );
       setBudgets(transformedBudgets);
     }

@@ -8,18 +8,25 @@ import AddressLabel from "./AddressLabel.jsx";
 import getSafeInfo from "../../../Services/Safe/getSafeInfo.js";
 import usePolling from "../../hooks/Safe/usePolling.jsx";
 import isContractAddress from "../../../Services/Safe/isContractAddress.js";
-import TokenSelector from "../../molecules/Safe/TokenSelector.jsx";
+import FormControl from "@mui/material/FormControl";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 import useSafeStore from "../../../store/modules/safe/index.ts";
 import useApi from "../../hooks/Safe/useApi.jsx";
 
-import { getERC20Info } from "../../../Services/Safe/getERC20Info.js";
+import TokenBalance from "../../molecules/Safe/TokenBalance.jsx";
+
+
 import { ethers } from "ethers";
+import { useSafeProvider } from "../../../Services/Safe/SafeProvider.jsx";
 
 // TODO: ADD USDC LABEL
 // TODO: ADD CHAIN LABEL
 
 function SafeInfo({ safeAddress, chainId }) {
   const safe = useSafeStore();
+  const { erc20Balances, safeBalance, setTokenAddress, tokenAddress } =
+    useSafeProvider();
 
   const [isDeployed, setIsDeployed] = useState(false);
   const [isDeployLoading, setIsDeployLoading] = useState(true);
@@ -30,34 +37,6 @@ function SafeInfo({ safeAddress, chainId }) {
 
   const provider = getProvider();
 
-  const fetchErc20SafeBalances = useCallback(async () => {
-    if (!provider) {
-      return {};
-    }
-
-    const tokens = await Promise.all(
-      safe.chain.supportedErc20Tokens?.map((erc20Address) =>
-        getERC20Info(erc20Address, provider, safeAddress)
-      ) || []
-    ).then((tokens) =>
-      tokens.reduce(
-        (acc, token) => (!!token ? { ...acc, [token.address]: token } : acc),
-        {}
-      )
-    );
-
-    const handleBigInt = (key, value) =>
-      typeof value === "bigint" ? value.toString() : value;
-
-    safe.setErc20Balances(JSON.stringify(tokens, handleBigInt));
-    return tokens;
-  }, [provider, safeAddress, safe.chain]);
-
-  useEffect(() => {
-    fetchErc20SafeBalances();
-  }, [safeAddress, safe.chain]);
-
-  // detect if the safe is deployed with polling
   const detectSafeIsDeployed = useCallback(async () => {
     const isDeployed = await isContractAddress(safeAddress, provider);
 
@@ -83,6 +62,7 @@ function SafeInfo({ safeAddress, chainId }) {
   const owners = safeInfo?.owners.length || 1;
   const threshold = safeInfo?.threshold || 1;
   const isLoading = isDeployLoading || isGetSafeInfoLoading;
+
 
   return (
     <Stack direction="row" spacing={2} border="none">
@@ -135,13 +115,43 @@ function SafeInfo({ safeAddress, chainId }) {
         )}
 
         {!isLoading && (
-          <TokenSelector
-            erc20Balances={safe.erc20Balances}
-            tokenAddress={safe.tokenAddress}
-            setTokenAddress={safe.setTokenAddress}
-            safeBalance={safe.safeBalance}
-            chain={safe.chain}
-          />
+          <>
+            {Object.values(erc20Balances).length > 0 ? (
+              <FormControl fullWidth variant="standard">
+                <Select
+                  labelId="token-selector-label"
+                  id="token-selector"
+                  value={tokenAddress}
+                  label="Token"
+                  onChange={(event) =>
+                    setTokenAddress(event.target.value)
+                  }
+                >
+                  <MenuItem value={ethers.ZeroAddress}>
+                    {/* Safe Balance for native token */}
+                    <TokenBalance
+                      value={ethers.formatEther(safeBalance || '0')}
+                      tokenSymbol={safe.chain?.token || ''}
+                    />
+                  </MenuItem>
+                  {Object.values(erc20Balances).map((erc20Balance) => (
+                    <MenuItem value={erc20Balance.address} key={erc20Balance.address}>
+                      {/* ERC20 Safe Balances */}
+                      <TokenBalance
+                        value={ethers.formatUnits(erc20Balance.balance || 0, erc20Balance.decimals)}
+                        tokenSymbol={erc20Balance.symbol}
+                      />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            ) : (
+              <TokenBalance
+                value={ethers.formatEther(safeBalance || '0')}
+                tokenSymbol={safe.chain?.token || ''}
+              />
+            )}
+          </>
         )}
       </Stack>
     </Stack>

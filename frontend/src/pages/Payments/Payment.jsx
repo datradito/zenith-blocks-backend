@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Button, Tooltip } from "antd";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import useSafeTransaction from "../../Components/hooks/Safe/useSafeTransaction.jsx";
 import useAuthStore from "../../store/modules/auth/index.ts";
 import useSafeStore from "../../store/modules/safe/index.ts";
-import Label from "../../Components/atoms/Label/Label.jsx";
 import BillConfirmations from "../../Components/features/bills/BillConfirmations.jsx";
 import BillExecute from "../../Components/features/payments/BillExecute.jsx";
+import PendingSigns from "../../Components/features/payments/PendingSigns.jsx";
+import Signed from "../../Components/features/payments/Signed.jsx";
+import { message } from "antd";
 
 const Payment = ({ txHash }) => {
   const { getTransaction, confirmTransactionWithHash, isTxExecutable } =
@@ -18,6 +18,8 @@ const Payment = ({ txHash }) => {
   const [transaction, setTransaction] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+
 
   useEffect(() => {
     const fetchTransaction = async () => {
@@ -47,11 +49,22 @@ const Payment = ({ txHash }) => {
   };
 
   const handleExecute = async () => {
+    message.loading({ content: "Executing transaction...", key: "execute" });
     try {
-      if (transaction) await isTxExecutable(transaction);
+      if (txHash) await isTxExecutable(txHash);
+
+      message.success({
+        content: "Transaction executed successfully",
+        key: "execute",
+      });
     } catch (err) {
       setError(err);
+      message.error({
+        content: "Transaction could not be executed",
+        key: "execute",
+      });
     }
+    message.destroy("execute");
   };
 
   const signedByCurrentUser = useMemo(() => {
@@ -75,33 +88,38 @@ const Payment = ({ txHash }) => {
   return (
     <div>
       {transaction && <BillConfirmations transaction={transaction} />}
-      {signedByCurrentUser ? (
-        <Label>You have already signed this transaction</Label>
-      ) : (
-        <Button onClick={handleSignTransaction}>Sign</Button>
-      )}
       {transaction &&
-        safeOwners.map((owner) => {
-          if (owner !== address) {
+        (() => {
+          const signedOwners = [];
+          const pendingOwners = [];
+
+          safeOwners.forEach((owner) => {
             const isSigned = transaction.confirmations.some(
               (confirmation) =>
                 confirmation.owner.toLowerCase() === owner.toLowerCase()
             );
-            return (
-              <div key={owner}>
-                <Label>
-                  {isSigned ? "Signed" : "Pending"}: {owner}
-                </Label>
-                <Tooltip title="Remind owner to sign">
-                  <NotificationsNoneIcon />
-                </Tooltip>
-              </div>
-            );
-          }
-          return null;
-        })}
+
+            if (isSigned) {
+              signedOwners.push(owner);
+            } else {
+              pendingOwners.push(owner);
+            }
+          });
+
+          return (
+            <>
+              <Signed signed={signedOwners} />
+              <PendingSigns owners={pendingOwners} />
+            </>
+          );
+        })()}
       {transaction && (
-        <BillExecute transaction={transaction} handleExecute={handleExecute} />
+        <BillExecute
+          transaction={transaction}
+          handleSign={handleSignTransaction}
+          signedByCurrentUser={signedByCurrentUser}
+          handleExecute={handleExecute}
+        />
       )}
     </div>
   );

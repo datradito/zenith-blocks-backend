@@ -56,7 +56,6 @@ type InputValues = {
 };
 
 export function useBills() {
-  const [ waitingForSign, setWaitingForSign ] = useState(false);
 
   const match = useMatch("/bills/misc");
   const { handleBillSubmit } = useSubmitBill();
@@ -91,7 +90,6 @@ export function useBills() {
 
   const handleSaveBill = useCallback(
     async (data) => {
-      console.log("data", data);
 
       //handleBillSubmit(data, currentBudget, currentProposal);
       try {

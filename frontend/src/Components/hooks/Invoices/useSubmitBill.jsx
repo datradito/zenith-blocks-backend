@@ -5,11 +5,17 @@ import { message } from "antd";
 
 import { billService } from "../../../Services/BillServices/BillService.js";
 import { useGetBills } from "./useGetBills.jsx";
+import useSafeStore from "../../../store/modules/safe/index.ts";
+import useAuthStore from "../../../store/modules/auth/index.ts";
+import useBillStore from "../../../store/modules/bills/index.ts";
 
 export const useSubmitBill = () => {
   const match = useMatch("/misc/bills");
   const budgetId = useParams().budgetId;
   const { refetchBills } = useGetBills();
+  const { safeSelected } = useSafeStore();
+  const { billFilter } = useBillStore();
+  const { user } = useAuthStore();
 
   const [createBill, { loading }] = useMutation(SUBMIT_INVOICE_MUTATION, {
     onError: (error) => {
@@ -55,21 +61,24 @@ export const useSubmitBill = () => {
     }
 
     dataToBeSubmitted.transactionHash = transactionHash || null;
+    dataToBeSubmitted.safeaddress = safeSelected;
+    dataToBeSubmitted.daoid = user.daoId;
     try {
       await createBill({
         variables: {
           invoice: dataToBeSubmitted,
         },
       });
-      await refetchBills();
     } catch (err) {
       message.error({
         content: `❌ ${err.message}`,
         key: "submitBillError",
       });
       throw err;
+    } finally {
+      await refetchBills(billFilter);
     }
   };
 
-  return { loading, createBill, handleBillSubmit };
+  return { loading, handleBillSubmit };
 };

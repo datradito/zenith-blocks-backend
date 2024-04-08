@@ -1,10 +1,9 @@
 import React from "react";
 import axios from "axios";
 
-import { useAccountEffect } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useNavigate } from "react-router-dom";
-import { useSignMessage } from "wagmi";
+import { useSignMessage, useDisconnect, useAccountEffect } from "wagmi";
 
 import { SiweMessage } from "siwe";
 import { message } from "antd";
@@ -12,6 +11,7 @@ import useAuthStore from "../../../store/modules/auth/index.ts";
 
 export default function WalletConnect() {
   const { signMessageAsync } = useSignMessage();
+  const { disconnect } = useDisconnect();
   const navigate = useNavigate();
   const { login, logout, isAuthenticated } = useAuthStore();
 
@@ -28,11 +28,13 @@ export default function WalletConnect() {
   const createSiweMessage = async (address, chainId) => {
     try {
       const { data: nonce } = await axios.get(
-        `${process.env.REACT_APP_API_URL}/nonce`,
+        `${process.env.REACT_APP_AUTH_SERVICE}/nonce`,
         {
           withCredentials: true,
         }
       );
+
+
       const data = new SiweMessage({
         domain: window.location.host,
         address: address,
@@ -57,7 +59,7 @@ export default function WalletConnect() {
       });
       
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/verify`,
+        `${process.env.REACT_APP_AUTH_SERVICE}/verify`,
         JSON.stringify({ message: messageToVerify, signature }),
         {
           headers: {
@@ -76,6 +78,7 @@ export default function WalletConnect() {
       });
       return response.data;
     } catch (error) {
+      message.destroy("verifyingSignature");
       throw error.response.data;
     }
   };
@@ -119,12 +122,13 @@ export default function WalletConnect() {
       login(response.authToken);
       navigate("/dashboard");
     } catch (error) {
-      message.destroy("verifySignature");
+      const errMessage = error?.errors[0];
       message.error({
-        content: `❌ ${error.message}`,
+        content: `❌ ${errMessage.message} || Something went wronf during login. Please try again.`,
         key: "verifySignatureError",
       });
       logout();
+      disconnect();
     }
   }
 

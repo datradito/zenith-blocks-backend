@@ -1,16 +1,11 @@
-import { Typography } from '@mui/material';
 import React from 'react'
+import Label from '../../atoms/Label/Label';
 
 
 function BillConfirmations({transaction}) {
   return (
     <div>
-      <Typography>Confirmation Required : {transaction.confirmationsRequired}</Typography>
-      {transaction.confirmations.map((confirmation) => (
-        <div key={confirmation.owner}>
-          <Typography>Signed By: {confirmation.owner}</Typography>
-        </div>
-      ))}
+      <Label>Confirmations Required : {transaction.confirmationsRequired}</Label>
     </div>
   );
 }

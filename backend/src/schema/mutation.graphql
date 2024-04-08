@@ -1,0 +1,10 @@
+type Mutation {
+  submitBudget(budget: BudgetInput): Budget
+  submitContact(contact: ContactsInput): Contacts
+  submitInvoice(invoice: InvoiceInput): Invoice
+  setProposalAmount(proposal: ProposalAmountInput): Proposal
+  submitPayment(payment: PaymentInput!): Payment!
+  duplicateInvoice(id: String!): Invoice
+  deleteBills(billIds: [String]!): DeleteBillsResponse
+  deleteContact(id: String!): Contacts
+}

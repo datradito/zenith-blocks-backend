@@ -42,7 +42,15 @@ async function transformBillsForTable(invoices) {
   return invoices?.length > 0 ? invoices : [];
 }
 
+
 export const billService = {
   sanitizeBillData,
   transformBillsForTable,
 };
+
+
+//here is where we calculate paid status, Calls the transaction service 
+//and determine if selected transactionHash is ready to bepaid or not!
+//this way we gotta rely on backend for status and transactionsHash, 
+//also transactions service to give us the data based on tracation hash
+//process both to determine can be paid or not

@@ -9,11 +9,11 @@ import SafeApiKit from "@safe-global/api-kit";
 
 const useTransactionHistory = () => {
   const safe = useSafeStore((state) => state);
-  const { transactionFilter, onChangeLoading, loading, setTransactions } = useDashboardStore();
-  const [txs, setTxs ] = useState([]);
+  const { transactionFilter, onChangeLoading, loading, setTransactions } =
+    useDashboardStore();
+  const [txs, setTxs] = useState([]);
   const [error, setError] = useState(false);
   const [count, setCount] = useState(0);
-
 
   const sanitizeTransactions = useMemo(() => {
     return async (allTxs) => {
@@ -40,12 +40,13 @@ const useTransactionHistory = () => {
 
   const safeTransactions = useCallback(async () => {
     setTxs([]);
+
+    if(safe?.safeSelected === null) return;
     try {
       onChangeLoading(true);
       let functionName = `get${
-        transactionFilter.activeTab === "" ? "All" : transactionFilter.activeTab
-        }Transactions`;
-      
+        transactionFilter.activeTab === "" || transactionFilter.activeTab === "all" ? "All" : transactionFilter.activeTab
+      }Transactions`;
 
       const apiKit = new SafeApiKit({ chainId: safe.chainId });
       let allTxs = await apiKit[functionName](safe.safeSelected, 0, 100);

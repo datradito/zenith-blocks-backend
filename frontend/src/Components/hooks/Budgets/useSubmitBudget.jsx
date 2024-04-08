@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useMutation, gql } from "@apollo/client";
 import { message } from "antd";
 
+
 export const useSubmitBudget = () => {
   const proposalId = useParams().proposalId;
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export const useSubmitBudget = () => {
           key: "submitBudgetError",
         });
       },
-      onCompleted: () => {
+      onCompleted: (data) => {
         message.destroy("submitBudget");
         message.success({
           content: "Budget submitted successfully",

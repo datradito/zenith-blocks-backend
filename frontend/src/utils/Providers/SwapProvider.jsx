@@ -30,38 +30,36 @@ const SwapProvider = ({ children }) => {
     tokenTwo.address,
   ]);
 
-    const findToken = (token) => {
-      return tokenList[token];
-    };
+  const findToken = (token) => {
+    return tokenList[token];
+  };
 
-    const modifyToken = useCallback(
-      (token) => {
-        const newToken = findToken(token);
-        setRatio(null);
-        setTokenOneAmount(null);
-        setTokenTwoAmount(null);
-        if (changeToken === 1) {
-          setTokenOne(newToken);
-        } else {
-          setTokenTwo(newToken);
-        }
-        setIsOpen(false);
-      },
-      [
-        setRatio,
-        setTokenOneAmount,
-        setTokenTwoAmount,
-        setTokenOne,
-        setTokenTwo,
-        setIsOpen,
-        changeToken,
-      ]
-    );
+  const modifyToken = useCallback(
+    (token) => {
+      const newToken = findToken(token);
+      setRatio(null);
+      setTokenOneAmount(null);
+      setTokenTwoAmount(null);
+      if (changeToken === 1) {
+        setTokenOne(newToken);
+      } else {
+        setTokenTwo(newToken);
+      }
+      setIsOpen(false);
+    },
+    [
+      setRatio,
+      setTokenOneAmount,
+      setTokenTwoAmount,
+      setTokenOne,
+      setTokenTwo,
+      setIsOpen,
+      changeToken,
+    ]
+  );
 
   useEffect(() => {
-      setRatio(
-        tokenPrices?.[tokenOne.address] / tokenPrices?.[tokenTwo.address]
-      );
+    setRatio(tokenPrices?.[tokenOne.address] / tokenPrices?.[tokenTwo.address]);
   }, [tokenPrices, tokenOne, tokenTwo, isPriceLoading, modifyToken]);
 
   const openModal = (asset) => {

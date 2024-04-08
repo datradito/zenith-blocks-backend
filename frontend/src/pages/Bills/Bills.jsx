@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useMatch } from "react-router-dom";
 
 import { Button } from "@mui/material";
@@ -21,53 +21,65 @@ import { useGetBills } from "../../Components/hooks/Invoices/useGetBills.jsx";
 
 import useBudgetStore from "../../store/modules/budgets/index.ts";
 import useProposalStore from "../../store/modules/proposal/index.ts";
-import useBillStore from "../../store/modules/bills/index.ts";
 
 function Bills() {
   const match = useMatch("/bills/misc");
-  const { billFilter } = useBillStore();
-  const { bills, isLoading } = useGetBills(billFilter);
+  const { bills, isLoading } = useGetBills();
   const { currentProposal: proposal } = useProposalStore();
   const currentBudget = useBudgetStore((state) => state.currentBudget);
+
+  
 
 
   const header = useMemo(() => {
     return (
       <SubHeader.Container>
-        {match ? (
-          <SubHeader.List>
-            <Label>Bills</Label>
-          </SubHeader.List>
-        ) : (
-          <SubHeader.List>
-            <Label>
-              <Breadcrumbs id={proposal?.id} />
-            </Label>
-            <GoBack>
-              <Label>Budgets</Label>
-            </GoBack>
-          </SubHeader.List>
-        )}
-        <SubHeader.List styles={{ flexDirection: "row", gap: "1rem" }}>
-          <SubHeader.ExportCSVButton
-            label="Export CSV"
-            data={bills || []}
-            filename="Invoices"
-            sx={{
-              backgroundColor: "#282A2E",
-            }}
-          />
-          <Modal>
-            <Modal.Open opens="createBill">
-              <Button variant="contained" label="Create Bill">
-                Create Bill
-              </Button>
-            </Modal.Open>
-            <Modal.Window name="createBill">
-              <CreateBill />
-            </Modal.Window>
-          </Modal>
+      {match ? (
+        <SubHeader.List>
+        <Label>Bills</Label>
         </SubHeader.List>
+      ) : (
+        <SubHeader.List>
+        <Label>
+          <Breadcrumbs id={proposal?.id} />
+        </Label>
+        <GoBack>
+          <Label>Budgets</Label>
+        </GoBack>
+        </SubHeader.List>
+      )}
+      <SubHeader.List styles={{ flexDirection: "row", gap: "1rem" }}>
+        <Modal>
+        <Modal.Open opens="uploadBills">
+          <Button variant="contained" label="Upload Bills">
+          Upload Bills
+          </Button>
+        </Modal.Open>
+        <Modal.Window name="uploadBills">
+          <Container>
+          <Label>Under construction 🚧</Label>
+          </Container>
+        </Modal.Window>
+        </Modal>
+        <SubHeader.ExportCSVButton
+        label="Export CSV"
+        data={bills || []}
+        filename="Invoices"
+        sx={{
+          backgroundColor: "#282A2E",
+        }}
+        />
+        <Modal>
+        <Modal.Open opens="createBill">
+          <Button variant="contained" label="Create Bill">
+          Create Bill
+          </Button>
+        </Modal.Open>
+        <Modal.Window name="createBill">
+          <CreateBill />
+        </Modal.Window>
+        </Modal>
+      </SubHeader.List>
       </SubHeader.Container>
     );
   }, [bills, match]);

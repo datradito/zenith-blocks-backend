@@ -9,7 +9,6 @@ export const SUBMIT_BUDGET_MUTATION = gql`
       currency
       breakdown
       proposalid
-      rootpath
     }
   }
 `;

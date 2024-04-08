@@ -17,8 +17,17 @@ const CommonRow = styled.div`
   transition: none;
 `;
 
+// const StyledHeader = styled(CommonRow)`
+//   padding: 1rem 2.4rem;
+//   background-color: rgba(40, 42, 46, 0.5);
+//   border-bottom: 0.05rem solid #272a30;
+//   text-transform: uppercase;
+//   font-size: 0.75rem;
+//   color: grey;
+// `;
+
 const StyledHeader = styled(CommonRow)`
-  padding: 1rem 2.4rem;
+  padding: ${(props) => props.padding || "1rem 2.4rem"};
   background-color: rgba(40, 42, 46, 0.5);
   border-bottom: 0.05rem solid #272a30;
   text-transform: uppercase;
@@ -37,7 +46,6 @@ const StyledRow = styled(CommonRow)`
     border-bottom: 0.05rem solid #272a30;
   }
 `;
-
 
 const Footer = styled.footer`
   background-color: rgba(40, 42, 46, 0.5);
@@ -61,11 +69,11 @@ function Table({ columns, children }) {
   );
 }
 
-function Header({ children }) {
+function Header({ children, ...props }) {
   const { columns } = useContext(TableContext);
   return (
-    <StyledHeader role="row" columns={columns} as="header" >
-        {children}
+    <StyledHeader role="row" columns={columns} as="header" {...props}>
+      {children}
     </StyledHeader>
   );
 }
@@ -80,7 +88,6 @@ function Row({ children }) {
 }
 
 function Body({ data, render }) {
-
   if (!data?.length) return <EmptyIcon />;
 
   return <>{data.map(render)}</>;

@@ -17,6 +17,15 @@ export const SUBMIT_INVOICE_MUTATION = gql`
   }
 `;
 
+export const UPDATE_BILL_STATUS_MUTATION = gql`
+  mutation UpdateBillStatus($id: String!, $status: String!) {
+    updateBillStatus(id: $id, status: $status) {
+      id
+      status
+    }
+  }
+`;
+
 export const DUPLICATE_INVOICE_MUTATION = gql`
   mutation DuplicateInvoice($id: String!) {
     duplicateInvoice(id: $id) {
@@ -28,7 +37,6 @@ export const DUPLICATE_INVOICE_MUTATION = gql`
       date
       duedate
       description
-
     }
   }
 `;

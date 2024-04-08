@@ -34,6 +34,7 @@
     "siwe": "^2.1.4"
   },
   "devDependencies": {
+    "apollo-server-core": "^3.13.0",
     "nodemon": "^3.1.0"
   }
 }

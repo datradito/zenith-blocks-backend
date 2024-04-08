@@ -31,11 +31,9 @@ export const transformInvoices = (invoices) => {
 }
 
 export const transformTransactionHistory = (transactions) => {
-    transactions = transactions.map(transaction => {
-        const { __typename, Transaction,  ...rest } = transaction;
-        return rest;
-    }
-    );
-    return transactions?.length > 0 ? transactions : [];
-}
-
+  transactions = transactions.map((transaction) => {
+    const { __typename, Transaction, ...rest } = transaction;
+    return rest;
+  });
+  return transactions?.length > 0 ? transactions : [];
+};

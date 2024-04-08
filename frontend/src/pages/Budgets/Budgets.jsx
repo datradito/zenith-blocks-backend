@@ -22,11 +22,11 @@ import EmptyIcon from "../../Components/atoms/EmptyIcon/EmptyIcon.jsx";
 
 function Budgets() {
   const { currentProposal } = useProposalStore();
-  
+
   const { id, description, amount, status, ...rest } = currentProposal;
-  const { isLoading, budgets } = useGetBudgets(rest.amount, id);
+  const { isLoading, budgets } = useGetBudgets(id);
   if (!amount) {
-   message.warning("Assign amount to proposal to create budget");
+    message.warning("Assign amount to proposal to create budget");
   }
 
   const header = useMemo(() => {
@@ -52,8 +52,7 @@ function Budgets() {
               <Button
                 variant="contained"
                 label="Create Budget"
-                // onClick={handleCreateBudget}
-                disabled={status === "Filled" || !amount}
+                disabled={status === "Filled" || status === "Funded" || !amount}
                 info={status ? "Proposal is fully budgeted" : ""}
               >
                 Create Budget

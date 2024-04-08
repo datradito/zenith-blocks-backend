@@ -5,7 +5,6 @@ import Input from "../../../atoms/Input/Input";
 import Form from "../../../atoms/Form/Form";
 import Button from "../../../atoms/Button/Button";
 import useSubmitContact from "../../../hooks/Contacts/useSubmitContact";
-import useGetContacts from "../../../hooks/Contacts/useGetContacts";
 import useSafeStore from "../../../../store/modules/safe/index.ts";
 import useAuthStore from "../../../../store/modules/auth/index.ts";
 import { isAddressValid } from "../../../../utils/logical/isAddressValid.js";

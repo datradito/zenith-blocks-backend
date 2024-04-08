@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import IconButton from "@mui/material/IconButton";
-import InputWithIcon from "../../molecules/Input/InputWithIcon";
 import { Stack } from "@mui/system";
 import { InputBase } from "@mui/material";
 

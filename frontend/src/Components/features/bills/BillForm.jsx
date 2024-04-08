@@ -9,12 +9,10 @@ import { Button } from "@mui/material";
 import ControlledDropdown from "../../molecules/Bills/ListDropdown.jsx";
 
 import { isAddressValid } from "../../../utils/logical/isAddressValid.js";
-import { FormInputText } from "./Form/FormInput.jsx";
-import FormSelectDropdown from "./Form/FormSelectDropdown.jsx";
+import { FormInputText } from "../../molecules/Form/FormInput.jsx";
+import FormSelectDropdown from "../../molecules/Form/FormSelectDropdown.jsx";
 
 function BillForm({ ...props }) {
-
-
   const methods = useFormContext();
   const {
     formState: { errors, isDirty, defaultValues },
@@ -129,9 +127,9 @@ function BillForm({ ...props }) {
                   return "Amount exceeds remaining budget amount";
                 }
 
-                if (parsedValue > balance) {
-                  return "Exceeds available balance";
-                }
+                //   if (parsedValue > balance) {
+                //     return "Exceeds available balance";
+                //   }
 
                 return true;
               },

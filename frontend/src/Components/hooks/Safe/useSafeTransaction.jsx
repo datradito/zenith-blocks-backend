@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import SafeApiKit from "@safe-global/api-kit";
 import { useSafeProvider } from "../../../Services/Safe/SafeProvider.jsx";
+import { message } from "antd";
 
 function useSafeTransaction() {
   const { safeSdk, service, safeSelected, chainId } = useSafeProvider();
@@ -37,14 +38,6 @@ function useSafeTransaction() {
     signature,
     senderAddress
   ) => {
-    // const transactionConfig: ProposeTransactionProps = {
-    //   safeAddress,
-    //   safeTxHash,
-    //   safeTransactionData,
-    //   senderAddress,
-    //   senderSignature,
-    //   origin,
-    // };
     try {
       console.log(safeTransaction);
       console.log(transactionHash);
@@ -57,13 +50,6 @@ function useSafeTransaction() {
         senderAddress,
         senderSignature: signature.data,
       });
-      // await service.proposeTransaction({
-      //   safeAddress: safeSelected,
-      //   safeTxHash: transactionHash,
-      //   safeTransactionData: safeTransaction.data,
-      //   senderAddress,
-      //   senderSignature: signature.data,
-      // });
     } catch (error) {
       console.log("Error proposing transaction:", error);
       throw error;
@@ -94,25 +80,35 @@ function useSafeTransaction() {
     return await safeSdk.signHash(hash);
   };
 
-  const isTxExecutable = async (safeTransaction) => {
-    const isTxExecutable = await safeSdk.isValidTransaction(safeTransaction);
+  const isTxExecutable = async (safeTxHash) => {
+    console.log(safeTxHash);
+    const transaction = await getTransaction(safeTxHash);
 
-    if (isTxExecutable) {
-      const txResponse = await service.executeTransaction(safeTransaction);
-      const contractReceipt = await txResponse.transactionResponse?.wait();
+    try {
+      const isTxExecutable = await safeSdk.isValidTransaction(transaction);
 
-      console.log("Transaction executed.");
-      console.log("- Transaction hash:", contractReceipt?.transactionHash);
-    } else {
-      console.log(
-        "Transaction invalid. Transaction was not executed.",
-        isTxExecutable
-      );
+      if (isTxExecutable) {
+        try {
+          const txResponse = await service.executeTransaction(transaction);
+          const contractReceipt = await txResponse.transactionResponse?.wait();
+
+          console.log("Transaction executed.");
+          console.log("- Transaction hash:", contractReceipt?.transactionHash);
+        } catch (error) {
+          console.error("Error executing transaction:", error);
+        }
+      }
+
+      //call backend update bill status to paid
+    } catch (error) {
+      message.error({
+        content: error.message || "Error executing transaction",
+        key: "execute",
+      });
     }
   };
 
   const getTransaction = async (safeTxHash) => {
-    console.log(!service);
     if (!service) {
       const apiKit = new SafeApiKit({ chainId: chainId });
       return await apiKit.getTransaction(safeTxHash);

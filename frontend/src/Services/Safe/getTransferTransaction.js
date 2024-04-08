@@ -1,10 +1,9 @@
-import { ERC_20_ABI } from "../../utils/constants/erc20Transfer.js";
+
 import { ethers } from "ethers";
 
 let ABI = ["function transfer(address to, uint amount)"];
 
 function encodeTxData(recipient, value) {
-  console.log("this runs")
   const ethersInterface = new ethers.Interface(ABI);
   return ethersInterface.encodeFunctionData("transfer", [recipient, value]);
 }

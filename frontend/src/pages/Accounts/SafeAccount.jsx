@@ -11,7 +11,6 @@ import Button from "../../Components/atoms/Button/Button";
 import { message } from "antd";
 import Label from "../../Components/atoms/Label/Label";
 import useGetContacts from "../../Components/hooks/Contacts/useGetContacts";
-import Safe from "@safe-global/protocol-kit";
 
 export const ConnectedContainer = styled(Box)(
   ({ theme }) => `
@@ -58,14 +57,13 @@ function SafeAccount(props) {
         )}
       </Box>
 
-      {!safe.safeSelected && safe.safes.length > 1 && (
-        <FormControl fullWidth sx={{ marginBottom: "20px" }}>
+      {!safe.safeSelected && safe.safes.length > 0 && (
+        <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
           <InputLabel id="switch-address-selector-label">
             Select Safe
           </InputLabel>
 
           <Select
-            color="success"
             aria-label="safe address selector"
             id="switch-address-selector"
             labelId="switch-address-selector-label"
@@ -92,13 +90,6 @@ function SafeAccount(props) {
             ))}
           </Select>
         </FormControl>
-      )}
-
-      {!safe.safeSelected && safe.safes.length === 1 && (
-        <>
-          {handleSafeSelection(safe.safes[0])}
-          <SafeInfo safeAddress={safe.safes[0]} chainId={safe.chainId} />
-        </>
       )}
 
       {safe.safeSelected && (

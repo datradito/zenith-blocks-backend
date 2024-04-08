@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Button from "../../atoms/Button/Button";
 import styled, { css } from "styled-components";
 import List from "../../atoms/List/List";
@@ -36,36 +36,38 @@ function FilterBills() {
   const { billFilter, setBillFilter } = useBillStore();
 
   const handleStatusClick = (status) => {
-    setBillFilter({ ...billFilter, status });
+    setBillFilter({ ...billFilter, status: status?.toLowerCase() });
   };
 
-  console.log(billFilter);
+  const billStatus = useMemo(() => {
+    return billFilter.status?.toLowerCase() || "all";
+  } , [billFilter.status]);
 
   return (
     <List {...listStyles}>
       <StyledButton
-        active={billFilter.status === "All"}
+        active={billStatus === "all" || billStatus === null}
         onClick={() => handleStatusClick()}
       >
         All
       </StyledButton>
       <StyledButton
-        active={billFilter.status === "Paid"}
-        onClick={() => handleStatusClick("Paid")}
+        active={billStatus === "paid"}
+        onClick={() => handleStatusClick("paid")}
       >
         Paid
       </StyledButton>
       <StyledButton
-        active={billFilter.status === "Unpaid"}
-        onClick={() => handleStatusClick("Unpaid")}
+        active={billStatus === "unpaid"}
+        onClick={() => handleStatusClick("unpaid")}
       >
         Unpaid
       </StyledButton>
       <StyledButton
-        active={billFilter.status === "Partial Paid"}
-        onClick={() => handleStatusClick("Partial Paid")}
+        active={billStatus === "readytoexecute"}
+        onClick={() => handleStatusClick("readytoexecute")}
       >
-        Partial Paid
+        Pending Execute
       </StyledButton>
     </List>
   );

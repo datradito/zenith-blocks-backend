@@ -18,7 +18,7 @@ import useDashboardStore from "../../../store/modules/dashboard/index.ts";
 import CircularIndeterminate from "../../atoms/Loader/loader.jsx";
 
 function CreateBudget({onCloseModal}) {
-  const { currentProposal } = useProposalStore();
+  const { currentProposal, setCurrentProposal } = useProposalStore();
   const { categories } = useDashboardStore();
   const { loading, submitBudgetMutation } = useSubmitBudget();
   const { remainingProposalAmount, loading: remainingLoading } =
@@ -40,7 +40,6 @@ function CreateBudget({onCloseModal}) {
   // Use useEffect to update the Currency field when currency changes
   useEffect(() => {
     setValue("currency", currentProposal?.currency);
-    setValue(remainingProposalAmount, remainingProposalAmount);
   }, [currentProposal, remainingLoading, setValue]);
 
   const handleCreateBudget = async(data) => {
@@ -51,11 +50,14 @@ function CreateBudget({onCloseModal}) {
       category: data.category,
       breakdown:
         (parseInt(data.amount) / parseInt(currentProposal.amount)) * 100,
-      rootpath: currentProposal.id,
     };
 
     try {
       await submitBudgetMutation({ variables: { budget: budgetData } });
+      setCurrentProposal({
+        ...currentProposal,
+        status: remainingProposalAmount - budgetData.amount === 0 ? "Funded" : currentProposal.status,
+      });
       onCloseModal();
     } catch (error) {
       message.error(`Failed to create budget: ${error}`);

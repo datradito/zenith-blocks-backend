@@ -9,9 +9,8 @@ import Menus from "../../molecules/Menus/Menus";
 import ConfirmDelete from "../../molecules/ConfirmDelete/ConfirmDelete";
 import { useDuplicateInvoice } from "../../hooks/Invoices/useDuplicateInvoice";
 import { useDeleteBills } from "../../hooks/Invoices/useDeleteBills";
-import { Avatar } from "@mui/material";
+import { Avatar, Checkbox } from "@mui/material";
 import GetEnsName from "../../molecules/GetEnsName/GetEnsName";
-import useSafeTransaction from "../../hooks/Safe/useSafeTransaction";
 import Payment from "../../../pages/Payments/Payment";
 import BillDetail from "../../../pages/Bills/BillDetail";
 const ScrollContainer = styled.div`
@@ -23,7 +22,7 @@ const ScrollContainer = styled.div`
   gap: 0.5rem;
 `;
 
-function BillRow({ invoice }) {
+function BillRow({ invoice, checked, onChange }) {
   const { isDuplicating, duplicateInvoice } = useDuplicateInvoice();
   const { isDeleting, handleDeleteBills } = useDeleteBills();
 
@@ -45,19 +44,23 @@ function BillRow({ invoice }) {
 
   return (
     <Table.Row>
-      <ScrollContainer>{Invoice}</ScrollContainer>
+      <Checkbox
+        onChange={() => onChange(invoice.InvoiceId)}
+        checked={checked}
+      />
+      <span>{Invoice}</span>
       <ScrollContainer>
         {" "}
         <Avatar></Avatar>
         <GetEnsName address={RecipientAddress} />
       </ScrollContainer>
-      <ScrollContainer>{Amount}</ScrollContainer>
-      <ScrollContainer>{Currency}</ScrollContainer>
-      <ScrollContainer>
-        <StatusChip status={Status} />
-      </ScrollContainer>
-      <ScrollContainer>{Date}</ScrollContainer>
-      <ScrollContainer>{Due}</ScrollContainer>
+      <span>{Amount}</span>
+      <span>{Currency}</span>
+
+      <StatusChip status={Status} />
+
+      <span>{Date}</span>
+      <span>{Due}</span>
       <Modal>
         <Modal.Open opens="details">
           <CustomPDFViewIcon label="Details" />
@@ -80,16 +83,21 @@ function BillRow({ invoice }) {
           <Menus.Toggle id={InvoiceId} />
 
           <Menus.List id={InvoiceId}>
-            <Menus.Button
-              icon={<HiSquare2Stack />}
-              onClick={handleDuplicate}
-              disabled={isDuplicating}
-            ></Menus.Button>
+            <Modal.Open opens="duplicate">
+              <Menus.Button
+                icon={<HiSquare2Stack />}
+                // onClick={handleDuplicate}
+                disabled={isDuplicating}
+              ></Menus.Button>
+            </Modal.Open>
 
             <Modal.Open opens="delete">
               <Menus.Button icon={<HiTrash />}></Menus.Button>
             </Modal.Open>
           </Menus.List>
+          <Modal.Window name="duplicate">
+            <>Under construction 🚧</>
+          </Modal.Window>
 
           <Modal.Window name="delete">
             <ConfirmDelete

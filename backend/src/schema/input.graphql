@@ -1,0 +1,64 @@
+input ContactsInput {
+  name: String
+  address: String
+  daoid: String
+  safeaddress: String
+}
+
+input PaymentInput {
+  invoiceid: String!
+  currency: String!
+  total: Float!
+  status: String!
+  transactionhash: String
+  budgetid: String!
+}
+
+input BudgetInput {
+  category: String
+  amount: Float
+  currency: String
+  breakdown: Float
+  proposalid: String
+  rootpath: String
+}
+input InvoiceInput {
+  category: String
+  recipient: String
+  owneraddress: String
+  budgetid: String
+  number: String
+  total: Float
+  currency: String
+  date: String
+  duedate: String
+  description: String
+  transactionHash: String
+}
+input ProposalAmountInput {
+  id: String
+  amount: Float
+  modifier: String
+  rootpath: String
+  daoid: String
+  currency: String
+}
+input ProposalInput {
+  id: String
+  amount: Float
+  modified: String
+  status: String
+  modifier: String
+  rootpath: String
+  daoid: String
+}
+
+input InvoiceFilterInput {
+  budgetid: String
+  status: String
+}
+
+input ContactsFilterInput {
+  daoid: String
+  safeaddress: String
+}

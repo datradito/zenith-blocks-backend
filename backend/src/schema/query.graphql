@@ -1,0 +1,15 @@
+type Query {
+  getBudgetById(id: String): Budget
+  getBudgetsForProposal(proposalid: String): [Budget]
+  getInvoiceById(id: String): Invoice
+  getInvoices(filter: InvoiceFilterInput): [Invoice]
+  getContacts(filter: ContactsFilterInput): [Contacts]
+  getProposalDetailsById(id: String): Proposal
+  getRemainingProposalAmount(id: String!): Float!
+  getProposalsByDao(daoid: String): [Proposal]
+  getPaymentByInvoiceId(invoiceid: String!): Payment
+  getAllPayments: [Payment!]!
+  getRemainingBudgetAmount(budgetid: String!): Float!
+  getTokenBalances(address: String!): [Token]
+  getTokenTransactionHistory(address: String!): [Transaction]
+}

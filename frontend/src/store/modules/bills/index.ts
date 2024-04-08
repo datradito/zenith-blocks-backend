@@ -1,9 +1,11 @@
 import { create } from "zustand";
 import persist from "../../../utils/persist";
+import useSafeStore from "../safe/index.ts";
 
 interface BillFilter {
   status: string;
   budgetid: string;
+  safeaddress: String;
 }
 
 const initialState = {
@@ -34,11 +36,13 @@ const useBillStore = create<BillStore>()(
         status: "All",
       },
       setBillFilter: (filter: BillFilter) => {
+        const { safeSelected } = useSafeStore.getState();
         set((state) => ({
           ...state,
           billFilter: {
             ...state.billFilter,
             ...filter,
+            safeaddress: safeSelected,
           },
         }));
       },

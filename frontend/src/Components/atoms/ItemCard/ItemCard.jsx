@@ -30,7 +30,14 @@ function ItemCard({ label, value }) {
 const ItemCardComponent = () => {
   const currentProposal = useProposalStore((state) => state.currentProposal);
 
+  // if (currentProposal !== null) {
+  //   const { id } = currentProposal;
+  //   // rest of your code
+  // } else {
+  //   // handle the case where currentProposal is null
+  // }
   const { id, description, ...rest } = currentProposal;
+
   return (
     <Container direction={"row"}>
       {Object.entries(rest)

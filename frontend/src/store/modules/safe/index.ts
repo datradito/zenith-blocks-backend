@@ -5,7 +5,6 @@ import SafeApiKit from "@safe-global/api-kit";
 import { EthersAdapter } from "@safe-global/protocol-kit";
 import { initialChain } from "../../../utils/constants/chains";
 import getChain from "../../../Services/Safe/getChain";
-import { getERC20Info } from "../../../services/Safe/getERC20Info.js";
 import useAuthStore from "../auth/index.ts";
 import useUtilitiesStore from "../utilities/index.ts";
 
@@ -51,6 +50,7 @@ interface safe {
   setSafeSelected: (safeSelected: string) => void;
   setSafes: (safes: string[]) => void;
   safeBalance?: string;
+  setSafeBalance: (balance: any) => void;
   safeApiKit: SafeApiKit;
   /**
    * Sets the SafeApiKit instance for the given chainId.
@@ -75,6 +75,7 @@ const initialSafeState = {
   safes: [],
   hasLoadedSafes: false,
   erc20Balances: {},
+  safeBalance: "",
   erc20token: {
     address: "",
     symbol: "",
@@ -97,13 +98,14 @@ const useSafeStore = create<safe>(
         "safeSelected",
         "safes",
         "erc20Balances",
+        "safeBalance",
         "erc20token",
         "chainId",
         "safeApiKit",
         "safeProtocolKit",
         "EthAdapter",
         "hasLoadedSafes",
-        "safeOwners"
+        "safeOwners",
       ],
     },
     //@ts-ignore
@@ -141,8 +143,6 @@ const useSafeStore = create<safe>(
       getSafesOwned: async () => {
         try {
           const { safeApiKit } = get();
-          //in case we need state from another store use hook.getState()
-          // hook() called directly like this wont work becasue react hooks can only be called in components not in fn like this
           const authStore = useAuthStore.getState();
           const { user, logout } = authStore;
 
@@ -161,6 +161,7 @@ const useSafeStore = create<safe>(
       },
       setSafeApiKit: (chainId: bigint) => {
         const api = new SafeApiKit({ chainId: chainId });
+        console.log(api, "api")
         set(() => ({
           safeApiKit: api,
         }));
@@ -185,10 +186,10 @@ const useSafeStore = create<safe>(
           erc20Balances,
         }));
       },
-      getSafeBalance: async (address: string, provider: any) => {
-        const safeSelected = useSafeStore.getState().safeSelected;
-        let balance = await provider?.getBalance(safeSelected);
-        balance = balance?.toString();
+      setSafeBalance: async (balance: any) => {
+        // const safeSelected = useSafeStore.getState().safeSelected;
+        // let balance = await provider?.getBalance(safeSelected);
+        // balance = balance?.toString();
         set(() => ({
           safeBalance: balance,
         }));
@@ -210,5 +211,3 @@ const useSafeStore = create<safe>(
 // });
 
 export default useSafeStore;
-
-
