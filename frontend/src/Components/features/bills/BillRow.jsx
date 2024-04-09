@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import CustomPDFViewIcon from "../../atoms/PdfIcon/padfIcon";
-import CustomPaymentViewIcon from "../../atoms/PaymentIcon/paymentIcon";
+import CustomActionIcon from "../../atoms/ActionIcon/CustomActionIcon";
+import BillActionButton from "./BillActionButton";
 import StatusChip from "../../atoms/StatusChip/StatusChip";
 import { HiSquare2Stack, HiTrash } from "react-icons/hi2";
 import Modal from "../../molecules/Modal/Modal";
@@ -11,7 +12,6 @@ import { useDuplicateInvoice } from "../../hooks/Invoices/useDuplicateInvoice";
 import { useDeleteBills } from "../../hooks/Invoices/useDeleteBills";
 import { Avatar, Checkbox } from "@mui/material";
 import GetEnsName from "../../molecules/GetEnsName/GetEnsName";
-import Payment from "../../../pages/Payments/Payment";
 import BillDetail from "../../../pages/Bills/BillDetail";
 const ScrollContainer = styled.div`
   max-width: 100%;
@@ -69,18 +69,13 @@ function BillRow({ invoice, checked, onChange }) {
           <BillDetail bill={invoice} />
         </Modal.Window>
       </Modal>
-      <Modal>
-        <Modal.Open opens="payment">
-          <CustomPaymentViewIcon label="Payment" />
-        </Modal.Open>
-        <Modal.Window name="payment">
-          <Payment txHash={transactionHash} />
-        </Modal.Window>
-      </Modal>
+      <BillActionButton invoice={invoice} />
 
       <Modal>
         <Menus.Menu>
-          <Menus.Toggle id={InvoiceId} />
+          <Menus.Toggle id={InvoiceId}>
+            <CustomActionIcon />
+            </Menus.Toggle>
 
           <Menus.List id={InvoiceId}>
             <Modal.Open opens="duplicate">

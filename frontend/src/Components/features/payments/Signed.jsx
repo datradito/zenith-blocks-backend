@@ -9,10 +9,7 @@ function Signed({ signed }) {
   console.log(signed.length);
   return (
     <div>
-      <MaxLabel
-      >
-        Signed By
-      </MaxLabel>
+      <MaxLabel>Signed By</MaxLabel>
       {signed.length === 0 ? (
         <Label>No Signatures yet!</Label>
       ) : (
@@ -24,19 +21,23 @@ function Signed({ signed }) {
           </Table.Header>
           <Table.Body
             data={signed}
-            render={() => {
-              return signed.map((signer, index) => (
-                <Table.Row>
-                  <div>{index + 1}</div>
-                  <AddressLabel address={signer} />
-                  <StatusChip status="Signed" />
-                </Table.Row>
-              ));
+            render={(signer, index) => {
+              return <Row key={index} signer={signer} index={index} />;
             }}
           />
         </Table>
       )}
     </div>
+  );
+}
+
+const Row = ({ signer, index }) => {
+  return (
+    <Table.Row>
+      <div>{index + 1}</div>
+      <AddressLabel address={signer} />
+      <StatusChip status="Signed" />
+    </Table.Row>
   );
 }
 

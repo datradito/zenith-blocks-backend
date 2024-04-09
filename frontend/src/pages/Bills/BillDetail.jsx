@@ -7,10 +7,17 @@ import BillList from "../../Components/features/payments/BillList";
 
 import styled from "styled-components";
 import DetailBillingInfo from "../../Components/features/bills/Detail/DetailBillingInfo";
+import Payment from "../Payments/Payment";
 
 const RightPanel = styled(Container)`
   padding: 1rem;
   flex: 2;
+  text-align: left;
+`;
+
+const LeftPanel = styled(Container)`
+  padding: 1rem;
+  flex: 1;
   text-align: left;
 `;
 
@@ -40,7 +47,9 @@ function BillDetail({ bill }) {
           </Typography>
           <BillList bill={bill} />
         </RightPanel>
-        {/* <LeftPanel>dfaefa</LeftPanel> */}
+        <LeftPanel>
+          <Payment txHash={bill.transactionHash} />
+        </LeftPanel>
       </Container>
     </div>
   );

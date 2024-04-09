@@ -1,22 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { createPortal } from "react-dom";
 import styled from "styled-components";
-import {useOutsideClick} from "../../hooks/useOutsideClicks.js";
-import CustomActionIcon from "../../atoms/ActionIcon/CustomActionIcon.jsx";
-
-
-// export const Overlay = styled.div`
-//   position: fixed;
-//   top: 0;
-//   left: 0;
-//   width: 100%;
-//   height: 100vh;
-//   background-color: var(--backdrop-color);
-//   backdrop-filter: blur(4px);
-//   z-index: 1000;
-//   transition: all 0.5s;
-// `;
-
+import { useOutsideClick } from "../../hooks/useOutsideClicks.js";
 
 const Menu = styled.div`
   display: flex;
@@ -45,15 +30,16 @@ const StyledToggle = styled.button`
 
 const StyledList = styled.ul`
   position: fixed;
-  background-color: rgba(40, 42, 46, 0.5);
+  background-color: white;
   list-style: none;
 
-  right: ${(props) => props.position.x + 50 }px;
+  right: ${(props) => props.position.x + 50}px;
   top: ${(props) => props.position.y - 70}px;
 
   /* Add border-radius and margin-left styles */
   border-radius: 10px; /* Adjust the radius as needed */
-  padding-left: 0; /* Set the margin-left as needed */
+  padding: 0.5rem;
+  
 `;
 
 const StyledButton = styled.button`
@@ -61,18 +47,17 @@ const StyledButton = styled.button`
   text-align: left;
   background: none;
   border: none;
-  font-size: .75rem;
+  font-size: 0.75rem;
   transition: all 0.2s;
-  padding: 1rem;
+  padding: 0.65rem;
   display: flex;
   align-items: center;
   gap: 1rem;
   cursor: pointer;
-  border-radius: 5rem;
+  border-bottom: 1px solid darkgray;
 
   &:hover {
-    background-color: white;
-    margin: .05rem;
+    background-color: gray;
   }
 
   & svg {
@@ -101,7 +86,7 @@ function Menus({ children }) {
   );
 }
 
-function Toggle({ id }) {
+function Toggle({ id, children }) {
   const { openId, close, open, setPosition } = useContext(MenusContext);
 
   function handleClick(e) {
@@ -116,11 +101,7 @@ function Toggle({ id }) {
     openId === "" || openId !== id ? open(id) : close();
   }
 
-  return (
-    <StyledToggle onClick={handleClick}>
-      <CustomActionIcon />
-    </StyledToggle>
-  );
+  return <StyledToggle onClick={handleClick}>{children}</StyledToggle>;
 }
 
 function List({ id, children }) {
@@ -146,10 +127,10 @@ function Button({ children, icon, onClick }) {
   }
 
   return (
-      <StyledButton onClick={handleClick}>
-        {icon}
-        {children}
-      </StyledButton>
+    <StyledButton onClick={handleClick}>
+      {icon}
+      {children}
+    </StyledButton>
   );
 }
 
