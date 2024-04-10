@@ -122,9 +122,14 @@ export default function WalletConnect() {
       login(response.authToken);
       navigate("/dashboard");
     } catch (error) {
-      const errMessage = error?.errors[0];
+      //TODO: auth service have diff error format
+      // const errMessage = error?.errors[0];
+      // message.error({
+      //   content: `❌ ${errMessage.message} || Something went wronf during login. Please try again.`,
+      //   key: "verifySignatureError",
+      // });
       message.error({
-        content: `❌ ${errMessage.message} || Something went wronf during login. Please try again.`,
+        content: `❌ ${error.message} || Something went wrong during login. Please try again.`,
         key: "verifySignatureError",
       });
       logout();
