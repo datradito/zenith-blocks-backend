@@ -28,7 +28,7 @@ export default function WalletConnect() {
   const createSiweMessage = async (address, chainId) => {
     try {
       const { data: nonce } = await axios.get(
-        `${process.env.REACT_APP_AUTH_SERVICE}/nonce`,
+        `${process.env.REACT_APP_API_URL}/nonce`,
         {
           withCredentials: true,
         }
@@ -59,7 +59,7 @@ export default function WalletConnect() {
       });
       
       const response = await axios.post(
-        `${process.env.REACT_APP_AUTH_SERVICE}/verify`,
+        `${process.env.REACT_APP_API_URL}/verify`,
         JSON.stringify({ message: messageToVerify, signature }),
         {
           headers: {
