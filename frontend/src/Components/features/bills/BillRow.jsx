@@ -4,6 +4,7 @@ import CustomActionIcon from "../../atoms/ActionIcon/CustomActionIcon";
 import BillActionButton from "./BillActionButton";
 import StatusChip from "../../atoms/StatusChip/StatusChip";
 import { HiSquare2Stack, HiTrash } from "react-icons/hi2";
+import LoopIcon from "@mui/icons-material/Loop";
 import Modal from "../../molecules/Modal/Modal";
 import Table from "../../molecules/Table/Table";
 import Menus from "../../molecules/Menus/Menus";
@@ -13,6 +14,7 @@ import { useDeleteBills } from "../../hooks/Invoices/useDeleteBills";
 import { Avatar, Checkbox } from "@mui/material";
 import GetEnsName from "../../molecules/GetEnsName/GetEnsName";
 import BillDetail from "../../../pages/Bills/BillDetail";
+import BillRecurr from "./BillRecurr";
 const ScrollContainer = styled.div`
   max-width: 100%;
   overflow-x: auto;
@@ -75,23 +77,25 @@ function BillRow({ invoice, checked, onChange }) {
         <Menus.Menu>
           <Menus.Toggle id={InvoiceId}>
             <CustomActionIcon />
-            </Menus.Toggle>
+          </Menus.Toggle>
 
           <Menus.List id={InvoiceId}>
             <Modal.Open opens="duplicate">
               <Menus.Button
-                icon={<HiSquare2Stack />}
+                icon={<LoopIcon />}
                 // onClick={handleDuplicate}
                 disabled={isDuplicating}
-              ></Menus.Button>
+              >
+                Recurring
+              </Menus.Button>
             </Modal.Open>
 
             <Modal.Open opens="delete">
-              <Menus.Button icon={<HiTrash />}></Menus.Button>
+              <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
             </Modal.Open>
           </Menus.List>
           <Modal.Window name="duplicate">
-            <>Under construction 🚧</>
+            <BillRecurr invoice={invoice} />
           </Modal.Window>
 
           <Modal.Window name="delete">

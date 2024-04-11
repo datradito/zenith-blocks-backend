@@ -1,7 +1,7 @@
 import React from "react";
 import Modal from "../../molecules/Modal/Modal";
 import Menus from "../../molecules/Menus/Menus";
-import { HiSquare2Stack, HiTrash } from "react-icons/hi2";
+import { HiSquare2Stack } from "react-icons/hi2";
 import { Button } from "@mui/material";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import ArrowDropDownTwoToneIcon from "@mui/icons-material/ArrowDropDownTwoTone";
@@ -46,7 +46,7 @@ function BillActions() {
         </Modal.Window>
 
         <Modal.Window name="uploadBills">
-          <>Upload Modal goes here 🚧</>
+          <>Under Construction 🚧</>
         </Modal.Window>
         <Modal.Window name="batchPay">
           <>Under construction 🚧</>

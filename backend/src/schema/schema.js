@@ -7,6 +7,7 @@ import contactResolver from "../graphQL/Contacts/contactResolver.js";
 import transactionHistoryResolver from "../graphQL/dashboard/transactionHistoryResolver.js";
 import Invoice from "../Database/models/Invoice.js";
 
+
 export const typeDefs = `#graphql
 
 
@@ -189,6 +190,8 @@ export const typeDefs = `#graphql
     }
 
 `;
+
+
 export const resolvers = {
   Query: {
     ...proposalResolver.Query,

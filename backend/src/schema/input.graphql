@@ -20,7 +20,6 @@ input BudgetInput {
   currency: String
   breakdown: Float
   proposalid: String
-  rootpath: String
 }
 input InvoiceInput {
   category: String
@@ -33,13 +32,14 @@ input InvoiceInput {
   date: String
   duedate: String
   description: String
+  safeaddress: String
+  daoid: String
   transactionHash: String
 }
 input ProposalAmountInput {
   id: String
   amount: Float
   modifier: String
-  rootpath: String
   daoid: String
   currency: String
 }
@@ -56,6 +56,7 @@ input ProposalInput {
 input InvoiceFilterInput {
   budgetid: String
   status: String
+  safeaddress: String
 }
 
 input ContactsFilterInput {

@@ -4,6 +4,7 @@ import session from "./src/middlewares/session.js";
 import { corsOptions } from "./src/middlewares/cors.js";
 import { authRouter } from "./src/routes/authRoutes.js";
 import { swapRouter } from "./src/routes/1inchSwapRoutes.js";
+import { CronRouter } from "./src/routes/crons.js";
 
 import User from "./src/Database/models/User.js";
 import { typeDefs, resolvers } from "./src/schema/schema.js";
@@ -14,6 +15,8 @@ import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import http from "http";
+
+import "./src/services/crons/cron.js"
 
 import init from "./src/Database/sequalizeConnection.js";
 
@@ -32,6 +35,7 @@ app.use(cors(corsOptions));
 app.use(session);
 app.use(authRouter);
 app.use(swapRouter);
+app.use(CronRouter);
 
 let isMoralisInitialized = false;
 

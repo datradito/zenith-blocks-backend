@@ -6,5 +6,6 @@ type Mutation {
   submitPayment(payment: PaymentInput!): Payment!
   duplicateInvoice(id: String!): Invoice
   deleteBills(billIds: [String]!): DeleteBillsResponse
+  updateBillStatus(billId: String!, status: String!): Invoice
   deleteContact(id: String!): Contacts
 }

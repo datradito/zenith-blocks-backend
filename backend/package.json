@@ -29,6 +29,7 @@
     "jsonwebtoken": "^9.0.1",
     "moralis": "^2.22.4",
     "mysql2": "^3.6.0",
+    "node-cron": "^3.0.3",
     "redis": "^4.6.8",
     "sequelize": "^6.32.1",
     "siwe": "^2.1.4"

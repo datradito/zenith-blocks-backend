@@ -1,12 +1,6 @@
-type Status {
-    status: Int
-    message: String
-}
-
 type DeleteBillsResponse {
   deletedBillIds: [String]
 }
-
 type Contacts {
   id: String
   name: String
@@ -14,11 +8,9 @@ type Contacts {
   daoid: String
   safeaddress: String
 }
-
 type DuplicateInvoice {
   id: String!
 }
-
 type Budget {
   id: String
   category: String
@@ -39,7 +31,6 @@ type Proposal {
   modified: String
   status: String
   modifier: String
-  rootpath: String
   daoid: String
   budgets: [Budget]
 }
@@ -59,7 +50,6 @@ type Invoice {
   status: String
   transactionHash: String
 }
-
 type Payment {
   id: String!
   invoiceid: String!

@@ -15,7 +15,7 @@ import FormSelectDropdown from "../../molecules/Form/FormSelectDropdown.jsx";
 function BillForm({ ...props }) {
   const methods = useFormContext();
   const {
-    formState: { errors, isDirty, defaultValues },
+    formState: { errors },
     watch,
     handleSubmit,
     register,
@@ -179,7 +179,7 @@ function BillForm({ ...props }) {
 
         <Button
           sx={{
-            widht: "2rem",
+            width: "6rem",
             height: "2rem",
             "&:hover": {
               backgroundColor: "#E0E0E0",
