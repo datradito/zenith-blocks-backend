@@ -9,5 +9,6 @@ router.get("/nonce", function (_, res) {
 });
 
 router.post("/verify", verifyController);
+router.post("/verify_safe_user", verifyController);
 
 export const authRouter = router;
