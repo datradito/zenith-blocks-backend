@@ -1,6 +1,9 @@
 import siwe from "siwe";
 import express from "express";
-import { verifyController } from "../controller/auth/authController.js";
+import {
+  verifyController,
+  verifySafeUserController,
+} from "../controller/auth/authController.js";
 
 const router = express.Router();
 
@@ -9,5 +12,6 @@ router.get("/nonce", function (_, res) {
 });
 
 router.post("/verify", verifyController);
+router.post("/verify_safe_user", verifySafeUserController);
 
 export const authRouter = router;
