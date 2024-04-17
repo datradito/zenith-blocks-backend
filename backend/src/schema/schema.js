@@ -41,10 +41,10 @@ export const typeDefs = `#graphql
         id: String
         amount: Float
         currency: String
-        modified: String
         status: String
-        modifier: String
         daoid: String
+        body: String
+        title: String
         budgets: [Budget]
     }
 
@@ -97,13 +97,14 @@ export const typeDefs = `#graphql
 
     type Query {
         getBudgetById(id: String): Budget,
+        getBudgets: [Budget],
         getBudgetsForProposal(proposalid: String): [Budget],
         getInvoiceById(id: String): Invoice,
         getInvoices(filter: InvoiceFilterInput): [Invoice],
         getContacts(filter: ContactsFilterInput): [Contacts],
         getProposalDetailsById(id: String): Proposal,
         getRemainingProposalAmount(id: String!): Float!,
-        getProposalsByDao(daoid: String): [Proposal],
+        getProposalsByDao(daoid: String, first: Int, skip: Int, title: String): [Proposal],
         getPaymentByInvoiceId(invoiceid: String!): Payment
         getAllPayments: [Payment!]!
         getRemainingBudgetAmount(budgetid: String!): Float!
