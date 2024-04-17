@@ -25,9 +25,9 @@ const budgetResolver = {
         });
 
         const budgetsWithRemaining = budgets.map(async (budget) => {
-          const {amount } = await Budget.findByPk(budget.id, {
-            attributes: ['amount'],
-          })
+          const { amount } = await Budget.findByPk(budget.id, {
+            attributes: ["amount"],
+          });
           return { ...budget.toJSON(), amount }; // merge the original budget with remaining
         });
 
@@ -36,11 +36,20 @@ const budgetResolver = {
         throw new GraphQLError(error.message);
       }
     },
+    getBudgets: async (parent, args) => {
+      try {
+        const budgets = await Budget.findAll();
+        console.log("requesting budgets")
+        return budgets;
+      } catch (error) {
+        throw new GraphQLError(error.message);
+      }
+    },
     getRemainingBudgetAmount: async (parent, args) => {
       //using the budgetid, get the remaining budget amount by budgetTotal - all invoice total for this budget based on args.budgetid
       try {
         const budget = await Budget.findByPk(args.budgetid, {
-          attributes: ['amount', 'proposalid'],
+          attributes: ["amount", "proposalid"],
         });
         return budget.amount;
       } catch (error) {
@@ -61,7 +70,7 @@ const budgetResolver = {
       await updateProposalStatus(args.budget.proposalid, args.budget.amount);
 
       const budget = new Budget({
-        ...args.budget
+        ...args.budget,
       });
 
       try {
