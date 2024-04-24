@@ -18,7 +18,7 @@ const proposalResolver = {
       }
     },
     getProposalsByDao: async (parent, args, context) => {
-      const { daoid, first, skip , title} = args;
+      const { daoid, first, skip, title } = args;
       let combinedProposals = [];
 
       const variables = {
@@ -40,7 +40,9 @@ const proposalResolver = {
         // Use Promise.all to wait for all promises to resolve
         await Promise.all(
           proposals.map(async (proposal) => {
-            let savedProposal = await Proposal.findByPk(proposal.id);
+            let savedProposal = await Proposal.findByPk(proposal.id, {
+              order: [["createdAt", "DESC"]],
+            });
             if (!savedProposal) {
               combinedProposals.push({
                 id: proposal.id,
@@ -70,59 +72,6 @@ const proposalResolver = {
 
       return combinedProposals;
     },
-    // getProposalsByDao: async (parent, args, context) => {
-    //   const { daoid } = args;
-    //   let mergedProposals = [];
-
-    //   const variables = {
-    //     space: daoid,
-    //     skip: 0,
-    //     first: 20,
-    //     state: "closed",
-    //   };
-
-    //   try {
-    //     const {
-    //       data: { proposals },
-    //     } = await callExternalGraphQLAPI(
-    //       "https://hub.snapshot.org/graphql",
-    //       variables
-    //     );
-    //     try {
-    //       proposals.forEach(async (proposal) => {
-    //         let savedProposal = await Proposal.findByPk(proposal.id);
-    //         if (!savedProposal) {
-    //           mergedProposals.push({
-    //             id: proposal.id,
-    //             amount: 0,
-    //             currency: "None",
-    //             daoid: daoid,
-    //             title: proposal.title,
-    //             body: proposal.body,
-    //             status: proposal.state,
-    //             budgets: [],
-    //           });
-    //         } else {
-    //           const { status, ...rest } = savedProposal.dataValues;
-    //           mergedProposals.push({
-    //             ...rest,
-    //             body: proposal.body,
-    //             title: proposal.title,
-    //             status: proposal.state,
-    //           });
-    //         }
-    //       });
-    //     } catch (error) {
-    //       throw new GraphQLError(error.message);
-    //     }
-    //   } catch (error) {
-    //     console.error("Network Error:", error.message);
-    //   }
-
-    //   return mergedProposals;
-    //   // const proposals = await Proposal.findAll({ where: { daoid } });
-    //   // return proposals;
-    // },
     getRemainingProposalAmount: async (parent, args, context) => {
       const { id } = args;
       try {
@@ -146,6 +95,7 @@ const proposalResolver = {
         modifier: args.proposal.modifier,
         daoid: args.proposal.daoid,
         currency: args.proposal.currency,
+        status: args.proposal.status,
       });
 
       try {

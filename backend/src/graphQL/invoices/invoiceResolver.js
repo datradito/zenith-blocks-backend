@@ -12,8 +12,7 @@ import {
   throwCustomError,
   ErrorTypes,
 } from "../../errors/errorHandlerHelper.js";
-import { BillStatuses } from "../../utility/BillStatuses.js";
-
+import { BillStatuses } from "../../utility/constants/BillStatuses.js";
 
 const invoiceResolver = {
   Query: {
@@ -48,7 +47,7 @@ const invoiceResolver = {
         //    ...invoice,
         //    readyToExecute: readyToExecute
         //  }
-        
+
         console.log(invoices);
         return invoices;
       } catch (error) {

@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
 import Invoice from "../../Database/models/Invoice.js";
 import Payment from "../../Database/models/Payment.js";
-import { BillStatuses } from "../../utility/BillStatuses.js";
+import { BillStatuses } from "../../utility/constants/BillStatuses.js";
 
 const paymentsResolver = {
   Query: {
@@ -61,9 +61,7 @@ const paymentsResolver = {
         }
 
         // If the total paid is less than the invoice total, and new payment is for either less or equal to remaining invoice amount then create payment
-        if (
-          parseInt(invoice.total - totalPaid) === parseInt(payment.total)
-        ) {
+        if (parseInt(invoice.total - totalPaid) === parseInt(payment.total)) {
           await Invoice.update(
             {
               status: BillStatuses.PAID,

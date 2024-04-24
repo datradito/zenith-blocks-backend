@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../db.js";
 import Budget from "./Budget.js";
-import { BillStatuses } from "../../utility/BillStatuses.js";
+import { BillStatuses } from "../../utility/constants/BillStatuses.js";
 
 const Invoice = sequelize.define("invoices", {
   id: {
@@ -61,14 +61,12 @@ const Invoice = sequelize.define("invoices", {
   },
   safeaddress: {
     type: DataTypes.STRING,
-    allowNull: true
+    allowNull: true,
   },
   transactionHash: {
     type: DataTypes.STRING,
     allowNull: true,
   },
 });
-
-
 
 export default Invoice;

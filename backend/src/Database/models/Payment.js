@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../db.js";
-import { BillStatuses } from "../../utility/BillStatuses.js";
+import { BillStatuses } from "../../utility/constants/BillStatuses.js";
 
 const Payment = sequelize.define("payments", {
   id: {
@@ -39,7 +39,5 @@ const Payment = sequelize.define("payments", {
     allowNull: false,
   },
 });
-
-
 
 export default Payment;

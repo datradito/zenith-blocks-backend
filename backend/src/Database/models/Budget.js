@@ -1,7 +1,5 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../db.js";
-import Proposal from "./Proposal.js";
-import Invoice from "./Invoice.js";
 
 const Budget = sequelize.define("budgets", {
   id: {
@@ -28,24 +26,16 @@ const Budget = sequelize.define("budgets", {
   },
   proposalid: {
     type: DataTypes.STRING.BINARY,
-    allowNull: false,
+    allowNull: true,
+  },
+  description: {
+    type: DataTypes.STRING,
+    allowNull: true,
   },
   remaining: {
-    type: DataTypes.VIRTUAL,
-    get() {
-      // Calculate the remaining amount based on associated invoices
-      if (this.invoices && this.invoices.length > 0) {
-        const totalInvoiceAmount = this.invoices.reduce(
-          (acc, invoice) => acc + invoice.total,
-          0
-        );
-        return this.getDataValue("amount") - totalInvoiceAmount;
-      }
-      return this.getDataValue("amount"); // If no invoices, remaining is the full amount
-    },
+    type: DataTypes.FLOAT,
+    allowNull: false,
   },
 });
-
-
 
 export default Budget;

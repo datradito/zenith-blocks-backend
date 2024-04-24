@@ -5,12 +5,12 @@ import paymentsResolver from "../graphQL/payments/paymentsResolver.js";
 import walletResolvers from "../graphQL/dashboard/walletResolvers.js";
 import contactResolver from "../graphQL/Contacts/contactResolver.js";
 import transactionHistoryResolver from "../graphQL/dashboard/transactionHistoryResolver.js";
-import Invoice from "../Database/models/Invoice.js";
-
+import Proposal from "../Database/models/Proposal.js";
+import { GraphQLError } from "graphql";
+import budgetLoader from "../services/budgets/BudgetLoader.js";
+import billLoader from "../services/bills/BillsLoader.js";
 
 export const typeDefs = `#graphql
-
-
    type DeleteBillsResponse {
       deletedBillIds: [String]
     }
@@ -24,27 +24,38 @@ export const typeDefs = `#graphql
     type DuplicateInvoice{
         id: String!
     }
+    """Budget type with bills, each bill must link to Proposal"""
     type Budget {
-        id: String
+        id: ID
         category: String
         amount: Float
         currency: String
         breakdown: Float
         proposalid: String
-        rootpath: String
+        proposal: Proposal
         remaining: Float
-        ipfs: String
+        createdAt: String
+        description: String
+        """bills are returned from dataloader, meaning after first request result will be cached, if we see issues with stale data, move billLoader to context on each request"""
         invoices: [Invoice]
     }
 
+    type BudgetList {
+      items: [Budget]
+      count: Int
+    }
+
+    """Merged proposal from zenith and snapshot data"""
     type Proposal {
-        id: String
+        id: ID
         amount: Float
         currency: String
         status: String
         daoid: String
         body: String
         title: String
+        createdAt: String
+        """Budgets are handled through dataloader, if issue with stale data are encountered, look into setting up budget loader in context so that we dont return data from cache"""
         budgets: [Budget]
     }
 
@@ -97,7 +108,7 @@ export const typeDefs = `#graphql
 
     type Query {
         getBudgetById(id: String): Budget,
-        getBudgets: [Budget],
+        getBudgets(first: Int, skip: Int, filters: BudgetFilterInput) : BudgetList,
         getBudgetsForProposal(proposalid: String): [Budget],
         getInvoiceById(id: String): Invoice,
         getInvoices(filter: InvoiceFilterInput): [Invoice],
@@ -107,12 +118,11 @@ export const typeDefs = `#graphql
         getProposalsByDao(daoid: String, first: Int, skip: Int, title: String): [Proposal],
         getPaymentByInvoiceId(invoiceid: String!): Payment
         getAllPayments: [Payment!]!
-        getRemainingBudgetAmount(budgetid: String!): Float!
         getTokenBalances(address: String!): [Token]
         getTokenTransactionHistory(address: String!): [Transaction]
     }
     type Mutation {
-        submitBudget(budget: BudgetInput): Budget,
+        submitBudget(budget: BudgetInput!): Budget,
         submitContact(contact: ContactsInput): Contacts,
         submitInvoice(invoice: InvoiceInput): Invoice,
         setProposalAmount(proposal: ProposalAmountInput): Proposal,
@@ -141,12 +151,13 @@ export const typeDefs = `#graphql
     
     
     input BudgetInput {
-        category: String
-        amount: Float
-        currency: String
-        breakdown: Float
-        proposalid: String
+        category: String!
+        amount: Float!
+        currency: String!
+        proposalid: String!
+        description: String
     }
+
     input InvoiceInput {
         category: String
         recipient: String
@@ -168,6 +179,7 @@ export const typeDefs = `#graphql
         modifier: String
         daoid: String
         currency: String
+        status: String
     }
     input ProposalInput {
         id: String
@@ -185,13 +197,20 @@ export const typeDefs = `#graphql
       safeaddress: String
     }
 
+    input BudgetFilterInput {
+      proposal_id: String
+      safeaddress: String
+      creation_date__gte: String
+      creation_date__lte: String
+      amount: Int
+    }
+
     input ContactsFilterInput {
       daoid: String
       safeaddress: String
     }
 
 `;
-
 
 export const resolvers = {
   Query: {
@@ -213,12 +232,27 @@ export const resolvers = {
   Budget: {
     async invoices(parent) {
       try {
-        // Fetch invoices associated with the budget
-        const invoices = await Invoice.findAll({
-          where: { budgetid: parent.id },
+        return await billLoader.load(parent.id);
+      } catch (error) {
+        throw new GraphQLError(error.message);
+      }
+    },
+    async proposal(parent) {
+      try {
+        const proposal = await Proposal.findOne({
+          where: { id: parent.proposalid },
         });
 
-        return invoices;
+        return proposal;
+      } catch (error) {
+        throw new GraphQLError(error.message);
+      }
+    },
+  },
+  Proposal: {
+    async budgets(parent) {
+      try {
+        return await budgetLoader.load(parent.id);
       } catch (error) {
         throw new GraphQLError(error.message);
       }
@@ -231,5 +265,3 @@ export const resolvers = {
 //   resolvers: resolvers,
 //   introspection: true,
 // });
-
-

@@ -1,19 +1,14 @@
 import { GraphQLError } from "graphql";
 import Budget from "../../Database/models/Budget.js";
-
-import { validateBudget } from "../../validators/validateBudget.js";
-import updateProposalStatus from "../../utility/budgetHelpers/updateProposalStatus.js";
-import {
-  throwCustomError,
-  ErrorTypes,
-} from "../../errors/errorHandlerHelper.js";
-
+import BudgetHandler from "../../services/budgets/BudgetHandler.js";
+import countBudgets from "../../services/budgets/countBudgets.js";
+import setFilters from "../../services/budgets/setFilters.js";
 const budgetResolver = {
   Query: {
     getBudgetById: async (parent, args) => {
       try {
         const budget = await Budget.findByPk(args.id);
-        return { ...budget.toJSON(), remaining: budget.remaining };
+        return { ...budget.toJSON() };
       } catch (error) {
         throw new GraphQLError(error.message);
       }
@@ -36,22 +31,18 @@ const budgetResolver = {
         throw new GraphQLError(error.message);
       }
     },
-    getBudgets: async (parent, args) => {
+    getBudgets: async (parent, { first, skip, filters }) => {
+      const count = await countBudgets(filters);
       try {
-        const budgets = await Budget.findAll();
-        console.log("requesting budgets")
-        return budgets;
-      } catch (error) {
-        throw new GraphQLError(error.message);
-      }
-    },
-    getRemainingBudgetAmount: async (parent, args) => {
-      //using the budgetid, get the remaining budget amount by budgetTotal - all invoice total for this budget based on args.budgetid
-      try {
-        const budget = await Budget.findByPk(args.budgetid, {
-          attributes: ["amount", "proposalid"],
+        const whereClause = await setFilters(filters);
+
+        const budgets = await Budget.findAll({
+          where: whereClause,
+          order: [["createdAt", "DESC"]],
+          limit: first || 10,
+          offset: skip || 0,
         });
-        return budget.amount;
+        return { items: budgets, count };
       } catch (error) {
         throw new GraphQLError(error.message);
       }
@@ -59,22 +50,13 @@ const budgetResolver = {
   },
   Mutation: {
     submitBudget: async (parent, args) => {
-      const { amount, proposalid } = args.budget;
-
-      const { errors, valid } = await validateBudget(amount, proposalid);
-
-      if (!valid) {
-        throwCustomError(errors.amount, ErrorTypes.BAD_USER_INPUT);
-      }
-
-      await updateProposalStatus(args.budget.proposalid, args.budget.amount);
-
-      const budget = new Budget({
-        ...args.budget,
-      });
+      const budgetHandler = new BudgetHandler(args.budget);
 
       try {
-        return await budget.save();
+        await budgetHandler.validate();
+        await budgetHandler.processProposalStatus();
+        await budgetHandler.calcBreakdown();
+        return await budgetHandler.submit();
       } catch (error) {
         throw new GraphQLError(error.message);
       }
