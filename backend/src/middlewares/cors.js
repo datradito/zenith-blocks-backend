@@ -4,6 +4,7 @@ export const corsOptions = {
     const allowedOrigins = [
       process.env.FRONTEND_URL,
       process.env.DEV_CORS_ALLOWED_URL,
+      process.env.GRAPHQL_PLAYGROUND,
     ];
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);

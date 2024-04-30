@@ -1,8 +1,8 @@
 import Proposal from "../../Database/models/Proposal.js";
 import Budget from "../../Database/models/Budget.js";
 import { GraphQLError } from "graphql";
+import { snapshotProposalsQuery } from "../../services/snapshot/query.js";
 import {
-  callApi,
   callExternalGraphQLAPI,
 } from "../../services/snapshot/callApi.js";
 
@@ -34,6 +34,7 @@ const proposalResolver = {
           data: { proposals },
         } = await callExternalGraphQLAPI(
           "https://hub.snapshot.org/graphql",
+          snapshotProposalsQuery,
           variables
         );
 
@@ -87,7 +88,17 @@ const proposalResolver = {
   },
   Mutation: {
     setProposalAmount: async (parent, args, context) => {
-      console.log(args);
+      const { id, amount } = args.proposal;
+
+      //find proposal by id , if amount already exist through error otherwise create proposal with passed input
+      const existingProposal = await Proposal.findByPk(id);
+
+      // Check if a proposal with the same amount already exists
+      if (existingProposal.amount > 0) {
+        throw new Error(
+          "Proposal amount cannot be changed, Please contact support if you need further help"
+        );
+      }
 
       let proposal = new Proposal({
         id: args.proposal.id,

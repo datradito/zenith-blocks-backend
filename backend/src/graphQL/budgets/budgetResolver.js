@@ -31,8 +31,9 @@ const budgetResolver = {
         throw new GraphQLError(error.message);
       }
     },
-    getBudgets: async (parent, { first, skip, filters }) => {
+    getBudgets: async (parent, { first, skip, filters }, context) => {
       const count = await countBudgets(filters);
+      console.log(context)
       try {
         const whereClause = await setFilters(filters);
 

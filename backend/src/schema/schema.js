@@ -2,6 +2,7 @@ import proposalResolver from "../graphQL/proposals/proposalResolver.js";
 import invoiceResolver from "../graphQL/invoices/invoiceResolver.js";
 import budgetResolver from "../graphQL/budgets/budgetResolver.js";
 import paymentsResolver from "../graphQL/payments/paymentsResolver.js";
+import categoryResolver from "../graphQL/categories/index.js";
 import walletResolvers from "../graphQL/dashboard/walletResolvers.js";
 import contactResolver from "../graphQL/Contacts/contactResolver.js";
 import transactionHistoryResolver from "../graphQL/dashboard/transactionHistoryResolver.js";
@@ -9,6 +10,8 @@ import Proposal from "../Database/models/Proposal.js";
 import { GraphQLError } from "graphql";
 import budgetLoader from "../services/budgets/BudgetLoader.js";
 import billLoader from "../services/bills/BillsLoader.js";
+import { callExternalGraphQLAPI } from "../services/snapshot/callApi.js";
+import { proposalByIdQuery } from "../services/snapshot/query.js";
 
 export const typeDefs = `#graphql
    type DeleteBillsResponse {
@@ -38,6 +41,21 @@ export const typeDefs = `#graphql
         description: String
         """bills are returned from dataloader, meaning after first request result will be cached, if we see issues with stale data, move billLoader to context on each request"""
         invoices: [Invoice]
+    }
+
+    type Category {
+      id: ID!
+      label: String
+    }
+
+    type Wallet {
+      balance: Float
+      currency: String
+    }
+
+    type TransactionHistory {
+      items: [Transaction]
+      count: Int
     }
 
     type BudgetList {
@@ -107,6 +125,7 @@ export const typeDefs = `#graphql
 
 
     type Query {
+        categories: [Category]
         getBudgetById(id: String): Budget,
         getBudgets(first: Int, skip: Int, filters: BudgetFilterInput) : BudgetList,
         getBudgetsForProposal(proposalid: String): [Budget],
@@ -122,7 +141,8 @@ export const typeDefs = `#graphql
         getTokenTransactionHistory(address: String!): [Transaction]
     }
     type Mutation {
-        submitBudget(budget: BudgetInput!): Budget,
+        createCategory(label: String!): Category
+        submitBudget(budget: BudgetInput): Budget,
         submitContact(contact: ContactsInput): Contacts,
         submitInvoice(invoice: InvoiceInput): Invoice,
         setProposalAmount(proposal: ProposalAmountInput): Proposal,
@@ -184,10 +204,9 @@ export const typeDefs = `#graphql
     input ProposalInput {
         id: String
         amount: Float
-        modified: String
         status: String
         modifier: String
-        rootpath: String
+        currency: String
         daoid: String
     }
 
@@ -215,6 +234,7 @@ export const typeDefs = `#graphql
 export const resolvers = {
   Query: {
     ...proposalResolver.Query,
+    ...categoryResolver.Query,
     ...budgetResolver.Query,
     ...invoiceResolver.Query,
     ...paymentsResolver.Query,
@@ -228,6 +248,7 @@ export const resolvers = {
     ...invoiceResolver.Mutation,
     ...paymentsResolver.Mutation,
     ...contactResolver.Mutation,
+    ...categoryResolver.Mutation,
   },
   Budget: {
     async invoices(parent) {
@@ -243,7 +264,22 @@ export const resolvers = {
           where: { id: parent.proposalid },
         });
 
-        return proposal;
+        const variables = {
+          id: proposal.id,
+        };
+
+        const {
+          data: { proposal: snapshotProposal },
+        } = await callExternalGraphQLAPI(
+          "https://hub.snapshot.org/graphql",
+          proposalByIdQuery,
+          variables
+        );
+
+        return {
+          ...proposal.toJSON(),
+          title: snapshotProposal.title,
+        };
       } catch (error) {
         throw new GraphQLError(error.message);
       }

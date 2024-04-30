@@ -1,4 +1,4 @@
-export const query = `
+export const snapshotProposalsQuery = `
 query Proposals($first: Int, $skip: Int, $space: String, $state: String, $title: String) {
   proposals(
     first: $first,
@@ -19,6 +19,15 @@ query Proposals($first: Int, $skip: Int, $space: String, $state: String, $title:
       id
       name
     }
+  }
+}
+`;
+
+export const proposalByIdQuery = `
+query Proposal($id: String!) {
+  proposal(id: $id) {
+    id
+    title
   }
 }
 `;

@@ -15,6 +15,7 @@ Sequelize.models = {
   payments: import("./models/Payment.js"),
   contacts: import("./models/Contacts.js"),
   users: import("./models/User.js"),
+  categories: import("./models/Categories.js"),
 };
 
 const init = async () => {
