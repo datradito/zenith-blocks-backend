@@ -5,6 +5,7 @@ import paymentsResolver from "../graphQL/payments/paymentsResolver.js";
 import categoryResolver from "../graphQL/categories/index.js";
 import walletResolvers from "../graphQL/dashboard/walletResolvers.js";
 import contactResolver from "../graphQL/Contacts/contactResolver.js";
+import userResolver from "../graphQL/user/userResolver.js";
 import transactionHistoryResolver from "../graphQL/dashboard/transactionHistoryResolver.js";
 import Proposal from "../Database/models/Proposal.js";
 import { GraphQLError } from "graphql";
@@ -123,6 +124,20 @@ export const typeDefs = `#graphql
     category: String
   }
 
+  type User {
+    id: String
+    daoid: String
+    address: String
+    notificatonSettings: NotificationSettings
+    discordid: String
+    telegramid: String
+  }
+
+  type NotificationSettings {
+    discord: Boolean
+    telegram: Boolean
+  }
+
 
     type Query {
         categories: [Category]
@@ -139,6 +154,7 @@ export const typeDefs = `#graphql
         getAllPayments: [Payment!]!
         getTokenBalances(address: String!): [Token]
         getTokenTransactionHistory(address: String!): [Transaction]
+        user: User
     }
     type Mutation {
         createCategory(label: String!): Category
@@ -151,6 +167,20 @@ export const typeDefs = `#graphql
         deleteBills(billIds: [String]!): DeleteBillsResponse
         updateBillStatus(billId: String!, status: String!): Invoice
         deleteContact(id: String!): Contacts
+        createUser(input: UserInput!): User
+    }
+
+    input UserInput {
+      daoid: String!
+      address: String!
+      discordid: String
+      telegramid: String
+      notificationSettings: NotificationSettingsInput
+    }
+
+    input NotificationSettingsInput {
+      discord: Boolean
+      telegram: Boolean
     }
 
     input ContactsInput {
@@ -241,6 +271,7 @@ export const resolvers = {
     ...walletResolvers.Query,
     ...transactionHistoryResolver.Query,
     ...contactResolver.Query,
+    ...userResolver.Query,
   },
   Mutation: {
     ...proposalResolver.Mutation,
@@ -249,6 +280,7 @@ export const resolvers = {
     ...paymentsResolver.Mutation,
     ...contactResolver.Mutation,
     ...categoryResolver.Mutation,
+    ...userResolver.Mutation,
   },
   Budget: {
     async invoices(parent) {
