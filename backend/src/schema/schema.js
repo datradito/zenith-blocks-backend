@@ -128,7 +128,7 @@ export const typeDefs = `#graphql
     id: String
     daoid: String
     address: String
-    notificatonSettings: NotificationSettings
+    notificationSettings: NotificationSettings
     discordid: String
     telegramid: String
   }

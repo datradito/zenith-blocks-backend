@@ -21,7 +21,7 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    notificatonSettings: {
+    notificationSettings: {
       type: DataTypes.JSON,
       allowNull: true,
       defaultValue: {
