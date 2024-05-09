@@ -25,8 +25,8 @@ User.init(
       type: DataTypes.JSON,
       allowNull: true,
       defaultValue: {
-        discord: true,
-        telegram: true,
+        discord: false,
+        telegram: false,
       },
     },
     discordid: {

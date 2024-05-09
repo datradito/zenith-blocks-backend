@@ -34,7 +34,7 @@ const Budget = sequelize.define("budgets", {
   },
   remaining: {
     type: DataTypes.FLOAT,
-    allowNull: false,
+    allowNull: true,
   },
 });
 

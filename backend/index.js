@@ -8,7 +8,7 @@ import { CronRouter } from "./src/routes/crons.js";
 
 import User from "./src/Database/models/User.js";
 import { typeDefs, resolvers } from "./src/schema/schema.js";
-import context  from "./src/middlewares/context.js";
+import context from "./src/middlewares/context.js";
 import Moralis from "moralis";
 
 import { ApolloServer } from "@apollo/server";
@@ -16,7 +16,7 @@ import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import http from "http";
 
-import "./src/services/crons/cron.js"
+import "./src/services/crons/cron.js";
 
 import init from "./src/Database/sequalizeConnection.js";
 
@@ -116,15 +116,15 @@ app.post("/createUser", async (req, res) => {
     });
     res.send({
       message: "User created",
-      user: user
+      user: user,
     });
   } catch (e) {
     res.send({
-      message: "Error creating user", error: e
+      message: "Error creating user",
+      error: e,
     });
   }
-}
-);
+});
 
 httpServer.listen(8000, async () => {
   await init();

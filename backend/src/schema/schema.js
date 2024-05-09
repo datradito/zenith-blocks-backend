@@ -154,7 +154,7 @@ export const typeDefs = `#graphql
         getAllPayments: [Payment!]!
         getTokenBalances(address: String!): [Token]
         getTokenTransactionHistory(address: String!): [Transaction]
-        user: User
+        currentUser: User
     }
     type Mutation {
         createCategory(label: String!): Category
@@ -168,6 +168,8 @@ export const typeDefs = `#graphql
         updateBillStatus(billId: String!, status: String!): Invoice
         deleteContact(id: String!): Contacts
         createUser(input: UserInput!): User
+        updateNotificationSetting(id: String!, value: String!): User
+        updateNotificationStatus(id: String!, status: Boolean!): User
     }
 
     input UserInput {
