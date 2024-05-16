@@ -48,7 +48,7 @@ const invoiceResolver = {
         //    readyToExecute: readyToExecute
         //  }
 
-        console.log(invoices);
+
         return invoices;
       } catch (error) {
         throw new GraphQLError(error.message);
@@ -87,7 +87,6 @@ const invoiceResolver = {
           },
         });
 
-        console.log(deletedBills);
 
         if (deletedBills.length > 0) {
           await Invoice.destroy({

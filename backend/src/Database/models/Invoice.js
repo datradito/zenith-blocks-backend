@@ -67,6 +67,25 @@ const Invoice = sequelize.define("invoices", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+}, {
+  indexes: [
+    {
+      name: "invoice_budgetid",
+      fields: ["budgetid"],
+    },
+    {
+      name: "invoice_daoid",
+      fields: ["daoid"],
+    },
+    {
+      name: "invoice_owneraddress",
+      fields: ["owneraddress"],
+    },
+    {
+      name: "invoice_number",
+      fields: ["number"],
+    },
+  ]
 });
 
 export default Invoice;

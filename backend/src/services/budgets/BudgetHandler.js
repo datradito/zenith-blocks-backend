@@ -2,29 +2,27 @@ import Proposal from "../../Database/models/Proposal.js";
 import Invoice from "../../Database/models/Invoice.js";
 import Budget from "../../Database/models/Budget.js";
 import { validateBudget } from "../../validators/validateBudget.js";
-import handleProposalStatusUpdate from "../../utility/budgetHelpers/updateProposalStatus.js";
+import handleProposalStatusUpdate from "./updateProposalStatus.js";
 import { GraphQLError } from "graphql";
-import { throwCustomError, ErrorTypes } from "../../errors/errorHandlerHelper.js";
+import {
+  throwCustomError,
+  ErrorTypes,
+} from "../../errors/errorHandlerHelper.js";
 
 class BudgetHandler {
   constructor(budget) {
     this.budget = budget;
   }
 
-
   async validate() {
-    console.log( "validating budget")
     const { amount, proposalid } = this.budget;
     const { errors, valid } = await validateBudget(amount, proposalid);
 
     if (!valid) {
       throwCustomError(errors.amount, ErrorTypes.BAD_USER_INPUT);
     }
-
-    console.log( "validated budget")
     return this;
   }
-
 
   //run this everytime new bill is saved to udpate the remaining
   async calcRemaining() {
@@ -38,7 +36,6 @@ class BudgetHandler {
         budgetid: id,
       },
     });
-
 
     if (!totalBilled) {
       this.budget.remaining = this.budget.amount;

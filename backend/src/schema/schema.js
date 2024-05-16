@@ -3,10 +3,7 @@ import invoiceResolver from "../graphQL/invoices/invoiceResolver.js";
 import budgetResolver from "../graphQL/budgets/budgetResolver.js";
 import paymentsResolver from "../graphQL/payments/paymentsResolver.js";
 import categoryResolver from "../graphQL/categories/index.js";
-import walletResolvers from "../graphQL/dashboard/walletResolvers.js";
-import contactResolver from "../graphQL/Contacts/contactResolver.js";
 import userResolver from "../graphQL/user/userResolver.js";
-import transactionHistoryResolver from "../graphQL/dashboard/transactionHistoryResolver.js";
 import Proposal from "../Database/models/Proposal.js";
 import { GraphQLError } from "graphql";
 import budgetLoader from "../services/budgets/BudgetLoader.js";
@@ -146,7 +143,6 @@ export const typeDefs = `#graphql
         getBudgetsForProposal(proposalid: String): [Budget],
         getInvoiceById(id: String): Invoice,
         getInvoices(filter: InvoiceFilterInput): [Invoice],
-        getContacts(filter: ContactsFilterInput): [Contacts],
         getProposalDetailsById(id: String): Proposal,
         getRemainingProposalAmount(id: String!): Float!,
         getProposalsByDao(daoid: String, first: Int, skip: Int, title: String): [Proposal],
@@ -159,14 +155,12 @@ export const typeDefs = `#graphql
     type Mutation {
         createCategory(label: String!): Category
         submitBudget(budget: BudgetInput): Budget,
-        submitContact(contact: ContactsInput): Contacts,
         submitInvoice(invoice: InvoiceInput): Invoice,
         setProposalAmount(proposal: ProposalAmountInput): Proposal,
         submitPayment(payment: PaymentInput!): Payment!
         duplicateInvoice(id: String!): Invoice
         deleteBills(billIds: [String]!): DeleteBillsResponse
         updateBillStatus(billId: String!, status: String!): Invoice
-        deleteContact(id: String!): Contacts
         createUser(input: UserInput!): User
         updateNotificationSetting(id: String!, value: String!): User
         updateNotificationStatus(id: String!, status: Boolean!): User
@@ -185,13 +179,6 @@ export const typeDefs = `#graphql
       telegram: Boolean
     }
 
-    input ContactsInput {
-        name: String
-        address: String
-        daoid: String
-        safeaddress: String
-    }
-    
     input PaymentInput {
         invoiceid: String!
         currency: String!
@@ -256,11 +243,6 @@ export const typeDefs = `#graphql
       amount: Int
     }
 
-    input ContactsFilterInput {
-      daoid: String
-      safeaddress: String
-    }
-
 `;
 
 export const resolvers = {
@@ -270,9 +252,6 @@ export const resolvers = {
     ...budgetResolver.Query,
     ...invoiceResolver.Query,
     ...paymentsResolver.Query,
-    ...walletResolvers.Query,
-    ...transactionHistoryResolver.Query,
-    ...contactResolver.Query,
     ...userResolver.Query,
   },
   Mutation: {
@@ -280,7 +259,6 @@ export const resolvers = {
     ...budgetResolver.Mutation,
     ...invoiceResolver.Mutation,
     ...paymentsResolver.Mutation,
-    ...contactResolver.Mutation,
     ...categoryResolver.Mutation,
     ...userResolver.Mutation,
   },

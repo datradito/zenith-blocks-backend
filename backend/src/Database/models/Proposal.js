@@ -1,10 +1,10 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../db.js";
+import { PROPOSAL_STATUS } from "../../utility/constants/ProposalStatuses.js";
 
 const Proposal = sequelize.define('proposals', {
     id: {
-        type: DataTypes.STRING.BINARY, // Use DataTypes.INTEGER if using auto-incrementing integer as primary key
-        allowNull: false,
+        type: DataTypes.STRING.BINARY, 
         primaryKey: true,
     },
     amount: {
@@ -13,7 +13,7 @@ const Proposal = sequelize.define('proposals', {
     },
     status: {
         type: DataTypes.STRING,
-        defaultValue: "NotFilled",
+        defaultValue: PROPOSAL_STATUS.CLOSED,
         allowNull: false,
     },
     modifier: {
@@ -28,6 +28,13 @@ const Proposal = sequelize.define('proposals', {
         type: DataTypes.STRING,
         allowNull: false,
     },
+}, {
+    indexes: [
+        {
+            name: "proposal_daoid",
+            fields: ["daoid"],
+        },
+    ]
 });
 
 

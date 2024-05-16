@@ -1,6 +1,6 @@
-import { Sequelize } from "sequelize";
+import { Sequelize, where } from "sequelize";
 
-const setFilters = async (filters) => {
+const setFilters = async (filters, daoId) => {
   const whereClause = { ...filters };
   if (filters) {
     if (filters.proposal_id) {
@@ -25,6 +25,8 @@ const setFilters = async (filters) => {
     delete whereClause?.creation_date__lte;
     delete whereClause?.type;
   }
+
+  whereClause.daoid = daoId;
   return whereClause;
 };
 

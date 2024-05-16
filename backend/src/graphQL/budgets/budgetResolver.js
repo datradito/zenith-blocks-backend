@@ -31,11 +31,10 @@ const budgetResolver = {
         throw new GraphQLError(error.message);
       }
     },
-    getBudgets: async (parent, { first, skip, filters }, context) => {
-      const count = await countBudgets(filters);
-      console.log(context)
+    getBudgets: async (parent, { first, skip, filters }, {user}) => {
+      const count = await countBudgets(filters, user.daoId);
       try {
-        const whereClause = await setFilters(filters);
+        const whereClause = await setFilters(filters, user.daoId);
 
         const budgets = await Budget.findAll({
           where: whereClause,
@@ -50,8 +49,13 @@ const budgetResolver = {
     },
   },
   Mutation: {
-    submitBudget: async (parent, args) => {
-      const budgetHandler = new BudgetHandler(args.budget);
+    submitBudget: async (parent, args, context) => {
+      const newBudget = {
+        ...args.budget,
+        daoid: context.user.daoId,
+      };
+
+      const budgetHandler = new BudgetHandler(newBudget);
 
       try {
         await budgetHandler.validate();

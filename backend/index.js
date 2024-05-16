@@ -3,7 +3,6 @@ import cors from "cors";
 import session from "./src/middlewares/session.js";
 import { corsOptions } from "./src/middlewares/cors.js";
 import { authRouter } from "./src/routes/authRoutes.js";
-import { swapRouter } from "./src/routes/1inchSwapRoutes.js";
 
 import User from "./src/Database/models/User.js";
 import { typeDefs, resolvers } from "./src/schema/schema.js";
@@ -14,7 +13,7 @@ import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import http from "http";
 
-import init from "./src/Database/sequalizeConnection.js";
+import { initDatabase } from "./src/Database/initDatabase.js";
 
 const app = express();
 
@@ -30,7 +29,6 @@ if (process.env.NODE_ENV !== "production") {
 app.use(cors(corsOptions));
 app.use(session);
 app.use(authRouter);
-app.use(swapRouter);
 
 const httpServer = http.createServer(app);
 const server = new ApolloServer({
@@ -48,7 +46,6 @@ app.use(
     context: context,
   })
 );
-
 
 app.get("/", (req, res) => {
   res.send("Hey this is my API running 🥳");
@@ -73,9 +70,15 @@ app.post("/createUser", async (req, res) => {
   }
 });
 
-httpServer.listen(8000, async () => {
-  await init();
-  console.log("Server running on port 8000");
-});
+const PORT = process.env.PORT || 8000;
 
+httpServer.listen(PORT, async () => {
+  try {
+    await initDatabase();
+    console.log(`Server running on port ${PORT}`);
+  } catch (error) {
+    console.error("Failed to initialize the database:", error);
+    process.exit(1); // Exit process with failure
+  }
+});
 export default app;
