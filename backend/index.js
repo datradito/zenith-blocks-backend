@@ -4,19 +4,15 @@ import session from "./src/middlewares/session.js";
 import { corsOptions } from "./src/middlewares/cors.js";
 import { authRouter } from "./src/routes/authRoutes.js";
 import { swapRouter } from "./src/routes/1inchSwapRoutes.js";
-import { CronRouter } from "./src/routes/crons.js";
 
 import User from "./src/Database/models/User.js";
 import { typeDefs, resolvers } from "./src/schema/schema.js";
 import context from "./src/middlewares/context.js";
-import Moralis from "moralis";
 
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import http from "http";
-
-import "./src/services/crons/cron.js";
 
 import init from "./src/Database/sequalizeConnection.js";
 
@@ -35,9 +31,6 @@ app.use(cors(corsOptions));
 app.use(session);
 app.use(authRouter);
 app.use(swapRouter);
-app.use(CronRouter);
-
-let isMoralisInitialized = false;
 
 const httpServer = http.createServer(app);
 const server = new ApolloServer({
@@ -56,55 +49,9 @@ app.use(
   })
 );
 
-const initializeIpfsNode = async () => {
-  if (!isMoralisInitialized) {
-    await Moralis.start({
-      apiKey: process.env.MORALIS_KEY,
-    });
-    isMoralisInitialized = true;
-  }
-};
-
-initializeIpfsNode();
 
 app.get("/", (req, res) => {
   res.send("Hey this is my API running 🥳");
-});
-
-app.get("/tokenTransfers", async (req, res) => {
-  try {
-    const { address, chain } = req.query;
-
-    const response = await Moralis.EvmApi.token.getWalletTokenTransfers({
-      address: address,
-      chain: chain,
-    });
-
-    const userTrans = response.data.result;
-
-    let userTransDetails = [];
-
-    for (let i = 0; i < userTrans.length; i++) {
-      try {
-        const metaResponse = await Moralis.EvmApi.token.getTokenMetadata({
-          addresses: [userTrans[i].address],
-          chain: chain,
-        });
-        if (metaResponse.data) {
-          userTrans[i].decimals = metaResponse.data[0].decimals;
-          userTrans[i].symbol = metaResponse.data[0].symbol;
-          userTransDetails.push(userTrans[i]);
-        } else {
-          console.log("no details for coin");
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    res.send(userTransDetails);
-  } catch (e) {
-    res.send(e);
-  }
 });
 
 app.post("/createUser", async (req, res) => {
