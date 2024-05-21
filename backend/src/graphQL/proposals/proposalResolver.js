@@ -94,7 +94,7 @@ const proposalResolver = {
       const existingProposal = await Proposal.findByPk(id);
 
       // Check if a proposal with the same amount already exists
-      if (existingProposal.amount > 0) {
+      if (existingProposal?.amount > 0) {
         throw new Error(
           "Proposal amount cannot be changed, Please contact support if you need further help"
         );
@@ -102,7 +102,7 @@ const proposalResolver = {
 
       let proposal = new Proposal({
         id: args.proposal.id,
-        amount: args.proposal.amount,
+        amount,
         modifier: args.proposal.modifier,
         daoid: args.proposal.daoid,
         currency: args.proposal.currency,
