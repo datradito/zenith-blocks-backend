@@ -67,6 +67,10 @@ const Invoice = sequelize.define("invoices", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  chainId: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  }
 }, {
   indexes: [
     {

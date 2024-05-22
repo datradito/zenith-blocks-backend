@@ -90,6 +90,7 @@ export const typeDefs = `#graphql
         budgetid: String
         status: String
         transactionHash: String
+        chainId: String
     }
     type Payment {
         id: String!
@@ -211,6 +212,7 @@ export const typeDefs = `#graphql
         safeaddress: String
         daoid: String
         transactionHash: String
+        chainId: String
     }
     input ProposalAmountInput {
         id: String
