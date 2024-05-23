@@ -48,7 +48,6 @@ const invoiceResolver = {
         //    readyToExecute: readyToExecute
         //  }
 
-
         return invoices;
       } catch (error) {
         throw new GraphQLError(error.message);
@@ -86,7 +85,6 @@ const invoiceResolver = {
             transactionHash: null,
           },
         });
-
 
         if (deletedBills.length > 0) {
           await Invoice.destroy({

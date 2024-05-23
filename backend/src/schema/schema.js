@@ -213,6 +213,7 @@ export const typeDefs = `#graphql
         daoid: String
         transactionHash: String
         chainId: String
+        status: String
     }
     input ProposalAmountInput {
         id: String
