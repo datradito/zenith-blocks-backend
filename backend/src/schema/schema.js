@@ -161,7 +161,7 @@ export const typeDefs = `#graphql
         submitPayment(payment: PaymentInput!): Payment!
         duplicateInvoice(id: String!): Invoice
         deleteBills(billIds: [String]!): DeleteBillsResponse
-        updateBillStatus(billId: String!, status: String!): Invoice
+        updateBillStatus(id: String!, status: String!): Invoice
         createUser(input: UserInput!): User
         updateNotificationSetting(id: String!, value: String!): User
         updateNotificationStatus(id: String!, status: Boolean!): User

@@ -133,6 +133,7 @@ const invoiceResolver = {
         }
       }
     },
+    //TODO: Change to update invoice status???
     updateBillStatus: async (parent, { id, status }, context) => {
       try {
         const invoice = await Invoice.findByPk(id);
