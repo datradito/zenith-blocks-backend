@@ -48,7 +48,6 @@ const invoiceResolver = {
         //    readyToExecute: readyToExecute
         //  }
 
-
         return invoices;
       } catch (error) {
         throw new GraphQLError(error.message);
@@ -57,6 +56,17 @@ const invoiceResolver = {
     getInvoiceById: async (parent, args, context) => {
       try {
         return await Invoice.findByPk(args.id);
+      } catch (error) {
+        throw new GraphQLError(error.message);
+      }
+    },
+    getInvoiceByTxHash: async (parent, { transactionHash }, context) => {
+      try {
+        return await Invoice.findOne({
+          where: {
+            transactionHash,
+          },
+        });
       } catch (error) {
         throw new GraphQLError(error.message);
       }
@@ -86,7 +96,6 @@ const invoiceResolver = {
             transactionHash: null,
           },
         });
-
 
         if (deletedBills.length > 0) {
           await Invoice.destroy({
@@ -135,6 +144,7 @@ const invoiceResolver = {
         }
       }
     },
+    //TODO: Change to update invoice status???
     updateBillStatus: async (parent, { id, status }, context) => {
       try {
         const invoice = await Invoice.findByPk(id);

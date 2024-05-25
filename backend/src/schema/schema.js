@@ -143,6 +143,7 @@ export const typeDefs = `#graphql
         getBudgets(first: Int, skip: Int, filters: BudgetFilterInput) : BudgetList,
         getBudgetsForProposal(proposalid: String): [Budget],
         getInvoiceById(id: String): Invoice,
+        getInvoiceByTxHash(transactionHash: String): Invoice,
         getInvoices(filter: InvoiceFilterInput): [Invoice],
         getProposalDetailsById(id: String): Proposal,
         getRemainingProposalAmount(id: String!): Float!,
@@ -161,7 +162,7 @@ export const typeDefs = `#graphql
         submitPayment(payment: PaymentInput!): Payment!
         duplicateInvoice(id: String!): Invoice
         deleteBills(billIds: [String]!): DeleteBillsResponse
-        updateBillStatus(billId: String!, status: String!): Invoice
+        updateBillStatus(id: String!, status: String!): Invoice
         createUser(input: UserInput!): User
         updateNotificationSetting(id: String!, value: String!): User
         updateNotificationStatus(id: String!, status: Boolean!): User
@@ -213,6 +214,7 @@ export const typeDefs = `#graphql
         daoid: String
         transactionHash: String
         chainId: String
+        status: String
     }
     input ProposalAmountInput {
         id: String
