@@ -143,6 +143,7 @@ export const typeDefs = `#graphql
         getBudgets(first: Int, skip: Int, filters: BudgetFilterInput) : BudgetList,
         getBudgetsForProposal(proposalid: String): [Budget],
         getInvoiceById(id: String): Invoice,
+        getInvoiceByTxHash(transactionHash: String): Invoice,
         getInvoices(filter: InvoiceFilterInput): [Invoice],
         getProposalDetailsById(id: String): Proposal,
         getRemainingProposalAmount(id: String!): Float!,

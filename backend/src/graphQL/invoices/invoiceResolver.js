@@ -60,6 +60,17 @@ const invoiceResolver = {
         throw new GraphQLError(error.message);
       }
     },
+    getInvoiceByTxHash: async (parent, { transactionHash }, context) => {
+      try {
+        return await Invoice.findOne({
+          where: {
+            transactionHash,
+          },
+        });
+      } catch (error) {
+        throw new GraphQLError(error.message);
+      }
+    },
   },
   Mutation: {
     submitInvoice: async (parent, { invoice }, context) => {
