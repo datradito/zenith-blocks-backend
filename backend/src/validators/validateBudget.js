@@ -23,7 +23,7 @@ const validateBudget = async (amount, proposalid) => {
 
   let totalBudgetedAmount = await Budget.sum("amount", {
     where: {
-      proposalid: proposalid,
+      proposalid,
     },
   });
 
@@ -33,14 +33,14 @@ const validateBudget = async (amount, proposalid) => {
 
   const proposalAmount = proposal.get("amount");
 
-  if (parseInt(proposalAmount) - parseInt(totalBudgetedAmount) === 0) {
+  if (parseFloat(proposalAmount) - parseFloat(totalBudgetedAmount) === 0) {
     errors.amount = `Proposal amount has been fully budgeted`;
   } else if (
-    parseInt(amount) >
-    parseInt(proposalAmount) - parseInt(totalBudgetedAmount)
+    parseFloat(amount) >
+    parseFloat(proposalAmount) - parseFloat(totalBudgetedAmount)
   ) {
     errors.amount = `Budget amount cannot exceed remaining proposal amount of ${
-      parseInt(proposalAmount) - parseInt(totalBudgetedAmount)
+      parseFloat(proposalAmount) - parseFloat(totalBudgetedAmount)
     }`;
   }
 
